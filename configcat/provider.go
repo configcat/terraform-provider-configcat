@@ -1,11 +1,8 @@
 package configcat
 
 import (
-	"net/http"
-
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/terraform-provider-site24x7-master/site24x7/oauth"
 )
 
 func Provider() terraform.ResourceProvider {
@@ -43,13 +40,4 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	basicAuthUsername := d.Get("basic_auth_username").(string)
 	basicAuthPassword := d.Get("basic_auth_password").(string)
 
-	configuration := NewConfiguration()
-	ator, err := oauth.NewAuthenticator(clientId, clientSecret, refreshToken)
-	if err != nil {
-		return nil, err
-	}
-
-	h := make(http.Header)
-	h.Set("Authorization", "Basic "+ator.AccessToken())
-	return NewAPIClient()
 }
