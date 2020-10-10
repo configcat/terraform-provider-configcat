@@ -9,18 +9,22 @@ import (
 
 func resourceConfigCatProduct() *schema.Resource {
 	return &schema.Resource{
+
+		Create: productCreate,
 		Read:   productRead,
+		Update: productUpdate,
+		Delete: productDelete,
 		Exists: productExists,
 
 		Schema: map[string]*schema.Schema{
-			"productId": &schema.Schema{
+			"product_id": &schema.Schema{
 				Type:     schema.TypeString,
 				Required: true,
 			},
 
 			"name": &schema.Schema{
 				Type:     schema.TypeString,
-				Required: true,
+				Optional: true,
 			},
 		},
 	}
@@ -45,6 +49,18 @@ func productExists(d *schema.ResourceData, meta interface{}) (bool, error) {
 	return true, nil
 }
 
+func productCreate(d *schema.ResourceData, meta interface{}) error {
+	return fmt.Errorf("Not implemented")
+}
+
+func productUpdate(d *schema.ResourceData, meta interface{}) error {
+	return fmt.Errorf("Not implemented")
+}
+
+func productDelete(d *schema.ResourceData, meta interface{}) error {
+	return fmt.Errorf("Not implemented")
+}
+
 func findProduct(d *schema.ResourceData, meta interface{}) (*sw.ProductModel, error) {
 	c := meta.(*Client)
 
@@ -53,7 +69,7 @@ func findProduct(d *schema.ResourceData, meta interface{}) (*sw.ProductModel, er
 		return nil, err
 	}
 
-	productId := d.Get("productId")
+	productId := d.Get("product_id")
 	if productId != "" {
 		for i := range products {
 			if products[i].ProductId == productId {
@@ -66,6 +82,6 @@ func findProduct(d *schema.ResourceData, meta interface{}) (*sw.ProductModel, er
 }
 
 func updateProductResourceData(d *schema.ResourceData, m *sw.ProductModel) {
-	d.Set("productId", m.ProductId)
+	d.Set("product_id", m.ProductId)
 	d.Set("name", m.Name)
 }
