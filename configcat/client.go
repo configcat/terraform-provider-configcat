@@ -16,12 +16,53 @@ type Client struct {
 	apiClient         *sw.APIClient
 }
 
-// test
-func (a *Client) GetAuthContext() context.Context {
+//
+func (client *Client) GetAuthContext() context.Context {
 	return context.WithValue(context.Background(), sw.ContextBasicAuth, sw.BasicAuth{
-		UserName: a.basicAuthUsername,
-		Password: a.basicAuthPassword,
+		UserName: client.basicAuthUsername,
+		Password: client.basicAuthPassword,
 	})
+}
+
+//
+func (client *Client) GetMe() (sw.MeModel, error) {
+	model, _, err := client.apiClient.MeApi.GetMe(client.GetAuthContext())
+	return model, err
+}
+
+func (client *Client) GetProducts() ([]sw.ProductModel, error) {
+	model, _, err := client.apiClient.ProductsApi.GetProducts(client.GetAuthContext())
+	return model, err
+}
+
+func (client *Client) GetConfigs(productId string) ([]sw.ConfigModel, error) {
+	model, _, err := client.apiClient.ConfigsApi.GetConfigs(client.GetAuthContext(), productId)
+	return model, err
+}
+
+func (client *Client) GetEnvironments(productId string) ([]sw.EnvironmentModel, error) {
+	model, _, err := client.apiClient.EnvironmentsApi.GetEnvironments(client.GetAuthContext(), productId)
+	return model, err
+}
+
+func (client *Client) CreateEnvironment(productId, environmentName string) (sw.EnvironmentModel, error) {
+	body := sw.CreateEnvironmentModel{}
+	body.Name = environmentName
+	model, _, err := client.apiClient.EnvironmentsApi.CreateEnvironment(
+		client.GetAuthContext(),
+		body,
+		productId)
+	return model, err
+}
+
+func (client *Client) UpdateEnvironment(environmentId, environmentName string) (sw.EnvironmentModel, error) {
+	body := sw.UpdateEnvironmentModel{}
+	body.Name = environmentName
+	model, _, err := client.apiClient.EnvironmentsApi.UpdateEnvironment(
+		client.GetAuthContext(),
+		body,
+		environmentId)
+	return model, err
 }
 
 //
@@ -39,8 +80,7 @@ func NewClient(basePath, basicAuthUsername, basicAuthPassword string) (*Client, 
 	}
 
 	log.Printf("Validating ConfigCat configuration")
-	meModel, _, err := client.apiClient.MeApi.GetMe(client.GetAuthContext())
-
+	meModel, err := client.GetMe()
 	if err != nil {
 		return nil, err
 	}

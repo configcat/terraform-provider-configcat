@@ -32,7 +32,7 @@ func Provider() terraform.ResourceProvider {
 		},
 
 		ResourcesMap: map[string]*schema.Resource{
-			//	"configcat_feature_flag": resourceConfigCatFatureFlag(),
+			"configcat_product": resourceConfigCatProduct(),
 		},
 
 		ConfigureFunc: providerConfigure,
