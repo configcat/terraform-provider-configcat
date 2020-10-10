@@ -7,6 +7,7 @@ import (
 	"github.com/hashicorp/terraform/terraform"
 )
 
+// test
 func Provider() terraform.ResourceProvider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
