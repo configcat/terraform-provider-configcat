@@ -26,12 +26,16 @@ func Provider() terraform.ResourceProvider {
 			"base_path": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Default:     "https://api.configcat.com",
+				DefaultFunc: schema.EnvDefaultFunc("CONFIGCAT_BASE_PATH", "https://api.configcat.com"),
 				Description: "ConfigCat Public Management API Base Path (defaults to production).",
 			},
 		},
 
 		ResourcesMap: map[string]*schema.Resource{
+			//	"configcat_product": resourceConfigCatProduct(),
+		},
+
+		DataSourcesMap: map[string]*schema.Resource{
 			"configcat_product": resourceConfigCatProduct(),
 		},
 

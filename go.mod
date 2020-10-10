@@ -5,4 +5,5 @@ go 1.15
 require (
 	github.com/configcat/configcat-publicapi-go-client v0.2.0
 	github.com/hashicorp/terraform v0.13.4
+	google.golang.org/appengine v1.6.6
 )

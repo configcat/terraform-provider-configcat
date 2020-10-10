@@ -26,42 +26,48 @@ func (client *Client) GetAuthContext() context.Context {
 
 //
 func (client *Client) GetMe() (sw.MeModel, error) {
-	model, _, err := client.apiClient.MeApi.GetMe(client.GetAuthContext())
+	model, response, err := client.apiClient.MeApi.GetMe(client.GetAuthContext())
+	defer response.Body.Close()
 	return model, err
 }
 
 func (client *Client) GetProducts() ([]sw.ProductModel, error) {
-	model, _, err := client.apiClient.ProductsApi.GetProducts(client.GetAuthContext())
+	model, response, err := client.apiClient.ProductsApi.GetProducts(client.GetAuthContext())
+	defer response.Body.Close()
 	return model, err
 }
 
 func (client *Client) GetConfigs(productId string) ([]sw.ConfigModel, error) {
-	model, _, err := client.apiClient.ConfigsApi.GetConfigs(client.GetAuthContext(), productId)
+	model, response, err := client.apiClient.ConfigsApi.GetConfigs(client.GetAuthContext(), productId)
+	defer response.Body.Close()
 	return model, err
 }
 
 func (client *Client) GetEnvironments(productId string) ([]sw.EnvironmentModel, error) {
-	model, _, err := client.apiClient.EnvironmentsApi.GetEnvironments(client.GetAuthContext(), productId)
+	model, response, err := client.apiClient.EnvironmentsApi.GetEnvironments(client.GetAuthContext(), productId)
+	defer response.Body.Close()
 	return model, err
 }
 
 func (client *Client) CreateEnvironment(productId, environmentName string) (sw.EnvironmentModel, error) {
 	body := sw.CreateEnvironmentModel{}
 	body.Name = environmentName
-	model, _, err := client.apiClient.EnvironmentsApi.CreateEnvironment(
+	model, response, err := client.apiClient.EnvironmentsApi.CreateEnvironment(
 		client.GetAuthContext(),
 		body,
 		productId)
+	defer response.Body.Close()
 	return model, err
 }
 
 func (client *Client) UpdateEnvironment(environmentId, environmentName string) (sw.EnvironmentModel, error) {
 	body := sw.UpdateEnvironmentModel{}
 	body.Name = environmentName
-	model, _, err := client.apiClient.EnvironmentsApi.UpdateEnvironment(
+	model, response, err := client.apiClient.EnvironmentsApi.UpdateEnvironment(
 		client.GetAuthContext(),
 		body,
 		environmentId)
+	defer response.Body.Close()
 	return model, err
 }
 
