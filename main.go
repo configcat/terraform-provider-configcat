@@ -7,8 +7,6 @@ import (
 )
 
 func main() {
-	plugin.Serve(new(MyPlugin))
-
 	plugin.Serve(&plugin.ServeOpts{
 		ProviderFunc: func() terraform.ResourceProvider {
 			return configcat.Provider()
