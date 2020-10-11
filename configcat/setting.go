@@ -2,6 +2,8 @@ package configcat
 
 import (
 	"fmt"
+	"log"
+	"strconv"
 
 	sw "github.com/configcat/configcat-publicapi-go-client"
 	"github.com/hashicorp/terraform/helper/schema"
@@ -18,14 +20,10 @@ func resourceConfigCatSetting() *schema.Resource {
 
 		Schema: map[string]*schema.Schema{
 
-			"setting_id": &schema.Schema{
-				Type:     schema.TypeInt,
-				Optional: true,
-			},
-
 			"config_id": &schema.Schema{
 				Type:     schema.TypeString,
-				Optional: true,
+				Required: true,
+				ForceNew: true,
 			},
 
 			"key": &schema.Schema{
@@ -55,6 +53,7 @@ func resourceConfigCatSetting() *schema.Resource {
 }
 
 func settingCreate(d *schema.ResourceData, meta interface{}) error {
+	log.Printf("settingCreate")
 	c := meta.(*Client)
 
 	configId := d.Get("config_id").(string)
@@ -62,10 +61,15 @@ func settingCreate(d *schema.ResourceData, meta interface{}) error {
 		return fmt.Errorf("config_id is required")
 	}
 
+	settingType, err := getSettingType(d.Get("setting_type").(string))
+	if err != nil {
+		return err
+	}
+
 	body := sw.CreateSettingModel{
 		Key:         d.Get("key").(string),
 		Name:        d.Get("name").(string),
-		SettingType: d.Get("setting_type").(*sw.SettingType),
+		SettingType: &settingType,
 		Hint:        d.Get("hint").(string),
 	}
 
@@ -79,13 +83,38 @@ func settingCreate(d *schema.ResourceData, meta interface{}) error {
 	return nil
 }
 
+func getSettingType(settingType string) (sw.SettingType, error) {
+	switch settingType {
+	case "boolean":
+		return sw.BOOLEAN_SettingType, nil
+	case "string":
+		return sw.STRING__SettingType, nil
+	case "int":
+		return sw.INT__SettingType, nil
+	case "double":
+		return sw.DOUBLE_SettingType, nil
+	default:
+		return sw.BOOLEAN_SettingType, fmt.Errorf("Could not parse setting_type: %s", settingType)
+	}
+}
+
 func settingUpdate(d *schema.ResourceData, meta interface{}) error {
+	log.Printf("settingUpdate")
 	//c := meta.(*Client)
 
-	_, ok := d.Get("setting_id").(int32)
+	// Temporary workaround
+	setting, err := findSetting(d, meta)
+	if err != nil {
+		return err
+	}
+	updateSettingResourceData(d, setting)
+
+	/*settingId, ok := d.Id().(int32)
 	if !ok {
 		return fmt.Errorf("setting_id is required")
 	}
+	d.SetId(fmt.Sprintf("%v", settingId))
+	d.SetId(fmt.Sprintf("%v", settingId))
 	/*
 		body := sw.UpdateSettingModel{
 			Key:         d.Get("key").(string),
@@ -105,6 +134,7 @@ func settingUpdate(d *schema.ResourceData, meta interface{}) error {
 }
 
 func settingRead(d *schema.ResourceData, meta interface{}) error {
+	log.Printf("settingRead")
 	setting, err := findSetting(d, meta)
 	if err != nil {
 		return err
@@ -115,6 +145,7 @@ func settingRead(d *schema.ResourceData, meta interface{}) error {
 }
 
 func settingExists(d *schema.ResourceData, meta interface{}) (bool, error) {
+	log.Printf("settingExists")
 	_, err := findSetting(d, meta)
 	if err != nil {
 		return false, err
@@ -124,14 +155,15 @@ func settingExists(d *schema.ResourceData, meta interface{}) (bool, error) {
 }
 
 func settingDelete(d *schema.ResourceData, meta interface{}) error {
+	log.Printf("settingDelete")
 	c := meta.(*Client)
 
-	settingId, ok := d.Get("setting_id").(int32)
-	if !ok {
-		return fmt.Errorf("setting_id is required")
+	settingId, convErr := strconv.Atoi(d.Id())
+	if convErr != nil {
+		return fmt.Errorf("could not parse setting_id")
 	}
 
-	err := c.DeleteSetting(settingId)
+	err := c.DeleteSetting(int32(settingId))
 	if err != nil {
 		return err
 	}
@@ -142,10 +174,9 @@ func settingDelete(d *schema.ResourceData, meta interface{}) error {
 func findSetting(d *schema.ResourceData, meta interface{}) (*sw.SettingModel, error) {
 	c := meta.(*Client)
 
-	settingIdRaw := d.Get("setting_id")
-	settingId, ok := settingIdRaw.(int32)
-	if ok {
-		setting, err := c.GetSetting(settingId)
+	settingId, convErr := strconv.Atoi(d.Id())
+	if convErr == nil {
+		setting, err := c.GetSetting(int32(settingId))
 		if err != nil {
 			return nil, err
 		}
@@ -155,12 +186,12 @@ func findSetting(d *schema.ResourceData, meta interface{}) (*sw.SettingModel, er
 
 	configId := d.Get("config_id").(string)
 	if configId == "" {
-		return nil, fmt.Errorf("setting_id or config_id+setting_key is required")
+		return nil, fmt.Errorf("config_id+setting_key is required")
 	}
 
 	settingKey := d.Get("key").(string)
 	if settingKey == "" {
-		return nil, fmt.Errorf("setting_id or config_id+setting_key is required")
+		return nil, fmt.Errorf("config_id+setting_key is required")
 	}
 
 	settings, err := c.GetSettings(configId)
@@ -179,7 +210,6 @@ func findSetting(d *schema.ResourceData, meta interface{}) (*sw.SettingModel, er
 
 func updateSettingResourceData(d *schema.ResourceData, m *sw.SettingModel) {
 	d.SetId(fmt.Sprintf("%v", m.SettingId))
-	d.Set("setting_id", m.SettingId)
 	d.Set("config_id", m.ConfigId)
 	d.Set("key", m.Key)
 	d.Set("name", m.Name)

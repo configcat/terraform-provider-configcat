@@ -11,7 +11,7 @@ const (
 )
 
 func TestConfig(t *testing.T) {
-	const productValid = `
+	const configValid = `
 		data "configcat_config" "test" {
 			product_id = "08d86d63-2721-4da6-8c06-584521d516bc"
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
@@ -23,7 +23,7 @@ func TestConfig(t *testing.T) {
 		Providers: testAccProviders,
 		Steps: []resource.TestStep{
 			resource.TestStep{
-				Config: productValid,
+				Config: configValid,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("data.configcat_config.test", "id", configId),
 					resource.TestCheckResourceAttr("data.configcat_config.test", "product_id", productId),
