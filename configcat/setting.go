@@ -25,12 +25,13 @@ func resourceConfigCatSetting() *schema.Resource {
 
 			"config_id": &schema.Schema{
 				Type:     schema.TypeString,
-				Required: true,
+				Optional: true,
 			},
 
 			"key": &schema.Schema{
 				Type:     schema.TypeString,
 				Required: true,
+				ForceNew: true,
 			},
 
 			"name": &schema.Schema{
@@ -40,8 +41,9 @@ func resourceConfigCatSetting() *schema.Resource {
 
 			"setting_type": &schema.Schema{
 				Type:     schema.TypeString,
-				Required: true,
+				Optional: true,
 				Default:  "boolean",
+				ForceNew: true,
 			},
 
 			"hint": &schema.Schema{
@@ -53,7 +55,53 @@ func resourceConfigCatSetting() *schema.Resource {
 }
 
 func settingCreate(d *schema.ResourceData, meta interface{}) error {
+	c := meta.(*Client)
 
+	configId := d.Get("config_id").(string)
+	if configId == "" {
+		return fmt.Errorf("config_id is required")
+	}
+
+	body := sw.CreateSettingModel{
+		Key:         d.Get("key").(string),
+		Name:        d.Get("name").(string),
+		SettingType: d.Get("setting_type").(*sw.SettingType),
+		Hint:        d.Get("hint").(string),
+	}
+
+	setting, err := c.CreateSetting(configId, body)
+	if err != nil {
+		return err
+	}
+
+	updateSettingResourceData(d, &setting)
+
+	return nil
+}
+
+func settingUpdate(d *schema.ResourceData, meta interface{}) error {
+	//c := meta.(*Client)
+
+	_, ok := d.Get("setting_id").(int32)
+	if !ok {
+		return fmt.Errorf("setting_id is required")
+	}
+	/*
+		body := sw.UpdateSettingModel{
+			Key:         d.Get("key").(string),
+			Name:        d.Get("name").(string),
+			SettingType: d.Get("setting_type").(*sw.SettingType),
+			Hint:        d.Get("hint").(string),
+		}
+
+		setting, err := c.UpdateSetting(settingId, body)
+		if err != nil {
+			return err
+		}
+
+		updateSettingResourceData(d, &setting)
+	*/
+	return nil
 }
 
 func settingRead(d *schema.ResourceData, meta interface{}) error {
@@ -63,6 +111,31 @@ func settingRead(d *schema.ResourceData, meta interface{}) error {
 	}
 
 	updateSettingResourceData(d, setting)
+	return nil
+}
+
+func settingExists(d *schema.ResourceData, meta interface{}) (bool, error) {
+	_, err := findSetting(d, meta)
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
+}
+
+func settingDelete(d *schema.ResourceData, meta interface{}) error {
+	c := meta.(*Client)
+
+	settingId, ok := d.Get("setting_id").(int32)
+	if !ok {
+		return fmt.Errorf("setting_id is required")
+	}
+
+	err := c.DeleteSetting(settingId)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
