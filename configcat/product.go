@@ -58,15 +58,16 @@ func findProduct(d *schema.ResourceData, meta interface{}) (*sw.ProductModel, er
 	}
 
 	productId := fmt.Sprintf("%v", d.Get("product_id"))
-	if productId != "" {
-		for i := range products {
-			if products[i].ProductId == productId {
-				return &products[i], nil
-			}
+	if productId == "" {
+		return nil, fmt.Errorf("product_id is required")
+	}
+	for i := range products {
+		if products[i].ProductId == productId {
+			return &products[i], nil
 		}
 	}
 
-	return nil, fmt.Errorf("could not find Product with ProductId: %s", productId)
+	return nil, fmt.Errorf("could not find Product with product_id: %s", productId)
 }
 
 func updateProductResourceData(d *schema.ResourceData, m *sw.ProductModel) {
