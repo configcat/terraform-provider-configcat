@@ -71,6 +71,18 @@ func (client *Client) UpdateEnvironment(environmentId, environmentName string) (
 	return model, err
 }
 
+func (client *Client) GetSetting(settingId int32) (sw.SettingModel, error) {
+	model, response, err := client.apiClient.FeatureFlagsSettingsApi.GetSetting(client.GetAuthContext(), settingId)
+	defer response.Body.Close()
+	return model, err
+}
+
+func (client *Client) GetSettings(configId string) ([]sw.SettingModel, error) {
+	model, response, err := client.apiClient.FeatureFlagsSettingsApi.GetSettings(client.GetAuthContext(), configId)
+	defer response.Body.Close()
+	return model, err
+}
+
 //
 func NewClient(basePath, basicAuthUsername, basicAuthPassword string) (*Client, error) {
 	configuration := configcatpublicapi.NewConfiguration()

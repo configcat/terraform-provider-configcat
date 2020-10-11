@@ -37,7 +37,7 @@ func resourceConfigCatConfig() *schema.Resource {
 func configRead(d *schema.ResourceData, meta interface{}) error {
 	c := meta.(*Client)
 
-	productId := fmt.Sprintf("%v", d.Get("product_id"))
+	productId := d.Get("product_id").(string)
 	if productId == "" {
 		return fmt.Errorf("product_id is required")
 	}
@@ -47,7 +47,7 @@ func configRead(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 
-	configId := fmt.Sprintf("%v", d.Get("config_id"))
+	configId := d.Get("config_id").(string)
 	if configId == "" {
 		return fmt.Errorf("config_id is required")
 	}

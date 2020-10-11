@@ -57,7 +57,7 @@ func findProduct(d *schema.ResourceData, meta interface{}) (*sw.ProductModel, er
 		return nil, err
 	}
 
-	productId := fmt.Sprintf("%v", d.Get("product_id"))
+	productId := d.Get("product_id").(string)
 	if productId == "" {
 		return nil, fmt.Errorf("product_id is required")
 	}
