@@ -2,6 +2,7 @@ package configcat
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 
 	sw "github.com/configcat/configcat-publicapi-go-client"
@@ -21,11 +22,19 @@ func resourceSetting() *schema.Resource {
 				Type:         schema.TypeString,
 				Required:     true,
 				ValidateFunc: validateGUIDFunc,
+				ForceNew:     true,
 			},
 
 			SETTING_KEY: &schema.Schema{
 				Type:     schema.TypeString,
 				Required: true,
+				ForceNew: true,
+			},
+
+			SETTING_TYPE: &schema.Schema{
+				Type:     schema.TypeString,
+				Default:  "boolean",
+				ForceNew: true,
 			},
 
 			SETTING_NAME: &schema.Schema{
@@ -37,25 +46,30 @@ func resourceSetting() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-
-			SETTING_TYPE: &schema.Schema{
-				Type:    schema.TypeString,
-				Default: "boolean",
-			},
-
-			SETTING_ID: &schema.Schema{
-				Type:     schema.TypeString,
-				Computed: true,
-			},
 		},
 	}
 }
 
 func resourceSettingCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	// Warning or errors can be collected in a slice type
-	var diags diag.Diagnostics
+	c := m.(*Client)
 
-	return diags
+	configID := d.Get(CONFIG_ID).(string)
+
+	body := sw.CreateSettingModel{
+		Key:  d.Get(SETTING_KEY).(string),
+		Name: d.Get(SETTING_NAME).(string),
+		Hint: d.Get(SETTING_HINT).(string),
+	}
+
+	setting, err := c.CreateSetting(configID, body)
+	if err != nil {
+		d.SetId("")
+		return diag.FromErr(err)
+	}
+
+	d.SetId(fmt.Sprint(setting.SettingId))
+
+	return resourceSettingRead(ctx, d, m)
 }
 
 func resourceSettingRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
@@ -66,26 +80,76 @@ func resourceSettingRead(ctx context.Context, d *schema.ResourceData, m interfac
 		return diag.FromErr(err)
 	}
 
-	settingKey := d.Get(SETTING_KEY).(string)
-
 	setting, err := getSetting(c, int32(settingID))
 	if err != nil {
 		d.SetId("")
 		return diag.FromErr(err)
 	}
 
-	updateSettingResourceData(d, setting)
+	d.Set(CONFIG_ID, setting.ConfigId)
+	d.Set(SETTING_KEY, setting.Key)
+	d.Set(SETTING_NAME, setting.Name)
+	d.Set(SETTING_HINT, setting.Hint)
+	d.Set(SETTING_TYPE, setting.SettingType)
+
 	var diags diag.Diagnostics
 	return diags
 }
 
 func resourceSettingUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	c := m.(*Client)
+	settingID, err := strconv.ParseInt(d.Id(), 10, 32)
+	if err != nil {
+		d.SetId("")
+		return diag.FromErr(err)
+	}
+
+	if d.HasChanges(SETTING_NAME, SETTING_HINT) {
+		body := []sw.Operation{}
+		if d.HasChange(SETTING_NAME) {
+			settingName := d.Get(SETTING_NAME)
+			body = append(body, sw.Operation{
+				Op:    "replace",
+				Path:  "/name",
+				Value: &settingName,
+			})
+		}
+
+		if d.HasChange(SETTING_HINT) {
+			settingHint := d.Get(SETTING_HINT)
+			body = append(body, sw.Operation{
+				Op:    "replace",
+				Path:  "/hint",
+				Value: &settingHint,
+			})
+		}
+
+		_, err := c.UpdateSetting(int32(settingID), body)
+		if err != nil {
+			d.SetId("")
+			return diag.FromErr(err)
+		}
+	}
+
 	return resourceSettingRead(ctx, d, m)
 }
 
 func resourceSettingDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	// Warning or errors can be collected in a slice type
 	var diags diag.Diagnostics
+
+	c := m.(*Client)
+	settingID, err := strconv.ParseInt(d.Id(), 10, 32)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+
+	err = c.DeleteSetting(int32(settingID))
+	if err != nil {
+		return diag.FromErr(err)
+	}
+
+	d.SetId("")
 
 	return diags
 }
