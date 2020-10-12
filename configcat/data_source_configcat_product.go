@@ -43,9 +43,19 @@ func productRead(ctx context.Context, d *schema.ResourceData, m interface{}) dia
 	return diags
 }
 
-func findProduct(c *Client, productName string) (*sw.ProductModel, error) {
+func getProducts(c *Client) ([]sw.ProductModel, error) {
 
 	products, err := c.GetProducts()
+	if err != nil {
+		return nil, err
+	}
+
+	return products, nil
+}
+
+func findProduct(c *Client, productName string) (*sw.ProductModel, error) {
+
+	products, err := getProducts(c)
 	if err != nil {
 		return nil, err
 	}
