@@ -26,7 +26,6 @@ func TestEnvironmentValid(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("data.configcat_environment.test", "id", environmentID),
 					resource.TestCheckResourceAttr("data.configcat_environment.test", PRODUCT_ID, productID),
-					resource.TestCheckResourceAttr("data.configcat_environment.test", ENVIRONMENT_ID, environmentID),
 					resource.TestCheckResourceAttr("data.configcat_environment.test", ENVIRONMENT_NAME, "Test"),
 				),
 			},

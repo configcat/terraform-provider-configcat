@@ -25,7 +25,6 @@ func TestSettingValid(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("data.configcat_setting.test", "id", "67639"),
 					resource.TestCheckResourceAttr("data.configcat_setting.test", CONFIG_ID, configID),
-					resource.TestCheckResourceAttr("data.configcat_setting.test", SETTING_ID, "67639"),
 					resource.TestCheckResourceAttr("data.configcat_setting.test", SETTING_KEY, "isAwesomeFeatureEnabled"),
 					resource.TestCheckResourceAttr("data.configcat_setting.test", SETTING_NAME, "My awesome feature flag"),
 					resource.TestCheckResourceAttr("data.configcat_setting.test", SETTING_HINT, "This is the hint for my awesome feature flag"),

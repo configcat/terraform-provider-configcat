@@ -10,7 +10,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func resourceSetting() *schema.Resource {
+func resourceConfigCatSetting() *schema.Resource {
 	return &schema.Resource{
 		CreateContext: resourceSettingCreate,
 		ReadContext:   resourceSettingRead,
@@ -34,6 +34,7 @@ func resourceSetting() *schema.Resource {
 			SETTING_TYPE: &schema.Schema{
 				Type:     schema.TypeString,
 				Default:  "boolean",
+				Optional: true,
 				ForceNew: true,
 			},
 
@@ -55,10 +56,27 @@ func resourceSettingCreate(ctx context.Context, d *schema.ResourceData, m interf
 
 	configID := d.Get(CONFIG_ID).(string)
 
+	settingTypeString := d.Get(SETTING_TYPE).(string)
+	var settingType sw.SettingType
+	switch d.Get(SETTING_TYPE).(string) {
+	case "boolean":
+		settingType = sw.BOOLEAN_SettingType
+	case "string":
+		settingType = sw.STRING__SettingType
+	case "int":
+		settingType = sw.INT__SettingType
+	case "double":
+		settingType = sw.DOUBLE_SettingType
+	default:
+		d.SetId("")
+		return diag.FromErr(fmt.Errorf("setting_type parse failed: %s. Valid values: boolean/string/int/double", settingTypeString))
+	}
+
 	body := sw.CreateSettingModel{
-		Key:  d.Get(SETTING_KEY).(string),
-		Name: d.Get(SETTING_NAME).(string),
-		Hint: d.Get(SETTING_HINT).(string),
+		Key:         d.Get(SETTING_KEY).(string),
+		Name:        d.Get(SETTING_NAME).(string),
+		Hint:        d.Get(SETTING_HINT).(string),
+		SettingType: &settingType,
 	}
 
 	setting, err := c.CreateSetting(configID, body)
@@ -86,7 +104,6 @@ func resourceSettingRead(ctx context.Context, d *schema.ResourceData, m interfac
 		return diag.FromErr(err)
 	}
 
-	d.Set(CONFIG_ID, setting.ConfigId)
 	d.Set(SETTING_KEY, setting.Key)
 	d.Set(SETTING_NAME, setting.Name)
 	d.Set(SETTING_HINT, setting.Hint)

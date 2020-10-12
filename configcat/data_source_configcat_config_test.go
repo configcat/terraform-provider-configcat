@@ -26,7 +26,6 @@ func TestConfigValid(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("data.configcat_config.test", "id", configID),
 					resource.TestCheckResourceAttr("data.configcat_config.test", PRODUCT_ID, productID),
-					resource.TestCheckResourceAttr("data.configcat_config.test", CONFIG_ID, configID),
 					resource.TestCheckResourceAttr("data.configcat_config.test", CONFIG_NAME, "Main Config"),
 				),
 			},
