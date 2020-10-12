@@ -15,12 +15,12 @@ func dataSourceConfigCatProduct() *schema.Resource {
 		ReadContext: productRead,
 
 		Schema: map[string]*schema.Schema{
-			"product_id": &schema.Schema{
+			keyProductID: &schema.Schema{
 				Type:     schema.TypeString,
 				Computed: true,
 			},
 
-			"name": &schema.Schema{
+			keyProductName: &schema.Schema{
 				Type:     schema.TypeString,
 				Required: true,
 			},
@@ -30,7 +30,7 @@ func dataSourceConfigCatProduct() *schema.Resource {
 
 func productRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*Client)
-	productName := d.Get("name").(string)
+	productName := d.Get(keyProductName).(string)
 
 	product, err := findProduct(c, productName)
 	if err != nil {
@@ -61,6 +61,6 @@ func findProduct(c *Client, productName string) (*sw.ProductModel, error) {
 
 func updateProductResourceData(d *schema.ResourceData, m *sw.ProductModel) {
 	d.SetId(m.ProductId)
-	d.Set("product_id", m.ProductId)
-	d.Set("name", m.Name)
+	d.Set(keyProductID, m.ProductId)
+	d.Set(keyProductName, m.Name)
 }

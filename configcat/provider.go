@@ -9,48 +9,50 @@ import (
 )
 
 const (
-	envBasicAuthUsername = "CONFIGCAT_BASIC_AUTH_USERNAME"
-	envBasicAuthPassword = "CONFIGCAT_BASIC_AUTH_PASSWORD"
-	envBasePath          = "CONFIGCAT_BASE_PATH"
+	ENV_BASIC_AUTH_USERNAME = "CONFIGCAT_BASIC_AUTH_USERNAME"
+	ENV_BASIC_AUTH_PASSWORD = "CONFIGCAT_BASIC_AUTH_PASSWORD"
+	ENV_BASE_PATH           = "CONFIGCAT_BASE_PATH"
 
-	keyBasicAuthUsername = "basic_auth_username"
-	keyBasicAuthPassword = "basic_auth_password"
-	keyBasePath          = "base_path"
+	KEY_BASIC_AUTH_USERNAME = "basic_auth_username"
+	KEY_BASIC_AUTH_PASSWORD = "basic_auth_password"
+	KEY_BASE_PATH           = "base_path"
 
-	defaultBasePath = "https://api.configcat.com"
+	DEFAULT_BASE_PATH = "https://api.configcat.com"
+
+	KEY_PRODUCT     = "configcat_product"
+	KEY_CONFIG      = "configcat_config"
+	KEY_ENVIRONMENT = "configcat_environment"
 )
 
 // Provider returns a *schema.Provider.
 func Provider() *schema.Provider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
-			keyBasicAuthUsername: {
+			KEY_BASIC_AUTH_USERNAME: {
 				Type:        schema.TypeString,
 				Required:    true,
-				DefaultFunc: schema.EnvDefaultFunc(envBasicAuthUsername, nil),
+				DefaultFunc: schema.EnvDefaultFunc(ENV_BASIC_AUTH_USERNAME, nil),
 				Description: "ConfigCat Public API credential - Basic Auth Username.",
 			},
-			keyBasicAuthPassword: {
+			KEY_BASIC_AUTH_PASSWORD: {
 				Type:        schema.TypeString,
 				Required:    true,
-				DefaultFunc: schema.EnvDefaultFunc(envBasicAuthPassword, nil),
+				DefaultFunc: schema.EnvDefaultFunc(ENV_BASIC_AUTH_PASSWORD, nil),
 				Description: "ConfigCat Public API credential - Basic Auth Password",
 			},
-			keyBasePath: {
+			KEY_BASE_PATH: {
 				Type:        schema.TypeString,
 				Optional:    true,
-				DefaultFunc: schema.EnvDefaultFunc(envBasePath, defaultBasePath),
+				DefaultFunc: schema.EnvDefaultFunc(ENV_BASE_PATH, DEFAULT_BASE_PATH),
 				Description: "ConfigCat Public Management API Base Path (defaults to production).",
 			},
 		},
 
-		ResourcesMap: map[string]*schema.Resource{
-			//		"configcat_setting": resourceConfigCatSetting(),
-		},
+		ResourcesMap: map[string]*schema.Resource{},
 
 		DataSourcesMap: map[string]*schema.Resource{
-			"configcat_product": dataSourceConfigCatProduct(),
-			//	"configcat_config":  resourceConfigCatConfig(),
+			KEY_PRODUCT: dataSourceConfigCatProduct(),
+			KEY_CONFIG:  resourceConfigCatConfig(),
 		},
 
 		ConfigureContextFunc: providerConfigure,
@@ -58,9 +60,9 @@ func Provider() *schema.Provider {
 }
 
 func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
-	basicAuthUsername := d.Get(keyBasicAuthUsername).(string)
-	basicAuthPassword := d.Get(keyBasicAuthPassword).(string)
-	basePath := d.Get(keyBasePath).(string)
+	basicAuthUsername := d.Get(KEY_BASIC_AUTH_USERNAME).(string)
+	basicAuthPassword := d.Get(KEY_BASIC_AUTH_PASSWORD).(string)
+	basePath := d.Get(KEY_BASE_PATH).(string)
 
 	var diags diag.Diagnostics
 
