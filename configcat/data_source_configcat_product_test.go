@@ -23,8 +23,8 @@ func TestProductValid(t *testing.T) {
 				Config: dataSource,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("data.configcat_product.test", "id", productID),
-					resource.TestCheckResourceAttr("data.configcat_product.test", "product_id", productID),
-					resource.TestCheckResourceAttr("data.configcat_product.test", "name", "Configcat's product"),
+					resource.TestCheckResourceAttr("data.configcat_product.test", PRODUCT_ID, productID),
+					resource.TestCheckResourceAttr("data.configcat_product.test", PRODUCT_NAME, "Configcat's product"),
 				),
 			},
 		},
@@ -44,7 +44,7 @@ func TestProductInvalid(t *testing.T) {
 		Steps: []resource.TestStep{
 			resource.TestStep{
 				Config:      dataSource,
-				ExpectError: regexp.MustCompile("could not find Product with name: notfound"),
+				ExpectError: regexp.MustCompile("could not find Product. name: notfound"),
 			},
 		},
 	})

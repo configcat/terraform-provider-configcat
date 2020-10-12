@@ -56,7 +56,7 @@ func findProduct(c *Client, productName string) (*sw.ProductModel, error) {
 		}
 	}
 
-	return nil, fmt.Errorf("could not find Product. Name: %s", productName)
+	return nil, fmt.Errorf("could not find Product. name: %s", productName)
 }
 
 func updateProductResourceData(d *schema.ResourceData, m *sw.ProductModel) {
