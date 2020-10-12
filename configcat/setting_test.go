@@ -36,6 +36,7 @@ func TestSetting(t *testing.T) {
 					resource.TestCheckResourceAttr("configcat_setting.setting1", "name", "setting1Name"),
 					resource.TestCheckResourceAttr("configcat_setting.setting1", "hint", "setting1Hint"),
 				),
+				ExpectNonEmptyPlan: true,
 			},
 			resource.TestStep{
 				Config: setting1Updated,
@@ -44,6 +45,7 @@ func TestSetting(t *testing.T) {
 					resource.TestCheckResourceAttr("configcat_setting.setting1", "name", "setting1NameUpdated"),
 					resource.TestCheckResourceAttr("configcat_setting.setting1", "hint", "setting1HintUpdated"),
 				),
+				ExpectNonEmptyPlan: true,
 			},
 		},
 	})
