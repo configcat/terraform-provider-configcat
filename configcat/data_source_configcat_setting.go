@@ -26,11 +26,6 @@ func dataSourceConfigCatSetting() *schema.Resource {
 				Required: true,
 			},
 
-			SETTING_ID: &schema.Schema{
-				Type:     schema.TypeString,
-				Computed: true,
-			},
-
 			SETTING_NAME: &schema.Schema{
 				Type:     schema.TypeString,
 				Computed: true,
@@ -60,7 +55,15 @@ func settingRead(ctx context.Context, d *schema.ResourceData, m interface{}) dia
 		return diag.FromErr(err)
 	}
 
-	updateSettingDataSourceData(d, setting, configID)
+	settingID := fmt.Sprintf("%d", setting.SettingId)
+
+	d.SetId(settingID)
+	d.Set(CONFIG_ID, configID)
+	d.Set(SETTING_KEY, setting.Key)
+	d.Set(SETTING_NAME, setting.Name)
+	d.Set(SETTING_HINT, setting.Hint)
+	d.Set(SETTING_TYPE, setting.SettingType)
+
 	var diags diag.Diagnostics
 	return diags
 }
@@ -88,16 +91,4 @@ func findSetting(c *Client, configID, settingKey string) (*sw.SettingModel, erro
 	}
 
 	return nil, fmt.Errorf("could not find Setting. config_id: %s key: %s", configID, settingKey)
-}
-
-func updateSettingDataSourceData(d *schema.ResourceData, m *sw.SettingModel, configID string) {
-	settingID := fmt.Sprintf("%d", m.SettingId)
-
-	d.SetId(settingID)
-	d.Set(CONFIG_ID, configID)
-	d.Set(SETTING_ID, settingID)
-	d.Set(SETTING_KEY, m.Key)
-	d.Set(SETTING_NAME, m.Name)
-	d.Set(SETTING_HINT, m.Hint)
-	d.Set(SETTING_TYPE, m.SettingType)
 }
