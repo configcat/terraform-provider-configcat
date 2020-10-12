@@ -2,6 +2,7 @@ package configcat
 
 import (
 	"context"
+	"fmt"
 
 	configcatpublicapi "github.com/configcat/configcat-publicapi-go-client"
 	sw "github.com/configcat/configcat-publicapi-go-client"
@@ -28,24 +29,36 @@ func (client *Client) GetAuthContext() context.Context {
 //
 func (client *Client) GetMe() (sw.MeModel, error) {
 	model, response, err := client.apiClient.MeApi.GetMe(client.GetAuthContext())
+	if err != nil {
+		err = handleAPIError(err)
+	}
 	defer response.Body.Close()
 	return model, err
 }
 
 func (client *Client) GetProducts() ([]sw.ProductModel, error) {
 	model, response, err := client.apiClient.ProductsApi.GetProducts(client.GetAuthContext())
+	if err != nil {
+		err = handleAPIError(err)
+	}
 	defer response.Body.Close()
 	return model, err
 }
 
 func (client *Client) GetConfigs(productId string) ([]sw.ConfigModel, error) {
 	model, response, err := client.apiClient.ConfigsApi.GetConfigs(client.GetAuthContext(), productId)
+	if err != nil {
+		err = handleAPIError(err)
+	}
 	defer response.Body.Close()
 	return model, err
 }
 
 func (client *Client) GetEnvironments(productId string) ([]sw.EnvironmentModel, error) {
 	model, response, err := client.apiClient.EnvironmentsApi.GetEnvironments(client.GetAuthContext(), productId)
+	if err != nil {
+		err = handleAPIError(err)
+	}
 	defer response.Body.Close()
 	return model, err
 }
@@ -57,6 +70,9 @@ func (client *Client) CreateEnvironment(productId, environmentName string) (sw.E
 		client.GetAuthContext(),
 		body,
 		productId)
+	if err != nil {
+		err = handleAPIError(err)
+	}
 	defer response.Body.Close()
 	return model, err
 }
@@ -68,36 +84,54 @@ func (client *Client) UpdateEnvironment(environmentId, environmentName string) (
 		client.GetAuthContext(),
 		body,
 		environmentId)
+	if err != nil {
+		err = handleAPIError(err)
+	}
 	defer response.Body.Close()
 	return model, err
 }
 
 func (client *Client) GetSetting(settingId int32) (sw.SettingModel, error) {
 	model, response, err := client.apiClient.FeatureFlagsSettingsApi.GetSetting(client.GetAuthContext(), settingId)
+	if err != nil {
+		err = handleAPIError(err)
+	}
 	defer response.Body.Close()
 	return model, err
 }
 
 func (client *Client) GetSettings(configId string) ([]sw.SettingModel, error) {
 	model, response, err := client.apiClient.FeatureFlagsSettingsApi.GetSettings(client.GetAuthContext(), configId)
+	if err != nil {
+		err = handleAPIError(err)
+	}
 	defer response.Body.Close()
 	return model, err
 }
 
 func (client *Client) CreateSetting(configId string, body sw.CreateSettingModel) (sw.SettingModel, error) {
 	model, response, err := client.apiClient.FeatureFlagsSettingsApi.CreateSetting(client.GetAuthContext(), body, configId)
+	if err != nil {
+		err = handleAPIError(err)
+	}
 	defer response.Body.Close()
 	return model, err
 }
 
 func (client *Client) UpdateSetting(settingId int32, body []sw.Operation) (sw.SettingModel, error) {
 	model, response, err := client.apiClient.FeatureFlagsSettingsApi.UpdateSetting(client.GetAuthContext(), body, settingId)
+	if err != nil {
+		err = handleAPIError(err)
+	}
 	defer response.Body.Close()
 	return model, err
 }
 
 func (client *Client) DeleteSetting(settingId int32) error {
 	response, err := client.apiClient.FeatureFlagsSettingsApi.DeleteSetting(client.GetAuthContext(), settingId)
+	if err != nil {
+		err = handleAPIError(err)
+	}
 	defer response.Body.Close()
 	return err
 }
@@ -124,4 +158,14 @@ func NewClient(basePath, basicAuthUsername, basicAuthPassword string) (*Client, 
 	client.authFullName = meModel.FullName
 
 	return client, nil
+}
+
+func handleAPIError(err error) error {
+	if err == nil {
+		return nil
+	}
+	if swaggerErr, ok := err.(sw.GenericSwaggerError); ok {
+		return fmt.Errorf("%s: %s", swaggerErr.Error(), string(swaggerErr.Body()))
+	}
+	return err
 }
