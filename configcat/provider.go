@@ -1,8 +1,10 @@
 package configcat
 
 import (
+	"context"
 	"fmt"
 
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
@@ -31,27 +33,29 @@ func Provider() *schema.Provider {
 		},
 
 		ResourcesMap: map[string]*schema.Resource{
-			"configcat_setting": resourceConfigCatSetting(),
+			//		"configcat_setting": resourceConfigCatSetting(),
 		},
 
 		DataSourcesMap: map[string]*schema.Resource{
 			"configcat_product": dataSourceConfigCatProduct(),
-			"configcat_config":  resourceConfigCatConfig(),
+			//	"configcat_config":  resourceConfigCatConfig(),
 		},
 
-		ConfigureFunc: providerConfigure,
+		ConfigureContextFunc: providerConfigure,
 	}
 }
 
-func providerConfigure(d *schema.ResourceData) (interface{}, error) {
+func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
 	basicAuthUsername := d.Get("basic_auth_username").(string)
 	basicAuthPassword := d.Get("basic_auth_password").(string)
 	basePath := d.Get("base_path").(string)
 
+	var diags diag.Diagnostics
+
 	client, err := NewClient(basePath, basicAuthUsername, basicAuthPassword)
 	if err != nil {
-		return nil, fmt.Errorf("Error setting up ConfigCat client: %s", err)
+		return nil, diag.FromErr(fmt.Errorf("Error setting up ConfigCat client: %s", err))
 	}
 
-	return client, nil
+	return client, diags
 }

@@ -2,7 +2,6 @@ package configcat
 
 import (
 	"context"
-	"log"
 
 	configcatpublicapi "github.com/configcat/configcat-publicapi-go-client"
 	sw "github.com/configcat/configcat-publicapi-go-client"
@@ -14,6 +13,8 @@ type Client struct {
 	basicAuthUsername string
 	basicAuthPassword string
 	apiClient         *sw.APIClient
+	authEmail         string
+	authFullName      string
 }
 
 //
@@ -116,12 +117,12 @@ func NewClient(basePath, basicAuthUsername, basicAuthPassword string) (*Client, 
 		apiClient:         apiClient,
 	}
 
-	log.Printf("Validating ConfigCat configuration")
 	meModel, err := client.GetMe()
 	if err != nil {
 		return nil, err
 	}
-	log.Printf("ConfigCat provider authorized with %s %s", meModel.Email, meModel.FullName)
+	client.authEmail = meModel.Email
+	client.authFullName = meModel.FullName
 
 	return client, nil
 }

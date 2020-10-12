@@ -1,16 +1,18 @@
 package configcat
 
 import (
+	"context"
 	"fmt"
 
 	sw "github.com/configcat/configcat-publicapi-go-client"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func dataSourceConfigCatProduct() *schema.Resource {
 	return &schema.Resource{
 
-		Read: productRead,
+		ReadContext: productRead,
 
 		Schema: map[string]*schema.Schema{
 			"product_id": &schema.Schema{
@@ -26,19 +28,21 @@ func dataSourceConfigCatProduct() *schema.Resource {
 	}
 }
 
-func productRead(d *schema.ResourceData, meta interface{}) error {
-	product, err := findProduct(d, meta)
+func productRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	product, err := findProduct(d, m)
 	if err != nil {
-		return err
+		d.SetId("")
+		return diag.FromErr(err)
 	}
 
 	updateProductResourceData(d, product)
-	return nil
+	var diags diag.Diagnostics
+	return diags
 }
 
-func findProduct(d *schema.ResourceData, meta interface{}) (*sw.ProductModel, error) {
+func findProduct(d *schema.ResourceData, m interface{}) (*sw.ProductModel, error) {
 
-	c := meta.(*Client)
+	c := m.(*Client)
 
 	products, err := c.GetProducts()
 	if err != nil {
