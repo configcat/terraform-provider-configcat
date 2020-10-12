@@ -6,10 +6,6 @@ import (
 	"github.com/hashicorp/terraform/helper/resource"
 )
 
-const (
-	configId = "08d86d63-2731-4b8b-823a-56ddda9da038"
-)
-
 func TestConfig(t *testing.T) {
 	const configValid = `
 		data "configcat_config" "test" {
@@ -17,6 +13,8 @@ func TestConfig(t *testing.T) {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
 		}
 	`
+	const productId = "08d86d63-2721-4da6-8c06-584521d516bc"
+	const configId = "08d86d63-2731-4b8b-823a-56ddda9da038"
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:  func() { testAccPreCheck(t) },

@@ -36,7 +36,7 @@ func Provider() terraform.ResourceProvider {
 		},
 
 		DataSourcesMap: map[string]*schema.Resource{
-			"configcat_product": resourceConfigCatProduct(),
+			"configcat_product": dataSourceConfigCatProduct(),
 			"configcat_config":  resourceConfigCatConfig(),
 		},
 
