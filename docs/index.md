@@ -27,12 +27,12 @@ data "configcat_product" "product" {
 }
 
 data "configcat_config" "config" {
-  product_id = configcat_product.product.product_id
+  product_id = configcat_product.product.id
   name = "Main Config"
 }
 
 resource "configcat_setting" "setting" {
-  config_id = configcat_config.config.config_id
+  config_id = configcat_config.config.id
   key = "isAwesomeFeatureEnabled"
   name = "My awesome feature flag"
   hint = "This is the hint for my awesome feature flag"
