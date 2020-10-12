@@ -1,6 +1,7 @@
 package configcat
 
 import (
+	"strings"
 	"testing"
 )
 
@@ -13,7 +14,7 @@ const (
 
 func TestClient_Fails(t *testing.T) {
 	_, err := NewClient(basePath, invalid, invalid)
-	if err.Error() != "401 Unauthorized" {
+	if !strings.HasPrefix(err.Error(), "401 Unauthorized") {
 		t.Errorf("Expected 401 Unauthorized. Received %s", err)
 	}
 }
