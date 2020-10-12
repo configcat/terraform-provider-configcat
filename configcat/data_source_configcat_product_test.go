@@ -13,7 +13,7 @@ func TestProductValid(t *testing.T) {
 			name = "Configcat's product"
 		}
 	`
-	const productId = "08d86d63-2721-4da6-8c06-584521d516bc"
+	const productID = "08d86d63-2721-4da6-8c06-584521d516bc"
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:  func() { testAccPreCheck(t) },
@@ -22,8 +22,8 @@ func TestProductValid(t *testing.T) {
 			resource.TestStep{
 				Config: dataSource,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("data.configcat_product.test", "id", productId),
-					resource.TestCheckResourceAttr("data.configcat_product.test", "product_id", productId),
+					resource.TestCheckResourceAttr("data.configcat_product.test", "id", productID),
+					resource.TestCheckResourceAttr("data.configcat_product.test", "product_id", productID),
 					resource.TestCheckResourceAttr("data.configcat_product.test", "name", "Configcat's product"),
 				),
 			},

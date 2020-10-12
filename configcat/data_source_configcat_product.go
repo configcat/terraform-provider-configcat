@@ -29,7 +29,10 @@ func dataSourceConfigCatProduct() *schema.Resource {
 }
 
 func productRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	product, err := findProduct(d, m)
+	c := m.(*Client)
+	productName := d.Get("name").(string)
+
+	product, err := findProduct(c, productName)
 	if err != nil {
 		d.SetId("")
 		return diag.FromErr(err)
@@ -40,26 +43,20 @@ func productRead(ctx context.Context, d *schema.ResourceData, m interface{}) dia
 	return diags
 }
 
-func findProduct(d *schema.ResourceData, m interface{}) (*sw.ProductModel, error) {
-
-	c := m.(*Client)
+func findProduct(c *Client, productName string) (*sw.ProductModel, error) {
 
 	products, err := c.GetProducts()
 	if err != nil {
 		return nil, err
 	}
 
-	productName := d.Get("name").(string)
-	if productName == "" {
-		return nil, fmt.Errorf("name is required")
-	}
 	for i := range products {
 		if products[i].Name == productName {
 			return &products[i], nil
 		}
 	}
 
-	return nil, fmt.Errorf("could not find Product with name: %s", productName)
+	return nil, fmt.Errorf("could not find Product. Name: %s", productName)
 }
 
 func updateProductResourceData(d *schema.ResourceData, m *sw.ProductModel) {

@@ -8,26 +8,38 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-// test
+const (
+	envBasicAuthUsername = "CONFIGCAT_BASIC_AUTH_USERNAME"
+	envBasicAuthPassword = "CONFIGCAT_BASIC_AUTH_PASSWORD"
+	envBasePath          = "CONFIGCAT_BASE_PATH"
+
+	keyBasicAuthUsername = "basic_auth_username"
+	keyBasicAuthPassword = "basic_auth_password"
+	keyBasePath          = "base_path"
+
+	defaultBasePath = "https://api.configcat.com"
+)
+
+// Provider returns a *schema.Provider.
 func Provider() *schema.Provider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
-			"basic_auth_username": {
+			keyBasicAuthUsername: {
 				Type:        schema.TypeString,
 				Required:    true,
-				DefaultFunc: schema.EnvDefaultFunc("CONFIGCAT_BASIC_AUTH_USERNAME", nil),
+				DefaultFunc: schema.EnvDefaultFunc(envBasicAuthUsername, nil),
 				Description: "ConfigCat Public API credential - Basic Auth Username.",
 			},
-			"basic_auth_password": {
+			keyBasicAuthPassword: {
 				Type:        schema.TypeString,
 				Required:    true,
-				DefaultFunc: schema.EnvDefaultFunc("CONFIGCAT_BASIC_AUTH_PASSWORD", nil),
+				DefaultFunc: schema.EnvDefaultFunc(envBasicAuthPassword, nil),
 				Description: "ConfigCat Public API credential - Basic Auth Password",
 			},
-			"base_path": {
+			keyBasePath: {
 				Type:        schema.TypeString,
 				Optional:    true,
-				DefaultFunc: schema.EnvDefaultFunc("CONFIGCAT_BASE_PATH", "https://api.configcat.com"),
+				DefaultFunc: schema.EnvDefaultFunc(envBasePath, defaultBasePath),
 				Description: "ConfigCat Public Management API Base Path (defaults to production).",
 			},
 		},
@@ -46,9 +58,9 @@ func Provider() *schema.Provider {
 }
 
 func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
-	basicAuthUsername := d.Get("basic_auth_username").(string)
-	basicAuthPassword := d.Get("basic_auth_password").(string)
-	basePath := d.Get("base_path").(string)
+	basicAuthUsername := d.Get(keyBasicAuthUsername).(string)
+	basicAuthPassword := d.Get(keyBasicAuthPassword).(string)
+	basePath := d.Get(keyBasePath).(string)
 
 	var diags diag.Diagnostics
 
