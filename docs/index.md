@@ -1,6 +1,9 @@
 # ConfigCat Feature Flags Provider
 
-Manage features and change your software configuration using [https://configcat.com](ConfigCat feature flags), without the need to re-deploy code. A 10 minute trainable dashboard allows even non-technical team members to manage application features. Supports A/B testing, soft launching or targeting a specific group of users first with new ideas. Deploy any time, release when confident. Open-source SDKs enable easy integration with any web, mobile or backend application.
+Manage features and change your software configuration using [ConfigCat feature flags](https://configcat.com), without the need to re-deploy code.  
+A 10 minute trainable dashboard allows even non-technical team members to manage application features.  
+Supports A/B testing, soft launching or targeting a specific group of users first with new ideas. Deploy any time, release when confident.  
+Open-source SDKs enable easy integration with any web, mobile or backend application.
 
 ConfigCat Feature Flags Provider allows you to configure and access ConfigCat resources via [ConfigCat Public Management API](https://api.configcat.com/). 
 
