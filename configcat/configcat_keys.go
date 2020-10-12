@@ -1,3 +1,5 @@
+package configcat
+
 const (
 	PRODUCT_ID   = "product_id"
 	PRODUCT_NAME = "name"

@@ -9,29 +9,23 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-const (
-	keyProductID  = "product_id"
-	keyConfigID   = "config_id"
-	keyConfigName = "name"
-)
-
 func dataSourceConfigCatConfig() *schema.Resource {
 	return &schema.Resource{
 
 		ReadContext: configRead,
 
 		Schema: map[string]*schema.Schema{
-			keyProductID: &schema.Schema{
+			PRODUCT_ID: &schema.Schema{
 				Type:     schema.TypeString,
 				Required: true,
 			},
 
-			keyConfigName: &schema.Schema{
+			CONFIG_NAME: &schema.Schema{
 				Type:     schema.TypeString,
 				Required: true,
 			},
 
-			keyConfigID: &schema.Schema{
+			CONFIG_ID: &schema.Schema{
 				Type:     schema.TypeString,
 				Computed: true,
 			},
@@ -41,8 +35,8 @@ func dataSourceConfigCatConfig() *schema.Resource {
 
 func configRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*Client)
-	productID := d.Get(keyProductID).(string)
-	configName := d.Get(keyConfigName).(string)
+	productID := d.Get(PRODUCT_ID).(string)
+	configName := d.Get(CONFIG_NAME).(string)
 
 	config, err := findConfig(c, productID, configName)
 	if err != nil {
@@ -73,7 +67,7 @@ func findConfig(c *Client, productID, configName string) (*sw.ConfigModel, error
 
 func updateConfigResourceData(d *schema.ResourceData, m *sw.ConfigModel, productID string) {
 	d.SetId(m.ConfigId)
-	d.Set(keyProductID, productID)
-	d.Set(keyConfigID, m.ConfigId)
-	d.Set(keyConfigName, m.Name)
+	d.Set(PRODUCT_ID, productID)
+	d.Set(CONFIG_ID, m.ConfigId)
+	d.Set(CONFIG_NAME, m.Name)
 }

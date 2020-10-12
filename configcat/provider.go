@@ -52,7 +52,7 @@ func Provider() *schema.Provider {
 
 		DataSourcesMap: map[string]*schema.Resource{
 			KEY_PRODUCT: dataSourceConfigCatProduct(),
-			KEY_CONFIG:  resourceConfigCatConfig(),
+			KEY_CONFIG:  dataSourceConfigCatConfig(),
 		},
 
 		ConfigureContextFunc: providerConfigure,
