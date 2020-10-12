@@ -53,3 +53,23 @@ func TestConfigInvalid(t *testing.T) {
 		},
 	})
 }
+
+func TestConfigInvalidGuid(t *testing.T) {
+	const dataSource = `
+		data "configcat_config" "test" {
+			name = "notfound"
+			product_id = "invalidGuid"
+		}
+	`
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:  func() { testAccPreCheck(t) },
+		Providers: testAccProviders,
+		Steps: []resource.TestStep{
+			resource.TestStep{
+				Config:      dataSource,
+				ExpectError: regexp.MustCompile(`"product_id": invalid GUID`),
+			},
+		},
+	})
+}

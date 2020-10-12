@@ -16,8 +16,9 @@ func dataSourceConfigCatConfig() *schema.Resource {
 
 		Schema: map[string]*schema.Schema{
 			PRODUCT_ID: &schema.Schema{
-				Type:     schema.TypeString,
-				Required: true,
+				Type:         schema.TypeString,
+				Required:     true,
+				ValidateFunc: validateGUIDFunc,
 			},
 
 			CONFIG_NAME: &schema.Schema{
