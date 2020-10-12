@@ -129,7 +129,7 @@ func TestResourceSettingValidSettingTypes(t *testing.T) {
 
 func TestResourceSettingInvalidSettingType(t *testing.T) {
 	const settingResource = `
-		resource "configcat_setting" "test" {
+		resource "configcat_setting" "test2" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
 			key = "testKey2"
 			name = "testName"
@@ -145,6 +145,28 @@ func TestResourceSettingInvalidSettingType(t *testing.T) {
 			resource.TestStep{
 				Config:      settingResource,
 				ExpectError: regexp.MustCompile(`setting_type parse failed: invalid. Valid values: boolean/string/int/double`),
+			},
+		},
+	})
+}
+
+func TestResourceSettingDuplicatedKey(t *testing.T) {
+	const settingResource = `
+		resource "configcat_setting" "test3" {
+			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
+			key = "isAwesomeFeatureEnabled"
+			name = "testName"
+		}
+	`
+	const configID = "08d86d63-2731-4b8b-823a-56ddda9da038"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:  func() { testAccPreCheck(t) },
+		Providers: testAccProviders,
+		Steps: []resource.TestStep{
+			resource.TestStep{
+				Config:      settingResource,
+				ExpectError: regexp.MustCompile(`.*This key is already in use\. Please, choose another.*`),
 			},
 		},
 	})
