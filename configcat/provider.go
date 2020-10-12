@@ -22,7 +22,7 @@ const (
 	KEY_PRODUCT     = "configcat_product"
 	KEY_CONFIG      = "configcat_config"
 	KEY_ENVIRONMENT = "configcat_environment"
-	KEY_SETTINGS    = "configcat_settings"
+	KEY_SETTING     = "configcat_setting"
 )
 
 // Provider returns a *schema.Provider.
@@ -55,7 +55,7 @@ func Provider() *schema.Provider {
 			KEY_PRODUCT:     dataSourceConfigCatProduct(),
 			KEY_CONFIG:      dataSourceConfigCatConfig(),
 			KEY_ENVIRONMENT: dataSourceConfigCatEnvironment(),
-			KEY_SETTINGS:    dataSourceConfigCatSettings(),
+			KEY_SETTING:     dataSourceConfigCatSetting(),
 		},
 
 		ConfigureContextFunc: providerConfigure,

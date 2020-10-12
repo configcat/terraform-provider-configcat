@@ -50,7 +50,7 @@ func configRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag
 	return diags
 }
 
-func getConfigs(c *Client, productID: string) ([]sw.ConfigModel, error) {
+func getConfigs(c *Client, productID string) ([]sw.ConfigModel, error) {
 
 	configs, err := c.GetConfigs(productID)
 	if err != nil {
