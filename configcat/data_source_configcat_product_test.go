@@ -23,7 +23,6 @@ func TestProductValid(t *testing.T) {
 				Config: dataSource,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("data.configcat_product.test", "id", productID),
-					resource.TestCheckResourceAttr("data.configcat_product.test", PRODUCT_ID, productID),
 					resource.TestCheckResourceAttr("data.configcat_product.test", PRODUCT_NAME, "Configcat's product"),
 				),
 			},

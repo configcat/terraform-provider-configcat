@@ -15,11 +15,6 @@ func dataSourceConfigCatProduct() *schema.Resource {
 		ReadContext: productRead,
 
 		Schema: map[string]*schema.Schema{
-			PRODUCT_ID: &schema.Schema{
-				Type:     schema.TypeString,
-				Computed: true,
-			},
-
 			PRODUCT_NAME: &schema.Schema{
 				Type:     schema.TypeString,
 				Required: true,
@@ -38,7 +33,9 @@ func productRead(ctx context.Context, d *schema.ResourceData, m interface{}) dia
 		return diag.FromErr(err)
 	}
 
-	updateProductResourceData(d, product)
+	d.SetId(product.ProductId)
+	d.Set(PRODUCT_NAME, product.Name)
+
 	var diags diag.Diagnostics
 	return diags
 }
@@ -67,10 +64,4 @@ func findProduct(c *Client, productName string) (*sw.ProductModel, error) {
 	}
 
 	return nil, fmt.Errorf("could not find Product. name: %s", productName)
-}
-
-func updateProductResourceData(d *schema.ResourceData, m *sw.ProductModel) {
-	d.SetId(m.ProductId)
-	d.Set(PRODUCT_ID, m.ProductId)
-	d.Set(PRODUCT_NAME, m.Name)
 }

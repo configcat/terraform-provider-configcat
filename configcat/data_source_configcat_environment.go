@@ -25,11 +25,6 @@ func dataSourceConfigCatEnvironment() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-
-			ENVIRONMENT_ID: &schema.Schema{
-				Type:     schema.TypeString,
-				Computed: true,
-			},
 		},
 	}
 }
@@ -39,13 +34,16 @@ func environmentRead(ctx context.Context, d *schema.ResourceData, m interface{})
 	productID := d.Get(PRODUCT_ID).(string)
 	environmentName := d.Get(CONFIG_NAME).(string)
 
-	config, err := findEnvironment(c, productID, environmentName)
+	environment, err := findEnvironment(c, productID, environmentName)
 	if err != nil {
 		d.SetId("")
 		return diag.FromErr(err)
 	}
 
-	updateEnvironmentResourceData(d, config, productID)
+	d.SetId(environment.EnvironmentId)
+	d.Set(PRODUCT_ID, productID)
+	d.Set(ENVIRONMENT_NAME, environment.Name)
+
 	var diags diag.Diagnostics
 	return diags
 }
@@ -65,11 +63,4 @@ func findEnvironment(c *Client, productID, environmentName string) (*sw.Environm
 	}
 
 	return nil, fmt.Errorf("could not find Environment. product_id: %s name: %s", productID, environmentName)
-}
-
-func updateEnvironmentResourceData(d *schema.ResourceData, m *sw.EnvironmentModel, productID string) {
-	d.SetId(m.EnvironmentId)
-	d.Set(PRODUCT_ID, productID)
-	d.Set(ENVIRONMENT_ID, m.EnvironmentId)
-	d.Set(ENVIRONMENT_NAME, m.Name)
 }

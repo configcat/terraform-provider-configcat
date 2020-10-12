@@ -25,11 +25,6 @@ func dataSourceConfigCatConfig() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-
-			CONFIG_ID: &schema.Schema{
-				Type:     schema.TypeString,
-				Computed: true,
-			},
 		},
 	}
 }
@@ -45,7 +40,10 @@ func configRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag
 		return diag.FromErr(err)
 	}
 
-	updateConfigResourceData(d, config, productID)
+	d.SetId(config.ConfigId)
+	d.Set(PRODUCT_ID, productID)
+	d.Set(CONFIG_NAME, config.Name)
+
 	var diags diag.Diagnostics
 	return diags
 }
@@ -74,11 +72,4 @@ func findConfig(c *Client, productID, configName string) (*sw.ConfigModel, error
 	}
 
 	return nil, fmt.Errorf("could not find Config. product_id: %s name: %s", productID, configName)
-}
-
-func updateConfigResourceData(d *schema.ResourceData, m *sw.ConfigModel, productID string) {
-	d.SetId(m.ConfigId)
-	d.Set(PRODUCT_ID, productID)
-	d.Set(CONFIG_ID, m.ConfigId)
-	d.Set(CONFIG_NAME, m.Name)
 }

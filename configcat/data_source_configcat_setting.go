@@ -60,7 +60,7 @@ func settingRead(ctx context.Context, d *schema.ResourceData, m interface{}) dia
 		return diag.FromErr(err)
 	}
 
-	updateSettingResourceData(d, setting, configID)
+	updateSettingDataSourceData(d, setting, configID)
 	var diags diag.Diagnostics
 	return diags
 }
@@ -90,7 +90,7 @@ func findSetting(c *Client, configID, settingKey string) (*sw.SettingModel, erro
 	return nil, fmt.Errorf("could not find Setting. config_id: %s key: %s", configID, settingKey)
 }
 
-func updateSettingResourceData(d *schema.ResourceData, m *sw.SettingModel, configID string) {
+func updateSettingDataSourceData(d *schema.ResourceData, m *sw.SettingModel, configID string) {
 	settingID := fmt.Sprintf("%d", m.SettingId)
 
 	d.SetId(settingID)
