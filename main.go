@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/configcat/terraform-provider-configcat/configcat"
-	"github.com/hashicorp/terraform/plugin"
-	"github.com/hashicorp/terraform/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
 func main() {

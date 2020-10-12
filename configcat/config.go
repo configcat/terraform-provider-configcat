@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	sw "github.com/configcat/configcat-publicapi-go-client"
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceConfigCatConfig() *schema.Resource {
