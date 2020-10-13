@@ -98,11 +98,17 @@ func resourceConfigCatSettingValue() *schema.Resource {
 }
 
 func resourceSettingValueRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	var diags diag.Diagnostics
+
 	err := resourceSettingValueReadInternal(ctx, d, m, false)
 	if err != nil {
+		if _, ok := err.(NotFoundError); ok {
+			d.SetId("")
+			return diags
+		}
 		return diag.FromErr(err)
 	}
-	var diags diag.Diagnostics
+
 	return diags
 }
 
@@ -128,7 +134,6 @@ func resourceSettingValueCreateOrUpdate(ctx context.Context, d *schema.ResourceD
 	environmentID := d.Get(ENVIRONMENT_ID).(string)
 	settingID, convErr := strconv.ParseInt(d.Get(SETTING_ID).(string), 10, 32)
 	if convErr != nil {
-		d.SetId("")
 		return diag.FromErr(convErr)
 	}
 
@@ -138,7 +143,6 @@ func resourceSettingValueCreateOrUpdate(ctx context.Context, d *schema.ResourceD
 	settingValue, settingValueErr := getSettingValue(settingTypeString, d.Get(SETTING_VALUE).(string))
 
 	if settingValueErr != nil {
-		d.SetId("")
 		return diag.FromErr(settingValueErr)
 	}
 
@@ -160,7 +164,11 @@ func resourceSettingValueCreateOrUpdate(ctx context.Context, d *schema.ResourceD
 
 	_, err := c.ReplaceSettingValue(environmentID, int32(settingID), body)
 	if err != nil {
-		d.SetId("")
+		if _, ok := err.(NotFoundError); ok {
+			d.SetId("")
+			return diags
+		}
+
 		return diag.FromErr(err)
 	}
 
@@ -168,7 +176,11 @@ func resourceSettingValueCreateOrUpdate(ctx context.Context, d *schema.ResourceD
 
 	readErr2 := resourceSettingValueReadInternal(ctx, d, m, true)
 	if readErr2 != nil {
-		d.SetId("")
+		if _, ok := err.(NotFoundError); ok {
+			d.SetId("")
+			return diags
+		}
+
 		return diag.FromErr(readErr2)
 	}
 
@@ -188,13 +200,11 @@ func resourceSettingValueReadInternal(ctx context.Context, d *schema.ResourceDat
 	environmentID := d.Get(ENVIRONMENT_ID).(string)
 	settingID, err := strconv.ParseInt(d.Get(SETTING_ID).(string), 10, 32)
 	if err != nil {
-		d.SetId("")
 		return err
 	}
 
 	settingValue, err := c.GetSettingValueSimple(environmentID, int32(settingID))
 	if err != nil {
-		d.SetId("")
 		return err
 	}
 

@@ -81,7 +81,6 @@ func resourceSettingCreate(ctx context.Context, d *schema.ResourceData, m interf
 
 	setting, err := c.CreateSetting(configID, body)
 	if err != nil {
-		d.SetId("")
 		return diag.FromErr(err)
 	}
 
@@ -91,16 +90,20 @@ func resourceSettingCreate(ctx context.Context, d *schema.ResourceData, m interf
 }
 
 func resourceSettingRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	var diags diag.Diagnostics
 	c := m.(*Client)
 	settingID, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {
-		d.SetId("")
 		return diag.FromErr(err)
 	}
 
 	setting, err := c.GetSetting(int32(settingID))
 	if err != nil {
-		d.SetId("")
+		if _, ok := err.(NotFoundError); ok {
+			d.SetId("")
+			return diags
+		}
+
 		return diag.FromErr(err)
 	}
 
@@ -109,7 +112,6 @@ func resourceSettingRead(ctx context.Context, d *schema.ResourceData, m interfac
 	d.Set(SETTING_HINT, setting.Hint)
 	d.Set(SETTING_TYPE, setting.SettingType)
 
-	var diags diag.Diagnostics
 	return diags
 }
 
@@ -117,7 +119,6 @@ func resourceSettingUpdate(ctx context.Context, d *schema.ResourceData, m interf
 	c := m.(*Client)
 	settingID, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {
-		d.SetId("")
 		return diag.FromErr(err)
 	}
 
@@ -143,7 +144,6 @@ func resourceSettingUpdate(ctx context.Context, d *schema.ResourceData, m interf
 
 		_, err := c.UpdateSetting(int32(settingID), body)
 		if err != nil {
-			d.SetId("")
 			return diag.FromErr(err)
 		}
 	}
@@ -163,10 +163,14 @@ func resourceSettingDelete(ctx context.Context, d *schema.ResourceData, m interf
 
 	err = c.DeleteSetting(int32(settingID))
 	if err != nil {
+		if _, ok := err.(NotFoundError); ok {
+			d.SetId("")
+			return diags
+		}
+
 		return diag.FromErr(err)
 	}
 
 	d.SetId("")
-
 	return diags
 }

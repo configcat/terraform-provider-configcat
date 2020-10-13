@@ -144,7 +144,29 @@ func handleAPIError(err error) error {
 		return nil
 	}
 	if swaggerErr, ok := err.(sw.GenericSwaggerError); ok {
+		if swaggerErr.Error() == "404 Not Found" {
+			return NotFoundError{
+				error: swaggerErr.Error(),
+				body:  string(swaggerErr.Body()),
+			}
+		}
 		return fmt.Errorf("%s: %s", swaggerErr.Error(), string(swaggerErr.Body()))
 	}
 	return err
+}
+
+// NotFoundError Provides access to the body, error in case of 404 Not Found.
+type NotFoundError struct {
+	error string
+	body  string
+}
+
+// Error returns non-empty string if there was an error.
+func (e NotFoundError) Error() string {
+	return e.error
+}
+
+// Body returns non-empty string if there was an error.
+func (e NotFoundError) Body() string {
+	return e.body
 }
