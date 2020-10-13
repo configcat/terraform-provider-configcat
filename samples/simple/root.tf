@@ -38,7 +38,6 @@ resource "configcat_setting" "setting" {
 resource "configcat_setting_value" "setting_value" {
     environment_id = data.configcat_environments.environments.environments.0.environment_id
     setting_id = configcat_setting.setting.id
-    setting_type = configcat_setting.setting.setting_type
     init_only = false
     value = "false"
 

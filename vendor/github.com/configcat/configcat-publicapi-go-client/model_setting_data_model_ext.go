@@ -9,12 +9,6 @@
  */
 package configcatpublicapi
 
-type SettingValueSimpleModel struct {
-	Setting *SettingDataModelSimple `json:"setting,omitempty"`
-	// The targeting rule collection.
-	RolloutRules []RolloutRuleModel `json:"rolloutRules,omitempty"`
-	// The percentage rule collection.
-	RolloutPercentageItems []RolloutPercentageItemModel `json:"rolloutPercentageItems,omitempty"`
-	// The value to serve. It must respect the setting type.
-	Value *interface{} `json:"value,omitempty"`
+type SettingDataModelSimple struct {
+	SettingType *SettingType `json:"settingType,omitempty"`
 }

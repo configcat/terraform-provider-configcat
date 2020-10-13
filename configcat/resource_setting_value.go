@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strconv"
+	"strings"
 
 	sw "github.com/configcat/configcat-publicapi-go-client"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -16,6 +17,24 @@ func resourceConfigCatSettingValue() *schema.Resource {
 		ReadContext:   resourceSettingValueRead,
 		UpdateContext: resourceSettingValueCreateOrUpdate,
 		DeleteContext: resourceSettingValueDelete,
+		Importer: &schema.ResourceImporter{
+			State: func(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
+				// d.Id() here is the last argument passed to the `terraform import RESOURCE_TYPE.RESOURCE_NAME RESOURCE_ID` command
+				// Here we use a function to parse the import ID (like the example above) to simplify our logic
+				environmentID, settingID, err := resourceConfigCatSettingValueParseId(d.Id())
+
+				if err != nil {
+					return nil, err
+				}
+
+				d.Set(SETTING_ID, settingID)
+				d.Set(ENVIRONMENT_ID, environmentID)
+				d.Set(INIT_ONLY, false)
+				d.SetId(fmt.Sprintf("%s:%d", environmentID, settingID))
+
+				return []*schema.ResourceData{d}, nil
+			},
+		},
 
 		Schema: map[string]*schema.Schema{
 			ENVIRONMENT_ID: &schema.Schema{
@@ -31,12 +50,6 @@ func resourceConfigCatSettingValue() *schema.Resource {
 				ForceNew: true,
 			},
 
-			SETTING_TYPE: &schema.Schema{
-				Type:     schema.TypeString,
-				Required: true,
-				ForceNew: true,
-			},
-
 			SETTING_VALUE: &schema.Schema{
 				Type:     schema.TypeString,
 				Required: true,
@@ -46,6 +59,11 @@ func resourceConfigCatSettingValue() *schema.Resource {
 				Type:     schema.TypeBool,
 				Default:  true,
 				Optional: true,
+			},
+
+			SETTING_TYPE: &schema.Schema{
+				Type:     schema.TypeString,
+				Computed: true,
 			},
 
 			ROLLOUT_RULES: &schema.Schema{
@@ -139,6 +157,19 @@ func resourceSettingValueCreateOrUpdate(ctx context.Context, d *schema.ResourceD
 
 	// Read the settingtype first so we know about the settingTypes
 	settingTypeString := d.Get(SETTING_TYPE).(string)
+	if settingTypeString == "" {
+		setting, err := c.GetSetting(int32(settingID))
+		if err != nil {
+			if _, ok := err.(NotFoundError); ok {
+				d.SetId("")
+				return diags
+			}
+
+			return diag.FromErr(err)
+		}
+
+		settingTypeString = fmt.Sprintf("%v", *setting.SettingType)
+	}
 
 	settingValue, settingValueErr := getSettingValue(settingTypeString, d.Get(SETTING_VALUE).(string))
 
@@ -208,9 +239,10 @@ func resourceSettingValueReadInternal(ctx context.Context, d *schema.ResourceDat
 		return err
 	}
 
-	d.SetId(fmt.Sprintf("%s.%d", environmentID, settingID))
+	d.SetId(fmt.Sprintf("%s:%d", environmentID, settingID))
 
 	d.Set(SETTING_VALUE, fmt.Sprintf("%v", *settingValue.Value))
+	d.Set(SETTING_TYPE, settingValue.Setting.SettingType)
 	d.Set(ROLLOUT_RULES, flattenRolloutRulesData(&settingValue.RolloutRules))
 	d.Set(ROLLOUT_PERCENTAGE_ITEMS, flattenRolloutPercentageItemsData(&settingValue.RolloutPercentageItems))
 
@@ -411,4 +443,19 @@ func getComparator(comparator string) (*sw.RolloutRuleComparator, error) {
 	}
 
 	return nil, fmt.Errorf("could not parse Comparator: %s", comparator)
+}
+
+func resourceConfigCatSettingValueParseId(id string) (string, int32, error) {
+	parts := strings.SplitN(id, ":", 2)
+
+	if len(parts) != 2 || parts[0] == "" || parts[1] == "" {
+		return "", 0, fmt.Errorf("unexpected format of ID (%s), expected environmentID.settingID", id)
+	}
+
+	settingID, err := strconv.ParseInt(parts[1], 10, 32)
+	if err != nil {
+		return "", 0, fmt.Errorf("unexpected format of ID (%s), expected environmentID.settingID. Error: %s", id, err)
+	}
+
+	return parts[0], int32(settingID), nil
 }

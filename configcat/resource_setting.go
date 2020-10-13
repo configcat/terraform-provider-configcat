@@ -16,6 +16,9 @@ func resourceConfigCatSetting() *schema.Resource {
 		ReadContext:   resourceSettingRead,
 		UpdateContext: resourceSettingUpdate,
 		DeleteContext: resourceSettingDelete,
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
 
 		Schema: map[string]*schema.Schema{
 			CONFIG_ID: &schema.Schema{

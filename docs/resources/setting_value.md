@@ -27,7 +27,6 @@ data "configcat_settings" "settings" {
 resource "configcat_setting_value" "setting_value" {
     environment_id = data.configcat_environments.environments.environments.0.environment_id
     setting_id = data.configcat_settings.settings.settings.0.setting_id
-    setting_type = configcat_settings.settings.settings.0.setting_type
     
     value = "true"
 
@@ -92,6 +91,16 @@ The `init_only` argument's default value is `true` which means that this resourc
 This prevents overriding the Feature Flag/Setting's modified values on the [ConfigCat Dashboard](https://app.configcat.com).  
 
 If you want to fully manage the Feature Flag/Setting's value from Terraform, set `init_only` argument to `false`. After setting the`init_only` argument to `false` each terraform run will update the Feature Flag/Setting's value to the state provided in Terraform.
+
+## Import
+
+Feature Flag/Setting values can be imported using a combined EnvironmentID:SettingId ID.  
+Get the SettingId using e.g. the [GetSettings API](https://api.configcat.com/docs/#operation/get-settings).  
+Get the EnvironmentId using e.g. the [GetEnvironments API](https://api.configcat.com/docs/#operation/get-environments).
+
+```
+$ terraform import configcat_setting_value.example 08d86d63-2726-47cd-8bfc-59608ecb91e2:1234
+```
 
 ## Used APIs:
 * [Read](https://api.configcat.com/docs/#operation/get-setting-value)

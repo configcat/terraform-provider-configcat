@@ -40,6 +40,14 @@ output "setting_id" {
 
 * `id` - The unique Setting ID.
 
+## Import
+
+Feature Flags/Settings can be imported using the SettingId. Get the SettingId using e.g. the [GetSettings API](https://api.configcat.com/docs/#operation/get-settings).
+
+```
+$ terraform import configcat_setting.example 1234
+```
+
 ## Used APIs:
 * [Read](https://api.configcat.com/docs/index.html#operation/get-setting)
 * [Create](https://api.configcat.com/docs/index.html#operation/create-setting)

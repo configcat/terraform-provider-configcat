@@ -18,7 +18,6 @@ func TestResourceSettingValueExistingFreeze(t *testing.T) {
 		resource "configcat_setting_value" "test" {
 			environment_id = "` + environmentID + `"
 			setting_id = "` + settingID + `"
-			setting_type = "boolean"
 			value = "true"
 		}
 	`
@@ -26,7 +25,6 @@ func TestResourceSettingValueExistingFreeze(t *testing.T) {
 		resource "configcat_setting_value" "test" {
 			environment_id = "` + environmentID + `"
 			setting_id = "` + settingID + `"
-			setting_type = "boolean"
 			value = "false"
 		}
 	`
@@ -65,7 +63,6 @@ func TestResourceSettingValueExistingNoFreeze(t *testing.T) {
 		resource "configcat_setting_value" "test" {
 			environment_id = "` + environmentID + `"
 			setting_id = "` + settingID + `"
-			setting_type = "boolean"
 			value = "true"
 			init_only = false
 		}
@@ -74,7 +71,6 @@ func TestResourceSettingValueExistingNoFreeze(t *testing.T) {
 		resource "configcat_setting_value" "test" {
 			environment_id = "` + environmentID + `"
 			setting_id = "` + settingID + `"
-			setting_type = "boolean"
 			value = "false"
 			init_only = false
 		}
@@ -114,7 +110,6 @@ func TestResourceSettingValueRules(t *testing.T) {
 		resource "configcat_setting_value" "test" {
 			environment_id = "` + environmentID + `"
 			setting_id = "` + settingID + `"
-			setting_type = "boolean"
 			value = "true"
 			init_only = false
 		}
@@ -123,7 +118,6 @@ func TestResourceSettingValueRules(t *testing.T) {
 		resource "configcat_setting_value" "test" {
 			environment_id = "` + environmentID + `"
 			setting_id = "` + settingID + `"
-			setting_type = "boolean"
 			value = "true"
 			init_only = false
 			rollout_rules {
@@ -139,7 +133,6 @@ func TestResourceSettingValueRules(t *testing.T) {
 		resource "configcat_setting_value" "test" {
 			environment_id = "` + environmentID + `"
 			setting_id = "` + settingID + `"
-			setting_type = "boolean"
 			value = "true"
 			init_only = false
 			rollout_rules {
@@ -202,7 +195,6 @@ func TestResourceSettingValuePercentageItems(t *testing.T) {
 		resource "configcat_setting_value" "test" {
 			environment_id = "` + environmentID + `"
 			setting_id = "` + settingID + `"
-			setting_type = "boolean"
 			value = "true"
 			init_only = false
 		}
@@ -211,7 +203,6 @@ func TestResourceSettingValuePercentageItems(t *testing.T) {
 		resource "configcat_setting_value" "test" {
 			environment_id = "` + environmentID + `"
 			setting_id = "` + settingID + `"
-			setting_type = "boolean"
 			value = "true"
 			init_only = false
 			percentage_items {
@@ -229,7 +220,6 @@ func TestResourceSettingValuePercentageItems(t *testing.T) {
 		resource "configcat_setting_value" "test" {
 			environment_id = "` + environmentID + `"
 			setting_id = "` + settingID + `"
-			setting_type = "boolean"
 			value = "true"
 			init_only = false
 			percentage_items {
