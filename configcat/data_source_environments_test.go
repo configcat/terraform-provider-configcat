@@ -9,7 +9,7 @@ import (
 
 func TestEnvironmentValid(t *testing.T) {
 	const dataSource = `
-		data "configcat_environment" "test" {
+		data "configcat_environments" "test" {
 			name = "Test"
 			product_id = "08d86d63-2721-4da6-8c06-584521d516bc"
 		}
@@ -24,9 +24,9 @@ func TestEnvironmentValid(t *testing.T) {
 			resource.TestStep{
 				Config: dataSource,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("data.configcat_environment.test", "id", environmentID),
-					resource.TestCheckResourceAttr("data.configcat_environment.test", PRODUCT_ID, productID),
-					resource.TestCheckResourceAttr("data.configcat_environment.test", ENVIRONMENT_NAME, "Test"),
+					resource.TestCheckResourceAttr("data.configcat_environments.test", "id", environmentID),
+					resource.TestCheckResourceAttr("data.configcat_environments.test", PRODUCT_ID, productID),
+					resource.TestCheckResourceAttr("data.configcat_environments.test", ENVIRONMENT_NAME, "Test"),
 				),
 			},
 		},
@@ -35,7 +35,7 @@ func TestEnvironmentValid(t *testing.T) {
 
 func TestEnvironmentInvalid(t *testing.T) {
 	const dataSource = `
-		data "configcat_environment" "test" {
+		data "configcat_environments" "test" {
 			name = "notfound"
 			product_id = "08d86d63-2721-4da6-8c06-584521d516bc"
 		}
@@ -55,7 +55,7 @@ func TestEnvironmentInvalid(t *testing.T) {
 
 func TestEnvironmentInvalidGuid(t *testing.T) {
 	const dataSource = `
-		data "configcat_environment" "test" {
+		data "configcat_environments" "test" {
 			name = "notfound"
 			product_id = "invalidGuid"
 		}
