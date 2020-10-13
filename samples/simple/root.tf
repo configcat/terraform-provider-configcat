@@ -12,7 +12,7 @@ provider "configcat" {
 
 data "configcat_products" "products" {
   // Filter for your Product
-  name_filter_regex = "Configcat's product"
+  name_filter_regex = "ConfigCat's product"
 }
 
 data "configcat_configs" "configs" {

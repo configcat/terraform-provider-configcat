@@ -46,6 +46,12 @@ data "configcat_configs" "configs" {
   name_filter_regex = "Main Config"
 }
 
+// Retrieve your Environment
+data "configcat_environments" "environments" {
+  product_id = data.configcat_products.products.products.0.product_id
+  name_filter_regex = "Test"
+}
+
 // Create a Feature Flag/Setting
 resource "configcat_setting" "setting" {
   config_id = data.configcat_configs.configs.configs.0.config_id

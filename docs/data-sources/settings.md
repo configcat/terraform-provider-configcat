@@ -10,12 +10,12 @@ data "configcat_products" "products" {
 }
 
 data "configcat_configs" "configs" {
-  product_id = data.configcat_product.products.products.0.product_id
+  product_id = data.configcat_products.products.products.0.product_id
   name_filter_regex = "Main Config"
 }
 
 data "configcat_settings" "settings" {
-  config_id = data.configcat_config.configs.configs.0.config_id
+  config_id = data.configcat_configs.configs.configs.0.config_id
   key_filter_regex = "isAwesomeFeatureEnabled"
 }
 

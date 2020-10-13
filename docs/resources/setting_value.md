@@ -6,17 +6,17 @@ Initializes/updates a Feature Flag/Setting's value.
 
 ```hcl
 data "configcat_products" "products" {
-  name = "ConfigCat's product"
+  name_filter_regex = "ConfigCat's product"
 }
 
 data "configcat_configs" "configs" {
   product_id = data.configcat_products.products.products.0.product_id
-  name = "Main Config"
+  name_filter_regex = "Main Config"
 }
 
 data "configcat_environments" "environments" {
   product_id = data.configcat_products.products.products.0.product_id
-  name = "Test"
+  name_filter_regex = "Test"
 }
 
 data "configcat_settings" "settings" {

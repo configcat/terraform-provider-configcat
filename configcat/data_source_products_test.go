@@ -31,7 +31,7 @@ func TestProductValid(t *testing.T) {
 func TestProductValidFilter(t *testing.T) {
 	const dataSource = `
 		data "configcat_products" "test" {
-			name_filter_regex = "Configcat's product"
+			name_filter_regex = "ConfigCat's product"
 		}
 	`
 	const productID = "08d86d63-2721-4da6-8c06-584521d516bc"
@@ -46,7 +46,7 @@ func TestProductValidFilter(t *testing.T) {
 					resource.TestCheckResourceAttrSet("data.configcat_products.test", "id"),
 					resource.TestCheckResourceAttr("data.configcat_products.test", PRODUCTS+".#", "1"),
 					resource.TestCheckResourceAttr("data.configcat_products.test", PRODUCTS+".0."+PRODUCT_ID, productID),
-					resource.TestCheckResourceAttr("data.configcat_products.test", PRODUCTS+".0."+PRODUCT_NAME, "Configcat's product"),
+					resource.TestCheckResourceAttr("data.configcat_products.test", PRODUCTS+".0."+PRODUCT_NAME, "ConfigCat's product"),
 				),
 			},
 		},

@@ -9,7 +9,7 @@ data "configcat_products" "products" {
 }
 
 data "configcat_environments" "environments" {
-  product_id = data.configcat_product.products.products.0.product_id
+  product_id = data.configcat_products.products.products.0.product_id
   name_filter_regex = "Test"
 }
 
