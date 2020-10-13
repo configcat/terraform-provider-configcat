@@ -106,12 +106,11 @@ func resourceSettingValueRead(ctx context.Context, d *schema.ResourceData, m int
 
 func resourceSettingValueReadInternal(ctx context.Context, d *schema.ResourceData, m interface{}, forceRead bool) diag.Diagnostics {
 	c := m.(*Client)
-
+	var diags diag.Diagnostics
 	id := d.Id()
 	freezeAfterInit := d.Get(FREEZE_AFTER_INIT).(bool)
 
 	if !forceRead && freezeAfterInit && id != "" {
-		var diags diag.Diagnostics
 		return diags
 	}
 
@@ -122,40 +121,43 @@ func resourceSettingValueReadInternal(ctx context.Context, d *schema.ResourceDat
 		return diag.FromErr(err)
 	}
 
-	settingValue, err := c.GetSettingValue(environmentID, settingID)
+	settingValue, err := c.GetSettingValue(environmentID, int32(settingID))
 	if err != nil {
 		d.SetId("")
 		return diag.FromErr(err)
 	}
 
-	d.SetId(fmt.Sprintf("%d.%d", settingValue.Environment.EnvironmentId, settingValue.Setting.SettingId))
+	d.SetId(fmt.Sprintf("%s.%d", settingValue.Environment.EnvironmentId, settingValue.Setting.SettingId))
 
 	d.Set(SETTING_VALUE, settingValue.Value)
 	d.Set(ROLLOUT_RULES, flattenRolloutRulesData(&settingValue.RolloutRules))
 	d.Set(ROLLOUT_PERCENTAGE_ITEMS, flattenRolloutPercentageItemsData(&settingValue.RolloutPercentageItems))
+
+	return diags
 }
 
 func resourceSettingValueCreateOrUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*Client)
 
 	environmentID := d.Get(ENVIRONMENT_ID).(string)
-	settingID, err := strconv.ParseInt(d.Get(SETTING_ID).(string), 10, 32)
-	if err != nil {
+	settingID, convErr := strconv.ParseInt(d.Get(SETTING_ID).(string), 10, 32)
+	if convErr != nil {
 		d.SetId("")
-		return diag.FromErr(err)
+		return diag.FromErr(convErr)
 	}
 
+	settingValue := d.Get(SETTING_VALUE)
 	body := sw.UpdateSettingValueModel{
-		Value: d.Get(SETTING_VALUE).(string),
+		Value: &settingValue,
 	}
 
-	settingValue, err := c.ReplaceSettingValue(environmentID, settingID, body)
+	model, err := c.ReplaceSettingValue(environmentID, int32(settingID), body)
 	if err != nil {
 		d.SetId("")
 		return diag.FromErr(err)
 	}
 
-	d.SetId(fmt.Sprintf("%d.%d", settingValue.Environment.EnvironmentId, settingValue.Setting.SettingId))
+	d.SetId(fmt.Sprintf("%s.%d", model.Environment.EnvironmentId, model.Setting.SettingId))
 
 	return resourceSettingValueReadInternal(ctx, d, m, true)
 }
