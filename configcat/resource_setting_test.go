@@ -97,6 +97,11 @@ func testResourceSettingForSettingType(t *testing.T, settingType string) {
 					resource.TestCheckResourceAttr("configcat_setting.testBoolean", SETTING_TYPE, settingType),
 				),
 			},
+			resource.TestStep{
+				ResourceName:      "configcat_setting.testBoolean",
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
 		},
 	})
 }

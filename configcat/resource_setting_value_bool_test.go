@@ -98,6 +98,11 @@ func TestResourceSettingValueExistingNoFreeze(t *testing.T) {
 					checkFalseValue,
 				),
 			},
+			resource.TestStep{
+				ResourceName:      "configcat_setting_value.test",
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
 		},
 	})
 }

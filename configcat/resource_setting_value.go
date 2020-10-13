@@ -30,7 +30,7 @@ func resourceConfigCatSettingValue() *schema.Resource {
 				d.Set(SETTING_ID, settingID)
 				d.Set(ENVIRONMENT_ID, environmentID)
 				d.Set(INIT_ONLY, false)
-				d.SetId(fmt.Sprintf("%s:%d", environmentID, settingID))
+				d.SetId(fmt.Sprintf("%s:%s", environmentID, settingID))
 
 				return []*schema.ResourceData{d}, nil
 			},
@@ -445,17 +445,17 @@ func getComparator(comparator string) (*sw.RolloutRuleComparator, error) {
 	return nil, fmt.Errorf("could not parse Comparator: %s", comparator)
 }
 
-func resourceConfigCatSettingValueParseId(id string) (string, int32, error) {
+func resourceConfigCatSettingValueParseId(id string) (string, string, error) {
 	parts := strings.SplitN(id, ":", 2)
 
 	if len(parts) != 2 || parts[0] == "" || parts[1] == "" {
-		return "", 0, fmt.Errorf("unexpected format of ID (%s), expected environmentID.settingID", id)
+		return "", "", fmt.Errorf("unexpected format of ID (%s), expected environmentID.settingID", id)
 	}
 
-	settingID, err := strconv.ParseInt(parts[1], 10, 32)
+	_, err := strconv.ParseInt(parts[1], 10, 32)
 	if err != nil {
-		return "", 0, fmt.Errorf("unexpected format of ID (%s), expected environmentID.settingID. Error: %s", id, err)
+		return "", "", fmt.Errorf("unexpected format of ID (%s), expected environmentID.settingID. Error: %s", id, err)
 	}
 
-	return parts[0], int32(settingID), nil
+	return parts[0], parts[1], nil
 }
