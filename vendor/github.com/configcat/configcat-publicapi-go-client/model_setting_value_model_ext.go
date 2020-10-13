@@ -9,38 +9,11 @@
  */
 package configcatpublicapi
 
-type SettingValueModelBool struct {
+type SettingValueSimpleModel struct {
 	// The targeting rule collection.
-	RolloutRules []RolloutRuleModelBool `json:"rolloutRules,omitempty"`
+	RolloutRules []RolloutRuleModel `json:"rolloutRules,omitempty"`
 	// The percentage rule collection.
-	RolloutPercentageItems []RolloutPercentageItemModelBool `json:"rolloutPercentageItems,omitempty"`
+	RolloutPercentageItems []RolloutPercentageItemModel `json:"rolloutPercentageItems,omitempty"`
 	// The value to serve. It must respect the setting type.
-	Value bool `json:"value,omitempty"`
-}
-
-type SettingValueModelString struct {
-	// The targeting rule collection.
-	RolloutRules []RolloutRuleModelString `json:"rolloutRules,omitempty"`
-	// The percentage rule collection.
-	RolloutPercentageItems []RolloutPercentageItemModelString `json:"rolloutPercentageItems,omitempty"`
-	// The value to serve. It must respect the setting type.
-	Value string `json:"value,omitempty"`
-}
-
-type SettingValueModelInt struct {
-	// The targeting rule collection.
-	RolloutRules []RolloutRuleModelInt `json:"rolloutRules,omitempty"`
-	// The percentage rule collection.
-	RolloutPercentageItems []RolloutPercentageItemModelInt `json:"rolloutPercentageItems,omitempty"`
-	// The value to serve. It must respect the setting type.
-	Value int `json:"value,omitempty"`
-}
-
-type SettingValueModelFloat struct {
-	// The targeting rule collection.
-	RolloutRules []RolloutRuleModelFloat `json:"rolloutRules,omitempty"`
-	// The percentage rule collection.
-	RolloutPercentageItems []RolloutPercentageItemModelFloat `json:"rolloutPercentageItems,omitempty"`
-	// The value to serve. It must respect the setting type.
-	Value float64 `json:"value,omitempty"`
+	Value *interface{} `json:"value,omitempty"`
 }
