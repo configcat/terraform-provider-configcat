@@ -9,20 +9,7 @@
  */
 package configcatpublicapi
 
-import (
-	"time"
-)
-
 type SettingValueModelBool struct {
-	Config                  *ConfigModel           `json:"config,omitempty"`
-	Environment             *EnvironmentModel      `json:"environment,omitempty"`
-	ReadOnly                bool                   `json:"readOnly,omitempty"`
-	Setting                 *SettingDataModel      `json:"setting,omitempty"`
-	UpdatedAt               time.Time              `json:"updatedAt,omitempty"`
-	LastUpdaterUserEmail    string                 `json:"lastUpdaterUserEmail,omitempty"`
-	LastUpdaterUserFullName string                 `json:"lastUpdaterUserFullName,omitempty"`
-	IntegrationLinks        []IntegrationLinkModel `json:"integrationLinks,omitempty"`
-	SettingTags             []SettingTagModel      `json:"settingTags,omitempty"`
 	// The targeting rule collection.
 	RolloutRules []RolloutRuleModelBool `json:"rolloutRules,omitempty"`
 	// The percentage rule collection.
@@ -32,15 +19,6 @@ type SettingValueModelBool struct {
 }
 
 type SettingValueModelString struct {
-	Config                  *ConfigModel           `json:"config,omitempty"`
-	Environment             *EnvironmentModel      `json:"environment,omitempty"`
-	ReadOnly                bool                   `json:"readOnly,omitempty"`
-	Setting                 *SettingDataModel      `json:"setting,omitempty"`
-	UpdatedAt               time.Time              `json:"updatedAt,omitempty"`
-	LastUpdaterUserEmail    string                 `json:"lastUpdaterUserEmail,omitempty"`
-	LastUpdaterUserFullName string                 `json:"lastUpdaterUserFullName,omitempty"`
-	IntegrationLinks        []IntegrationLinkModel `json:"integrationLinks,omitempty"`
-	SettingTags             []SettingTagModel      `json:"settingTags,omitempty"`
 	// The targeting rule collection.
 	RolloutRules []RolloutRuleModelString `json:"rolloutRules,omitempty"`
 	// The percentage rule collection.
@@ -50,15 +28,6 @@ type SettingValueModelString struct {
 }
 
 type SettingValueModelInt struct {
-	Config                  *ConfigModel           `json:"config,omitempty"`
-	Environment             *EnvironmentModel      `json:"environment,omitempty"`
-	ReadOnly                bool                   `json:"readOnly,omitempty"`
-	Setting                 *SettingDataModel      `json:"setting,omitempty"`
-	UpdatedAt               time.Time              `json:"updatedAt,omitempty"`
-	LastUpdaterUserEmail    string                 `json:"lastUpdaterUserEmail,omitempty"`
-	LastUpdaterUserFullName string                 `json:"lastUpdaterUserFullName,omitempty"`
-	IntegrationLinks        []IntegrationLinkModel `json:"integrationLinks,omitempty"`
-	SettingTags             []SettingTagModel      `json:"settingTags,omitempty"`
 	// The targeting rule collection.
 	RolloutRules []RolloutRuleModelInt `json:"rolloutRules,omitempty"`
 	// The percentage rule collection.
@@ -68,15 +37,6 @@ type SettingValueModelInt struct {
 }
 
 type SettingValueModelFloat struct {
-	Config                  *ConfigModel           `json:"config,omitempty"`
-	Environment             *EnvironmentModel      `json:"environment,omitempty"`
-	ReadOnly                bool                   `json:"readOnly,omitempty"`
-	Setting                 *SettingDataModel      `json:"setting,omitempty"`
-	UpdatedAt               time.Time              `json:"updatedAt,omitempty"`
-	LastUpdaterUserEmail    string                 `json:"lastUpdaterUserEmail,omitempty"`
-	LastUpdaterUserFullName string                 `json:"lastUpdaterUserFullName,omitempty"`
-	IntegrationLinks        []IntegrationLinkModel `json:"integrationLinks,omitempty"`
-	SettingTags             []SettingTagModel      `json:"settingTags,omitempty"`
 	// The targeting rule collection.
 	RolloutRules []RolloutRuleModelFloat `json:"rolloutRules,omitempty"`
 	// The percentage rule collection.

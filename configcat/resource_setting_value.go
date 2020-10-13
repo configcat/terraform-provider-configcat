@@ -111,6 +111,22 @@ func resourceSettingValueRead(ctx context.Context, d *schema.ResourceData, m int
 }
 
 func resourceSettingValueCreateOrUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	id := d.Id()
+	freezeAfterInit := d.Get(FREEZE_AFTER_INIT).(bool)
+
+	var diags diag.Diagnostics
+	if freezeAfterInit && id != "" {
+		if d.HasChanges() {
+			diags = append(diags, diag.Diagnostic{
+				Severity: diag.Warning,
+				Summary:  "Changes will be only applied to the state.",
+				Detail:   "The freeze_after_init parameter is set to true so the changes won't be applied in ConfigCat. This mode is only for initializing a feature flag in ConfigCat.",
+			})
+		}
+
+		return diags
+	}
+
 	c := m.(*Client)
 
 	environmentID := d.Get(ENVIRONMENT_ID).(string)
@@ -135,15 +151,14 @@ func resourceSettingValueCreateOrUpdate(ctx context.Context, d *schema.ResourceD
 			body := sw.UpdateSettingValueModelBool{
 				Value: b,
 			}
-			model, err := c.ReplaceSettingValueBool(environmentID, int32(settingID), body)
+
+			_, err := c.ReplaceSettingValueBool(environmentID, int32(settingID), body)
 			if err != nil {
 				d.SetId("")
 				return diag.FromErr(err)
 			}
 
-			return diag.FromErr(fmt.Errorf("%v \n %v", body, model))
-
-			d.SetId(fmt.Sprintf("%s.%d", model.Environment.EnvironmentId, model.Setting.SettingId))
+			d.SetId(fmt.Sprintf("%s.%d", environmentID, settingID))
 		}
 
 	}
@@ -154,7 +169,6 @@ func resourceSettingValueCreateOrUpdate(ctx context.Context, d *schema.ResourceD
 		return diag.FromErr(readErr2)
 	}
 
-	var diags diag.Diagnostics
 	return diags
 }
 
@@ -188,7 +202,7 @@ func resourceSettingValueReadInternal(ctx context.Context, d *schema.ResourceDat
 				return err
 			}
 
-			d.SetId(fmt.Sprintf("%s.%d", settingValue.Environment.EnvironmentId, settingValue.Setting.SettingId))
+			d.SetId(fmt.Sprintf("%s.%d", environmentID, settingID))
 
 			d.Set(SETTING_VALUE, fmt.Sprintf("%v", settingValue.Value))
 			d.Set(ROLLOUT_RULES, flattenRolloutRulesDataBool(&settingValue.RolloutRules))
