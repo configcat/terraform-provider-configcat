@@ -2,7 +2,7 @@ terraform {
   required_providers {
     configcat = {
       source = "configcat/configcat"
-      version = "0.1.5-alpha"
+      version = "0.1.6-alpha"
     }
   }
 }
