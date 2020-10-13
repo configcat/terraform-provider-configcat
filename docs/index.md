@@ -31,7 +31,7 @@ data "configcat_configs" "configs" {
   name_filter_regex = "Main Config"
 }
 
-resource "configcat_settings" "setting" {
+resource "configcat_setting" "setting" {
   config_id = configcat_configs.configs.configs.0.config_id
   key = "isAwesomeFeatureEnabled"
   name = "My awesome feature flag"
