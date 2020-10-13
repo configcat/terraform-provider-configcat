@@ -2,7 +2,9 @@ package configcat
 
 import (
 	"context"
-	"fmt"
+	"regexp"
+	"strconv"
+	"time"
 
 	sw "github.com/configcat/configcat-publicapi-go-client"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -15,9 +17,27 @@ func dataSourceConfigCatProduct() *schema.Resource {
 		ReadContext: productRead,
 
 		Schema: map[string]*schema.Schema{
-			PRODUCT_NAME: &schema.Schema{
-				Type:     schema.TypeString,
-				Required: true,
+			PRODUCT_NAME_FILTER_REGEX: &schema.Schema{
+				Type:         schema.TypeString,
+				Optional:     true,
+				ValidateFunc: validateRegexFunc,
+			},
+
+			PRODUCTS: &schema.Schema{
+				Type:     schema.TypeList,
+				Computed: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						PRODUCT_ID: &schema.Schema{
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						PRODUCT_NAME: &schema.Schema{
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+					},
+				},
 			},
 		},
 	}
@@ -25,16 +45,28 @@ func dataSourceConfigCatProduct() *schema.Resource {
 
 func productRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*Client)
-	productName := d.Get(PRODUCT_NAME).(string)
+	productNameFilterRegex := d.Get(PRODUCT_NAME_FILTER_REGEX).(string)
 
-	product, err := findProduct(c, productName)
+	products, err := getProducts(c)
 	if err != nil {
 		d.SetId("")
 		return diag.FromErr(err)
 	}
 
-	d.SetId(product.ProductId)
-	d.Set(PRODUCT_NAME, product.Name)
+	filteredProducts := []sw.ProductModel{}
+	if productNameFilterRegex == "" {
+		filteredProducts = products
+	} else {
+		regex := regexp.MustCompile(productNameFilterRegex)
+		for i := range products {
+			if regex.MatchString(products[i].Name) {
+				filteredProducts = append(filteredProducts, products[i])
+			}
+		}
+	}
+
+	d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+	d.Set(PRODUCTS, flattenProductsData(&filteredProducts))
 
 	var diags diag.Diagnostics
 	return diags
@@ -50,18 +82,21 @@ func getProducts(c *Client) ([]sw.ProductModel, error) {
 	return products, nil
 }
 
-func findProduct(c *Client, productName string) (*sw.ProductModel, error) {
+func flattenProductsData(products *[]sw.ProductModel) []interface{} {
+	if products != nil {
+		elements := make([]interface{}, len(*products), len(*products))
 
-	products, err := getProducts(c)
-	if err != nil {
-		return nil, err
-	}
+		for i, product := range *products {
+			element := make(map[string]interface{})
 
-	for i := range products {
-		if products[i].Name == productName {
-			return &products[i], nil
+			element[PRODUCT_ID] = product.ProductId
+			element[PRODUCT_NAME] = product.Name
+
+			elements[i] = element
 		}
+
+		return elements
 	}
 
-	return nil, fmt.Errorf("could not find Product. name: %s", productName)
+	return make([]interface{}, 0)
 }

@@ -1,7 +1,6 @@
 package configcat
 
 import (
-	"regexp"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
@@ -10,7 +9,7 @@ import (
 func TestProductValid(t *testing.T) {
 	const dataSource = `
 		data "configcat_product" "test" {
-			name = "Configcat's product"
+			name_filter_regex = "Configcat's product"
 		}
 	`
 	const productID = "08d86d63-2721-4da6-8c06-584521d516bc"
@@ -22,18 +21,20 @@ func TestProductValid(t *testing.T) {
 			resource.TestStep{
 				Config: dataSource,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("data.configcat_product.test", "id", productID),
-					resource.TestCheckResourceAttr("data.configcat_product.test", PRODUCT_NAME, "Configcat's product"),
+					resource.TestCheckResourceAttrSet("data.configcat_product.test", "id"),
+					resource.TestCheckResourceAttr("data.configcat_product.test.products", "#", "1"),
+					resource.TestCheckResourceAttr("data.configcat_product.test.products.0", PRODUCT_ID, productID),
+					resource.TestCheckResourceAttr("data.configcat_product.test.products.0", PRODUCT_NAME, "Configcat's product"),
 				),
 			},
 		},
 	})
 }
 
-func TestProductInvalid(t *testing.T) {
+func TestProductNotFound(t *testing.T) {
 	const dataSource = `
 		data "configcat_product" "test" {
-			name = "notfound"
+			name_filter_regex = "notfound"
 		}
 	`
 
@@ -42,8 +43,11 @@ func TestProductInvalid(t *testing.T) {
 		Providers: testAccProviders,
 		Steps: []resource.TestStep{
 			resource.TestStep{
-				Config:      dataSource,
-				ExpectError: regexp.MustCompile("could not find Product. name: notfound"),
+				Config: dataSource,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttrSet("data.configcat_product.test", "id"),
+					resource.TestCheckResourceAttr("data.configcat_product.test.products", "#", "0"),
+				),
 			},
 		},
 	})
