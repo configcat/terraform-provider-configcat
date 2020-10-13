@@ -24,9 +24,9 @@ type SettingValueModelBool struct {
 	IntegrationLinks        []IntegrationLinkModel `json:"integrationLinks,omitempty"`
 	SettingTags             []SettingTagModel      `json:"settingTags,omitempty"`
 	// The targeting rule collection.
-	RolloutRules []RolloutRuleModel `json:"rolloutRules,omitempty"`
+	RolloutRules []RolloutRuleModelBool `json:"rolloutRules,omitempty"`
 	// The percentage rule collection.
-	RolloutPercentageItems []RolloutPercentageItemModel `json:"rolloutPercentageItems,omitempty"`
+	RolloutPercentageItems []RolloutPercentageItemModelBool `json:"rolloutPercentageItems,omitempty"`
 	// The value to serve. It must respect the setting type.
 	Value bool `json:"value,omitempty"`
 }
@@ -42,9 +42,9 @@ type SettingValueModelString struct {
 	IntegrationLinks        []IntegrationLinkModel `json:"integrationLinks,omitempty"`
 	SettingTags             []SettingTagModel      `json:"settingTags,omitempty"`
 	// The targeting rule collection.
-	RolloutRules []RolloutRuleModel `json:"rolloutRules,omitempty"`
+	RolloutRules []RolloutRuleModelString `json:"rolloutRules,omitempty"`
 	// The percentage rule collection.
-	RolloutPercentageItems []RolloutPercentageItemModel `json:"rolloutPercentageItems,omitempty"`
+	RolloutPercentageItems []RolloutPercentageItemModelString `json:"rolloutPercentageItems,omitempty"`
 	// The value to serve. It must respect the setting type.
 	Value string `json:"value,omitempty"`
 }
@@ -60,9 +60,9 @@ type SettingValueModelInt struct {
 	IntegrationLinks        []IntegrationLinkModel `json:"integrationLinks,omitempty"`
 	SettingTags             []SettingTagModel      `json:"settingTags,omitempty"`
 	// The targeting rule collection.
-	RolloutRules []RolloutRuleModel `json:"rolloutRules,omitempty"`
+	RolloutRules []RolloutRuleModelInt `json:"rolloutRules,omitempty"`
 	// The percentage rule collection.
-	RolloutPercentageItems []RolloutPercentageItemModel `json:"rolloutPercentageItems,omitempty"`
+	RolloutPercentageItems []RolloutPercentageItemModelInt `json:"rolloutPercentageItems,omitempty"`
 	// The value to serve. It must respect the setting type.
 	Value int `json:"value,omitempty"`
 }
@@ -78,9 +78,9 @@ type SettingValueModelFloat struct {
 	IntegrationLinks        []IntegrationLinkModel `json:"integrationLinks,omitempty"`
 	SettingTags             []SettingTagModel      `json:"settingTags,omitempty"`
 	// The targeting rule collection.
-	RolloutRules []RolloutRuleModel `json:"rolloutRules,omitempty"`
+	RolloutRules []RolloutRuleModelFloat `json:"rolloutRules,omitempty"`
 	// The percentage rule collection.
-	RolloutPercentageItems []RolloutPercentageItemModel `json:"rolloutPercentageItems,omitempty"`
+	RolloutPercentageItems []RolloutPercentageItemModelFloat `json:"rolloutPercentageItems,omitempty"`
 	// The value to serve. It must respect the setting type.
 	Value float64 `json:"value,omitempty"`
 }

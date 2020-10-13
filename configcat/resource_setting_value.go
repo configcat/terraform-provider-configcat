@@ -203,12 +203,10 @@ func resourceSettingValueReadInternal(ctx context.Context, d *schema.ResourceDat
 
 			d.SetId(fmt.Sprintf("%s.%d", settingValue.Environment.EnvironmentId, settingValue.Setting.SettingId))
 
-			return fmt.Errorf("Value: %v", settingValue)
-
 			d.Set(SETTING_VALUE, fmt.Sprintf("%v", settingValue.Value))
-			d.Set(SETTING_TYPE, fmt.Sprintf("%v", settingValue.Setting.SettingType))
-			d.Set(ROLLOUT_RULES, flattenRolloutRulesData(&settingValue.RolloutRules))
-			d.Set(ROLLOUT_PERCENTAGE_ITEMS, flattenRolloutPercentageItemsData(&settingValue.RolloutPercentageItems))
+			d.Set(SETTING_TYPE, settingTypeString)
+			d.Set(ROLLOUT_RULES, flattenRolloutRulesDataBool(&settingValue.RolloutRules))
+			d.Set(ROLLOUT_PERCENTAGE_ITEMS, flattenRolloutPercentageItemsDataBool(&settingValue.RolloutPercentageItems))
 		}
 	}
 	return nil
@@ -223,7 +221,7 @@ func resourceSettingValueDelete(ctx context.Context, d *schema.ResourceData, m i
 	return diags
 }
 
-func flattenRolloutRulesData(rolloutRules *[]sw.RolloutRuleModel) []interface{} {
+func flattenRolloutRulesDataBool(rolloutRules *[]sw.RolloutRuleModelBool) []interface{} {
 	if rolloutRules != nil {
 		elements := make([]interface{}, len(*rolloutRules), len(*rolloutRules))
 
@@ -233,7 +231,7 @@ func flattenRolloutRulesData(rolloutRules *[]sw.RolloutRuleModel) []interface{} 
 			element[ROLLOUT_RULE_COMPARISON_ATTRIBUTE] = rolloutRule.ComparisonAttribute
 			element[ROLLOUT_RULE_COMPARATOR] = rolloutRule.Comparator
 			element[ROLLOUT_RULE_COMPARISON_VALUE] = rolloutRule.ComparisonValue
-			element[ROLLOUT_RULE_VALUE] = rolloutRule.Value
+			element[ROLLOUT_RULE_VALUE] = fmt.Sprintf("%v", rolloutRule.Value)
 
 			elements[i] = element
 		}
@@ -244,7 +242,7 @@ func flattenRolloutRulesData(rolloutRules *[]sw.RolloutRuleModel) []interface{} 
 	return make([]interface{}, 0)
 }
 
-func flattenRolloutPercentageItemsData(rolloutPercentageItems *[]sw.RolloutPercentageItemModel) []interface{} {
+func flattenRolloutPercentageItemsDataBool(rolloutPercentageItems *[]sw.RolloutPercentageItemModelBool) []interface{} {
 	if rolloutPercentageItems != nil {
 		elements := make([]interface{}, len(*rolloutPercentageItems), len(*rolloutPercentageItems))
 
@@ -252,8 +250,7 @@ func flattenRolloutPercentageItemsData(rolloutPercentageItems *[]sw.RolloutPerce
 			element := make(map[string]interface{})
 
 			element[ROLLOUT_PERCENTAGE_ITEM_PERCENTAGE] = rolloutPercentageItem.Percentage
-			element[ROLLOUT_PERCENTAGE_ITEM_VALUE] = rolloutPercentageItem.Value
-
+			element[ROLLOUT_PERCENTAGE_ITEM_VALUE] = fmt.Sprintf("%v", rolloutPercentageItem.Value)
 			elements[i] = element
 		}
 

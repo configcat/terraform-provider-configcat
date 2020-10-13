@@ -110,13 +110,46 @@ func (client *Client) GetSettingValue(environmentId string, settingId int32) (sw
 }
 
 func (client *Client) GetSettingValueBool(environmentId string, settingId int32) (sw.SettingValueModelBool, error) {
-	model, response, err := client.apiClient.FeatureFlagSettingValuesApi.GetSettingValue(client.GetAuthContext(), environmentId, settingId)
+	model, response, err := client.apiClient.FeatureFlagSettingValuesApi.GetSettingValueBool(client.GetAuthContext(), environmentId, settingId)
 	defer response.Body.Close()
 	return model, handleAPIError(err)
 }
 
-func (client *Client) ReplaceSettingValue(environmentId string, settingId int32, body sw.UpdateSettingValueModel) (sw.SettingValueModel, error) {
-	model, response, err := client.apiClient.FeatureFlagSettingValuesApi.ReplaceSettingValue(client.GetAuthContext(), body, environmentId, settingId, nil)
+func (client *Client) GetSettingValueString(environmentId string, settingId int32) (sw.SettingValueModelString, error) {
+	model, response, err := client.apiClient.FeatureFlagSettingValuesApi.GetSettingValueString(client.GetAuthContext(), environmentId, settingId)
+	defer response.Body.Close()
+	return model, handleAPIError(err)
+}
+
+func (client *Client) GetSettingValueInt(environmentId string, settingId int32) (sw.SettingValueModelInt, error) {
+	model, response, err := client.apiClient.FeatureFlagSettingValuesApi.GetSettingValueInt(client.GetAuthContext(), environmentId, settingId)
+	defer response.Body.Close()
+	return model, handleAPIError(err)
+}
+
+func (client *Client) GetSettingValueFloat(environmentId string, settingId int32) (sw.SettingValueModelFloat, error) {
+	model, response, err := client.apiClient.FeatureFlagSettingValuesApi.GetSettingValueFloat(client.GetAuthContext(), environmentId, settingId)
+	defer response.Body.Close()
+	return model, handleAPIError(err)
+}
+
+func (client *Client) ReplaceSettingValueBool(environmentId string, settingId int32, body sw.UpdateSettingValueModelBool) (sw.SettingValueModelBool, error) {
+	model, response, err := client.apiClient.FeatureFlagSettingValuesApi.ReplaceSettingValueBool(client.GetAuthContext(), body, environmentId, settingId, nil)
+	defer response.Body.Close()
+	return model, handleAPIError(err)
+}
+func (client *Client) ReplaceSettingValueString(environmentId string, settingId int32, body sw.UpdateSettingValueModelString) (sw.SettingValueModelString, error) {
+	model, response, err := client.apiClient.FeatureFlagSettingValuesApi.ReplaceSettingValueString(client.GetAuthContext(), body, environmentId, settingId, nil)
+	defer response.Body.Close()
+	return model, handleAPIError(err)
+}
+func (client *Client) ReplaceSettingValueInt(environmentId string, settingId int32, body sw.UpdateSettingValueModelInt) (sw.SettingValueModelInt, error) {
+	model, response, err := client.apiClient.FeatureFlagSettingValuesApi.ReplaceSettingValueInt(client.GetAuthContext(), body, environmentId, settingId, nil)
+	defer response.Body.Close()
+	return model, handleAPIError(err)
+}
+func (client *Client) ReplaceSettingValueFloat(environmentId string, settingId int32, body sw.UpdateSettingValueModelFloat) (sw.SettingValueModelFloat, error) {
+	model, response, err := client.apiClient.FeatureFlagSettingValuesApi.ReplaceSettingValueFloat(client.GetAuthContext(), body, environmentId, settingId, nil)
 	defer response.Body.Close()
 	return model, handleAPIError(err)
 }
