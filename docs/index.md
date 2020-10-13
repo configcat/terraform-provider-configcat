@@ -22,17 +22,17 @@ provider "configcat" {
   basic_auth_password = var.configcat_basic_auth_password
 }
 
-data "configcat_product" "product" {
-  name = "ConfigCat's product"
+data "configcat_products" "products" {
+  name_filter_regex = "ConfigCat's product"
 }
 
-data "configcat_config" "config" {
-  product_id = configcat_product.product.id
-  name = "Main Config"
+data "configcat_configs" "configs" {
+  product_id = configcat_products.products.products.0.product_id
+  name_filter_regex = "Main Config"
 }
 
-resource "configcat_setting" "setting" {
-  config_id = configcat_config.config.id
+resource "configcat_settings" "setting" {
+  config_id = configcat_configs.configs.configs.0.config_id
   key = "isAwesomeFeatureEnabled"
   name = "My awesome feature flag"
   hint = "This is the hint for my awesome feature flag"

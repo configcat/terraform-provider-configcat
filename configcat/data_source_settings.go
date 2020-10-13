@@ -40,6 +40,11 @@ func dataSourceConfigCatSettings() *schema.Resource {
 							Computed: true,
 						},
 
+						SETTING_KEY: &schema.Schema{
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+
 						SETTING_NAME: &schema.Schema{
 							Type:     schema.TypeString,
 							Computed: true,

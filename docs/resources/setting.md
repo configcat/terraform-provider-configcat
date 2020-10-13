@@ -10,21 +10,26 @@ Used APIs:
 ## Example Usage
 
 ```hcl
-data "configcat_product" "product" {
+data "configcat_products" "products" {
   name = "ConfigCat's product"
 }
 
-data "configcat_config" "product" {
-  product_id = configcat_product.product.id
+data "configcat_configs" "configs" {
+  product_id = configcat_products.products.products.0.id
   name = "Main Config"
 }
 
 resource "configcat_setting" "setting" {
-  config_id = configcat_config.config.id
+  config_id = configcat_configs.configs.configs.0.id
   key = "isAwesomeFeatureEnabled"
   name = "My awesome feature flag"
   hint = "This is the hint for my awesome feature flag"
   setting_type = "boolean"
+}
+
+
+output "setting_id" {
+  value = configcat_setting.setting.id
 }
 ```
 
