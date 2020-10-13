@@ -105,5 +105,5 @@ $ terraform import configcat_setting_value.example 08d86d63-2726-47cd-8bfc-59608
 [Read more](https://learn.hashicorp.com/tutorials/terraform/state-import) about importing.
 
 ## Used APIs
-* [Read](https://api.configcat.com/docs/#operation/get-setting-value)
-* [Update](https://api.configcat.com/docs/#operation/replace-setting-value)
+* [Get Setting Value](https://api.configcat.com/docs/#operation/get-setting-value)
+* [Replace Setting Value](https://api.configcat.com/docs/#operation/replace-setting-value)

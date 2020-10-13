@@ -34,4 +34,4 @@ output "environment_id" {
 * `name` - The name of the Environment.
 
 ## Used APIs
-- [Read](https://api.configcat.com/docs/index.html#operation/get-environments)
+- [Get Environments](https://api.configcat.com/docs/index.html#operation/get-environments)

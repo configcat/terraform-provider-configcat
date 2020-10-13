@@ -35,4 +35,4 @@ output "config_id" {
 * `name` - The name of the Config.
 
 ## User APIs
-[Read](https://api.configcat.com/docs/index.html#operation/get-configs)
+[Get Configs](https://api.configcat.com/docs/index.html#operation/get-configs)

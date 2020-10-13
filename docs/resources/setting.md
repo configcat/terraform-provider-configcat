@@ -51,7 +51,7 @@ $ terraform import configcat_setting.example 1234
 [Read more](https://learn.hashicorp.com/tutorials/terraform/state-import) about importing.
 
 ## Used APIs
-* [Read](https://api.configcat.com/docs/index.html#operation/get-setting)
-* [Create](https://api.configcat.com/docs/index.html#operation/create-setting)
-* [Update](https://api.configcat.com/docs/index.html#operation/update-setting)
-* [Delete](https://api.configcat.com/docs/index.html#operation/delete-setting)
+* [Get Setting](https://api.configcat.com/docs/index.html#operation/get-setting)
+* [Create Setting](https://api.configcat.com/docs/index.html#operation/create-setting)
+* [Update Setting](https://api.configcat.com/docs/index.html#operation/update-setting)
+* [Delete Setting](https://api.configcat.com/docs/index.html#operation/delete-setting)

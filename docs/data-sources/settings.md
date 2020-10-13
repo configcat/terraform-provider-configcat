@@ -43,4 +43,4 @@ output "setting_id" {
 * `setting_type` - The Setting's type. Available values: `boolean`|`string`|`int`|`double`.
 
 ## Used APIs
-- [Read](https://api.configcat.com/docs/index.html#operation/get-settings)
+- [Get Settings](https://api.configcat.com/docs/index.html#operation/get-settings)

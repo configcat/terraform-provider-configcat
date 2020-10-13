@@ -29,4 +29,4 @@ output "product_id" {
 * `name` - The name of the Product.
 
 ## Used APIs
-- [Read](https://api.configcat.com/docs/index.html#operation/get-products)
+- [Get Products](https://api.configcat.com/docs/index.html#operation/get-products)
