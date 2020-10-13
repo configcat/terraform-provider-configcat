@@ -16,11 +16,11 @@ const (
 	ENVIRONMENT_NAME              = "name"
 	ENVIRONMENT_NAME_FILTER_REGEX = "name_filter_regex"
 
-	SETTINGS         = "settings"
-	SETTING_ID       = "setting_id"
-	SETTING_KEY      = "key"
-	KEY_FILTER_REGEX = "key_filter_regex"
-	SETTING_NAME     = "name"
-	SETTING_HINT     = "hint"
-	SETTING_TYPE     = "setting_type"
+	SETTINGS                 = "settings"
+	SETTING_ID               = "setting_id"
+	SETTING_KEY              = "key"
+	SETTING_KEY_FILTER_REGEX = "key_filter_regex"
+	SETTING_NAME             = "name"
+	SETTING_HINT             = "hint"
+	SETTING_TYPE             = "setting_type"
 )

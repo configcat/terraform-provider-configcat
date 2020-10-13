@@ -3,6 +3,9 @@ package configcat
 import (
 	"context"
 	"fmt"
+	"regexp"
+	"strconv"
+	"time"
 
 	sw "github.com/configcat/configcat-publicapi-go-client"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -21,24 +24,38 @@ func dataSourceConfigCatSettings() *schema.Resource {
 				ValidateFunc: validateGUIDFunc,
 			},
 
-			SETTING_KEY: &schema.Schema{
-				Type:     schema.TypeString,
-				Required: true,
+			SETTING_KEY_FILTER_REGEX: &schema.Schema{
+				Type:         schema.TypeString,
+				Optional:     true,
+				ValidateFunc: validateRegexFunc,
 			},
 
-			SETTING_NAME: &schema.Schema{
-				Type:     schema.TypeString,
+			SETTINGS: &schema.Schema{
+				Type:     schema.TypeList,
 				Computed: true,
-			},
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						SETTING_ID: &schema.Schema{
+							Type:     schema.TypeString,
+							Computed: true,
+						},
 
-			SETTING_HINT: &schema.Schema{
-				Type:     schema.TypeString,
-				Computed: true,
-			},
+						SETTING_NAME: &schema.Schema{
+							Type:     schema.TypeString,
+							Computed: true,
+						},
 
-			SETTING_TYPE: &schema.Schema{
-				Type:     schema.TypeString,
-				Computed: true,
+						SETTING_HINT: &schema.Schema{
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+
+						SETTING_TYPE: &schema.Schema{
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+					},
+				},
 			},
 		},
 	}
@@ -47,48 +64,53 @@ func dataSourceConfigCatSettings() *schema.Resource {
 func settingRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*Client)
 	configID := d.Get(CONFIG_ID).(string)
-	settingKey := d.Get(SETTING_KEY).(string)
+	settingKeyFilterRegex := d.Get(SETTING_KEY_FILTER_REGEX).(string)
 
-	setting, err := findSetting(c, configID, settingKey)
+	settings, err := c.GetSettings(configID)
 	if err != nil {
 		d.SetId("")
 		return diag.FromErr(err)
 	}
 
-	settingID := fmt.Sprintf("%d", setting.SettingId)
+	filteredSettings := []sw.SettingModel{}
+	if settingKeyFilterRegex == "" {
+		filteredSettings = settings
+	} else {
+		regex := regexp.MustCompile(settingKeyFilterRegex)
+		for i := range settings {
+			if regex.MatchString(settings[i].Key) {
+				filteredSettings = append(filteredSettings, settings[i])
+			}
+		}
+	}
 
-	d.SetId(settingID)
-	d.Set(CONFIG_ID, configID)
-	d.Set(SETTING_KEY, setting.Key)
-	d.Set(SETTING_NAME, setting.Name)
-	d.Set(SETTING_HINT, setting.Hint)
-	d.Set(SETTING_TYPE, setting.SettingType)
+	d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+	d.Set(SETTINGS, flattenSettingsData(&filteredSettings))
 
 	var diags diag.Diagnostics
 	return diags
 }
 
-func getSettings(c *Client, configID string) ([]sw.SettingModel, error) {
+func flattenSettingsData(settings *[]sw.SettingModel) []interface{} {
+	if settings != nil {
+		elements := make([]interface{}, len(*settings), len(*settings))
 
-	settings, err := c.GetSettings(configID)
-	if err != nil {
-		return nil, err
-	}
+		for i, setting := range *settings {
+			element := make(map[string]interface{})
 
-	return settings, nil
-}
+			settingID := fmt.Sprintf("%d", setting.SettingId)
 
-func findSetting(c *Client, configID, settingKey string) (*sw.SettingModel, error) {
-	settings, err := getSettings(c, configID)
-	if err != nil {
-		return nil, err
-	}
+			element[SETTING_ID] = settingID
+			element[SETTING_KEY] = setting.Key
+			element[SETTING_NAME] = setting.Name
+			element[SETTING_HINT] = setting.Hint
+			element[SETTING_TYPE] = setting.SettingType
 
-	for i := range settings {
-		if settings[i].Key == settingKey {
-			return &settings[i], nil
+			elements[i] = element
 		}
+
+		return elements
 	}
 
-	return nil, fmt.Errorf("could not find Setting. config_id: %s key: %s", configID, settingKey)
+	return make([]interface{}, 0)
 }

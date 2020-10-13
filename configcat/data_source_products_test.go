@@ -22,8 +22,6 @@ func TestProductValid(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrSet("data.configcat_products.test", "id"),
 					resource.TestCheckResourceAttr("data.configcat_products.test", PRODUCTS+".#", "1"),
-					resource.TestCheckResourceAttr("data.configcat_products.test", PRODUCTS+".0."+PRODUCT_ID, productID),
-					resource.TestCheckResourceAttr("data.configcat_products.test", PRODUCTS+".0."+PRODUCT_NAME, "Configcat's product"),
 				),
 			},
 		},
