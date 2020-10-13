@@ -48,7 +48,7 @@ Feature Flags/Settings can be imported using the SettingId. Get the SettingId us
 $ terraform import configcat_setting.example 1234
 ```
 
-## Used APIs:
+## Used APIs
 * [Read](https://api.configcat.com/docs/index.html#operation/get-setting)
 * [Create](https://api.configcat.com/docs/index.html#operation/create-setting)
 * [Update](https://api.configcat.com/docs/index.html#operation/update-setting)
