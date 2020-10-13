@@ -102,6 +102,8 @@ Get the EnvironmentId using e.g. the [GetEnvironments API](https://api.configcat
 $ terraform import configcat_setting_value.example 08d86d63-2726-47cd-8bfc-59608ecb91e2:1234
 ```
 
+[Read more](https://learn.hashicorp.com/tutorials/terraform/state-import) about importing.
+
 ## Used APIs
 * [Read](https://api.configcat.com/docs/#operation/get-setting-value)
 * [Update](https://api.configcat.com/docs/#operation/replace-setting-value)

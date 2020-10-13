@@ -15,6 +15,6 @@
 # vendor/
 
 .terraform
-*.tfstate
+*.tfstate*
 
 coverage.out

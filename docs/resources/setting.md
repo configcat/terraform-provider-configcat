@@ -48,6 +48,8 @@ Feature Flags/Settings can be imported using the SettingId. Get the SettingId us
 $ terraform import configcat_setting.example 1234
 ```
 
+[Read more](https://learn.hashicorp.com/tutorials/terraform/state-import) about importing.
+
 ## Used APIs
 * [Read](https://api.configcat.com/docs/index.html#operation/get-setting)
 * [Create](https://api.configcat.com/docs/index.html#operation/create-setting)
