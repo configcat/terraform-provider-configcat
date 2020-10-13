@@ -34,6 +34,7 @@ func resourceConfigCatSettingValue() *schema.Resource {
 			SETTING_TYPE: &schema.Schema{
 				Type:     schema.TypeString,
 				Required: true,
+				ForceNew: true,
 			},
 
 			SETTING_VALUE: &schema.Schema{
@@ -45,11 +46,6 @@ func resourceConfigCatSettingValue() *schema.Resource {
 				Type:     schema.TypeBool,
 				Default:  true,
 				Optional: true,
-			},
-
-			SETTING_VALUE_ID: &schema.Schema{
-				Type:     schema.TypeString,
-				Computed: true,
 			},
 
 			ROLLOUT_RULES: &schema.Schema{

@@ -24,9 +24,8 @@ const (
 	SETTING_HINT             = "hint"
 	SETTING_TYPE             = "setting_type"
 
-	SETTING_VALUE    = "value"
-	SETTING_VALUE_ID = "setting_value_id"
-	INIT_ONLY        = "init_only"
+	SETTING_VALUE = "value"
+	INIT_ONLY     = "init_only"
 
 	ROLLOUT_RULES                     = "rollout_rules"
 	ROLLOUT_RULE_COMPARISON_ATTRIBUTE = "comparison_attribute"

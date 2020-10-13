@@ -11,12 +11,12 @@ Used APIs:
 
 ```hcl
 data "configcat_products" "products" {
-  name = "ConfigCat's product"
+  name_filter_regex = "ConfigCat's product"
 }
 
 data "configcat_configs" "configs" {
   product_id = configcat_products.products.products.0.id
-  name = "Main Config"
+  name_filter_regex = "Main Config"
 }
 
 resource "configcat_setting" "setting" {
