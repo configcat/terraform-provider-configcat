@@ -230,7 +230,7 @@ func flattenRolloutRulesData(rolloutRules *[]sw.RolloutRuleModel) []interface{} 
 			element[ROLLOUT_RULE_COMPARISON_ATTRIBUTE] = rolloutRule.ComparisonAttribute
 			element[ROLLOUT_RULE_COMPARATOR] = rolloutRule.Comparator
 			element[ROLLOUT_RULE_COMPARISON_VALUE] = rolloutRule.ComparisonValue
-			element[ROLLOUT_RULE_VALUE] = fmt.Sprintf("%v", rolloutRule.Value)
+			element[ROLLOUT_RULE_VALUE] = fmt.Sprintf("%v", *rolloutRule.Value)
 
 			elements[i] = element
 		}
@@ -248,8 +248,8 @@ func flattenRolloutPercentageItemsData(rolloutPercentageItems *[]sw.RolloutPerce
 		for i, rolloutPercentageItem := range *rolloutPercentageItems {
 			element := make(map[string]interface{})
 
-			element[ROLLOUT_PERCENTAGE_ITEM_PERCENTAGE] = rolloutPercentageItem.Percentage
-			element[ROLLOUT_PERCENTAGE_ITEM_VALUE] = fmt.Sprintf("%v", rolloutPercentageItem.Value)
+			element[ROLLOUT_PERCENTAGE_ITEM_PERCENTAGE] = strconv.FormatInt(rolloutPercentageItem.Percentage, 10)
+			element[ROLLOUT_PERCENTAGE_ITEM_VALUE] = fmt.Sprintf("%v", *rolloutPercentageItem.Value)
 			elements[i] = element
 		}
 
@@ -304,8 +304,13 @@ func getRolloutPercentageItemsData(rolloutPercentageItems []interface{}, setting
 				return nil, err
 			}
 
+			percentage, percErr := strconv.ParseInt(item[ROLLOUT_PERCENTAGE_ITEM_PERCENTAGE].(string), 10, 32)
+			if percErr != nil {
+				return nil, percErr
+			}
+
 			element := sw.RolloutPercentageItemModel{
-				Percentage: item[ROLLOUT_PERCENTAGE_ITEM_VALUE].(int64),
+				Percentage: percentage,
 				Value:      &value,
 			}
 

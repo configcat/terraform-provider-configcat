@@ -34,7 +34,7 @@ const (
 	ROLLOUT_RULE_COMPARISON_VALUE     = "comparison_value"
 	ROLLOUT_RULE_VALUE                = "value"
 
-	ROLLOUT_PERCENTAGE_ITEMS           = "rollout_percentage_items"
+	ROLLOUT_PERCENTAGE_ITEMS           = "percentage_items"
 	ROLLOUT_PERCENTAGE_ITEM_PERCENTAGE = "percentage"
 	ROLLOUT_PERCENTAGE_ITEM_VALUE      = "value"
 )
