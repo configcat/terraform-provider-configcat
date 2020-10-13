@@ -37,8 +37,9 @@ func resourceConfigCatSettingValue() *schema.Resource {
 			},
 
 			FREEZE_AFTER_INIT: &schema.Schema{
-				Type:    schema.TypeBool,
-				Default: true,
+				Type:     schema.TypeBool,
+				Default:  true,
+				Optional: true,
 			},
 
 			SETTING_VALUE_ID: &schema.Schema{
@@ -101,38 +102,11 @@ func resourceConfigCatSettingValue() *schema.Resource {
 }
 
 func resourceSettingValueRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	return resourceSettingValueReadInternal(ctx, d, m, false)
-}
-
-func resourceSettingValueReadInternal(ctx context.Context, d *schema.ResourceData, m interface{}, forceRead bool) diag.Diagnostics {
-	c := m.(*Client)
+	err := resourceSettingValueReadInternal(ctx, d, m, false)
+	if err != nil {
+		return diag.FromErr(err)
+	}
 	var diags diag.Diagnostics
-	id := d.Id()
-	freezeAfterInit := d.Get(FREEZE_AFTER_INIT).(bool)
-
-	if !forceRead && freezeAfterInit && id != "" {
-		return diags
-	}
-
-	environmentID := d.Get(ENVIRONMENT_ID).(string)
-	settingID, err := strconv.ParseInt(d.Get(SETTING_ID).(string), 10, 32)
-	if err != nil {
-		d.SetId("")
-		return diag.FromErr(err)
-	}
-
-	settingValue, err := c.GetSettingValue(environmentID, int32(settingID))
-	if err != nil {
-		d.SetId("")
-		return diag.FromErr(err)
-	}
-
-	d.SetId(fmt.Sprintf("%s.%d", settingValue.Environment.EnvironmentId, settingValue.Setting.SettingId))
-
-	d.Set(SETTING_VALUE, settingValue.Value)
-	d.Set(ROLLOUT_RULES, flattenRolloutRulesData(&settingValue.RolloutRules))
-	d.Set(ROLLOUT_PERCENTAGE_ITEMS, flattenRolloutPercentageItemsData(&settingValue.RolloutPercentageItems))
-
 	return diags
 }
 
@@ -146,7 +120,25 @@ func resourceSettingValueCreateOrUpdate(ctx context.Context, d *schema.ResourceD
 		return diag.FromErr(convErr)
 	}
 
-	settingValue := d.Get(SETTING_VALUE)
+	// Read the settingtype first so we know about the settingTypes
+	settingTypeString := d.Get(SETTING_TYPE).(string)
+
+	if settingTypeString == "" {
+		settingType, readErr := getSettingType(c, environmentID, int32(settingID))
+		if readErr != nil {
+			d.SetId("")
+			return diag.FromErr(readErr)
+		}
+
+		settingTypeString = *settingType
+	}
+
+	settingValue, settingValueErr := getSettingValue(settingTypeString, d.Get(SETTING_VALUE).(string))
+	if settingValueErr != nil {
+		d.SetId("")
+		return diag.FromErr(settingValueErr)
+	}
+
 	body := sw.UpdateSettingValueModel{
 		Value: &settingValue,
 	}
@@ -159,7 +151,67 @@ func resourceSettingValueCreateOrUpdate(ctx context.Context, d *schema.ResourceD
 
 	d.SetId(fmt.Sprintf("%s.%d", model.Environment.EnvironmentId, model.Setting.SettingId))
 
-	return resourceSettingValueReadInternal(ctx, d, m, true)
+	readErr2 := resourceSettingValueReadInternal(ctx, d, m, true)
+	if readErr2 != nil {
+		d.SetId("")
+		return diag.FromErr(readErr2)
+	}
+
+	var diags diag.Diagnostics
+	return diags
+}
+
+func resourceSettingValueReadInternal(ctx context.Context, d *schema.ResourceData, m interface{}, forceRead bool) error {
+	c := m.(*Client)
+
+	id := d.Id()
+	freezeAfterInit := d.Get(FREEZE_AFTER_INIT).(bool)
+
+	if !forceRead && freezeAfterInit && id != "" {
+		return nil
+	}
+
+	environmentID := d.Get(ENVIRONMENT_ID).(string)
+	settingID, err := strconv.ParseInt(d.Get(SETTING_ID).(string), 10, 32)
+	if err != nil {
+		d.SetId("")
+		return err
+	}
+
+	// Read the settingtype first so we know about the settingTypes
+	settingTypeString := d.Get(SETTING_TYPE).(string)
+
+	if settingTypeString == "" {
+		settingType, readErr := getSettingType(c, environmentID, int32(settingID))
+		if readErr != nil {
+			d.SetId("")
+			return readErr
+		}
+
+		settingTypeString = *settingType
+	}
+
+	switch settingTypeString {
+	case "boolean":
+		{
+
+			settingValue, err := c.GetSettingValueBool(environmentID, int32(settingID))
+			if err != nil {
+				d.SetId("")
+				return err
+			}
+
+			d.SetId(fmt.Sprintf("%s.%d", settingValue.Environment.EnvironmentId, settingValue.Setting.SettingId))
+
+			return fmt.Errorf("Value: %v", settingValue)
+
+			d.Set(SETTING_VALUE, fmt.Sprintf("%v", settingValue.Value))
+			d.Set(SETTING_TYPE, fmt.Sprintf("%v", settingValue.Setting.SettingType))
+			d.Set(ROLLOUT_RULES, flattenRolloutRulesData(&settingValue.RolloutRules))
+			d.Set(ROLLOUT_PERCENTAGE_ITEMS, flattenRolloutPercentageItemsData(&settingValue.RolloutPercentageItems))
+		}
+	}
+	return nil
 }
 
 func resourceSettingValueDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
@@ -209,4 +261,34 @@ func flattenRolloutPercentageItemsData(rolloutPercentageItems *[]sw.RolloutPerce
 	}
 
 	return make([]interface{}, 0)
+}
+
+func getSettingType(c *Client, environmentID string, settingID int32) (*string, error) {
+	settingValue, err := c.GetSettingValue(environmentID, int32(settingID))
+	if err != nil {
+		return nil, err
+	}
+	settingType := fmt.Sprintf("%v", *settingValue.Setting.SettingType)
+	return &settingType, nil
+}
+
+func getSettingValue(settingType, value string) (interface{}, error) {
+
+	switch settingType {
+	case "boolean":
+		b, err := strconv.ParseBool(value)
+		return b, err
+	case "string":
+		return value, nil
+	case "int":
+		i, err := strconv.ParseInt(value, 10, 32)
+		if err == nil {
+			return int32(i), nil
+		}
+		return nil, err
+	case "double":
+		return strconv.ParseFloat(value, 64)
+	default:
+		return nil, fmt.Errorf("Could not parse SettingType and Value: %s, %s", settingType, value)
+	}
 }

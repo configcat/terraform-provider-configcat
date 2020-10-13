@@ -9,21 +9,28 @@ import (
 )
 
 const (
+	// Environment variables
 	ENV_BASIC_AUTH_USERNAME = "CONFIGCAT_BASIC_AUTH_USERNAME"
 	ENV_BASIC_AUTH_PASSWORD = "CONFIGCAT_BASIC_AUTH_PASSWORD"
 	ENV_BASE_PATH           = "CONFIGCAT_BASE_PATH"
 
+	// Parameters
 	KEY_BASIC_AUTH_USERNAME = "basic_auth_username"
 	KEY_BASIC_AUTH_PASSWORD = "basic_auth_password"
 	KEY_BASE_PATH           = "base_path"
 
+	// Defaults
 	DEFAULT_BASE_PATH = "https://api.configcat.com"
 
+	// Data sources
 	KEY_PRODUCTS     = "configcat_products"
 	KEY_CONFIGS      = "configcat_configs"
 	KEY_ENVIRONMENTS = "configcat_environments"
-	KEY_SETTING      = "configcat_setting"
 	KEY_SETTINGS     = "configcat_settings"
+
+	// Resources
+	KEY_SETTING       = "configcat_setting"
+	KEY_SETTING_VALUE = "configcat_setting_value"
 )
 
 // Provider returns a *schema.Provider.
@@ -51,7 +58,8 @@ func Provider() *schema.Provider {
 		},
 
 		ResourcesMap: map[string]*schema.Resource{
-			KEY_SETTING: resourceConfigCatSetting(),
+			KEY_SETTING:       resourceConfigCatSetting(),
+			KEY_SETTING_VALUE: resourceConfigCatSettingValue(),
 		},
 
 		DataSourcesMap: map[string]*schema.Resource{
