@@ -47,7 +47,7 @@ func productRead(ctx context.Context, d *schema.ResourceData, m interface{}) dia
 	c := m.(*Client)
 	productNameFilterRegex := d.Get(PRODUCT_NAME_FILTER_REGEX).(string)
 
-	products, err := getProducts(c)
+	products, err := c.GetProducts()
 	if err != nil {
 		d.SetId("")
 		return diag.FromErr(err)
@@ -70,16 +70,6 @@ func productRead(ctx context.Context, d *schema.ResourceData, m interface{}) dia
 
 	var diags diag.Diagnostics
 	return diags
-}
-
-func getProducts(c *Client) ([]sw.ProductModel, error) {
-
-	products, err := c.GetProducts()
-	if err != nil {
-		return nil, err
-	}
-
-	return products, nil
 }
 
 func flattenProductsData(products *[]sw.ProductModel) []interface{} {

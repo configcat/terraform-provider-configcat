@@ -10,7 +10,7 @@ import (
 func TestEnvironmentValid(t *testing.T) {
 	const dataSource = `
 		data "configcat_environments" "test" {
-			name = "Test"
+			name_filter_regex = "Test"
 			product_id = "08d86d63-2721-4da6-8c06-584521d516bc"
 		}
 	`
@@ -24,9 +24,10 @@ func TestEnvironmentValid(t *testing.T) {
 			resource.TestStep{
 				Config: dataSource,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("data.configcat_environments.test", "id", environmentID),
-					resource.TestCheckResourceAttr("data.configcat_environments.test", PRODUCT_ID, productID),
-					resource.TestCheckResourceAttr("data.configcat_environments.test", ENVIRONMENT_NAME, "Test"),
+					resource.TestCheckResourceAttrSet("data.configcat_environments.test", "id"),
+					resource.TestCheckResourceAttr("data.configcat_environments.test", ENVIRONMENTS+".#", "1"),
+					resource.TestCheckResourceAttr("data.configcat_environments.test", ENVIRONMENTS+".0."+ENVIRONMENT_ID, environmentID),
+					resource.TestCheckResourceAttr("data.configcat_environments.test", ENVIRONMENTS+".0."+ENVIRONMENT_NAME, "Test"),
 				),
 			},
 		},
@@ -36,18 +37,23 @@ func TestEnvironmentValid(t *testing.T) {
 func TestEnvironmentInvalid(t *testing.T) {
 	const dataSource = `
 		data "configcat_environments" "test" {
-			name = "notfound"
+			name_filter_regex = "invalid"
 			product_id = "08d86d63-2721-4da6-8c06-584521d516bc"
 		}
 	`
+	const productID = "08d86d63-2721-4da6-8c06-584521d516bc"
+	const environmentID = "08d86d63-2726-47cd-8bfc-59608ecb91e2"
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:  func() { testAccPreCheck(t) },
 		Providers: testAccProviders,
 		Steps: []resource.TestStep{
 			resource.TestStep{
-				Config:      dataSource,
-				ExpectError: regexp.MustCompile("could not find Environment. product_id: 08d86d63-2721-4da6-8c06-584521d516bc name: notfound"),
+				Config: dataSource,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttrSet("data.configcat_environments.test", "id"),
+					resource.TestCheckResourceAttr("data.configcat_environments.test", ENVIRONMENTS+".#", "0"),
+				),
 			},
 		},
 	})
@@ -56,7 +62,7 @@ func TestEnvironmentInvalid(t *testing.T) {
 func TestEnvironmentInvalidGuid(t *testing.T) {
 	const dataSource = `
 		data "configcat_environments" "test" {
-			name = "notfound"
+			name_filter_regex = "notfound"
 			product_id = "invalidGuid"
 		}
 	`

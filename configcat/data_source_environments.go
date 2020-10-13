@@ -2,7 +2,9 @@ package configcat
 
 import (
 	"context"
-	"fmt"
+	"regexp"
+	"strconv"
+	"time"
 
 	sw "github.com/configcat/configcat-publicapi-go-client"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -21,9 +23,27 @@ func dataSourceConfigCatEnvironments() *schema.Resource {
 				ValidateFunc: validateGUIDFunc,
 			},
 
-			ENVIRONMENT_NAME: &schema.Schema{
-				Type:     schema.TypeString,
-				Required: true,
+			ENVIRONMENT_NAME_FILTER_REGEX: &schema.Schema{
+				Type:         schema.TypeString,
+				Optional:     true,
+				ValidateFunc: validateRegexFunc,
+			},
+
+			ENVIRONMENTS: &schema.Schema{
+				Type:     schema.TypeList,
+				Computed: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						ENVIRONMENT_ID: &schema.Schema{
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						ENVIRONMENT_NAME: &schema.Schema{
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+					},
+				},
 			},
 		},
 	}
@@ -32,35 +52,48 @@ func dataSourceConfigCatEnvironments() *schema.Resource {
 func environmentRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*Client)
 	productID := d.Get(PRODUCT_ID).(string)
-	environmentName := d.Get(CONFIG_NAME).(string)
+	environmentNameFilterRegex := d.Get(ENVIRONMENT_NAME_FILTER_REGEX).(string)
 
-	environment, err := findEnvironment(c, productID, environmentName)
+	environments, err := c.GetEnvironments(productID)
 	if err != nil {
 		d.SetId("")
 		return diag.FromErr(err)
 	}
 
-	d.SetId(environment.EnvironmentId)
-	d.Set(PRODUCT_ID, productID)
-	d.Set(ENVIRONMENT_NAME, environment.Name)
+	filteredEnvironments := []sw.EnvironmentModel{}
+	if environmentNameFilterRegex == "" {
+		filteredEnvironments = environments
+	} else {
+		regex := regexp.MustCompile(environmentNameFilterRegex)
+		for i := range environments {
+			if regex.MatchString(environments[i].Name) {
+				filteredEnvironments = append(filteredEnvironments, environments[i])
+			}
+		}
+	}
+
+	d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+	d.Set(ENVIRONMENTS, flattenEnvironmentsData(&filteredEnvironments))
 
 	var diags diag.Diagnostics
 	return diags
 }
 
-func findEnvironment(c *Client, productID, environmentName string) (*sw.EnvironmentModel, error) {
+func flattenEnvironmentsData(environments *[]sw.EnvironmentModel) []interface{} {
+	if environments != nil {
+		elements := make([]interface{}, len(*environments), len(*environments))
 
-	environments, err := c.GetEnvironments(productID)
+		for i, environment := range *environments {
+			element := make(map[string]interface{})
 
-	if err != nil {
-		return nil, err
-	}
+			element[ENVIRONMENT_ID] = environment.EnvironmentId
+			element[ENVIRONMENT_NAME] = environment.Name
 
-	for i := range environments {
-		if environments[i].Name == environmentName {
-			return &environments[i], nil
+			elements[i] = element
 		}
+
+		return elements
 	}
 
-	return nil, fmt.Errorf("could not find Environment. product_id: %s name: %s", productID, environmentName)
+	return make([]interface{}, 0)
 }
