@@ -11,7 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func dataSourceConfigCatProduct() *schema.Resource {
+func dataSourceConfigCatProducts() *schema.Resource {
 	return &schema.Resource{
 
 		ReadContext: productRead,

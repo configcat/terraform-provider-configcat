@@ -8,7 +8,7 @@ import (
 
 func TestProductValid(t *testing.T) {
 	const dataSource = `
-		data "configcat_product" "test" {
+		data "configcat_products" "test" {
 			name_filter_regex = "Configcat's product"
 		}
 	`
@@ -21,10 +21,10 @@ func TestProductValid(t *testing.T) {
 			resource.TestStep{
 				Config: dataSource,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttrSet("data.configcat_product.test", "id"),
-					resource.TestCheckResourceAttr("data.configcat_product.test.products", "#", "1"),
-					resource.TestCheckResourceAttr("data.configcat_product.test.products.0", PRODUCT_ID, productID),
-					resource.TestCheckResourceAttr("data.configcat_product.test.products.0", PRODUCT_NAME, "Configcat's product"),
+					resource.TestCheckResourceAttrSet("data.configcat_products.test", "id"),
+					resource.TestCheckResourceAttr("data.configcat_products.test.products", "#", "1"),
+					resource.TestCheckResourceAttr("data.configcat_products.test.products.0", PRODUCT_ID, productID),
+					resource.TestCheckResourceAttr("data.configcat_products.test.products.0", PRODUCT_NAME, "Configcat's product"),
 				),
 			},
 		},
@@ -33,7 +33,7 @@ func TestProductValid(t *testing.T) {
 
 func TestProductNotFound(t *testing.T) {
 	const dataSource = `
-		data "configcat_product" "test" {
+		data "configcat_products" "test" {
 			name_filter_regex = "notfound"
 		}
 	`
@@ -45,8 +45,8 @@ func TestProductNotFound(t *testing.T) {
 			resource.TestStep{
 				Config: dataSource,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttrSet("data.configcat_product.test", "id"),
-					resource.TestCheckResourceAttr("data.configcat_product.test.products", "#", "0"),
+					resource.TestCheckResourceAttrSet("data.configcat_products.test", "id"),
+					resource.TestCheckResourceAttr("data.configcat_products.test.products", "#", "0"),
 				),
 			},
 		},

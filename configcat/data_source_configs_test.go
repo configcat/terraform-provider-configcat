@@ -24,16 +24,17 @@ func TestConfigValid(t *testing.T) {
 			resource.TestStep{
 				Config: dataSource,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("data.configcat_config.test", "id", configID),
-					resource.TestCheckResourceAttr("data.configcat_config.test", PRODUCT_ID, productID),
-					resource.TestCheckResourceAttr("data.configcat_config.test", CONFIG_NAME, "Main Config"),
+					resource.TestCheckResourceAttrSet("data.configcat_config.test", "id"),
+					resource.TestCheckResourceAttr("data.configcat_config.test.configs", "#", "1"),
+					resource.TestCheckResourceAttr("data.configcat_config.test.configs.0", CONFIG_ID, configID),
+					resource.TestCheckResourceAttr("data.configcat_config.test.configs.0", CONFIG_NAME, "Main Config"),
 				),
 			},
 		},
 	})
 }
 
-func TestConfigInvalid(t *testing.T) {
+func TestConfigNotFound(t *testing.T) {
 	const dataSource = `
 		data "configcat_config" "test" {
 			name = "notfound"
@@ -46,8 +47,11 @@ func TestConfigInvalid(t *testing.T) {
 		Providers: testAccProviders,
 		Steps: []resource.TestStep{
 			resource.TestStep{
-				Config:      dataSource,
-				ExpectError: regexp.MustCompile("could not find Config. product_id: 08d86d63-2721-4da6-8c06-584521d516bc name: notfound"),
+				Config: dataSource,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttrSet("data.configcat_config.test", "id"),
+					resource.TestCheckResourceAttr("data.configcat_config.test.configs", "#", "0"),
+				),
 			},
 		},
 	})

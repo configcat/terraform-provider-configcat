@@ -9,7 +9,7 @@ import (
 
 func TestSettingValid(t *testing.T) {
 	const dataSource = `
-		data "configcat_setting" "test" {
+		data "configcat_settings" "test" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
 			key = "isAwesomeFeatureEnabled"
 		}
@@ -23,12 +23,12 @@ func TestSettingValid(t *testing.T) {
 			resource.TestStep{
 				Config: dataSource,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("data.configcat_setting.test", "id", "67639"),
-					resource.TestCheckResourceAttr("data.configcat_setting.test", CONFIG_ID, configID),
-					resource.TestCheckResourceAttr("data.configcat_setting.test", SETTING_KEY, "isAwesomeFeatureEnabled"),
-					resource.TestCheckResourceAttr("data.configcat_setting.test", SETTING_NAME, "My awesome feature flag"),
-					resource.TestCheckResourceAttr("data.configcat_setting.test", SETTING_HINT, "This is the hint for my awesome feature flag"),
-					resource.TestCheckResourceAttr("data.configcat_setting.test", SETTING_TYPE, "boolean"),
+					resource.TestCheckResourceAttr("data.configcat_settings.test", "id", "67639"),
+					resource.TestCheckResourceAttr("data.configcat_settings.test", CONFIG_ID, configID),
+					resource.TestCheckResourceAttr("data.configcat_settings.test", SETTING_KEY, "isAwesomeFeatureEnabled"),
+					resource.TestCheckResourceAttr("data.configcat_settings.test", SETTING_NAME, "My awesome feature flag"),
+					resource.TestCheckResourceAttr("data.configcat_settings.test", SETTING_HINT, "This is the hint for my awesome feature flag"),
+					resource.TestCheckResourceAttr("data.configcat_settings.test", SETTING_TYPE, "boolean"),
 				),
 			},
 		},
@@ -37,7 +37,7 @@ func TestSettingValid(t *testing.T) {
 
 func TestSettingInvalid(t *testing.T) {
 	const dataSource = `
-		data "configcat_setting" "test" {
+		data "configcat_settings" "test" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
 			key = "notfound"
 		}
@@ -57,7 +57,7 @@ func TestSettingInvalid(t *testing.T) {
 
 func TestSettingInvalidGuid(t *testing.T) {
 	const dataSource = `
-		data "configcat_setting" "test" {
+		data "configcat_settings" "test" {
 			config_id = "invalidGuid"
 			key = "notfound"
 		}
