@@ -14,6 +14,7 @@ func TestResourceSettingValueExistingFreeze(t *testing.T) {
 		resource "configcat_setting_value" "test" {
 			environment_id = "` + environmentID + `"
 			setting_id = "` + settingID + `"
+			setting_type = "boolean"
 			value = "true"
 		}
 	`
@@ -21,6 +22,7 @@ func TestResourceSettingValueExistingFreeze(t *testing.T) {
 		resource "configcat_setting_value" "test" {
 			environment_id = "` + environmentID + `"
 			setting_id = "` + settingID + `"
+			setting_type = "boolean"
 			value = "false"
 		}
 	`
