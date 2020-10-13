@@ -34,4 +34,9 @@ jobs:
       run: go build -v .
 
     - name: Test
+      env:
+        CONFIGCAT_BASE_PATH: ${{ secrets.CONFIGCAT_BASE_PATH }}
+        CONFIGCAT_BASIC_AUTH_PASSWORD: ${{ secrets.CONFIGCAT_BASIC_AUTH_PASSWORD }}
+        CONFIGCAT_BASIC_AUTH_USERNAME: ${{ secrets.CONFIGCAT_BASIC_AUTH_USERNAME }}
+        TF_ACC: ${{ secrets.TF_ACC }}
       run: go test -v -cover -coverprofile=coverage.out ./...
