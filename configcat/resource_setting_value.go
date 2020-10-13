@@ -146,8 +146,20 @@ func resourceSettingValueCreateOrUpdate(ctx context.Context, d *schema.ResourceD
 		return diag.FromErr(settingValueErr)
 	}
 
+	rolloutRules, rolloutRulesErr := getRolloutRulesData(d.Get(ROLLOUT_RULES).([]interface{}), settingTypeString)
+	if rolloutRulesErr != nil {
+		return diag.FromErr(rolloutRulesErr)
+	}
+
+	rolloutPercentageItems, rolloutPercentageItemsErr := getRolloutPercentageItemsData(d.Get(ROLLOUT_PERCENTAGE_ITEMS).([]interface{}), settingTypeString)
+	if rolloutPercentageItemsErr != nil {
+		return diag.FromErr(rolloutPercentageItemsErr)
+	}
+
 	body := sw.UpdateSettingValueModel{
-		Value: &settingValue,
+		Value:                  &settingValue,
+		RolloutRules:           *rolloutRules,
+		RolloutPercentageItems: *rolloutPercentageItems,
 	}
 
 	_, err := c.ReplaceSettingValue(environmentID, int32(settingID), body)
@@ -247,6 +259,66 @@ func flattenRolloutPercentageItemsData(rolloutPercentageItems *[]sw.RolloutPerce
 	return make([]interface{}, 0)
 }
 
+func getRolloutRulesData(rolloutRules []interface{}, settingType string) (*[]sw.RolloutRuleModel, error) {
+	if rolloutRules != nil {
+		elements := make([]sw.RolloutRuleModel, len(rolloutRules), len(rolloutRules))
+
+		for i, rolloutRule := range rolloutRules {
+			item := rolloutRule.(map[string]interface{})
+
+			value, err := getSettingValue(settingType, item[ROLLOUT_RULE_VALUE].(string))
+			if err != nil {
+				return nil, err
+			}
+
+			comparator, compErr := getComparator(item[ROLLOUT_RULE_COMPARATOR].(string))
+			if compErr != nil {
+				return nil, compErr
+			}
+
+			element := sw.RolloutRuleModel{
+				ComparisonAttribute: item[ROLLOUT_RULE_COMPARISON_ATTRIBUTE].(string),
+				Comparator:          comparator,
+				ComparisonValue:     item[ROLLOUT_RULE_COMPARISON_VALUE].(string),
+				Value:               &value,
+			}
+
+			elements[i] = element
+		}
+
+		return &elements, nil
+	}
+	empty := make([]sw.RolloutRuleModel, 0)
+	return &empty, nil
+}
+
+func getRolloutPercentageItemsData(rolloutPercentageItems []interface{}, settingType string) (*[]sw.RolloutPercentageItemModel, error) {
+	if rolloutPercentageItems != nil {
+		elements := make([]sw.RolloutPercentageItemModel, len(rolloutPercentageItems), len(rolloutPercentageItems))
+
+		for i, rolloutPercentageItem := range rolloutPercentageItems {
+			item := rolloutPercentageItem.(map[string]interface{})
+
+			value, err := getSettingValue(settingType, item[ROLLOUT_PERCENTAGE_ITEM_VALUE].(string))
+			if err != nil {
+				return nil, err
+			}
+
+			element := sw.RolloutPercentageItemModel{
+				Percentage: item[ROLLOUT_PERCENTAGE_ITEM_VALUE].(int64),
+				Value:      &value,
+			}
+
+			elements[i] = element
+		}
+
+		return &elements, nil
+	}
+
+	empty := make([]sw.RolloutPercentageItemModel, 0)
+	return &empty, nil
+}
+
 func getSettingValue(settingType, value string) (interface{}, error) {
 
 	switch settingType {
@@ -267,4 +339,65 @@ func getSettingValue(settingType, value string) (interface{}, error) {
 	default:
 		return nil, fmt.Errorf("Could not parse SettingType and Value: %s, %s", settingType, value)
 	}
+}
+
+func getComparator(comparator string) (*sw.RolloutRuleComparator, error) {
+	switch comparator {
+	case "isOneOf":
+		comparator := sw.IS_ONE_OF_RolloutRuleComparator
+		return &comparator, nil
+	case "isNotOneOf":
+		comparator := sw.IS_NOT_ONE_OF_RolloutRuleComparator
+		return &comparator, nil
+	case "contains":
+		comparator := sw.CONTAINS_RolloutRuleComparator
+		return &comparator, nil
+	case "doesNotContain":
+		comparator := sw.DOES_NOT_CONTAIN_RolloutRuleComparator
+		return &comparator, nil
+	case "semVerIsOneOf":
+		comparator := sw.SEM_VER_IS_ONE_OF_RolloutRuleComparator
+		return &comparator, nil
+	case "semVerIsNotOneOf":
+		comparator := sw.SEM_VER_IS_NOT_ONE_OF_RolloutRuleComparator
+		return &comparator, nil
+	case "semVerLess":
+		comparator := sw.SEM_VER_LESS_RolloutRuleComparator
+		return &comparator, nil
+	case "semVerLessOrEquals":
+		comparator := sw.SEM_VER_LESS_OR_EQUALS_RolloutRuleComparator
+		return &comparator, nil
+	case "semVerGreater":
+		comparator := sw.SEM_VER_GREATER_RolloutRuleComparator
+		return &comparator, nil
+	case "semVerGreaterOrEquals":
+		comparator := sw.SEM_VER_GREATER_OR_EQUALS_RolloutRuleComparator
+		return &comparator, nil
+	case "numberEquals":
+		comparator := sw.NUMBER_EQUALS_RolloutRuleComparator
+		return &comparator, nil
+	case "numberDoesNotEqual":
+		comparator := sw.NUMBER_DOES_NOT_EQUAL_RolloutRuleComparator
+		return &comparator, nil
+	case "numberLess":
+		comparator := sw.NUMBER_LESS_RolloutRuleComparator
+		return &comparator, nil
+	case "numberLessOrEquals":
+		comparator := sw.NUMBER_LESS_OR_EQUALS_RolloutRuleComparator
+		return &comparator, nil
+	case "numberGreater":
+		comparator := sw.NUMBER_GREATER_RolloutRuleComparator
+		return &comparator, nil
+	case "numberGreaterOrEquals":
+		comparator := sw.NUMBER_GREATER_OR_EQUALS_RolloutRuleComparator
+		return &comparator, nil
+	case "sensitiveIsOneOf":
+		comparator := sw.SENSITIVE_IS_ONE_OF_RolloutRuleComparator
+		return &comparator, nil
+	case "sensitiveIsNotOneOf":
+		comparator := sw.SENSITIVE_IS_NOT_ONE_OF_RolloutRuleComparator
+		return &comparator, nil
+	}
+
+	return nil, fmt.Errorf("could not parse Comparator: %s", comparator)
 }
