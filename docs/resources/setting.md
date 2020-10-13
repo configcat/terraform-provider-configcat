@@ -15,12 +15,12 @@ data "configcat_products" "products" {
 }
 
 data "configcat_configs" "configs" {
-  product_id = configcat_products.products.products.0.id
+  product_id = data.configcat_products.products.products.0.product_id
   name_filter_regex = "Main Config"
 }
 
 resource "configcat_setting" "setting" {
-  config_id = configcat_configs.configs.configs.0.id
+  config_id = data.configcat_configs.configs.configs.0.config_id
   key = "isAwesomeFeatureEnabled"
   name = "My awesome feature flag"
   hint = "This is the hint for my awesome feature flag"

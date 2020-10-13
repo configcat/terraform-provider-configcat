@@ -10,7 +10,7 @@ data "configcat_products" "products" {
 }
 
 data "configcat_configs" "configs" {
-  product_id = configcat_products.products.products.0.id
+  product_id = data.configcat_products.products.products.0.product_id
   name_filter_regex = "Main Config"
 }
 
