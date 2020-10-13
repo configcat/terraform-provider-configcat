@@ -41,7 +41,7 @@ func resourceConfigCatSettingValue() *schema.Resource {
 				Required: true,
 			},
 
-			FREEZE_AFTER_INIT: &schema.Schema{
+			INIT_ONLY: &schema.Schema{
 				Type:     schema.TypeBool,
 				Default:  true,
 				Optional: true,
@@ -112,7 +112,7 @@ func resourceSettingValueRead(ctx context.Context, d *schema.ResourceData, m int
 
 func resourceSettingValueCreateOrUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	id := d.Id()
-	freezeAfterInit := d.Get(FREEZE_AFTER_INIT).(bool)
+	freezeAfterInit := d.Get(INIT_ONLY).(bool)
 
 	var diags diag.Diagnostics
 	if freezeAfterInit && id != "" {
@@ -120,7 +120,7 @@ func resourceSettingValueCreateOrUpdate(ctx context.Context, d *schema.ResourceD
 			diags = append(diags, diag.Diagnostic{
 				Severity: diag.Warning,
 				Summary:  "Changes will be only applied to the state.",
-				Detail:   "The freeze_after_init parameter is set to true so the changes won't be applied in ConfigCat. This mode is only for initializing a feature flag in ConfigCat.",
+				Detail:   "The init_only parameter is set to true so the changes won't be applied in ConfigCat. This mode is only for initializing a feature flag in ConfigCat.",
 			})
 		}
 
@@ -183,7 +183,7 @@ func resourceSettingValueReadInternal(ctx context.Context, d *schema.ResourceDat
 	c := m.(*Client)
 
 	id := d.Id()
-	freezeAfterInit := d.Get(FREEZE_AFTER_INIT).(bool)
+	freezeAfterInit := d.Get(INIT_ONLY).(bool)
 
 	if !forceRead && freezeAfterInit && id != "" {
 		return nil

@@ -67,7 +67,7 @@ func TestResourceSettingValueExistingNoFreeze(t *testing.T) {
 			setting_id = "` + settingID + `"
 			setting_type = "boolean"
 			value = "true"
-			freeze_after_init = false
+			init_only = false
 		}
 	`
 	const settingValueResourceUpdated = `
@@ -76,7 +76,7 @@ func TestResourceSettingValueExistingNoFreeze(t *testing.T) {
 			setting_id = "` + settingID + `"
 			setting_type = "boolean"
 			value = "false"
-			freeze_after_init = false
+			init_only = false
 		}
 	`
 
@@ -116,7 +116,7 @@ func TestResourceSettingValueRules(t *testing.T) {
 			setting_id = "` + settingID + `"
 			setting_type = "boolean"
 			value = "true"
-			freeze_after_init = false
+			init_only = false
 		}
 	`
 	const settingValueResourceRule1 = `
@@ -125,7 +125,7 @@ func TestResourceSettingValueRules(t *testing.T) {
 			setting_id = "` + settingID + `"
 			setting_type = "boolean"
 			value = "true"
-			freeze_after_init = false
+			init_only = false
 			rollout_rules {
 				comparison_attribute = "email"
 				comparator = "contains"
@@ -141,7 +141,7 @@ func TestResourceSettingValueRules(t *testing.T) {
 			setting_id = "` + settingID + `"
 			setting_type = "boolean"
 			value = "true"
-			freeze_after_init = false
+			init_only = false
 			rollout_rules {
 				comparison_attribute = "email"
 				comparator = "contains"
@@ -204,7 +204,7 @@ func TestResourceSettingValuePercentageItems(t *testing.T) {
 			setting_id = "` + settingID + `"
 			setting_type = "boolean"
 			value = "true"
-			freeze_after_init = false
+			init_only = false
 		}
 	`
 	const settingValueResourceItem1 = `
@@ -213,7 +213,7 @@ func TestResourceSettingValuePercentageItems(t *testing.T) {
 			setting_id = "` + settingID + `"
 			setting_type = "boolean"
 			value = "true"
-			freeze_after_init = false
+			init_only = false
 			percentage_items {
 				percentage = 20
 				value = "true"
@@ -231,7 +231,7 @@ func TestResourceSettingValuePercentageItems(t *testing.T) {
 			setting_id = "` + settingID + `"
 			setting_type = "boolean"
 			value = "true"
-			freeze_after_init = false
+			init_only = false
 			percentage_items {
 				percentage = 50
 				value = "true"
