@@ -98,7 +98,7 @@ func resourceSettingRead(ctx context.Context, d *schema.ResourceData, m interfac
 		return diag.FromErr(err)
 	}
 
-	setting, err := getSetting(c, int32(settingID))
+	setting, err := c.GetSetting(int32(settingID))
 	if err != nil {
 		d.SetId("")
 		return diag.FromErr(err)
@@ -169,14 +169,4 @@ func resourceSettingDelete(ctx context.Context, d *schema.ResourceData, m interf
 	d.SetId("")
 
 	return diags
-}
-
-func getSetting(c *Client, settingID int32) (*sw.SettingModel, error) {
-
-	setting, err := c.GetSetting(settingID)
-	if err != nil {
-		return nil, err
-	}
-
-	return &setting, nil
 }

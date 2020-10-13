@@ -23,4 +23,17 @@ const (
 	SETTING_NAME             = "name"
 	SETTING_HINT             = "hint"
 	SETTING_TYPE             = "setting_type"
+
+	SETTING_VALUE    = "value"
+	SETTING_VALUE_ID = "setting_value_id"
+
+	ROLLOUT_RULES                     = "rollout_rules"
+	ROLLOUT_RULE_COMPARISON_ATTRIBUTE = "comparison_attribute"
+	ROLLOUT_RULE_COMPARATOR           = "comparator"
+	ROLLOUT_RULE_COMPARISON_VALUE     = "comparison_value"
+	ROLLOUT_RULE_VALUE                = "value"
+
+	ROLLOUT_PERCENTAGE_ITEMS           = "rollout_percentage_items"
+	ROLLOUT_PERCENTAGE_ITEM_PERCENTAGE = "percentage"
+	ROLLOUT_PERCENTAGE_ITEM_VALUE      = "value"
 )
