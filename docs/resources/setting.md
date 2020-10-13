@@ -1,11 +1,6 @@
 # configcat_setting Resource
 
 Creates and manages a Feature Flag/Setting.  
-Used APIs:
-* [Read](https://api.configcat.com/docs/index.html#operation/get-setting)
-* [Create](https://api.configcat.com/docs/index.html#operation/create-setting)
-* [Update](https://api.configcat.com/docs/index.html#operation/update-setting)
-* [Delete](https://api.configcat.com/docs/index.html#operation/delete-setting)
 
 ## Example Usage
 
@@ -44,3 +39,9 @@ output "setting_id" {
 ## Attribute Reference
 
 * `id` - The unique Setting ID.
+
+## Used APIs:
+* [Read](https://api.configcat.com/docs/index.html#operation/get-setting)
+* [Create](https://api.configcat.com/docs/index.html#operation/create-setting)
+* [Update](https://api.configcat.com/docs/index.html#operation/update-setting)
+* [Delete](https://api.configcat.com/docs/index.html#operation/delete-setting)

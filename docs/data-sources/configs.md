@@ -1,6 +1,6 @@
 # configcat_configs Resource
 
-Use this data source to access information about an existing Config. [Used API](https://api.configcat.com/docs/index.html#operation/get-configs)
+Use this data source to access information about an existing Config.
 
 ## Example Usage
 
@@ -33,3 +33,6 @@ output "config_id" {
 
 * `config_id` - The unique Config ID.
 * `name` - The name of the Config.
+
+## User APIs
+[Read](https://api.configcat.com/docs/index.html#operation/get-configs)

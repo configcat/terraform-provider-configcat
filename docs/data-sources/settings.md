@@ -1,6 +1,6 @@
 # configcat_settings Resource
 
-Use this data source to access information about an existing Feature Flag/Setting. [Used API](https://api.configcat.com/docs/index.html#operation/get-settings)
+Use this data source to access information about an existing Feature Flag/Setting.  
 
 ## Example Usage
 
@@ -41,3 +41,6 @@ output "setting_id" {
 * `name` - The name of the Setting.
 * `hint` - The hint of the Setting.
 * `setting_type` - The Setting's type. Available values: `boolean`|`string`|`int`|`double`.
+
+## Used APIs:
+- [Read](https://api.configcat.com/docs/index.html#operation/get-settings)

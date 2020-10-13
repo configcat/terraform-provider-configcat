@@ -174,14 +174,14 @@ func resourceSettingValueCreateOrUpdate(ctx context.Context, d *schema.ResourceD
 
 	d.SetId(fmt.Sprintf("%s.%d", environmentID, settingID))
 
-	readErr2 := resourceSettingValueReadInternal(ctx, d, m, true)
-	if readErr2 != nil {
+	readErr := resourceSettingValueReadInternal(ctx, d, m, true)
+	if readErr != nil {
 		if _, ok := err.(NotFoundError); ok {
 			d.SetId("")
 			return diags
 		}
 
-		return diag.FromErr(readErr2)
+		return diag.FromErr(readErr)
 	}
 
 	return diags
