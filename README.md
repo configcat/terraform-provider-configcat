@@ -2,7 +2,7 @@
 `terraform-provider-configcat`
 
 ![Build status](https://github.com/configcat/terraform-provider-configcat/workflows/Go/badge.svg)
-[![codecov](https://codecov.io/gh/configcat/terraform-provider-configcat/branch/main/graph/badge.svg?token=XBY7QBU3NN)](undefined)
+[![codecov](https://codecov.io/gh/configcat/terraform-provider-configcat/branch/main/graph/badge.svg?token=XBY7QBU3NN)]
 [![Go Report Card](https://goreportcard.com/badge/github.com/configcat/terraform-provider-configcat)](https://goreportcard.com/report/github.com/configcat/terraform-provider-configcat)
 
 
