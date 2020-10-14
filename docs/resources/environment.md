@@ -15,7 +15,7 @@ resource "configcat_environment" "environment" {
 }
 
 
-output "setting_id" {
+output "environment_id" {
   value = configcat_environment.environment.id
 }
 ```
