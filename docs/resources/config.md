@@ -11,7 +11,7 @@ data "configcat_products" "products" {
 
 resource "configcat_config" "config" {
   product_id = data.configcat_products.products.products.0.product_id
-  name = "Staging"
+  name = "My config"
 }
 
 
