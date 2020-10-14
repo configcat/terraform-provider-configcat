@@ -234,7 +234,7 @@ func resourceSettingValueReadInternal(ctx context.Context, d *schema.ResourceDat
 		return err
 	}
 
-	settingValue, err := c.GetSettingValueSimple(environmentID, int32(settingID))
+	settingValue, err := c.GetSettingValue(environmentID, int32(settingID))
 	if err != nil {
 		return err
 	}

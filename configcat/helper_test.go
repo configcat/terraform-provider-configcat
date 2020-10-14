@@ -87,7 +87,7 @@ func checkValue(s *terraform.State, value *interface{}) error {
 	return nil
 }
 
-func getValue(s *terraform.State) (*sw.SettingValueSimpleModel, error) {
+func getValue(s *terraform.State) (*sw.SettingValueModel, error) {
 	c := testAccProvider.Meta().(*Client)
 	rs := s.RootModule().Resources["configcat_setting_value.test"]
 	environmentID := rs.Primary.Attributes[ENVIRONMENT_ID]
@@ -95,7 +95,7 @@ func getValue(s *terraform.State) (*sw.SettingValueSimpleModel, error) {
 	if err != nil {
 		return nil, err
 	}
-	settingValue, err := c.GetSettingValueSimple(environmentID, int32(settingID))
+	settingValue, err := c.GetSettingValue(environmentID, int32(settingID))
 	if err != nil {
 		return nil, err
 	}

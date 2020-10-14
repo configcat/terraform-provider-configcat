@@ -103,8 +103,8 @@ func (client *Client) DeleteSetting(settingId int32) error {
 	return handleAPIError(err)
 }
 
-func (client *Client) GetSettingValueSimple(environmentId string, settingId int32) (sw.SettingValueSimpleModel, error) {
-	model, response, err := client.apiClient.FeatureFlagSettingValuesApi.GetSettingValueSimple(client.GetAuthContext(), environmentId, settingId)
+func (client *Client) GetSettingValue(environmentId string, settingId int32) (sw.SettingValueModel, error) {
+	model, response, err := client.apiClient.FeatureFlagSettingValuesApi.GetSettingValue(client.GetAuthContext(), environmentId, settingId)
 	defer response.Body.Close()
 	return model, handleAPIError(err)
 }
