@@ -57,6 +57,12 @@ func (client *Client) GetEnvironments(productId string) ([]sw.EnvironmentModel, 
 	return model, handleAPIError(err)
 }
 
+func (client *Client) GetTags(productId string) ([]sw.TagModel, error) {
+	model, response, err := client.apiClient.TagsApi.GetTags(client.GetAuthContext(), productId)
+	defer response.Body.Close()
+	return model, handleAPIError(err)
+}
+
 func (client *Client) CreateEnvironment(productId, environmentName string) (sw.EnvironmentModel, error) {
 	body := sw.CreateEnvironmentModel{}
 	body.Name = environmentName

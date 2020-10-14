@@ -21,6 +21,12 @@ const (
 	ENVIRONMENT_NAME              = "name"
 	ENVIRONMENT_NAME_FILTER_REGEX = "name_filter_regex"
 
+	TAGS                  = "tags"
+	TAG_ID                = "tag_id"
+	TAG_NAME              = "name"
+	TAG_COLOR             = "color"
+	TAG_NAME_FILTER_REGEX = "name_filter_regex"
+
 	SETTINGS                 = "settings"
 	SETTING_ID               = "setting_id"
 	SETTING_KEY              = "key"
