@@ -6,34 +6,35 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 )
 
-func TestResourceSettingValueBoolFreeze(t *testing.T) {
-	const settingID = "67639"
+func TestResourceSettingValueStringFreeze(t *testing.T) {
 	const environmentID = "08d86d63-2726-47cd-8bfc-59608ecb91e2"
 
 	const settingValueResource = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testBool"
-			name = "testBool"
+			key = "testString"
+			name = "testString"
+			setting_type = "string"
 		}
 
 		resource "configcat_setting_value" "test" {
 			environment_id = "` + environmentID + `"
 			setting_id = configcat_setting.testsetting.id
-			value = "true"
+			value = "test1"
 		}
 	`
 	const settingValueResourceUpdated = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testBool"
-			name = "testBool"
+			key = "testString"
+			name = "testString"
+			setting_type = "string"
 		}
 		
 		resource "configcat_setting_value" "test" {
 			environment_id = "` + environmentID + `"
 			setting_id = configcat_setting.testsetting.id
-			value = "false"
+			value = "test2"
 		}
 	`
 
@@ -45,52 +46,54 @@ func TestResourceSettingValueBoolFreeze(t *testing.T) {
 				Config: settingValueResource,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrSet("configcat_setting_value.test", "id"),
-					resource.TestCheckResourceAttr("configcat_setting_value.test", SETTING_TYPE, "boolean"),
-					resource.TestCheckResourceAttr("configcat_setting_value.test", SETTING_VALUE, "true"),
-					checkTrueValue,
+					resource.TestCheckResourceAttr("configcat_setting_value.test", SETTING_TYPE, "string"),
+					resource.TestCheckResourceAttr("configcat_setting_value.test", SETTING_VALUE, "test1"),
+					checkTest1Value,
 				),
 			},
 			resource.TestStep{
 				Config: settingValueResourceUpdated,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrSet("configcat_setting_value.test", "id"),
-					resource.TestCheckResourceAttr("configcat_setting_value.test", SETTING_TYPE, "boolean"),
-					resource.TestCheckResourceAttr("configcat_setting_value.test", SETTING_VALUE, "false"),
-					checkTrueValue,
+					resource.TestCheckResourceAttr("configcat_setting_value.test", SETTING_TYPE, "string"),
+					resource.TestCheckResourceAttr("configcat_setting_value.test", SETTING_VALUE, "test2"),
+					checkTest1Value,
 				),
 			},
 		},
 	})
 }
 
-func TestResourceSettingValueBoolNoFreeze(t *testing.T) {
-	const settingID = "67639"
+func TestResourceSettingValueStringNoFreeze(t *testing.T) {
 	const environmentID = "08d86d63-2726-47cd-8bfc-59608ecb91e2"
 
 	const settingValueResource = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testBool"
-			name = "testBool"
+			key = "testString"
+			name = "testString"
+			setting_type = "string"
 		}
 
 		resource "configcat_setting_value" "test" {
 			environment_id = "` + environmentID + `"
 			setting_id = configcat_setting.testsetting.id
-			value = "true"
+			value = "test1"
 			init_only = false
 		}
 	`
 	const settingValueResourceUpdated = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testBool"
-			name = "testBool"
+			key = "testString"
+			name = "testString"
+			setting_type = "string"
 		}
+
 		resource "configcat_setting_value" "test" {
 			environment_id = "` + environmentID + `"
 			setting_id = configcat_setting.testsetting.id
-			value = "false"
+			value = "test2"
 			init_only = false
 		}
 	`
@@ -103,18 +106,18 @@ func TestResourceSettingValueBoolNoFreeze(t *testing.T) {
 				Config: settingValueResource,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrSet("configcat_setting_value.test", "id"),
-					resource.TestCheckResourceAttr("configcat_setting_value.test", SETTING_TYPE, "boolean"),
-					resource.TestCheckResourceAttr("configcat_setting_value.test", SETTING_VALUE, "true"),
-					checkTrueValue,
+					resource.TestCheckResourceAttr("configcat_setting_value.test", SETTING_TYPE, "string"),
+					resource.TestCheckResourceAttr("configcat_setting_value.test", SETTING_VALUE, "test1"),
+					checkTest1Value,
 				),
 			},
 			resource.TestStep{
 				Config: settingValueResourceUpdated,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrSet("configcat_setting_value.test", "id"),
-					resource.TestCheckResourceAttr("configcat_setting_value.test", SETTING_TYPE, "boolean"),
-					resource.TestCheckResourceAttr("configcat_setting_value.test", SETTING_VALUE, "false"),
-					checkFalseValue,
+					resource.TestCheckResourceAttr("configcat_setting_value.test", SETTING_TYPE, "string"),
+					resource.TestCheckResourceAttr("configcat_setting_value.test", SETTING_VALUE, "test2"),
+					checkTest2Value,
 				),
 			},
 			resource.TestStep{
@@ -126,17 +129,16 @@ func TestResourceSettingValueBoolNoFreeze(t *testing.T) {
 	})
 }
 
-func TestResourceSettingValueBoolRules(t *testing.T) {
-	const settingID = "67639"
+func TestResourceSettingValueStringRules(t *testing.T) {
 	const environmentID = "08d86d63-2726-47cd-8bfc-59608ecb91e2"
 
 	const settingValueResource = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testBool"
-			name = "testBool"
+			key = "testString"
+			name = "testString"
+			setting_type = "string"
 		}
-		
 		resource "configcat_setting_value" "test" {
 			environment_id = "` + environmentID + `"
 			setting_id = configcat_setting.testsetting.id
@@ -147,9 +149,10 @@ func TestResourceSettingValueBoolRules(t *testing.T) {
 	const settingValueResourceRule1 = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testBool"
-			name = "testBool"
-		}
+			key = "testString"
+			name = "testString"
+			setting_type = "string"
+		}	
 		resource "configcat_setting_value" "test" {
 			environment_id = "` + environmentID + `"
 			setting_id = configcat_setting.testsetting.id
@@ -167,9 +170,10 @@ func TestResourceSettingValueBoolRules(t *testing.T) {
 	const settingValueResourceRule2 = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testBool"
-			name = "testBool"
-		}
+			key = "testString"
+			name = "testString"
+			setting_type = "string"
+		}	
 		resource "configcat_setting_value" "test" {
 			environment_id = "` + environmentID + `"
 			setting_id = configcat_setting.testsetting.id
@@ -227,16 +231,16 @@ func TestResourceSettingValueBoolRules(t *testing.T) {
 	})
 }
 
-func TestResourceSettingValueBoolPercentageItems(t *testing.T) {
-	const settingID = "67639"
+func TestResourceSettingValueStringPercentageItems(t *testing.T) {
 	const environmentID = "08d86d63-2726-47cd-8bfc-59608ecb91e2"
 
 	const settingValueResource = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testBool"
-			name = "testBool"
-		}
+			key = "testString"
+			name = "testString"
+			setting_type = "string"
+		} 
 		resource "configcat_setting_value" "test" {
 			environment_id = "` + environmentID + `"
 			setting_id = configcat_setting.testsetting.id
@@ -247,8 +251,9 @@ func TestResourceSettingValueBoolPercentageItems(t *testing.T) {
 	const settingValueResourceItem1 = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testBool"
-			name = "testBool"
+			key = "testString"
+			name = "testString"
+			setting_type = "string"
 		}
 		resource "configcat_setting_value" "test" {
 			environment_id = "` + environmentID + `"
@@ -269,8 +274,9 @@ func TestResourceSettingValueBoolPercentageItems(t *testing.T) {
 	const settingValueResourceItem2 = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testBool"
-			name = "testBool"
+			key = "testString"
+			name = "testString"
+			setting_type = "string"
 		}
 		resource "configcat_setting_value" "test" {
 			environment_id = "` + environmentID + `"
