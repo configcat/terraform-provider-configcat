@@ -40,6 +40,22 @@ func checkTest2IntValue(s *terraform.State) error {
 	return checkValue(s, &value)
 }
 
+func checkTest1FloatValue(s *terraform.State) error {
+	value, err := getSettingValue("double", "1.1")
+	if err != nil {
+		return err
+	}
+	return checkValue(s, &value)
+}
+
+func checkTest2FloatValue(s *terraform.State) error {
+	value, err := getSettingValue("double", "2.1")
+	if err != nil {
+		return err
+	}
+	return checkValue(s, &value)
+}
+
 func checkTrueValue(s *terraform.State) error {
 	value, err := getSettingValue("boolean", "true")
 	if err != nil {
@@ -62,7 +78,7 @@ func checkValue(s *terraform.State, value *interface{}) error {
 		return err
 	}
 
-	if *settingValue.Value != *value {
+	if fmt.Sprintf("%v", *settingValue.Value) != fmt.Sprintf("%v", *value) {
 		return fmt.Errorf("%v != %v", *settingValue.Value, *value)
 	}
 
