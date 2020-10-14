@@ -1,6 +1,6 @@
 # configcat_config Resource
 
-Creates and manages an Config.  
+Creates and manages a Config.  
 
 ## Example Usage
 
@@ -22,7 +22,7 @@ output "config_id" {
 
 ## Argument Reference
 
-* `product_id` - (Required) The ID of the Product
+* `product_id` - (Required) The ID of the Product.
 * `name` - (Required) The name of the Config.
 
 ## Attribute Reference

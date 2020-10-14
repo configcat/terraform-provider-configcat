@@ -57,15 +57,15 @@ resource "configcat_setting_value" "setting_value" {
 ## Argument Reference
 
 Parameters
-* `environment_id` - (Required) The ID of the Environment
-* `setting_id` - (Required) The ID of the Feature Flag/Setting
+* `environment_id` - (Required) The ID of the Environment.
+* `setting_id` - (Required) The ID of the Feature Flag/Setting.
 * `setting_type` - (Required) The Setting's type.
-* `init_only` - (Optional) Default: true. Read more below  
+* `init_only` - (Optional) Default: true. Read more below.  
 
 The Feature Flag/Setting's value
 * `value` - (Required) The Setting's value. Type: `string`. It must be compatible with the `setting_type`.
-* `rollout_rules` - (Optional) A [list](https://www.terraform.io/docs/configuration/types.html#list-) to define [Rollout rules](https://configcat.com/docs/advanced/targeting/#anatomy-of-a-targeting-rule). Read more below
-* `percentage_items` - (Optional) A [list](https://www.terraform.io/docs/configuration/types.html#list-) to define [Percentage items](https://configcat.com/docs/advanced/targeting/#targeting-a-percentage-of-users). Read more below
+* `rollout_rules` - (Optional) A [list](https://www.terraform.io/docs/configuration/types.html#list-) to define [Rollout rules](https://configcat.com/docs/advanced/targeting/#anatomy-of-a-targeting-rule). Read more below.
+* `percentage_items` - (Optional) A [list](https://www.terraform.io/docs/configuration/types.html#list-) to define [Percentage items](https://configcat.com/docs/advanced/targeting/#targeting-a-percentage-of-users). Read more below.
 
 ### `rollout_rules` list
 

@@ -21,7 +21,7 @@ output "organization_id" {
 
 ## Attribute Reference
 
-* `organizations` - A organization [list](https://www.terraform.io/docs/configuration/types.html#list-) block defined as below.
+* `organizations` - An organization [list](https://www.terraform.io/docs/configuration/types.html#list-) block defined as below.
 
 ### The `organizations` [list](https://www.terraform.io/docs/configuration/types.html#list-) block
 

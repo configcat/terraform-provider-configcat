@@ -21,12 +21,12 @@ output "tag_id" {
 
 ## Argument Reference
 
-* `product_id` - (Required) The ID of the Product
+* `product_id` - (Required) The ID of the Product.
 * `name_filter_regex` - (Optional) Filter the Tags by name.
 
 ## Attribute Reference
 
-* `tags` - An tag [list](https://www.terraform.io/docs/configuration/types.html#list-) block defined as below.
+* `tags` - A tag [list](https://www.terraform.io/docs/configuration/types.html#list-) block defined as below.
 
 ### The `tags` [list](https://www.terraform.io/docs/configuration/types.html#list-) block
 

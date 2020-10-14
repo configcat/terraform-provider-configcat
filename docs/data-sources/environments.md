@@ -21,7 +21,7 @@ output "environment_id" {
 
 ## Argument Reference
 
-* `product_id` - (Required) The ID of the Product
+* `product_id` - (Required) The ID of the Product.
 * `name_filter_regex` - (Optional) Filter the Environments by name.
 
 ## Attribute Reference

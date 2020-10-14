@@ -22,7 +22,7 @@ output "environment_id" {
 
 ## Argument Reference
 
-* `product_id` - (Required) The ID of the Product
+* `product_id` - (Required) The ID of the Product.
 * `name` - (Required) The name of the Environment.
 
 ## Attribute Reference

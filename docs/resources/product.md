@@ -1,6 +1,6 @@
 # configcat_product Resource
 
-Creates and manages an Product.  
+Creates and manages a Product.  
 
 ## Example Usage
 
@@ -22,7 +22,7 @@ output "product_id" {
 
 ## Argument Reference
 
-* `organization_id` - (Required) The ID of the Organization
+* `organization_id` - (Required) The ID of the Organization.
 * `name` - (Required) The name of the Product.
 
 ## Attribute Reference

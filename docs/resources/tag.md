@@ -1,6 +1,6 @@
 # configcat_tag Resource
 
-Creates and manages an Tag.  
+Creates and manages a Tag.  
 
 ## Example Usage
 
@@ -22,7 +22,7 @@ output "tag_id" {
 
 ## Argument Reference
 
-* `product_id` - (Required) The ID of the Product
+* `product_id` - (Required) The ID of the Product.
 * `name` - (Required) The name of the Tag.
 
 ## Attribute Reference

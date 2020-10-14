@@ -30,11 +30,12 @@ output "setting_id" {
 
 ## Argument Reference
 
-* `config_id` - (Required) The ID of the Config
-* `key` - (Required) The key of the Feature Flag/Setting
+* `config_id` - (Required) The ID of the Config.
+* `key` - (Required) The key of the Feature Flag/Setting.
 * `name` - (Required) The name of the Setting.
 * `hint` - (Optional) The hint of the Setting.
-* `setting_type` - (Optional) Default: `boolean`. The Setting's type. Available values: `boolean`|`string`|`int`|`double`
+* `setting_type` - (Optional) Default: `boolean`. The Setting's type.  
+Available values: `boolean`|`string`|`int`|`double`.
 
 ## Attribute Reference
 
