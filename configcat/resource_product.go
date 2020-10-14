@@ -2,7 +2,6 @@ package configcat
 
 import (
 	"context"
-	"strconv"
 
 	sw "github.com/configcat/configcat-publicapi-go-client"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -58,12 +57,8 @@ func resourceProductCreate(ctx context.Context, d *schema.ResourceData, m interf
 func resourceProductRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*Client)
-	productID, err := strconv.ParseInt(d.Id(), 10, 32)
-	if err != nil {
-		return diag.FromErr(err)
-	}
 
-	product, err := c.GetProduct(int32(productID))
+	product, err := c.GetProduct(d.Id())
 	if err != nil {
 		if _, ok := err.(NotFoundError); ok {
 			d.SetId("")
@@ -73,43 +68,20 @@ func resourceProductRead(ctx context.Context, d *schema.ResourceData, m interfac
 		return diag.FromErr(err)
 	}
 
-	d.Set(PRODUCT_KEY, product.Key)
 	d.Set(PRODUCT_NAME, product.Name)
-	d.Set(PRODUCT_HINT, product.Hint)
-	d.Set(PRODUCT_TYPE, product.ProductType)
-	d.Set(CONFIG_ID, product.ConfigId)
 
 	return diags
 }
 
 func resourceProductUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*Client)
-	productID, err := strconv.ParseInt(d.Id(), 10, 32)
-	if err != nil {
-		return diag.FromErr(err)
-	}
 
-	if d.HasChanges(PRODUCT_NAME, PRODUCT_HINT) {
-		body := []sw.Operation{}
-		if d.HasChange(PRODUCT_NAME) {
-			productName := d.Get(PRODUCT_NAME)
-			body = append(body, sw.Operation{
-				Op:    "replace",
-				Path:  "/name",
-				Value: &productName,
-			})
+	if d.HasChanges(PRODUCT_NAME) {
+		body := sw.UpdateProductRequest{
+			Name: d.Get(PRODUCT_NAME).(string),
 		}
 
-		if d.HasChange(PRODUCT_HINT) {
-			productHint := d.Get(PRODUCT_HINT)
-			body = append(body, sw.Operation{
-				Op:    "replace",
-				Path:  "/hint",
-				Value: &productHint,
-			})
-		}
-
-		_, err := c.UpdateProduct(int32(productID), body)
+		_, err := c.UpdateProduct(d.Id(), body)
 		if err != nil {
 			return diag.FromErr(err)
 		}
@@ -123,12 +95,8 @@ func resourceProductDelete(ctx context.Context, d *schema.ResourceData, m interf
 	var diags diag.Diagnostics
 
 	c := m.(*Client)
-	productID, err := strconv.ParseInt(d.Id(), 10, 32)
-	if err != nil {
-		return diag.FromErr(err)
-	}
 
-	err = c.DeleteProduct(int32(productID))
+	err := c.DeleteProduct(d.Id())
 	if err != nil {
 		if _, ok := err.(NotFoundError); ok {
 			d.SetId("")
