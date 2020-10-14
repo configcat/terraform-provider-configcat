@@ -39,7 +39,7 @@ func TestTagValidFilter(t *testing.T) {
 		}
 	`
 	const productID = "08d86d63-2721-4da6-8c06-584521d516bc"
-	const tagID = "08d86d63-2726-47cd-8bfc-59608ecb91e2"
+	const tagID = "46"
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:  func() { testAccPreCheck(t) },
@@ -52,7 +52,7 @@ func TestTagValidFilter(t *testing.T) {
 					resource.TestCheckResourceAttr("data.configcat_tags.test", TAGS+".#", "1"),
 					resource.TestCheckResourceAttr("data.configcat_tags.test", TAGS+".0."+TAG_ID, tagID),
 					resource.TestCheckResourceAttr("data.configcat_tags.test", TAGS+".0."+TAG_NAME, "Test"),
-					resource.TestCheckResourceAttr("data.configcat_tags.test", TAGS+".0."+TAG_COLOR, "blue"),
+					resource.TestCheckResourceAttr("data.configcat_tags.test", TAGS+".0."+TAG_COLOR, "panther"),
 				),
 			},
 		},

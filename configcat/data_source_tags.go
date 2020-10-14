@@ -2,6 +2,7 @@ package configcat
 
 import (
 	"context"
+	"fmt"
 	"regexp"
 	"strconv"
 	"time"
@@ -90,7 +91,7 @@ func flattenTagsData(tags *[]sw.TagModel) []interface{} {
 		for i, tag := range *tags {
 			element := make(map[string]interface{})
 
-			element[TAG_ID] = tag.TagId
+			element[TAG_ID] = fmt.Sprintf("%d", tag.TagId)
 			element[TAG_NAME] = tag.Name
 			element[TAG_COLOR] = tag.Color
 

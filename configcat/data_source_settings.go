@@ -103,9 +103,7 @@ func flattenSettingsData(settings *[]sw.SettingModel) []interface{} {
 		for i, setting := range *settings {
 			element := make(map[string]interface{})
 
-			settingID := fmt.Sprintf("%d", setting.SettingId)
-
-			element[SETTING_ID] = settingID
+			element[SETTING_ID] = fmt.Sprintf("%d", setting.SettingId)
 			element[SETTING_KEY] = setting.Key
 			element[SETTING_NAME] = setting.Name
 			element[SETTING_HINT] = setting.Hint
