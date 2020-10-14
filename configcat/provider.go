@@ -65,6 +65,7 @@ func Provider() *schema.Provider {
 
 		ResourcesMap: map[string]*schema.Resource{
 			KEY_PRODUCT:       resourceConfigCatProduct(),
+			KEY_CONFIG:        resourceConfigCatConfig(),
 			KEY_SETTING:       resourceConfigCatSetting(),
 			KEY_SETTING_VALUE: resourceConfigCatSettingValue(),
 		},
