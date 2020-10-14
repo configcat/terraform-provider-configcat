@@ -9,19 +9,16 @@
  */
 package configcatpublicapi
 
-type SettingValueModel struct {
-	Config                  *ConfigModel           `json:"config,omitempty"`
-	Environment             *EnvironmentModel      `json:"environment,omitempty"`
-	ReadOnly                bool                   `json:"readOnly,omitempty"`
-	Setting                 *SettingDataModel      `json:"setting,omitempty"`
-	LastUpdaterUserEmail    string                 `json:"lastUpdaterUserEmail,omitempty"`
-	LastUpdaterUserFullName string                 `json:"lastUpdaterUserFullName,omitempty"`
-	IntegrationLinks        []IntegrationLinkModel `json:"integrationLinks,omitempty"`
-	SettingTags             []SettingTagModel      `json:"settingTags,omitempty"`
-	// The targeting rule collection.
-	RolloutRules []RolloutRuleModel `json:"rolloutRules,omitempty"`
-	// The percentage rule collection.
-	RolloutPercentageItems []RolloutPercentageItemModel `json:"rolloutPercentageItems,omitempty"`
-	// The value to serve. It must respect the setting type.
-	Value *interface{} `json:"value,omitempty"`
+type SettingModelHaljson struct {
+	SettingId         int32                         `json:"settingId,omitempty"`
+	Key               string                        `json:"key,omitempty"`
+	Name              string                        `json:"name,omitempty"`
+	Hint              string                        `json:"hint,omitempty"`
+	SettingType       *SettingType                  `json:"settingType,omitempty"`
+	OwnerUserEmail    string                        `json:"ownerUserEmail,omitempty"`
+	OwnerUserFullName string                        `json:"ownerUserFullName,omitempty"`
+	ConfigId          string                        `json:"configId,omitempty"`
+	ConfigName        string                        `json:"configName,omitempty"`
+	Embedded          *SettingModelhaljsonEmbedded  `json:"_embedded,omitempty"`
+	Links             *EnvironmentModelhaljsonLinks `json:"_links,omitempty"`
 }

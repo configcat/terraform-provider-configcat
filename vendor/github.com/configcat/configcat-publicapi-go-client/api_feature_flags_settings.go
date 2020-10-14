@@ -1,7 +1,7 @@
 /*
  * ConfigCat Public Management API
  *
- * **Base API URL**: https://api.configcat.com  If you prefer the swagger documentation, you can find it here: [Swagger UI](https://api.configcat.com/swagger).  The purpose of this API is to access the ConfigCat platform programmatically.  You can **Create**, **Read**, **Update** and **Delete** any entities like **Feature Flags, Configs, Environments** or **Products** within ConfigCat.   The API is based on HTTP REST, uses resource-oriented URLs, status codes and supports JSON  and JSON+HAL format. Do not use this API for accessing and evaluating feature flag values. Use the [SDKs instead](https://configcat.com/docs/sdk-reference/overview).   # OpenAPI Specification  The complete specification is publicly available here: [swagger.json](v1/swagger.json).  You can use it to generate client libraries in various languages with [OpenAPI Generator](https://github.com/OpenAPITools/openapi-generator) or [Swagger Codegen](https://swagger.io/tools/swagger-codegen/) to interact with this API.  # Authentication This API uses the [Basic HTTP Authentication Scheme](https://en.wikipedia.org/wiki/Basic_access_authentication).   <!-- ReDoc-Inject: <security-definitions> -->  # Throttling and rate limits All the rate limited API calls are returning information about the current rate limit period in the following HTTP headers:  | Header | Description | | :- | :- | | X-Rate-Limit-Remaining | The maximum number of requests remaining in the current rate limit period. | | X-Rate-Limit-Reset     | The time when the current rate limit period resets.        |  When the rate limit is exceeded by a request, the API returns with a `HTTP 429 - Too many requests` status along with a `Retry-After` HTTP header.
+ * **Base API URL**: https://localhost    If you prefer the swagger documentation, you can find it here: [Swagger UI](https://api.configcat.com/swagger).    The purpose of this API is to access the ConfigCat platform programmatically.   You can **Create**, **Read**, **Update** and **Delete** any entities like **Feature Flags, Configs, Environments** or **Products** within ConfigCat.     The API is based on HTTP REST, uses resource-oriented URLs, status codes and supports JSON   and JSON+HAL format. Do not use this API for accessing and evaluating feature flag values. Use the [SDKs instead](https://configcat.com/docs/sdk-reference/overview).      # OpenAPI Specification    The complete specification is publicly available here: [swagger.json](v1/swagger.json).   You can use it to generate client libraries in various languages with [OpenAPI Generator](https://github.com/OpenAPITools/openapi-generator) or  [Swagger Codegen](https://swagger.io/tools/swagger-codegen/) to interact with this API.    # Authentication  This API uses the [Basic HTTP Authentication Scheme](https://en.wikipedia.org/wiki/Basic_access_authentication).     <!-- ReDoc-Inject: <security-definitions> -->    # Throttling and rate limits  All the rate limited API calls are returning information about the current rate limit period in the following HTTP headers:    | Header | Description |  | :- | :- |  | X-Rate-Limit-Remaining | The maximum number of requests remaining in the current rate limit period. |  | X-Rate-Limit-Reset     | The time when the current rate limit period resets.        |    When the rate limit is exceeded by a request, the API returns with a `HTTP 429 - Too many requests` status along with a `Retry-After` HTTP header.
  *
  * API version: v1
  * Contact: support@configcat.com
@@ -27,7 +27,7 @@ type FeatureFlagsSettingsApiService service
 
 /*
 FeatureFlagsSettingsApiService Create Flag
-This endpoint creates a new Feature Flag or Setting in a specified Config identified by the &#x60;configId&#x60; parameter.  **Important:** The &#x60;key&#x60; attribute must be unique within the given Config.
+This endpoint creates a new Feature Flag or Setting in a specified Config  identified by the &#x60;configId&#x60; parameter.    **Important:** The &#x60;key&#x60; attribute must be unique within the given Config.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param body
  * @param configId The identifier of the Config.
@@ -116,7 +116,7 @@ func (a *FeatureFlagsSettingsApiService) CreateSetting(ctx context.Context, body
 
 /*
 FeatureFlagsSettingsApiService Delete Flag
-This endpoint removes a Feature Flag or Setting from a specified Config,  identified by the &#x60;configId&#x60; parameter.
+This endpoint removes a Feature Flag or Setting from a specified Config,   identified by the &#x60;configId&#x60; parameter.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param settingId The identifier of the Setting.
 
@@ -183,7 +183,7 @@ func (a *FeatureFlagsSettingsApiService) DeleteSetting(ctx context.Context, sett
 
 /*
 FeatureFlagsSettingsApiService Get Flag
-This endpoint returns the metadata attributes of a Feature Flag or Setting  identified by the &#x60;settingId&#x60; parameter.
+This endpoint returns the metadata attributes of a Feature Flag or Setting   identified by the &#x60;settingId&#x60; parameter.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param settingId The identifier of the Setting.
 @return SettingModel
@@ -269,7 +269,7 @@ func (a *FeatureFlagsSettingsApiService) GetSetting(ctx context.Context, setting
 
 /*
 FeatureFlagsSettingsApiService List Flags
-This endpoint returns the list of the Feature Flags and Settings defined in a  specified Config, identified by the &#x60;configId&#x60; parameter.
+This endpoint returns the list of the Feature Flags and Settings defined in a   specified Config, identified by the &#x60;configId&#x60; parameter.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param configId The identifier of the Config.
 @return []SettingModel
@@ -355,7 +355,7 @@ func (a *FeatureFlagsSettingsApiService) GetSettings(ctx context.Context, config
 
 /*
 FeatureFlagsSettingsApiService Update Flag
-This endpoint updates the metadata of a Feature Flag or Setting  with a collection of [JSON Patch](http://jsonpatch.com) operations in a specified Config.  Only the &#x60;name&#x60; and &#x60;hint&#x60; attributes are modifiable by this endpoint.  The advantage of using JSON Patch is that you can describe individual update operations on a resource without touching attributes that you don&#x27;t want to change.  For example: We have the following resource. &#x60;&#x60;&#x60; {  \&quot;settingId\&quot;: 5345,  \&quot;key\&quot;: \&quot;myAwesomeFeature\&quot;,  \&quot;name\&quot;: \&quot;Tihs is a naem with soem typos.\&quot;,  \&quot;hint\&quot;: \&quot;This Flag controls my awesome feature.\&quot;,  \&quot;settingType\&quot;: \&quot;boolean\&quot; } &#x60;&#x60;&#x60; If we send an update request body as below: &#x60;&#x60;&#x60; [  {   \&quot;op\&quot;: \&quot;replace\&quot;,   \&quot;path\&quot;: \&quot;/name\&quot;,   \&quot;value\&quot;: \&quot;This is the name without typos.\&quot;  } ] &#x60;&#x60;&#x60; Only the name is going to be updated and all the other attributes are remaining unchanged. So we get a response like this: &#x60;&#x60;&#x60; {  \&quot;settingId\&quot;: 5345,  \&quot;key\&quot;: \&quot;myAwesomeFeature\&quot;,  \&quot;name\&quot;: \&quot;This is the name without typos.\&quot;,  \&quot;hint\&quot;: \&quot;This Flag controls my awesome feature.\&quot;,  \&quot;settingType\&quot;: \&quot;boolean\&quot; } &#x60;&#x60;&#x60;
+This endpoint updates the metadata of a Feature Flag or Setting   with a collection of [JSON Patch](http://jsonpatch.com) operations in a specified Config.    Only the &#x60;name&#x60; and &#x60;hint&#x60; attributes are modifiable by this endpoint.    The advantage of using JSON Patch is that you can describe individual update operations on a resource  without touching attributes that you don&#x27;t want to change.    For example: We have the following resource.  &#x60;&#x60;&#x60;  {   \&quot;settingId\&quot;: 5345,   \&quot;key\&quot;: \&quot;myAwesomeFeature\&quot;,   \&quot;name\&quot;: \&quot;Tihs is a naem with soem typos.\&quot;,   \&quot;hint\&quot;: \&quot;This Flag controls my awesome feature.\&quot;,   \&quot;settingType\&quot;: \&quot;boolean\&quot;  }  &#x60;&#x60;&#x60;  If we send an update request body as below:  &#x60;&#x60;&#x60;  [   {    \&quot;op\&quot;: \&quot;replace\&quot;,    \&quot;path\&quot;: \&quot;/name\&quot;,    \&quot;value\&quot;: \&quot;This is the name without typos.\&quot;   }  ]  &#x60;&#x60;&#x60;  Only the name is going to be updated and all the other attributes are remaining unchanged.  So we get a response like this:  &#x60;&#x60;&#x60;  {   \&quot;settingId\&quot;: 5345,   \&quot;key\&quot;: \&quot;myAwesomeFeature\&quot;,   \&quot;name\&quot;: \&quot;This is the name without typos.\&quot;,   \&quot;hint\&quot;: \&quot;This Flag controls my awesome feature.\&quot;,   \&quot;settingType\&quot;: \&quot;boolean\&quot;  }  &#x60;&#x60;&#x60;
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param body
  * @param settingId The identifier of the Setting.

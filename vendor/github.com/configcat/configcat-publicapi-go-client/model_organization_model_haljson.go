@@ -9,7 +9,8 @@
  */
 package configcatpublicapi
 
-type ConfigModelhaljsonLinks struct {
-	Self string `json:"self,omitempty"`
-	Settings string `json:"settings,omitempty"`
+type OrganizationModelHaljson struct {
+	OrganizationId string `json:"organizationId,omitempty"`
+	Name string `json:"name,omitempty"`
+	Links *OrganizationModelhaljsonLinks `json:"_links,omitempty"`
 }

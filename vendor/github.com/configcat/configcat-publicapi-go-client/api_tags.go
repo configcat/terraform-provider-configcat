@@ -16,8 +16,6 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
-
-	"github.com/antihax/optional"
 )
 
 // Linger please
@@ -25,29 +23,183 @@ var (
 	_ context.Context
 )
 
-type FeatureFlagSettingValuesApiService service
+type TagsApiService service
 
 /*
-FeatureFlagSettingValuesApiService Get value
-This endpoint returns the value of a Feature Flag or Setting   in a specified Environment identified by the &#x60;environmentId&#x60; parameter.    The most important attributes in the response are the &#x60;value&#x60;, &#x60;rolloutRules&#x60; and &#x60;percentageRules&#x60;.  The &#x60;value&#x60; represents what the clients will get when the evaluation requests of our SDKs   are not matching to any of the defined Targeting or Percentage Rules, or when there are no additional rules to evaluate.    The &#x60;rolloutRules&#x60; and &#x60;percentageRules&#x60; attributes are representing the current   Targeting and Percentage Rules configuration of the actual Feature Flag or Setting   in an **ordered** collection, which means the order of the returned rules is matching to the  evaluation order. You can read more about these rules [here](https://configcat.com/docs/advanced/targeting/).
+TagsApiService Create Tag
+This endpoint creates a new Tag in a specified Product   identified by the &#x60;productId&#x60; parameter, which can be obtained from the [List Products](#operation/get-products) endpoint.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param environmentId The identifier of the Environment.
- * @param settingId The id of the Setting.
-@return SettingValueModel
+ * @param body
+ * @param productId The identifier of the Organization.
+@return TagModel
 */
-func (a *FeatureFlagSettingValuesApiService) GetSettingValue(ctx context.Context, environmentId string, settingId int32) (SettingValueModel, *http.Response, error) {
+func (a *TagsApiService) CreateTag(ctx context.Context, body CreateTagModel, productId string) (TagModel, *http.Response, error) {
+	var (
+		localVarHttpMethod  = strings.ToUpper("Post")
+		localVarPostBody    interface{}
+		localVarFileName    string
+		localVarFileBytes   []byte
+		localVarReturnValue TagModel
+	)
+
+	// create path and map variables
+	localVarPath := a.client.cfg.BasePath + "/v1/products/{productId}/tags"
+	localVarPath = strings.Replace(localVarPath, "{"+"productId"+"}", fmt.Sprintf("%v", productId), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHttpContentTypes := []string{"application/json", "text/json", "application/_*+json"}
+
+	// set Content-Type header
+	localVarHttpContentType := selectHeaderContentType(localVarHttpContentTypes)
+	if localVarHttpContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHttpContentType
+	}
+
+	// to determine the Accept header
+	localVarHttpHeaderAccepts := []string{"application/json", "application/hal+json"}
+
+	// set Accept header
+	localVarHttpHeaderAccept := selectHeaderAccept(localVarHttpHeaderAccepts)
+	if localVarHttpHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
+	}
+	// body params
+	localVarPostBody = &body
+	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHttpResponse, err := a.client.callAPI(r)
+	if err != nil || localVarHttpResponse == nil {
+		return localVarReturnValue, localVarHttpResponse, err
+	}
+
+	localVarBody, err := ioutil.ReadAll(localVarHttpResponse.Body)
+	localVarHttpResponse.Body.Close()
+	if err != nil {
+		return localVarReturnValue, localVarHttpResponse, err
+	}
+
+	if localVarHttpResponse.StatusCode < 300 {
+		// If we succeed, return the data, otherwise pass on to decode error.
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+		if err == nil {
+			return localVarReturnValue, localVarHttpResponse, err
+		}
+	}
+
+	if localVarHttpResponse.StatusCode >= 300 {
+		newErr := GenericSwaggerError{
+			body:  localVarBody,
+			error: localVarHttpResponse.Status,
+		}
+		if localVarHttpResponse.StatusCode == 201 {
+			var v TagModel
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		return localVarReturnValue, localVarHttpResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHttpResponse, nil
+}
+
+/*
+TagsApiService Delete Tag
+This endpoint removes a Tag identified by the &#x60;tagId&#x60; parameter.
+ * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ * @param tagId The identifier of the Tag.
+
+*/
+func (a *TagsApiService) DeleteTag(ctx context.Context, tagId int64) (*http.Response, error) {
+	var (
+		localVarHttpMethod = strings.ToUpper("Delete")
+		localVarPostBody   interface{}
+		localVarFileName   string
+		localVarFileBytes  []byte
+	)
+
+	// create path and map variables
+	localVarPath := a.client.cfg.BasePath + "/v1/tags/{tagId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"tagId"+"}", fmt.Sprintf("%v", tagId), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHttpContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHttpContentType := selectHeaderContentType(localVarHttpContentTypes)
+	if localVarHttpContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHttpContentType
+	}
+
+	// to determine the Accept header
+	localVarHttpHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHttpHeaderAccept := selectHeaderAccept(localVarHttpHeaderAccepts)
+	if localVarHttpHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
+	}
+	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHttpResponse, err := a.client.callAPI(r)
+	if err != nil || localVarHttpResponse == nil {
+		return localVarHttpResponse, err
+	}
+
+	localVarBody, err := ioutil.ReadAll(localVarHttpResponse.Body)
+	localVarHttpResponse.Body.Close()
+	if err != nil {
+		return localVarHttpResponse, err
+	}
+
+	if localVarHttpResponse.StatusCode >= 300 {
+		newErr := GenericSwaggerError{
+			body:  localVarBody,
+			error: localVarHttpResponse.Status,
+		}
+		return localVarHttpResponse, newErr
+	}
+
+	return localVarHttpResponse, nil
+}
+
+/*
+TagsApiService Get Tag
+This endpoint returns the metadata of a Tag   identified by the &#x60;tagId&#x60;.
+ * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ * @param tagId The identifier of the Tag.
+@return TagModel
+*/
+func (a *TagsApiService) GetTag(ctx context.Context, tagId int64) (TagModel, *http.Response, error) {
 	var (
 		localVarHttpMethod  = strings.ToUpper("Get")
 		localVarPostBody    interface{}
 		localVarFileName    string
 		localVarFileBytes   []byte
-		localVarReturnValue SettingValueModel
+		localVarReturnValue TagModel
 	)
 
 	// create path and map variables
-	localVarPath := a.client.cfg.BasePath + "/v1/environments/{environmentId}/settings/{settingId}/value"
-	localVarPath = strings.Replace(localVarPath, "{"+"environmentId"+"}", fmt.Sprintf("%v", environmentId), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"settingId"+"}", fmt.Sprintf("%v", settingId), -1)
+	localVarPath := a.client.cfg.BasePath + "/v1/tags/{tagId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"tagId"+"}", fmt.Sprintf("%v", tagId), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -100,7 +252,7 @@ func (a *FeatureFlagSettingValuesApiService) GetSettingValue(ctx context.Context
 			error: localVarHttpResponse.Status,
 		}
 		if localVarHttpResponse.StatusCode == 200 {
-			var v SettingValueModel
+			var v TagModel
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -116,42 +268,116 @@ func (a *FeatureFlagSettingValuesApiService) GetSettingValue(ctx context.Context
 }
 
 /*
-FeatureFlagSettingValuesApiService Replace value
-This endpoint replaces the whole value of a Feature Flag or Setting in a specified Environment.    Only the &#x60;value&#x60;, &#x60;rolloutRules&#x60; and &#x60;percentageRules&#x60; attributes are modifiable by this endpoint.    **Important:** As this endpoint is doing a complete replace, it&#x27;s important to set every other attribute that you don&#x27;t   want to change in its original state. Not listing one means that it will reset.    For example: We have the following resource.  &#x60;&#x60;&#x60;  {   \&quot;rolloutPercentageItems\&quot;: [    {     \&quot;percentage\&quot;: 30,     \&quot;value\&quot;: true    },    {     \&quot;percentage\&quot;: 70,     \&quot;value\&quot;: false    }   ],   \&quot;rolloutRules\&quot;: [],   \&quot;value\&quot;: false  }  &#x60;&#x60;&#x60;  If we send a replace request body as below:  &#x60;&#x60;&#x60;  {   \&quot;value\&quot;: true  }  &#x60;&#x60;&#x60;  Then besides that the default value is set to &#x60;true&#x60;, all the Percentage Rules are deleted.   So we get a response like this:  &#x60;&#x60;&#x60;  {   \&quot;rolloutPercentageItems\&quot;: [],   \&quot;rolloutRules\&quot;: [],   \&quot;value\&quot;: true  }  &#x60;&#x60;&#x60;
+TagsApiService List Tags
+This endpoint returns the list of the Tags in a   specified Product, identified by the &#x60;productId&#x60; parameter.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param body
- * @param environmentId The identifier of the Environment.
- * @param settingId The id of the Setting.
- * @param optional nil or *FeatureFlagSettingValuesApiReplaceSettingValueOpts - Optional Parameters:
-     * @param "Reason" (optional.String) -  The reason note for the Audit Log if the Product&#x27;s \&quot;Config changes require a reason\&quot; preference is turned on.
-@return SettingValueModel
+ * @param productId The identifier of the Product.
+@return []TagModel
 */
-
-type FeatureFlagSettingValuesApiReplaceSettingValueOpts struct {
-	Reason optional.String
-}
-
-func (a *FeatureFlagSettingValuesApiService) ReplaceSettingValue(ctx context.Context, body UpdateSettingValueModel, environmentId string, settingId int32, localVarOptionals *FeatureFlagSettingValuesApiReplaceSettingValueOpts) (SettingValueModel, *http.Response, error) {
+func (a *TagsApiService) GetTags(ctx context.Context, productId string) ([]TagModel, *http.Response, error) {
 	var (
-		localVarHttpMethod  = strings.ToUpper("Put")
+		localVarHttpMethod  = strings.ToUpper("Get")
 		localVarPostBody    interface{}
 		localVarFileName    string
 		localVarFileBytes   []byte
-		localVarReturnValue SettingValueModel
+		localVarReturnValue []TagModel
 	)
 
 	// create path and map variables
-	localVarPath := a.client.cfg.BasePath + "/v1/environments/{environmentId}/settings/{settingId}/value"
-	localVarPath = strings.Replace(localVarPath, "{"+"environmentId"+"}", fmt.Sprintf("%v", environmentId), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"settingId"+"}", fmt.Sprintf("%v", settingId), -1)
+	localVarPath := a.client.cfg.BasePath + "/v1/products/{productId}/tags"
+	localVarPath = strings.Replace(localVarPath, "{"+"productId"+"}", fmt.Sprintf("%v", productId), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
-	if localVarOptionals != nil && localVarOptionals.Reason.IsSet() {
-		localVarQueryParams.Add("reason", parameterToString(localVarOptionals.Reason.Value(), ""))
+	// to determine the Content-Type header
+	localVarHttpContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHttpContentType := selectHeaderContentType(localVarHttpContentTypes)
+	if localVarHttpContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHttpContentType
 	}
+
+	// to determine the Accept header
+	localVarHttpHeaderAccepts := []string{"application/json", "application/hal+json"}
+
+	// set Accept header
+	localVarHttpHeaderAccept := selectHeaderAccept(localVarHttpHeaderAccepts)
+	if localVarHttpHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
+	}
+	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHttpResponse, err := a.client.callAPI(r)
+	if err != nil || localVarHttpResponse == nil {
+		return localVarReturnValue, localVarHttpResponse, err
+	}
+
+	localVarBody, err := ioutil.ReadAll(localVarHttpResponse.Body)
+	localVarHttpResponse.Body.Close()
+	if err != nil {
+		return localVarReturnValue, localVarHttpResponse, err
+	}
+
+	if localVarHttpResponse.StatusCode < 300 {
+		// If we succeed, return the data, otherwise pass on to decode error.
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+		if err == nil {
+			return localVarReturnValue, localVarHttpResponse, err
+		}
+	}
+
+	if localVarHttpResponse.StatusCode >= 300 {
+		newErr := GenericSwaggerError{
+			body:  localVarBody,
+			error: localVarHttpResponse.Status,
+		}
+		if localVarHttpResponse.StatusCode == 200 {
+			var v []TagModel
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		return localVarReturnValue, localVarHttpResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHttpResponse, nil
+}
+
+/*
+TagsApiService Update Tag
+This endpoint updates a Tag identified by the &#x60;tagId&#x60; parameter.
+ * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ * @param body
+ * @param tagId The identifier of the Tag.
+@return TagModel
+*/
+func (a *TagsApiService) UpdateTag(ctx context.Context, body UpdateTagModel, tagId int64) (TagModel, *http.Response, error) {
+	var (
+		localVarHttpMethod  = strings.ToUpper("Put")
+		localVarPostBody    interface{}
+		localVarFileName    string
+		localVarFileBytes   []byte
+		localVarReturnValue TagModel
+	)
+
+	// create path and map variables
+	localVarPath := a.client.cfg.BasePath + "/v1/tags/{tagId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"tagId"+"}", fmt.Sprintf("%v", tagId), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "text/json", "application/_*+json"}
 
@@ -201,108 +427,7 @@ func (a *FeatureFlagSettingValuesApiService) ReplaceSettingValue(ctx context.Con
 			error: localVarHttpResponse.Status,
 		}
 		if localVarHttpResponse.StatusCode == 200 {
-			var v SettingValueModel
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHttpResponse, newErr
-			}
-			newErr.model = v
-			return localVarReturnValue, localVarHttpResponse, newErr
-		}
-		return localVarReturnValue, localVarHttpResponse, newErr
-	}
-
-	return localVarReturnValue, localVarHttpResponse, nil
-}
-
-/*
-FeatureFlagSettingValuesApiService Update value
-This endpoint updates the value of a Feature Flag or Setting   with a collection of [JSON Patch](http://jsonpatch.com) operations in a specified Environment.    Only the &#x60;value&#x60;, &#x60;rolloutRules&#x60; and &#x60;percentageRules&#x60; attributes are modifiable by this endpoint.    The advantage of using JSON Patch is that you can describe individual update operations on a resource  without touching attributes that you don&#x27;t want to change. It supports collection reordering, so it also   can be used for reordering the targeting rules of a Feature Flag or Setting.    For example: We have the following resource.  &#x60;&#x60;&#x60;  {   \&quot;rolloutPercentageItems\&quot;: [    {     \&quot;percentage\&quot;: 30,     \&quot;value\&quot;: true    },    {     \&quot;percentage\&quot;: 70,     \&quot;value\&quot;: false    }   ],   \&quot;rolloutRules\&quot;: [],   \&quot;value\&quot;: false  }  &#x60;&#x60;&#x60;  If we send an update request body as below:  &#x60;&#x60;&#x60;  [   {    \&quot;op\&quot;: \&quot;replace\&quot;,    \&quot;path\&quot;: \&quot;/value\&quot;,    \&quot;value\&quot;: true   }  ]  &#x60;&#x60;&#x60;  Only the default value is going to be set to &#x60;true&#x60; and all the Percentage Rules are remaining unchanged.  So we get a response like this:  &#x60;&#x60;&#x60;  {   \&quot;rolloutPercentageItems\&quot;: [    {     \&quot;percentage\&quot;: 30,     \&quot;value\&quot;: true    },    {     \&quot;percentage\&quot;: 70,     \&quot;value\&quot;: false    }   ],   \&quot;rolloutRules\&quot;: [],   \&quot;value\&quot;: true  }  &#x60;&#x60;&#x60;
- * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param body
- * @param environmentId The identifier of the Environment.
- * @param settingId The id of the Setting.
- * @param optional nil or *FeatureFlagSettingValuesApiUpdateSettingValueOpts - Optional Parameters:
-     * @param "Reason" (optional.String) -  The reason note for the Audit Log if the Product&#x27;s \&quot;Config changes require a reason\&quot; preference is turned on.
-@return SettingValueModel
-*/
-
-type FeatureFlagSettingValuesApiUpdateSettingValueOpts struct {
-	Reason optional.String
-}
-
-func (a *FeatureFlagSettingValuesApiService) UpdateSettingValue(ctx context.Context, body []Operation, environmentId string, settingId int32, localVarOptionals *FeatureFlagSettingValuesApiUpdateSettingValueOpts) (SettingValueModel, *http.Response, error) {
-	var (
-		localVarHttpMethod  = strings.ToUpper("Patch")
-		localVarPostBody    interface{}
-		localVarFileName    string
-		localVarFileBytes   []byte
-		localVarReturnValue SettingValueModel
-	)
-
-	// create path and map variables
-	localVarPath := a.client.cfg.BasePath + "/v1/environments/{environmentId}/settings/{settingId}/value"
-	localVarPath = strings.Replace(localVarPath, "{"+"environmentId"+"}", fmt.Sprintf("%v", environmentId), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"settingId"+"}", fmt.Sprintf("%v", settingId), -1)
-
-	localVarHeaderParams := make(map[string]string)
-	localVarQueryParams := url.Values{}
-	localVarFormParams := url.Values{}
-
-	if localVarOptionals != nil && localVarOptionals.Reason.IsSet() {
-		localVarQueryParams.Add("reason", parameterToString(localVarOptionals.Reason.Value(), ""))
-	}
-	// to determine the Content-Type header
-	localVarHttpContentTypes := []string{"application/json-patch+json", "application/json", "text/json", "application/_*+json"}
-
-	// set Content-Type header
-	localVarHttpContentType := selectHeaderContentType(localVarHttpContentTypes)
-	if localVarHttpContentType != "" {
-		localVarHeaderParams["Content-Type"] = localVarHttpContentType
-	}
-
-	// to determine the Accept header
-	localVarHttpHeaderAccepts := []string{"application/json", "application/hal+json"}
-
-	// set Accept header
-	localVarHttpHeaderAccept := selectHeaderAccept(localVarHttpHeaderAccepts)
-	if localVarHttpHeaderAccept != "" {
-		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
-	}
-	// body params
-	localVarPostBody = &body
-	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
-	if err != nil {
-		return localVarReturnValue, nil, err
-	}
-
-	localVarHttpResponse, err := a.client.callAPI(r)
-	if err != nil || localVarHttpResponse == nil {
-		return localVarReturnValue, localVarHttpResponse, err
-	}
-
-	localVarBody, err := ioutil.ReadAll(localVarHttpResponse.Body)
-	localVarHttpResponse.Body.Close()
-	if err != nil {
-		return localVarReturnValue, localVarHttpResponse, err
-	}
-
-	if localVarHttpResponse.StatusCode < 300 {
-		// If we succeed, return the data, otherwise pass on to decode error.
-		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
-		if err == nil {
-			return localVarReturnValue, localVarHttpResponse, err
-		}
-	}
-
-	if localVarHttpResponse.StatusCode >= 300 {
-		newErr := GenericSwaggerError{
-			body:  localVarBody,
-			error: localVarHttpResponse.Status,
-		}
-		if localVarHttpResponse.StatusCode == 200 {
-			var v SettingValueModel
+			var v TagModel
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()

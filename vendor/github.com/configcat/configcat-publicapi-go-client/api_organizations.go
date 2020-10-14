@@ -11,13 +11,10 @@ package configcatpublicapi
 
 import (
 	"context"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strings"
-
-	"github.com/antihax/optional"
 )
 
 // Linger please
@@ -25,62 +22,30 @@ var (
 	_ context.Context
 )
 
-type AuditLogsApiService service
+type OrganizationsApiService service
 
 /*
-AuditLogsApiService List Audit logs
-This endpoint returns the list of Audit logs for a given Product   and the result can be optionally filtered by Config and/or Environment.
+OrganizationsApiService List Organizations
+This endpoint returns the list of the Organizations that belongs to the user.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param productId The identifier of the Product.
- * @param optional nil or *AuditLogsApiGetAuditlogsOpts - Optional Parameters:
-     * @param "ConfigId" (optional.Interface of string) -  The identifier of the Config.
-     * @param "EnvironmentId" (optional.Interface of string) -  The identifier of the Environment.
-     * @param "AuditLogType" (optional.Interface of AuditLogType) -  Filter Audit logs by Audit log type.
-     * @param "FromUtcDateTime" (optional.Time) -  Filter Audit logs by starting UTC date.
-     * @param "ToUtcDateTime" (optional.Time) -  Filter Audit logs by ending UTC date.
-@return []AuditLogItemModel
+@return []OrganizationModel
 */
-
-type AuditLogsApiGetAuditlogsOpts struct {
-	ConfigId        optional.Interface
-	EnvironmentId   optional.Interface
-	AuditLogType    optional.Interface
-	FromUtcDateTime optional.Time
-	ToUtcDateTime   optional.Time
-}
-
-func (a *AuditLogsApiService) GetAuditlogs(ctx context.Context, productId string, localVarOptionals *AuditLogsApiGetAuditlogsOpts) ([]AuditLogItemModel, *http.Response, error) {
+func (a *OrganizationsApiService) GetOrganizations(ctx context.Context) ([]OrganizationModel, *http.Response, error) {
 	var (
 		localVarHttpMethod  = strings.ToUpper("Get")
 		localVarPostBody    interface{}
 		localVarFileName    string
 		localVarFileBytes   []byte
-		localVarReturnValue []AuditLogItemModel
+		localVarReturnValue []OrganizationModel
 	)
 
 	// create path and map variables
-	localVarPath := a.client.cfg.BasePath + "/v1/products/{productId}/auditlogs"
-	localVarPath = strings.Replace(localVarPath, "{"+"productId"+"}", fmt.Sprintf("%v", productId), -1)
+	localVarPath := a.client.cfg.BasePath + "/v1/organizations"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
-	if localVarOptionals != nil && localVarOptionals.ConfigId.IsSet() {
-		localVarQueryParams.Add("configId", parameterToString(localVarOptionals.ConfigId.Value(), ""))
-	}
-	if localVarOptionals != nil && localVarOptionals.EnvironmentId.IsSet() {
-		localVarQueryParams.Add("environmentId", parameterToString(localVarOptionals.EnvironmentId.Value(), ""))
-	}
-	if localVarOptionals != nil && localVarOptionals.AuditLogType.IsSet() {
-		localVarQueryParams.Add("auditLogType", parameterToString(localVarOptionals.AuditLogType.Value(), ""))
-	}
-	if localVarOptionals != nil && localVarOptionals.FromUtcDateTime.IsSet() {
-		localVarQueryParams.Add("fromUtcDateTime", parameterToString(localVarOptionals.FromUtcDateTime.Value(), ""))
-	}
-	if localVarOptionals != nil && localVarOptionals.ToUtcDateTime.IsSet() {
-		localVarQueryParams.Add("toUtcDateTime", parameterToString(localVarOptionals.ToUtcDateTime.Value(), ""))
-	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{}
 
@@ -128,7 +93,7 @@ func (a *AuditLogsApiService) GetAuditlogs(ctx context.Context, productId string
 			error: localVarHttpResponse.Status,
 		}
 		if localVarHttpResponse.StatusCode == 200 {
-			var v []AuditLogItemModel
+			var v []OrganizationModel
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()

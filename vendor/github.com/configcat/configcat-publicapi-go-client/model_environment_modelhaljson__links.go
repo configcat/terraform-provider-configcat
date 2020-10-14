@@ -9,7 +9,6 @@
  */
 package configcatpublicapi
 
-type ConfigModelhaljsonLinks struct {
+type EnvironmentModelhaljsonLinks struct {
 	Self string `json:"self,omitempty"`
-	Settings string `json:"settings,omitempty"`
 }

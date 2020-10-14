@@ -90,6 +90,8 @@ github.com/configcat/configcat-publicapi-go-client v0.10.0 h1:I2LeMkavWA4JUOpZBH
 github.com/configcat/configcat-publicapi-go-client v0.10.0/go.mod h1:MudfrdzWKuoHJjNXXucQ4nBqqBBd12MSlQHhc0VvlBk=
 github.com/configcat/configcat-publicapi-go-client v0.11.0 h1:xbm+xQknO5vqGXNWPUyMGb+/7Z2RP4Lgl58Y0QWdfrs=
 github.com/configcat/configcat-publicapi-go-client v0.11.0/go.mod h1:MudfrdzWKuoHJjNXXucQ4nBqqBBd12MSlQHhc0VvlBk=
+github.com/configcat/configcat-publicapi-go-client v0.12.0 h1:LlCmvrfjo8UwnNi2ppAbm10+/WWZ1+Tr11lJwqp5N+A=
+github.com/configcat/configcat-publicapi-go-client v0.12.0/go.mod h1:MudfrdzWKuoHJjNXXucQ4nBqqBBd12MSlQHhc0VvlBk=
 github.com/creack/pty v1.1.9/go.mod h1:oKZEueFk5CKHvIhNR5MUki03XCEU+Q6VDXinZuGJ33E=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
