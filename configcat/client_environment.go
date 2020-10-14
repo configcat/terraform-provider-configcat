@@ -14,7 +14,7 @@ func (client *Client) GetEnvironment(environmentId string) (sw.EnvironmentModel,
 	return model, handleAPIError(err)
 }
 
-func (client *Client) CreateEnvironment(productId string, body sw.CreateEnvironmentRequest) (sw.EnvironmentModel, error) {
+func (client *Client) CreateEnvironment(productId string, body sw.CreateEnvironmentModel) (sw.EnvironmentModel, error) {
 	model, response, err := client.apiClient.EnvironmentsApi.CreateEnvironment(
 		client.GetAuthContext(),
 		body,
@@ -23,7 +23,7 @@ func (client *Client) CreateEnvironment(productId string, body sw.CreateEnvironm
 	return model, handleAPIError(err)
 }
 
-func (client *Client) UpdateEnvironment(environmentID string, body sw.UpdateEnvironmentRequest) (sw.EnvironmentModel, error) {
+func (client *Client) UpdateEnvironment(environmentID string, body sw.UpdateEnvironmentModel) (sw.EnvironmentModel, error) {
 	model, response, err := client.apiClient.EnvironmentsApi.UpdateEnvironment(
 		client.GetAuthContext(),
 		body,
