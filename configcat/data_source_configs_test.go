@@ -20,7 +20,7 @@ func TestConfigValid(t *testing.T) {
 		PreCheck:  func() { testAccPreCheck(t) },
 		Providers: testAccProviders,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: dataSource,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrSet("data.configcat_configs.test", "id"),
@@ -45,7 +45,7 @@ func TestConfigValidFilter(t *testing.T) {
 		PreCheck:  func() { testAccPreCheck(t) },
 		Providers: testAccProviders,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: dataSource,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrSet("data.configcat_configs.test", "id"),
@@ -70,7 +70,7 @@ func TestConfigNotFoundFilter(t *testing.T) {
 		PreCheck:  func() { testAccPreCheck(t) },
 		Providers: testAccProviders,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: dataSource,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrSet("data.configcat_configs.test", "id"),
@@ -93,7 +93,7 @@ func TestConfigInvalidGuid(t *testing.T) {
 		PreCheck:  func() { testAccPreCheck(t) },
 		Providers: testAccProviders,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config:      dataSource,
 				ExpectError: regexp.MustCompile(`"product_id": invalid GUID`),
 			},

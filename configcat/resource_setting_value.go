@@ -37,56 +37,56 @@ func resourceConfigCatSettingValue() *schema.Resource {
 		},
 
 		Schema: map[string]*schema.Schema{
-			ENVIRONMENT_ID: &schema.Schema{
+			ENVIRONMENT_ID: {
 				Type:         schema.TypeString,
 				Required:     true,
 				ValidateFunc: validateGUIDFunc,
 				ForceNew:     true,
 			},
 
-			SETTING_ID: &schema.Schema{
+			SETTING_ID: {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
 			},
 
-			SETTING_VALUE: &schema.Schema{
+			SETTING_VALUE: {
 				Type:     schema.TypeString,
 				Required: true,
 			},
 
-			INIT_ONLY: &schema.Schema{
+			INIT_ONLY: {
 				Type:     schema.TypeBool,
 				Default:  true,
 				Optional: true,
 			},
 
-			SETTING_TYPE: &schema.Schema{
+			SETTING_TYPE: {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
 
-			ROLLOUT_RULES: &schema.Schema{
+			ROLLOUT_RULES: {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						ROLLOUT_RULE_COMPARISON_ATTRIBUTE: &schema.Schema{
+						ROLLOUT_RULE_COMPARISON_ATTRIBUTE: {
 							Type:     schema.TypeString,
 							Required: true,
 						},
 
-						ROLLOUT_RULE_COMPARATOR: &schema.Schema{
+						ROLLOUT_RULE_COMPARATOR: {
 							Type:     schema.TypeString,
 							Required: true,
 						},
 
-						ROLLOUT_RULE_COMPARISON_VALUE: &schema.Schema{
+						ROLLOUT_RULE_COMPARISON_VALUE: {
 							Type:     schema.TypeString,
 							Required: true,
 						},
 
-						ROLLOUT_RULE_VALUE: &schema.Schema{
+						ROLLOUT_RULE_VALUE: {
 							Type:     schema.TypeString,
 							Required: true,
 						},
@@ -94,17 +94,17 @@ func resourceConfigCatSettingValue() *schema.Resource {
 				},
 			},
 
-			ROLLOUT_PERCENTAGE_ITEMS: &schema.Schema{
+			ROLLOUT_PERCENTAGE_ITEMS: {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						ROLLOUT_PERCENTAGE_ITEM_PERCENTAGE: &schema.Schema{
+						ROLLOUT_PERCENTAGE_ITEM_PERCENTAGE: {
 							Type:     schema.TypeString,
 							Required: true,
 						},
 
-						ROLLOUT_PERCENTAGE_ITEM_VALUE: &schema.Schema{
+						ROLLOUT_PERCENTAGE_ITEM_VALUE: {
 							Type:     schema.TypeString,
 							Required: true,
 						},

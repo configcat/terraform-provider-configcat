@@ -21,32 +21,32 @@ func resourceConfigCatSetting() *schema.Resource {
 		},
 
 		Schema: map[string]*schema.Schema{
-			CONFIG_ID: &schema.Schema{
+			CONFIG_ID: {
 				Type:         schema.TypeString,
 				Required:     true,
 				ValidateFunc: validateGUIDFunc,
 				ForceNew:     true,
 			},
 
-			SETTING_KEY: &schema.Schema{
+			SETTING_KEY: {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
 			},
 
-			SETTING_TYPE: &schema.Schema{
+			SETTING_TYPE: {
 				Type:     schema.TypeString,
 				Default:  "boolean",
 				Optional: true,
 				ForceNew: true,
 			},
 
-			SETTING_NAME: &schema.Schema{
+			SETTING_NAME: {
 				Type:     schema.TypeString,
 				Required: true,
 			},
 
-			SETTING_HINT: &schema.Schema{
+			SETTING_HINT: {
 				Type:     schema.TypeString,
 				Optional: true,
 			},

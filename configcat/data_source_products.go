@@ -17,22 +17,22 @@ func dataSourceConfigCatProducts() *schema.Resource {
 		ReadContext: productRead,
 
 		Schema: map[string]*schema.Schema{
-			PRODUCT_NAME_FILTER_REGEX: &schema.Schema{
+			PRODUCT_NAME_FILTER_REGEX: {
 				Type:         schema.TypeString,
 				Optional:     true,
 				ValidateFunc: validateRegexFunc,
 			},
 
-			PRODUCTS: &schema.Schema{
+			PRODUCTS: {
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						PRODUCT_ID: &schema.Schema{
+						PRODUCT_ID: {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						PRODUCT_NAME: &schema.Schema{
+						PRODUCT_NAME: {
 							Type:     schema.TypeString,
 							Computed: true,
 						},

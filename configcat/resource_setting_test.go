@@ -29,7 +29,7 @@ func TestResourceSettingValid(t *testing.T) {
 		PreCheck:  func() { testAccPreCheck(t) },
 		Providers: testAccProviders,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: settingResource,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrSet("configcat_setting.test", "id"),
@@ -40,7 +40,7 @@ func TestResourceSettingValid(t *testing.T) {
 					resource.TestCheckResourceAttr("configcat_setting.test", SETTING_TYPE, "boolean"),
 				),
 			},
-			resource.TestStep{
+			{
 				Config: settingResourceUpdated,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrSet("configcat_setting.test", "id"),
@@ -86,7 +86,7 @@ func testResourceSettingForSettingType(t *testing.T, settingType string) {
 		PreCheck:  func() { testAccPreCheck(t) },
 		Providers: testAccProviders,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: settingResource,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrSet("configcat_setting.testBoolean", "id"),
@@ -97,7 +97,7 @@ func testResourceSettingForSettingType(t *testing.T, settingType string) {
 					resource.TestCheckResourceAttr("configcat_setting.testBoolean", SETTING_TYPE, settingType),
 				),
 			},
-			resource.TestStep{
+			{
 				ResourceName:      "configcat_setting.testBoolean",
 				ImportState:       true,
 				ImportStateVerify: true,
@@ -121,7 +121,7 @@ func TestResourceSettingInvalidSettingType(t *testing.T) {
 		PreCheck:  func() { testAccPreCheck(t) },
 		Providers: testAccProviders,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config:      settingResource,
 				ExpectError: regexp.MustCompile(`setting_type parse failed: invalid. Valid values: boolean/string/int/double`),
 			},
@@ -143,7 +143,7 @@ func TestResourceSettingDuplicatedKey(t *testing.T) {
 		PreCheck:  func() { testAccPreCheck(t) },
 		Providers: testAccProviders,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config:      settingResource,
 				ExpectError: regexp.MustCompile(`.*This key is already in use\. Please, choose another.*`),
 			},

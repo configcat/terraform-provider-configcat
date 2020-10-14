@@ -17,28 +17,28 @@ func dataSourceConfigCatConfigs() *schema.Resource {
 		ReadContext: configRead,
 
 		Schema: map[string]*schema.Schema{
-			PRODUCT_ID: &schema.Schema{
+			PRODUCT_ID: {
 				Type:         schema.TypeString,
 				Required:     true,
 				ValidateFunc: validateGUIDFunc,
 			},
 
-			CONFIG_NAME_FILTER_REGEX: &schema.Schema{
+			CONFIG_NAME_FILTER_REGEX: {
 				Type:         schema.TypeString,
 				Optional:     true,
 				ValidateFunc: validateRegexFunc,
 			},
 
-			CONFIGS: &schema.Schema{
+			CONFIGS: {
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						CONFIG_ID: &schema.Schema{
+						CONFIG_ID: {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						CONFIG_NAME: &schema.Schema{
+						CONFIG_NAME: {
 							Type:     schema.TypeString,
 							Computed: true,
 						},

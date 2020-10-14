@@ -18,44 +18,44 @@ func dataSourceConfigCatSettings() *schema.Resource {
 		ReadContext: settingRead,
 
 		Schema: map[string]*schema.Schema{
-			CONFIG_ID: &schema.Schema{
+			CONFIG_ID: {
 				Type:         schema.TypeString,
 				Required:     true,
 				ValidateFunc: validateGUIDFunc,
 			},
 
-			SETTING_KEY_FILTER_REGEX: &schema.Schema{
+			SETTING_KEY_FILTER_REGEX: {
 				Type:         schema.TypeString,
 				Optional:     true,
 				ValidateFunc: validateRegexFunc,
 			},
 
-			SETTINGS: &schema.Schema{
+			SETTINGS: {
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						SETTING_ID: &schema.Schema{
+						SETTING_ID: {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
 
-						SETTING_KEY: &schema.Schema{
+						SETTING_KEY: {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
 
-						SETTING_NAME: &schema.Schema{
+						SETTING_NAME: {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
 
-						SETTING_HINT: &schema.Schema{
+						SETTING_HINT: {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
 
-						SETTING_TYPE: &schema.Schema{
+						SETTING_TYPE: {
 							Type:     schema.TypeString,
 							Computed: true,
 						},

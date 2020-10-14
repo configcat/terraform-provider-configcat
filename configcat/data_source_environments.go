@@ -17,28 +17,28 @@ func dataSourceConfigCatEnvironments() *schema.Resource {
 		ReadContext: environmentRead,
 
 		Schema: map[string]*schema.Schema{
-			PRODUCT_ID: &schema.Schema{
+			PRODUCT_ID: {
 				Type:         schema.TypeString,
 				Required:     true,
 				ValidateFunc: validateGUIDFunc,
 			},
 
-			ENVIRONMENT_NAME_FILTER_REGEX: &schema.Schema{
+			ENVIRONMENT_NAME_FILTER_REGEX: {
 				Type:         schema.TypeString,
 				Optional:     true,
 				ValidateFunc: validateRegexFunc,
 			},
 
-			ENVIRONMENTS: &schema.Schema{
+			ENVIRONMENTS: {
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						ENVIRONMENT_ID: &schema.Schema{
+						ENVIRONMENT_ID: {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						ENVIRONMENT_NAME: &schema.Schema{
+						ENVIRONMENT_NAME: {
 							Type:     schema.TypeString,
 							Computed: true,
 						},

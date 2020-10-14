@@ -42,7 +42,7 @@ func TestResourceSettingValueIntFreeze(t *testing.T) {
 		PreCheck:  func() { testAccPreCheck(t) },
 		Providers: testAccProviders,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: settingValueResource,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrSet(TEST_RESOURCE, "id"),
@@ -51,7 +51,7 @@ func TestResourceSettingValueIntFreeze(t *testing.T) {
 					checkTest1IntValue,
 				),
 			},
-			resource.TestStep{
+			{
 				Config: settingValueResourceUpdated,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrSet(TEST_RESOURCE, "id"),
@@ -102,7 +102,7 @@ func TestResourceSettingValueIntNoFreeze(t *testing.T) {
 		PreCheck:  func() { testAccPreCheck(t) },
 		Providers: testAccProviders,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: settingValueResource,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrSet(TEST_RESOURCE, "id"),
@@ -111,7 +111,7 @@ func TestResourceSettingValueIntNoFreeze(t *testing.T) {
 					checkTest1IntValue,
 				),
 			},
-			resource.TestStep{
+			{
 				Config: settingValueResourceUpdated,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrSet(TEST_RESOURCE, "id"),
@@ -120,7 +120,7 @@ func TestResourceSettingValueIntNoFreeze(t *testing.T) {
 					checkTest2IntValue,
 				),
 			},
-			resource.TestStep{
+			{
 				ResourceName:      TEST_RESOURCE,
 				ImportState:       true,
 				ImportStateVerify: true,
@@ -197,13 +197,13 @@ func TestResourceSettingValueIntRules(t *testing.T) {
 		PreCheck:  func() { testAccPreCheck(t) },
 		Providers: testAccProviders,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: settingValueResource,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(TEST_RESOURCE, ROLLOUT_RULES+".#", "0"),
 				),
 			},
-			resource.TestStep{
+			{
 				Config: settingValueResourceRule1,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(TEST_RESOURCE, ROLLOUT_RULES+".#", "1"),
@@ -213,7 +213,7 @@ func TestResourceSettingValueIntRules(t *testing.T) {
 					resource.TestCheckResourceAttr(TEST_RESOURCE, ROLLOUT_RULES+".0."+ROLLOUT_RULE_VALUE, "1"),
 				),
 			},
-			resource.TestStep{
+			{
 				Config: settingValueResourceRule2,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(TEST_RESOURCE, ROLLOUT_RULES+".#", "2"),
@@ -297,13 +297,13 @@ func TestResourceSettingValueIntPercentageItems(t *testing.T) {
 		PreCheck:  func() { testAccPreCheck(t) },
 		Providers: testAccProviders,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: settingValueResource,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(TEST_RESOURCE, ROLLOUT_PERCENTAGE_ITEMS+".#", "0"),
 				),
 			},
-			resource.TestStep{
+			{
 				Config: settingValueResourceItem1,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(TEST_RESOURCE, ROLLOUT_PERCENTAGE_ITEMS+".#", "2"),
@@ -313,7 +313,7 @@ func TestResourceSettingValueIntPercentageItems(t *testing.T) {
 					resource.TestCheckResourceAttr(TEST_RESOURCE, ROLLOUT_PERCENTAGE_ITEMS+".1."+ROLLOUT_PERCENTAGE_ITEM_VALUE, "0"),
 				),
 			},
-			resource.TestStep{
+			{
 				Config: settingValueResourceItem2,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(TEST_RESOURCE, ROLLOUT_PERCENTAGE_ITEMS+".#", "2"),
