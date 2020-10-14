@@ -10,6 +10,7 @@
 package configcatpublicapi
 
 type ConfigModel struct {
+	Product *ProductModel `json:"product,omitempty"`
 	ConfigId string `json:"configId,omitempty"`
 	Name string `json:"name,omitempty"`
 }

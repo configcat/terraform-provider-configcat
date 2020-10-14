@@ -10,6 +10,7 @@
 package configcatpublicapi
 
 type SettingValueModelhaljsonEmbeddedConfig struct {
+	Embedded *ConfigModelhaljsonEmbedded `json:"_embedded,omitempty"`
 	ConfigId string `json:"configId,omitempty"`
 	Name string `json:"name,omitempty"`
 	Links *ConfigModelhaljsonLinks `json:"_links,omitempty"`

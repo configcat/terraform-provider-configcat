@@ -9,9 +9,9 @@
  */
 package configcatpublicapi
 
-type ConfigModelHaljson struct {
-	Embedded *ConfigModelhaljsonEmbedded `json:"_embedded,omitempty"`
-	ConfigId string `json:"configId,omitempty"`
+type ConfigModelhaljsonEmbeddedProduct struct {
+	Embedded *ProductModelhaljsonEmbedded `json:"_embedded,omitempty"`
+	ProductId string `json:"productId,omitempty"`
 	Name string `json:"name,omitempty"`
-	Links *ConfigModelhaljsonLinks `json:"_links,omitempty"`
+	Links *ProductModelhaljsonLinks `json:"_links,omitempty"`
 }

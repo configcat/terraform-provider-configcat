@@ -67,6 +67,8 @@ Class | Method | HTTP request | Description
  - [AuditLogType](docs/AuditLogType.md)
  - [ConfigModel](docs/ConfigModel.md)
  - [ConfigModelHaljson](docs/ConfigModelHaljson.md)
+ - [ConfigModelhaljsonEmbedded](docs/ConfigModelhaljsonEmbedded.md)
+ - [ConfigModelhaljsonEmbeddedProduct](docs/ConfigModelhaljsonEmbeddedProduct.md)
  - [ConfigModelhaljsonLinks](docs/ConfigModelhaljsonLinks.md)
  - [CreateConfigRequest](docs/CreateConfigRequest.md)
  - [CreateEnvironmentModel](docs/CreateEnvironmentModel.md)

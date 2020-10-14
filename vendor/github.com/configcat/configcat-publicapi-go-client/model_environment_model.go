@@ -10,6 +10,7 @@
 package configcatpublicapi
 
 type EnvironmentModel struct {
+	Product *ProductModel `json:"product,omitempty"`
 	EnvironmentId string `json:"environmentId,omitempty"`
 	Name string `json:"name,omitempty"`
 }

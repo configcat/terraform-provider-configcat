@@ -10,6 +10,7 @@
 package configcatpublicapi
 
 type SettingModelhaljsonEmbeddedTags struct {
+	Embedded *ConfigModelhaljsonEmbedded `json:"_embedded,omitempty"`
 	TagId int64 `json:"tagId,omitempty"`
 	Name string `json:"name,omitempty"`
 	Color string `json:"color,omitempty"`

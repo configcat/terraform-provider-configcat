@@ -10,6 +10,7 @@
 package configcatpublicapi
 
 type EnvironmentModelHaljson struct {
+	Embedded *ConfigModelhaljsonEmbedded `json:"_embedded,omitempty"`
 	EnvironmentId string `json:"environmentId,omitempty"`
 	Name string `json:"name,omitempty"`
 	Links *EnvironmentModelhaljsonLinks `json:"_links,omitempty"`
