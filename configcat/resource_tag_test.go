@@ -43,11 +43,11 @@ func TestResourceTagFlow(t *testing.T) {
 					resource.TestCheckResourceAttr("configcat_tag.test", TAG_COLOR, "testColor2"),
 				),
 			},
-			/*	{
+			{
 				ResourceName:      "configcat_tag.test",
 				ImportState:       true,
 				ImportStateVerify: true,
-			},*/
+			},
 		},
 	})
 }

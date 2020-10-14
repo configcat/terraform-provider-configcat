@@ -79,7 +79,7 @@ func resourceTagRead(ctx context.Context, d *schema.ResourceData, m interface{})
 		return diag.FromErr(err)
 	}
 
-	// d.Set(PRODUCT_ID, tag.Product.ProductID)
+	d.Set(PRODUCT_ID, tag.Product.ProductID)
 	d.Set(TAG_NAME, tag.Name)
 	d.Set(TAG_COLOR, tag.Color)
 

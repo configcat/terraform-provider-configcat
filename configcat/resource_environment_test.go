@@ -39,11 +39,11 @@ func TestResourceEnvironmentFlow(t *testing.T) {
 					resource.TestCheckResourceAttr("configcat_environment.test", ENVIRONMENT_NAME, "testName2"),
 				),
 			},
-			/*	{
+			{
 				ResourceName:      "configcat_environment.test",
 				ImportState:       true,
 				ImportStateVerify: true,
-			},*/
+			},
 		},
 	})
 }

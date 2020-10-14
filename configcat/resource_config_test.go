@@ -39,11 +39,11 @@ func TestResourceConfigFlow(t *testing.T) {
 					resource.TestCheckResourceAttr("configcat_config.test", CONFIG_NAME, "testName2"),
 				),
 			},
-			/*	{
+			{
 				ResourceName:      "configcat_config.test",
 				ImportState:       true,
 				ImportStateVerify: true,
-			},*/
+			},
 		},
 	})
 }

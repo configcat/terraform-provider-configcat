@@ -67,7 +67,7 @@ func resourceEnvironmentRead(ctx context.Context, d *schema.ResourceData, m inte
 		return diag.FromErr(err)
 	}
 
-	// d.Set(PRODUCT_ID, environment.Product.ProductID)
+	d.Set(PRODUCT_ID, environment.Product.ProductID)
 	d.Set(ENVIRONMENT_NAME, environment.Name)
 
 	return diags
