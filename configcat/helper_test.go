@@ -24,6 +24,22 @@ func checkTest2Value(s *terraform.State) error {
 	return checkValue(s, &value)
 }
 
+func checkTest1IntValue(s *terraform.State) error {
+	value, err := getSettingValue("int", "1")
+	if err != nil {
+		return err
+	}
+	return checkValue(s, &value)
+}
+
+func checkTest2IntValue(s *terraform.State) error {
+	value, err := getSettingValue("int", "2")
+	if err != nil {
+		return err
+	}
+	return checkValue(s, &value)
+}
+
 func checkTrueValue(s *terraform.State) error {
 	value, err := getSettingValue("boolean", "true")
 	if err != nil {
