@@ -33,6 +33,12 @@ func (client *Client) GetMe() (sw.MeModel, error) {
 	return model, handleAPIError(err)
 }
 
+func (client *Client) GetOrganizations() ([]sw.OrganizationModel, error) {
+	model, response, err := client.apiClient.OrganizationsApi.GetOrganizations(client.GetAuthContext())
+	defer response.Body.Close()
+	return model, handleAPIError(err)
+}
+
 func (client *Client) GetProducts() ([]sw.ProductModel, error) {
 	model, response, err := client.apiClient.ProductsApi.GetProducts(client.GetAuthContext())
 	defer response.Body.Close()

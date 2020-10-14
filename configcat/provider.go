@@ -23,10 +23,11 @@ const (
 	DEFAULT_BASE_PATH = "https://api.configcat.com"
 
 	// Data sources
-	KEY_PRODUCTS     = "configcat_products"
-	KEY_CONFIGS      = "configcat_configs"
-	KEY_ENVIRONMENTS = "configcat_environments"
-	KEY_SETTINGS     = "configcat_settings"
+	KEY_ORGANIZATIONS = "configcat_organizations"
+	KEY_PRODUCTS      = "configcat_products"
+	KEY_CONFIGS       = "configcat_configs"
+	KEY_ENVIRONMENTS  = "configcat_environments"
+	KEY_SETTINGS      = "configcat_settings"
 
 	// Resources
 	KEY_SETTING       = "configcat_setting"
@@ -63,10 +64,11 @@ func Provider() *schema.Provider {
 		},
 
 		DataSourcesMap: map[string]*schema.Resource{
-			KEY_PRODUCTS:     dataSourceConfigCatProducts(),
-			KEY_CONFIGS:      dataSourceConfigCatConfigs(),
-			KEY_ENVIRONMENTS: dataSourceConfigCatEnvironments(),
-			KEY_SETTINGS:     dataSourceConfigCatSettings(),
+			KEY_ORGANIZATIONS: dataSourceConfigCatOrganizations(),
+			KEY_PRODUCTS:      dataSourceConfigCatProducts(),
+			KEY_CONFIGS:       dataSourceConfigCatConfigs(),
+			KEY_ENVIRONMENTS:  dataSourceConfigCatEnvironments(),
+			KEY_SETTINGS:      dataSourceConfigCatSettings(),
 		},
 
 		ConfigureContextFunc: providerConfigure,

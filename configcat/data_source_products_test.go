@@ -11,7 +11,6 @@ func TestProductValid(t *testing.T) {
 		data "configcat_products" "test" {
 		}
 	`
-	const productID = "08d86d63-2721-4da6-8c06-584521d516bc"
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:  func() { testAccPreCheck(t) },

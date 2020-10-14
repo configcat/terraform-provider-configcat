@@ -1,6 +1,11 @@
 package configcat
 
 const (
+	ORGANIZATIONS                  = "organizations"
+	ORGANIZATION_ID                = "organization_id"
+	ORGANIZATION_NAME              = "name"
+	ORGANIZATION_NAME_FILTER_REGEX = "name_filter_regex"
+
 	PRODUCTS                  = "products"
 	PRODUCT_ID                = "product_id"
 	PRODUCT_NAME              = "name"
