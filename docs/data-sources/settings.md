@@ -1,6 +1,6 @@
 # configcat_settings Resource
 
-Use this data source to access information about an existing Feature Flag/Setting.  
+Use this data source to access information about existing Feature Flags/Settings.  
 
 ## Example Usage
 

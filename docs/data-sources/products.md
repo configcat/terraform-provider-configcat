@@ -1,6 +1,6 @@
 # configcat_products Resource
 
-Use this data source to access information about an existing Product.
+Use this data source to access information about existing Products.
 
 ## Example Usage
 
