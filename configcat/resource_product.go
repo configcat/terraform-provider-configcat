@@ -29,7 +29,6 @@ func resourceConfigCatProduct() *schema.Resource {
 			PRODUCT_NAME: {
 				Type:     schema.TypeString,
 				Required: true,
-				ForceNew: true,
 			},
 		},
 	}

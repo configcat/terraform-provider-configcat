@@ -31,7 +31,11 @@ const (
 	KEY_TAGS          = "configcat_tags"
 
 	// Resources
+	KEY_PRODUCT       = "configcat_product"
+	KEY_CONFIG        = "configcat_config"
+	KEY_ENVIRONMENT   = "configcat_environment"
 	KEY_SETTING       = "configcat_setting"
+	KEY_TAG           = "configcat_tag"
 	KEY_SETTING_VALUE = "configcat_setting_value"
 )
 
@@ -60,6 +64,7 @@ func Provider() *schema.Provider {
 		},
 
 		ResourcesMap: map[string]*schema.Resource{
+			KEY_PRODUCT:       resourceConfigCatProduct(),
 			KEY_SETTING:       resourceConfigCatSetting(),
 			KEY_SETTING_VALUE: resourceConfigCatSettingValue(),
 		},
