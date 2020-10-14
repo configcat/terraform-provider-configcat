@@ -8,6 +8,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
+const TEST_RESOURCE = "configcat_setting_value.test"
+
 func checkTest1Value(s *terraform.State) error {
 	value, err := getSettingValue("string", "test1")
 	if err != nil {
