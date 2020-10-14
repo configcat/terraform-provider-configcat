@@ -67,6 +67,7 @@ func resourceProductRead(ctx context.Context, d *schema.ResourceData, m interfac
 		return diag.FromErr(err)
 	}
 
+	d.Set(ORGANIZATION_ID, product.Organization.OrganizationId)
 	d.Set(PRODUCT_NAME, product.Name)
 
 	return diags
