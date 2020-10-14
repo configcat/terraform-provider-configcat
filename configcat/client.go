@@ -8,7 +8,6 @@ import (
 	sw "github.com/configcat/configcat-publicapi-go-client"
 )
 
-//
 type Client struct {
 	basePath          string
 	basicAuthUsername string
@@ -18,7 +17,6 @@ type Client struct {
 	authFullName      string
 }
 
-//
 func (client *Client) GetAuthContext() context.Context {
 	return context.WithValue(context.Background(), sw.ContextBasicAuth, sw.BasicAuth{
 		UserName: client.basicAuthUsername,
@@ -26,7 +24,6 @@ func (client *Client) GetAuthContext() context.Context {
 	})
 }
 
-//
 func (client *Client) GetMe() (sw.MeModel, error) {
 	model, response, err := client.apiClient.MeApi.GetMe(client.GetAuthContext())
 	defer response.Body.Close()
@@ -39,95 +36,6 @@ func (client *Client) GetOrganizations() ([]sw.OrganizationModel, error) {
 	return model, handleAPIError(err)
 }
 
-func (client *Client) GetProducts() ([]sw.ProductModel, error) {
-	model, response, err := client.apiClient.ProductsApi.GetProducts(client.GetAuthContext())
-	defer response.Body.Close()
-	return model, handleAPIError(err)
-}
-
-func (client *Client) GetConfigs(productId string) ([]sw.ConfigModel, error) {
-	model, response, err := client.apiClient.ConfigsApi.GetConfigs(client.GetAuthContext(), productId)
-	defer response.Body.Close()
-	return model, handleAPIError(err)
-}
-
-func (client *Client) GetEnvironments(productId string) ([]sw.EnvironmentModel, error) {
-	model, response, err := client.apiClient.EnvironmentsApi.GetEnvironments(client.GetAuthContext(), productId)
-	defer response.Body.Close()
-	return model, handleAPIError(err)
-}
-
-func (client *Client) GetTags(productId string) ([]sw.TagModel, error) {
-	model, response, err := client.apiClient.TagsApi.GetTags(client.GetAuthContext(), productId)
-	defer response.Body.Close()
-	return model, handleAPIError(err)
-}
-
-func (client *Client) CreateEnvironment(productId, environmentName string) (sw.EnvironmentModel, error) {
-	body := sw.CreateEnvironmentModel{}
-	body.Name = environmentName
-	model, response, err := client.apiClient.EnvironmentsApi.CreateEnvironment(
-		client.GetAuthContext(),
-		body,
-		productId)
-	defer response.Body.Close()
-	return model, handleAPIError(err)
-}
-
-func (client *Client) UpdateEnvironment(environmentId, environmentName string) (sw.EnvironmentModel, error) {
-	body := sw.UpdateEnvironmentModel{}
-	body.Name = environmentName
-	model, response, err := client.apiClient.EnvironmentsApi.UpdateEnvironment(
-		client.GetAuthContext(),
-		body,
-		environmentId)
-	defer response.Body.Close()
-	return model, handleAPIError(err)
-}
-
-func (client *Client) GetSetting(settingId int32) (sw.SettingModel, error) {
-	model, response, err := client.apiClient.FeatureFlagsSettingsApi.GetSetting(client.GetAuthContext(), settingId)
-	defer response.Body.Close()
-	return model, handleAPIError(err)
-}
-
-func (client *Client) GetSettings(configId string) ([]sw.SettingModel, error) {
-	model, response, err := client.apiClient.FeatureFlagsSettingsApi.GetSettings(client.GetAuthContext(), configId)
-	defer response.Body.Close()
-	return model, handleAPIError(err)
-}
-
-func (client *Client) CreateSetting(configId string, body sw.CreateSettingModel) (sw.SettingModel, error) {
-	model, response, err := client.apiClient.FeatureFlagsSettingsApi.CreateSetting(client.GetAuthContext(), body, configId)
-	defer response.Body.Close()
-	return model, handleAPIError(err)
-}
-
-func (client *Client) UpdateSetting(settingId int32, body []sw.Operation) (sw.SettingModel, error) {
-	model, response, err := client.apiClient.FeatureFlagsSettingsApi.UpdateSetting(client.GetAuthContext(), body, settingId)
-	defer response.Body.Close()
-	return model, handleAPIError(err)
-}
-
-func (client *Client) DeleteSetting(settingId int32) error {
-	response, err := client.apiClient.FeatureFlagsSettingsApi.DeleteSetting(client.GetAuthContext(), settingId)
-	defer response.Body.Close()
-	return handleAPIError(err)
-}
-
-func (client *Client) GetSettingValue(environmentId string, settingId int32) (sw.SettingValueModel, error) {
-	model, response, err := client.apiClient.FeatureFlagSettingValuesApi.GetSettingValue(client.GetAuthContext(), environmentId, settingId)
-	defer response.Body.Close()
-	return model, handleAPIError(err)
-}
-
-func (client *Client) ReplaceSettingValue(environmentId string, settingId int32, body sw.UpdateSettingValueModel) (sw.SettingValueModel, error) {
-	model, response, err := client.apiClient.FeatureFlagSettingValuesApi.ReplaceSettingValue(client.GetAuthContext(), body, environmentId, settingId, nil)
-	defer response.Body.Close()
-	return model, handleAPIError(err)
-}
-
-//
 func NewClient(basePath, basicAuthUsername, basicAuthPassword string) (*Client, error) {
 	configuration := configcatpublicapi.NewConfiguration()
 	configuration.BasePath = basePath
