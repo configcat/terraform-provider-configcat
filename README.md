@@ -18,3 +18,11 @@ ConfigCat Feature Flags Provider allows you to configure and access ConfigCat re
 ## Usage
 
 Refer to the [official documentation](https://registry.terraform.io/providers/configcat/configcat/latest/docs).
+
+## Need help?
+
+If you need help how to use this Terraform provider feel free to to contact the ConfigCat Staff on https://configcat.com. We're happy to help.
+
+## Contributing
+
+Contributions are welcome.
