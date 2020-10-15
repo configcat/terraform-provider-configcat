@@ -9,6 +9,18 @@ Get your ConfigCat Public API credentials at https://app.configcat.com/my-accoun
 ## root.tf
 
 ```hcl
+terraform {
+  required_providers {
+    configcat = {
+      source = "configcat/configcat"
+      version = "~> 1.0"
+    }
+  }
+}
+
+provider "configcat" {
+}
+
 data "configcat_organizations" "my_organizations" {
   name_filter_regex = "ConfigCat"
 }
