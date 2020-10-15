@@ -1,6 +1,6 @@
 # configcat_configs Resource
 
-Use this data source to access information about existing Configs.
+Use this data source to access information about existing **Configs**.
 
 ## Example Usage
 

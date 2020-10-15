@@ -1,6 +1,6 @@
 # configcat_environment Resource
 
-Creates and manages an Environment.  
+Creates and manages an **Environment**.  
 
 ## Example Usage
 

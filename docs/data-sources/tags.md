@@ -1,6 +1,6 @@
 # configcat_tags Resource
 
-Use this data source to access information about existing Tags.
+Use this data source to access information about existing **Tags**.
 ## Example Usage
 
 ```hcl

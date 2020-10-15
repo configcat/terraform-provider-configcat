@@ -1,6 +1,6 @@
 # configcat_config Resource
 
-Creates and manages a Config.  
+Creates and manages a **Config**.  
 
 ## Example Usage
 

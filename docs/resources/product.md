@@ -1,6 +1,6 @@
 # configcat_product Resource
 
-Creates and manages a Product.  
+Creates and manages a **Product**.  
 
 ## Example Usage
 

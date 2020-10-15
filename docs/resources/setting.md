@@ -1,6 +1,6 @@
 # configcat_setting Resource
 
-Creates and manages a Feature Flag/Setting.  
+Creates and manages a **Feature Flag/Setting**.  
 
 ## Example Usage
 

@@ -1,6 +1,6 @@
 # configcat_environments Resource
 
-Use this data source to access information about existing Environments.
+Use this data source to access information about existing **Environments**.
 ## Example Usage
 
 ```hcl

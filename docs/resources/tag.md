@@ -1,6 +1,6 @@
 # configcat_tag Resource
 
-Creates and manages a Tag.  
+Creates and manages a **Tag**.  
 
 ## Example Usage
 

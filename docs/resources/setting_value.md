@@ -1,6 +1,6 @@
 # configcat_setting_value Resource
 
-Initializes/updates a Feature Flag/Setting's value.  
+Initializes/updates a **Feature Flag/Setting**'s value.  
 
 ## Example Usage
 

@@ -1,6 +1,6 @@
 # configcat_organizations Resource
 
-Use this data source to access information about existing Organizations.
+Use this data source to access information about existing **Organizations**.
 
 ## Example Usage
 
