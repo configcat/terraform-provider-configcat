@@ -1,6 +1,6 @@
-# Simple usage of data sources
+# Simple usage of Resources
 
-## Organization
+## Organizations
 ```hcl
 data "configcat_organizations" "organizations" {
   name_filter_regex = "ConfigCat"

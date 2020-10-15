@@ -1,0 +1,72 @@
+# Simple usage of Data sources
+
+## root.tf
+```hcl
+
+// Organization Resource is ReadOnly.
+data "configcat_organizations" "organizations" {
+  name_filter_regex = "ConfigCat"
+}
+
+resource "configcat_product" "product" {
+  organization_id = data.configcat_organizations.organizations.organizations.0.organization_id
+  name = "My product"
+}
+
+resource "configcat_config" "config" {
+  product_id = configcat_product.product.id
+  name = "My config"
+}
+
+resource "configcat_environment" "environment" {
+  product_id = configcat_product.product.id
+  name = "Production"
+}
+
+resource "configcat_setting" "setting" {
+  config_id = configcat_config.config.id
+  key = "isAwesomeFeatureEnabled"
+  name = "My awesome feature flag"
+  hint = "This is the hint for my awesome feature flag"
+  setting_type = "boolean"
+}
+
+resource "configcat_setting_value" "setting_value" {
+    environment_id = configcat_environment.environment.id
+    setting_id = configcat_setting.setting.id
+    
+    value = "true"
+
+    rollout_rules {
+        comparison_attribute = "email"
+        comparator = "contains"
+        comparison_value = "@mycompany.com"
+        value = "true"
+    }
+    rollout_rules {
+        comparison_attribute = "custom"
+        comparator = "isOneOf"
+        comparison_value = "red"
+        value = "false"
+    }
+
+    percentage_items {
+        percentage = 20
+        value = "true"
+    }
+    percentage_items {
+        percentage = 80
+        value = "false"
+    }
+}
+
+resource "configcat_tag" "tag" {
+  product_id = configcat_product.product.id
+  name = "Created by Terraform"
+}
+
+resource "configcat_setting_tag" "setting_tag" {
+    setting_id = configcat_setting.setting.id
+    tag_id = configcat_tag.tag.id
+}
+```
