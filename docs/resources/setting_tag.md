@@ -5,28 +5,28 @@ Manages **Feature Flag/Setting**'s **Tags**.
 ## Example Usage
 
 ```hcl
-data "configcat_products" "products" {
+data "configcat_products" "my_products" {
   name_filter_regex = "ConfigCat's product"
 }
 
-data "configcat_configs" "configs" {
-  product_id = data.configcat_products.products.products.0.product_id
+data "configcat_configs" "my_configs" {
+  product_id = data.configcat_products.my_products.products.0.product_id
   name_filter_regex = "Main Config"
 }
 
-data "configcat_tags" "tags" {
-  product_id = data.configcat_products.products.products.0.product_id
+data "configcat_tags" "my_tags" {
+  product_id = data.configcat_products.my_products.products.0.product_id
   name_filter_regex = "Tag"
 }
 
-data "configcat_settings" "settings" {
-  config_id = data.configcat_configs.configs.configs.0.config_id
+data "configcat_settings" "my_settings" {
+  config_id = data.configcat_configs.my_configs.configs.0.config_id
   key_filter_regex = "isAwesomeFeatureEnabled"
 }
 
-resource "configcat_setting_tag" "setting_tag" {
-    setting_id = data.configcat_settings.settings.settings.0.setting_id
-    tag_id = data.configcat_tags.tags.tags.0.tag_id
+resource "configcat_setting_tag" "my_setting_tag" {
+    setting_id = data.configcat_settings.my_settings.settings.0.setting_id
+    tag_id = data.configcat_tags.my_tags.tags.0.tag_id
 }
 ```
 

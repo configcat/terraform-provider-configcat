@@ -5,18 +5,18 @@ Use this data source to access information about existing **Configs**.
 ## Example Usage
 
 ```hcl
-data "configcat_products" "products" {
+data "configcat_products" "my_products" {
   name_filter_regex = "ConfigCat's product"
 }
 
-data "configcat_configs" "configs" {
-  product_id = data.configcat_products.products.products.0.product_id
+data "configcat_configs" "my_configs" {
+  product_id = data.configcat_products.my_products.products.0.product_id
   name_filter_regex = "Main Config"
 }
 
 
 output "config_id" {
-  value = data.configcat_configs.configs.configs.0.config_id
+  value = data.configcat_configs.my_configs.configs.0.config_id
 }
 ```
 

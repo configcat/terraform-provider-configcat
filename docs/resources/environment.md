@@ -5,18 +5,18 @@ Creates and manages an **Environment**.
 ## Example Usage
 
 ```hcl
-data "configcat_products" "products" {
+data "configcat_products" "my_products" {
   name_filter_regex = "ConfigCat's product"
 }
 
-resource "configcat_environment" "environment" {
-  product_id = data.configcat_products.products.products.0.product_id
+resource "configcat_environment" "my_environment" {
+  product_id = data.configcat_products.my_products.products.0.product_id
   name = "Staging"
 }
 
 
 output "environment_id" {
-  value = configcat_environment.environment.id
+  value = configcat_environment.my_environment.id
 }
 ```
 

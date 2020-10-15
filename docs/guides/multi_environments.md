@@ -1,4 +1,4 @@
-# Simple usage of Data sources
+# Advanced usage of Resources in multiple environments
 
 ## Prerequisites
 
@@ -22,22 +22,22 @@ provider "configcat" {
 }
 
 // Organization Resource is ReadOnly.
-data "configcat_organizations" "organizations" {
+data "configcat_organizations" "my_organizations" {
   name_filter_regex = "ConfigCat"
 }
 
-resource "configcat_product" "product" {
-  organization_id = data.configcat_organizations.organizations.organizations.0.organization_id
+resource "configcat_product" "my_product" {
+  organization_id = data.configcat_organizations.my_organizations.organizations.0.organization_id
   name = "My product"
 }
 
-resource "configcat_config" "config" {
-  product_id = configcat_product.product.id
+resource "configcat_config" "my_config" {
+  product_id = configcat_product.my_product.id
   name = "My config"
 }
 
 resource "configcat_setting" "is_awesome" {
-  config_id = configcat_config.config.id
+  config_id = configcat_config.my_config.id
   key = "isAwesomeFeatureEnabled"
   name = "My awesome feature flag"
   hint = "This is the hint for my awesome feature flag"
@@ -45,44 +45,44 @@ resource "configcat_setting" "is_awesome" {
 }
 
 resource "configcat_setting" "welcome_text" {
-  config_id = configcat_config.config.id
+  config_id = configcat_config.my_config.id
   key = "welcomeText"
   name = "Welcome text"
   hint = "Welcome text message shown on homepage"
   setting_type = "text"
 }
 
-resource "configcat_tag" "tag" {
-  product_id = configcat_product.product.id
+resource "configcat_tag" "created_by_terraform_tag" {
+  product_id = configcat_product.my_product.id
   name = "Created by Terraform"
 }
 
-resource "configcat_setting_tag" "setting_tag" {
+resource "configcat_setting_tag" "is_awesome_setting_tag" {
     setting_id = configcat_setting.is_awesome.id
-    tag_id = configcat_tag.tag.id
+    tag_id = configcat_tag.created_by_terraform_tag.id
 }
 
-resource "configcat_setting_tag" "setting_tag" {
+resource "configcat_setting_tag" "welcome_text_setting_tag" {
     setting_id = configcat_setting.welcome_text.id
-    tag_id = configcat_tag.tag.id
+    tag_id = configcat_tag.created_by_terraform_tag.id
 }
 
 // Test module
 module "test" {
   source = "./test"
 
-  product_id = configcat_product.product.id
-  setting_is_awesome_id  = configcat_setting.is_awesome.id
-  setting_welcome_text_id  = configcat_setting.welcome_text.id
+  product_id = configcat_product.my_product.id
+  is_awesome_setting_id  = configcat_setting.is_awesome.id
+  welcome_text_setting_id  = configcat_setting.welcome_text.id
 }
 
 // Production module
 module "production" {
   source = "./production"
 
-  product_id = configcat_product.product.id
-  setting_is_awesome_id  = configcat_setting.is_awesome.id
-  setting_welcome_text_id  = configcat_setting.welcome_text.id
+  product_id = configcat_product.my_product.id
+  is_awesome_setting_id  = configcat_setting.is_awesome.id
+  welcome_text_setting_id  = configcat_setting.welcome_text.id
 }
 ```
 
@@ -93,20 +93,20 @@ variable "product_id" { default = "" }
 variable "setting_is_awesome_id" { default = "" }
 variable "setting_welcome_text_id" { default = "" }
 
-resource "configcat_environment" "environment" {
+resource "configcat_environment" "test_environment" {
   product_id = var.product_id
   name = "Test"
 }
 
-resource "configcat_setting_value" "setting_value_is_awesome" {
-    environment_id = configcat_environment.environment.id
-    setting_id = var.setting_is_awesome_id
+resource "configcat_setting_value" "is_awesome_value" {
+    environment_id = configcat_environment.test_environment.id
+    setting_id = var.is_awesome_setting_id
     value = "true"
 }
 
-resource "configcat_setting_value" "setting_value_setting_welcome_text_id" {
-    environment_id = configcat_environment.environment.id
-    setting_id = var.setting_welcome_text_id
+resource "configcat_setting_value" "welcome_text_value" {
+    environment_id = configcat_environment.test_environment.id
+    setting_id = var.welcome_text_setting_id
     value = "Welcome to ConfigCat"
 }
 ```
@@ -119,14 +119,14 @@ variable "product_id" { default = "" }
 variable "setting_is_awesome_id" { default = "" }
 variable "setting_welcome_text_id" { default = "" }
 
-resource "configcat_environment" "environment" {
+resource "configcat_environment" "production_environment" {
   product_id = var.product_id
   name = "Production"
 }
 
-resource "configcat_setting_value" "setting_value_is_awesome" {
-    environment_id = configcat_environment.environment.id
-    setting_id = var.setting_is_awesome_id
+resource "configcat_setting_value" "is_awesome_value" {
+    environment_id = configcat_environment.production_environment.id
+    setting_id = var.is_awesome_setting_id
     
     value = "false"
 
@@ -147,9 +147,9 @@ resource "configcat_setting_value" "setting_value_is_awesome" {
     }
 }
 
-resource "configcat_setting_value" "setting_value_setting_welcome_text_id" {
-    environment_id = configcat_environment.environment.id
-    setting_id = var.setting_welcome_text_id
+resource "configcat_setting_value" "welcome_text_value" {
+    environment_id = configcat_environment.production_environment.id
+    setting_id = var.welcome_text_setting_id
     
     value = "Welcome to ConfigCat"
 

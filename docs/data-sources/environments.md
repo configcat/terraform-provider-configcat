@@ -4,18 +4,18 @@ Use this data source to access information about existing **Environments**.
 ## Example Usage
 
 ```hcl
-data "configcat_products" "products" {
+data "configcat_products" "my_products" {
   name_filter_regex = "ConfigCat's product"
 }
 
-data "configcat_environments" "environments" {
-  product_id = data.configcat_products.products.products.0.product_id
+data "configcat_environments" "my_environments" {
+  product_id = data.configcat_products.my_products.products.0.product_id
   name_filter_regex = "Test"
 }
 
 
 output "environment_id" {
-  value = data.configcat_environments.environments.environments.0.environment_id
+  value = data.configcat_environments.my_environments.environments.0.environment_id
 }
 ```
 

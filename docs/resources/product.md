@@ -5,18 +5,18 @@ Creates and manages a **Product**.
 ## Example Usage
 
 ```hcl
-data "configcat_organizations" "organizations" {
+data "configcat_organizations" "my_organizations" {
   name_filter_regex = "ConfigCat"
 }
 
-resource "configcat_product" "product" {
-  organization_id = data.configcat_organizations.organizations.organizations.0.organization_id
+resource "configcat_product" "my_product" {
+  organization_id = data.configcat_organizations.my_organizations.organizations.0.organization_id
   name = "My product"
 }
 
 
 output "product_id" {
-  value = configcat_product.product.id
+  value = configcat_product.my_product.id
 }
 ```
 

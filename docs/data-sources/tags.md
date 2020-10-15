@@ -4,18 +4,18 @@ Use this data source to access information about existing **Tags**.
 ## Example Usage
 
 ```hcl
-data "configcat_products" "products" {
+data "configcat_products" "my_products" {
   name_filter_regex = "ConfigCat's product"
 }
 
-data "configcat_tags" "tags" {
-  product_id = data.configcat_products.products.products.0.product_id
+data "configcat_tags" "my_tags" {
+  product_id = data.configcat_products.my_products.products.0.product_id
   name_filter_regex = "Test"
 }
 
 
 output "tag_id" {
-  value = data.configcat_tags.tags.tags.0.tag_id
+  value = data.configcat_tags.my_tags.tags.0.tag_id
 }
 ```
 

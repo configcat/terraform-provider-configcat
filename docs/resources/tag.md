@@ -5,18 +5,18 @@ Creates and manages a **Tag**.
 ## Example Usage
 
 ```hcl
-data "configcat_products" "products" {
+data "configcat_products" "my_products" {
   name_filter_regex = "ConfigCat's product"
 }
 
-resource "configcat_tag" "tag" {
-  product_id = data.configcat_products.products.products.0.product_id
+resource "configcat_tag" "my_tag" {
+  product_id = data.configcat_products.my_products.products.0.product_id
   name = "Created by Terraform"
 }
 
 
 output "tag_id" {
-  value = configcat_tag.tag.id
+  value = configcat_tag.my_tag.id
 }
 ```
 
