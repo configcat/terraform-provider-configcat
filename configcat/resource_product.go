@@ -83,6 +83,11 @@ func resourceProductUpdate(ctx context.Context, d *schema.ResourceData, m interf
 
 		_, err := c.UpdateProduct(d.Id(), body)
 		if err != nil {
+			if _, ok := err.(NotFoundError); ok {
+				d.SetId("")
+				var diags diag.Diagnostics
+				return diags
+			}
 			return diag.FromErr(err)
 		}
 	}

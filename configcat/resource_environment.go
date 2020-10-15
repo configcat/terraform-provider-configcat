@@ -83,6 +83,12 @@ func resourceEnvironmentUpdate(ctx context.Context, d *schema.ResourceData, m in
 
 		_, err := c.UpdateEnvironment(d.Id(), body)
 		if err != nil {
+			if _, ok := err.(NotFoundError); ok {
+				d.SetId("")
+				var diags diag.Diagnostics
+				return diags
+			}
+
 			return diag.FromErr(err)
 		}
 	}

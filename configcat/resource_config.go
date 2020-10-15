@@ -83,6 +83,11 @@ func resourceConfigUpdate(ctx context.Context, d *schema.ResourceData, m interfa
 
 		_, err := c.UpdateConfig(d.Id(), body)
 		if err != nil {
+			if _, ok := err.(NotFoundError); ok {
+				d.SetId("")
+				var diags diag.Diagnostics
+				return diags
+			}
 			return diag.FromErr(err)
 		}
 	}

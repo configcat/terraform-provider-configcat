@@ -37,6 +37,7 @@ const (
 	KEY_SETTING       = "configcat_setting"
 	KEY_TAG           = "configcat_tag"
 	KEY_SETTING_VALUE = "configcat_setting_value"
+	KEY_SETTING_TAG   = "configcat_setting_tag"
 )
 
 // Provider returns a *schema.Provider.
@@ -70,6 +71,7 @@ func Provider() *schema.Provider {
 			KEY_SETTING:       resourceConfigCatSetting(),
 			KEY_TAG:           resourceConfigCatTag(),
 			KEY_SETTING_VALUE: resourceConfigCatSettingValue(),
+			KEY_SETTING_TAG:   resourceConfigCatSettingTag(),
 		},
 
 		DataSourcesMap: map[string]*schema.Resource{

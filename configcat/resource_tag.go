@@ -102,6 +102,12 @@ func resourceTagUpdate(ctx context.Context, d *schema.ResourceData, m interface{
 
 		_, err := c.UpdateTag(tagID, body)
 		if err != nil {
+			if _, ok := err.(NotFoundError); ok {
+				d.SetId("")
+				var diags diag.Diagnostics
+				return diags
+			}
+
 			return diag.FromErr(err)
 		}
 	}

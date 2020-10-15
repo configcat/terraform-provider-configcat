@@ -203,7 +203,7 @@ func resourceSettingValueCreateOrUpdate(ctx context.Context, d *schema.ResourceD
 		return diag.FromErr(err)
 	}
 
-	d.SetId(fmt.Sprintf("%s.%d", environmentID, settingID))
+	d.SetId(fmt.Sprintf("%s:%d", environmentID, settingID))
 
 	readErr := resourceSettingValueReadInternal(ctx, d, m, true)
 	if readErr != nil {
