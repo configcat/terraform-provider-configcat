@@ -1,7 +1,25 @@
-# Simple usage of Data sources
+# Simple usage of Resources
+
+## Prerequisites
+
+Get your ConfigCat Public API credentials at https://app.configcat.com/my-account/public-api-credentials and set the following environment variables:
+- CONFIGCAT_BASIC_AUTH_USERNAME
+- CONFIGCAT_BASIC_AUTH_PASSWORD
 
 ## root.tf
+
 ```hcl
+terraform {
+  required_providers {
+    configcat = {
+      source = "configcat/configcat"
+      version = "~> 1.0"
+    }
+  }
+}
+
+provider "configcat" {
+}
 
 // Organization Resource is ReadOnly.
 data "configcat_organizations" "organizations" {
