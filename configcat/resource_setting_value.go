@@ -21,7 +21,7 @@ func resourceConfigCatSettingValue() *schema.Resource {
 			State: func(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
 				// d.Id() here is the last argument passed to the `terraform import RESOURCE_TYPE.RESOURCE_NAME RESOURCE_ID` command
 				// Here we use a function to parse the import ID (like the example above) to simplify our logic
-				environmentID, settingID, err := resourceConfigCatSettingValueParseId(d.Id())
+				environmentID, settingID, err := resourceConfigCatSettingValueParseID(d.Id())
 
 				if err != nil {
 					return nil, err
@@ -445,7 +445,7 @@ func getComparator(comparator string) (*sw.RolloutRuleComparator, error) {
 	return nil, fmt.Errorf("could not parse Comparator: %s", comparator)
 }
 
-func resourceConfigCatSettingValueParseId(id string) (string, string, error) {
+func resourceConfigCatSettingValueParseID(id string) (string, string, error) {
 	parts := strings.SplitN(id, ":", 2)
 
 	if len(parts) != 2 || parts[0] == "" || parts[1] == "" {

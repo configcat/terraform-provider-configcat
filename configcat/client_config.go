@@ -2,23 +2,23 @@ package configcat
 
 import sw "github.com/configcat/configcat-publicapi-go-client"
 
-func (client *Client) GetConfigs(productId string) ([]sw.ConfigModel, error) {
-	model, response, err := client.apiClient.ConfigsApi.GetConfigs(client.GetAuthContext(), productId)
+func (client *Client) GetConfigs(productID string) ([]sw.ConfigModel, error) {
+	model, response, err := client.apiClient.ConfigsApi.GetConfigs(client.GetAuthContext(), productID)
 	defer response.Body.Close()
 	return model, handleAPIError(err)
 }
 
-func (client *Client) GetConfig(configId string) (sw.ConfigModel, error) {
-	model, response, err := client.apiClient.ConfigsApi.GetConfig(client.GetAuthContext(), configId)
+func (client *Client) GetConfig(configID string) (sw.ConfigModel, error) {
+	model, response, err := client.apiClient.ConfigsApi.GetConfig(client.GetAuthContext(), configID)
 	defer response.Body.Close()
 	return model, handleAPIError(err)
 }
 
-func (client *Client) CreateConfig(productId string, body sw.CreateConfigRequest) (sw.ConfigModel, error) {
+func (client *Client) CreateConfig(productID string, body sw.CreateConfigRequest) (sw.ConfigModel, error) {
 	model, response, err := client.apiClient.ConfigsApi.CreateConfig(
 		client.GetAuthContext(),
 		body,
-		productId)
+		productID)
 	defer response.Body.Close()
 	return model, handleAPIError(err)
 }

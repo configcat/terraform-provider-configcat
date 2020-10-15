@@ -2,23 +2,23 @@ package configcat
 
 import sw "github.com/configcat/configcat-publicapi-go-client"
 
-func (client *Client) GetTags(productId string) ([]sw.TagModel, error) {
-	model, response, err := client.apiClient.TagsApi.GetTags(client.GetAuthContext(), productId)
+func (client *Client) GetTags(productID string) ([]sw.TagModel, error) {
+	model, response, err := client.apiClient.TagsApi.GetTags(client.GetAuthContext(), productID)
 	defer response.Body.Close()
 	return model, handleAPIError(err)
 }
 
-func (client *Client) GetTag(tagId int64) (sw.TagModel, error) {
-	model, response, err := client.apiClient.TagsApi.GetTag(client.GetAuthContext(), tagId)
+func (client *Client) GetTag(tagID int64) (sw.TagModel, error) {
+	model, response, err := client.apiClient.TagsApi.GetTag(client.GetAuthContext(), tagID)
 	defer response.Body.Close()
 	return model, handleAPIError(err)
 }
 
-func (client *Client) CreateTag(productId string, body sw.CreateTagModel) (sw.TagModel, error) {
+func (client *Client) CreateTag(productID string, body sw.CreateTagModel) (sw.TagModel, error) {
 	model, response, err := client.apiClient.TagsApi.CreateTag(
 		client.GetAuthContext(),
 		body,
-		productId)
+		productID)
 	defer response.Body.Close()
 	return model, handleAPIError(err)
 }

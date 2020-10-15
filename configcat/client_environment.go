@@ -2,23 +2,23 @@ package configcat
 
 import sw "github.com/configcat/configcat-publicapi-go-client"
 
-func (client *Client) GetEnvironments(productId string) ([]sw.EnvironmentModel, error) {
-	model, response, err := client.apiClient.EnvironmentsApi.GetEnvironments(client.GetAuthContext(), productId)
+func (client *Client) GetEnvironments(productID string) ([]sw.EnvironmentModel, error) {
+	model, response, err := client.apiClient.EnvironmentsApi.GetEnvironments(client.GetAuthContext(), productID)
 	defer response.Body.Close()
 	return model, handleAPIError(err)
 }
 
-func (client *Client) GetEnvironment(environmentId string) (sw.EnvironmentModel, error) {
-	model, response, err := client.apiClient.EnvironmentsApi.GetEnvironment(client.GetAuthContext(), environmentId)
+func (client *Client) GetEnvironment(environmentID string) (sw.EnvironmentModel, error) {
+	model, response, err := client.apiClient.EnvironmentsApi.GetEnvironment(client.GetAuthContext(), environmentID)
 	defer response.Body.Close()
 	return model, handleAPIError(err)
 }
 
-func (client *Client) CreateEnvironment(productId string, body sw.CreateEnvironmentModel) (sw.EnvironmentModel, error) {
+func (client *Client) CreateEnvironment(productID string, body sw.CreateEnvironmentModel) (sw.EnvironmentModel, error) {
 	model, response, err := client.apiClient.EnvironmentsApi.CreateEnvironment(
 		client.GetAuthContext(),
 		body,
-		productId)
+		productID)
 	defer response.Body.Close()
 	return model, handleAPIError(err)
 }
