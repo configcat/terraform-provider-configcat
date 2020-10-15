@@ -84,7 +84,7 @@ resource "configcat_tag" "my_tag" {
 }
 
 resource "configcat_setting_tag" "is_awesome_tag" {
-    setting_id = configcat_setting.is_awesome_tag.id
+    setting_id = configcat_setting.is_awesome.id
     tag_id = configcat_tag.my_tag.id
 }
 ```

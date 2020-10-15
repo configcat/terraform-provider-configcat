@@ -6,7 +6,15 @@ Get your ConfigCat Public API credentials at https://app.configcat.com/my-accoun
 - CONFIGCAT_BASIC_AUTH_USERNAME
 - CONFIGCAT_BASIC_AUTH_PASSWORD
 
-## root.tf
+## File structure
+
+root.tf
+test
+  root.tf
+production
+  root.tf
+
+### root.tf
 
 ```hcl
 terraform {
@@ -49,7 +57,7 @@ resource "configcat_setting" "welcome_text" {
   key = "welcomeText"
   name = "Welcome text"
   hint = "Welcome text message shown on homepage"
-  setting_type = "text"
+  setting_type = "string"
 }
 
 resource "configcat_tag" "created_by_terraform_tag" {
@@ -86,9 +94,18 @@ module "production" {
 }
 ```
 
-## test.tf
+### test/root.tf
 
 ```hcl
+terraform {
+  required_providers {
+    configcat = {
+      source = "configcat/configcat"
+      version = "~> 1.0"
+    }
+  }
+}
+
 variable "product_id" { default = "" }
 variable "setting_is_awesome_id" { default = "" }
 variable "setting_welcome_text_id" { default = "" }
@@ -112,9 +129,18 @@ resource "configcat_setting_value" "welcome_text_value" {
 ```
 
 
-## production.tf
+### production/root.tf
 
 ```hcl
+terraform {
+  required_providers {
+    configcat = {
+      source = "configcat/configcat"
+      version = "~> 1.0"
+    }
+  }
+}
+
 variable "product_id" { default = "" }
 variable "setting_is_awesome_id" { default = "" }
 variable "setting_welcome_text_id" { default = "" }
