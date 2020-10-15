@@ -33,8 +33,9 @@ func resourceConfigCatTag() *schema.Resource {
 			},
 
 			TAG_COLOR: {
-				Type:     schema.TypeString,
-				Optional: true,
+				Type:         schema.TypeString,
+				ValidateFunc: validateColorFunc,
+				Optional:     true,
 			},
 		},
 	}
@@ -95,6 +96,7 @@ func resourceTagUpdate(ctx context.Context, d *schema.ResourceData, m interface{
 	}
 
 	if d.HasChanges(TAG_NAME) {
+
 		body := sw.UpdateTagModel{
 			Name:  d.Get(TAG_NAME).(string),
 			Color: d.Get(TAG_COLOR).(string),

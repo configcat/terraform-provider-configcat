@@ -26,3 +26,11 @@ func validateRegexFunc(val interface{}, key string) (warns []string, errs []erro
 	}
 	return
 }
+
+func validateColorFunc(val interface{}, key string) (warns []string, errs []error) {
+	color := val.(string)
+	if color != "" && color != "panther" && color != "whale" && color != "salmon" && color != "lizard" && color != "canary" && color != "koala" {
+		errs = append(errs, fmt.Errorf("%q: '%s' color is invalid. Valid values: panther, whale, salmon, lizard, canary, koala", key, color))
+	}
+	return
+}

@@ -31,7 +31,7 @@ resource "configcat_setting_value" "my_setting_value" {
     value = "true"
 
     rollout_rules {
-        comparison_attribute = "email"
+        comparison_attribute = "Email"
         comparator = "contains"
         comparison_value = "@mycompany.com"
         value = "true"

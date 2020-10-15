@@ -18,13 +18,13 @@ func TestResourceTagFlow(t *testing.T) {
 					resource "configcat_tag" "test" {
 						product_id = data.configcat_products.products.products.0.product_id
 						name = "testName"
-						color = "testColor"
+						color = "panther"
 					}
 				`,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrSet("configcat_tag.test", "id"),
 					resource.TestCheckResourceAttr("configcat_tag.test", TAG_NAME, "testName"),
-					resource.TestCheckResourceAttr("configcat_tag.test", TAG_COLOR, "testColor"),
+					resource.TestCheckResourceAttr("configcat_tag.test", TAG_COLOR, "panther"),
 				),
 			},
 			{
@@ -34,13 +34,13 @@ func TestResourceTagFlow(t *testing.T) {
 					resource "configcat_tag" "test" {
 						product_id = data.configcat_products.products.products.0.product_id
 						name = "testName2"
-						color = "testColor2"
+						color = "koala"
 					}
 				`,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrSet("configcat_tag.test", "id"),
 					resource.TestCheckResourceAttr("configcat_tag.test", TAG_NAME, "testName2"),
-					resource.TestCheckResourceAttr("configcat_tag.test", TAG_COLOR, "testColor2"),
+					resource.TestCheckResourceAttr("configcat_tag.test", TAG_COLOR, "koala"),
 				),
 			},
 			{

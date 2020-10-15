@@ -24,6 +24,7 @@ output "tag_id" {
 
 * `product_id` - (Required) The ID of the Product.
 * `name` - (Required) The name of the Tag.
+* `color` - (Optional) The name of the Tag. Valid values: `panther`, `whale`, `salmon`, `lizard`, `canary`, `koala`.
 
 ## Attribute Reference
 
