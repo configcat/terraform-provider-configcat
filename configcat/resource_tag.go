@@ -36,6 +36,7 @@ func resourceConfigCatTag() *schema.Resource {
 				Type:         schema.TypeString,
 				ValidateFunc: validateColorFunc,
 				Optional:     true,
+				Default:      "panther",
 			},
 		},
 	}
