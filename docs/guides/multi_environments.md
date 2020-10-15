@@ -6,13 +6,14 @@ Get your ConfigCat Public API credentials at https://app.configcat.com/my-accoun
 - CONFIGCAT_BASIC_AUTH_USERNAME
 - CONFIGCAT_BASIC_AUTH_PASSWORD
 
-## File structure
+## Folder/file structure
 
-root.tf
-test
-  root.tf
-production
-  root.tf
+    .
+    ├── root.tf
+    ├── test
+        ├── root.tf
+    ├── production
+        ├── root.tf
 
 ### root.tf
 
