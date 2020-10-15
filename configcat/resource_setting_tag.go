@@ -50,7 +50,7 @@ func resourceSettingTagCreate(ctx context.Context, d *schema.ResourceData, m int
 		return diag.FromErr(tConvErr)
 	}
 
-	body := []sw.Operation{sw.Operation{
+	body := []sw.Operation{{
 		Op:    "add",
 		Path:  "/tags/-",
 		Value: &tagIDInterface,
@@ -117,7 +117,7 @@ func resourceSettingTagDelete(ctx context.Context, d *schema.ResourceData, m int
 
 	tagIDInterface := d.Get(TAG_ID)
 
-	body := []sw.Operation{sw.Operation{
+	body := []sw.Operation{{
 		Op:    "remove",
 		Path:  "/tags/-",
 		Value: &tagIDInterface,
