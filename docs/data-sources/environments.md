@@ -1,6 +1,7 @@
 # configcat_environments Resource
 
-Use this data source to access information about existing **Environments**.
+Use this data source to access information about existing **Environments**. [What is an Environment in ConfigCat?](https://configcat.com/docs/main-concepts)
+
 ## Example Usage
 
 ```hcl
@@ -33,5 +34,5 @@ output "environment_id" {
 * `environment_id` - The unique Environment ID.
 * `name` - The name of the Environment.
 
-## Used APIs
+## Endpoints used
 - [Get Environments](https://api.configcat.com/docs/index.html#operation/get-environments)
