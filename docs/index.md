@@ -1,15 +1,17 @@
 # ConfigCat Feature Flags Provider
 
-Manage features and change your software configuration using [ConfigCat feature flags](https://configcat.com), without the need to re-deploy code.  
-A 10 minute trainable dashboard allows even non-technical team members to manage application features.  
-Supports A/B testing, soft launching or targeting a specific group of users first with new ideas. Deploy any time, release when confident.  
-Open-source SDKs enable easy integration with any web, mobile or backend application.
+ConfigCat Feature Flags Provider for Terraform allows you to manage ConfigCat resources from a Terraform script. The Provider uses the standard [ConfigCat Public Management API](https://api.configcat.com/).
 
-ConfigCat Feature Flags Provider allows you to configure and access ConfigCat resources via [ConfigCat Public Management API](https://api.configcat.com/). 
+## About ConfigCat
+
+Manage features and change your software configuration using [ConfigCat feature flags](https://configcat.com), without the need to re-deploy code. A 10 minute trainable dashboard allows even non-technical team members to manage application features.
+Supports A/B testing, soft launching or targeting a specific group of users first with new ideas. Deploy any time, release when confident. Open-source SDKs enable easy integration with any web, mobile or backend application.
+
+
 
 ## Authentication
 
-ConfigCat Feature Flags Provider requires authentication with [ConfigCat Public API credentials](https://app.configcat.com/my-account/public-api-credentials).
+ConfigCat Feature Flags Provider requires authentication. [Create ConfigCat Public API credentials](https://app.configcat.com/my-account/public-api-credentials).
 
 ## Provider registration
 
@@ -41,7 +43,7 @@ data "configcat_products" "my_products" {
 }
 
 // Retrieve your Config
-data "configcat_configs" "ny_configs" {
+data "configcat_configs" "my_configs" {
   product_id = data.configcat_products.my_products.products.0.product_id
   name_filter_regex = "Main Config"
 }
@@ -54,20 +56,22 @@ data "configcat_environments" "my_environments" {
 
 // Create a Feature Flag/Setting
 resource "configcat_setting" "setting" {
-  config_id = data.configcat_configs.ny_configs.configs.0.config_id
+  config_id = data.configcat_configs.my_configs.configs.0.config_id
   key = "isAwesomeFeatureEnabled"
   name = "My awesome feature flag"
   hint = "This is the hint for my awesome feature flag"
   setting_type = "boolean"
 }
 
-// Initialize the Feature Flag/Setting's value
+// Set a value to the Feature Flag/Setting created above
 resource "configcat_setting_value" "setting_value" {
     environment_id = data.configcat_environments.my_environments.environments.0.environment_id
     setting_id = configcat_setting.setting.id
     value = "false"
 }
 ```
+What is a Feature Flag, Setting, Config, Environment or Product?
+[See Main Concepts in ConfigCat Docs](https://configcat.com/docs/main-concepts)
 
 ## Argument Reference
 
