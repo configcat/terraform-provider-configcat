@@ -34,5 +34,5 @@ output "tag_id" {
 * `name` - The name of the Tag.
 * `color` - The color of the Tag.
 
-## Used APIs
+## Endpoints used
 - [Get Tags](https://api.configcat.com/docs/index.html#operation/get-tags)

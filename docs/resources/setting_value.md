@@ -1,6 +1,6 @@
 # configcat_setting_value Resource
 
-Initializes/updates a **Feature Flag/Setting**'s value.  
+Initializes and updates **Feature Flag and Setting** values. [Read more about the anatomy of a Feature Flag or Setting.](https://configcat.com/docs/main-concepts) 
 
 ## Example Usage
 
@@ -87,8 +87,7 @@ With percentage-based user targeting, you can specify a randomly selected fracti
 
 The main purpose of this resource to provide an initial value for the Feature Flag/Setting.  
 
-The `init_only` argument's default value is `true` which means that this resource's state will be only applied to the Feature Flag/Setting only once and only during resource creation.  
-This prevents overriding the Feature Flag/Setting's modified values on the [ConfigCat Dashboard](https://app.configcat.com).  
+The `init_only` argument's default value is `true`. Meaning that the Feature Flag or Setting's **value will be only be applied once** during resource creation. If someone modifies the value on the [ConfigCat Dashboard](https://app.configcat.com) those modifications will **not be overwritten** by the Terraform script.
 
 If you want to fully manage the Feature Flag/Setting's value from Terraform, set `init_only` argument to `false`. After setting the`init_only` argument to `false` each terraform run will update the Feature Flag/Setting's value to the state provided in Terraform.
 
@@ -104,6 +103,6 @@ $ terraform import configcat_setting_value.example 08d86d63-2726-47cd-8bfc-59608
 
 [Read more](https://learn.hashicorp.com/tutorials/terraform/state-import) about importing.
 
-## Used APIs
+## Endpoints used
 * [Get Setting Value](https://api.configcat.com/docs/#operation/get-setting-value)
 * [Replace Setting Value](https://api.configcat.com/docs/#operation/replace-setting-value)

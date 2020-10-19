@@ -1,6 +1,6 @@
 # configcat_products Resource
 
-Use this data source to access information about existing **Products**.
+Use this data source to access information about existing **Products**. [What is a Product in ConfigCat?](https://configcat.com/docs/main-concepts)
 
 ## Example Usage
 
@@ -28,5 +28,5 @@ output "product_id" {
 * `product_id` - The unique Product ID.
 * `name` - The name of the Product.
 
-## Used APIs
+## Endpoints used
 - [Get Products](https://api.configcat.com/docs/index.html#operation/get-products)

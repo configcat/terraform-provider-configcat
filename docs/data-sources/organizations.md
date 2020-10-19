@@ -1,6 +1,6 @@
 # configcat_organizations Resource
 
-Use this data source to access information about existing **Organizations**.
+Use this data source to access information about existing **Organizations**. [What is an Organization in ConfigCat?](https://configcat.com/docs/main-concepts)
 
 ## Example Usage
 
@@ -28,5 +28,5 @@ output "organization_id" {
 * `organization_id` - The unique Organization ID.
 * `name` - The name of the Organization.
 
-## Used APIs
+## Endpoints used
 - [Get Organizations](https://api.configcat.com/docs/index.html#operation/get-organizations)

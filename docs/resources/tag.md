@@ -40,7 +40,7 @@ $ terraform import configcat_tag.example 1234
 
 [Read more](https://learn.hashicorp.com/tutorials/terraform/state-import) about importing.
 
-## Used APIs
+## Endpoints used
 * [Get Tag](https://api.configcat.com/docs/index.html#operation/get-tag)
 * [Create Tag](https://api.configcat.com/docs/index.html#operation/create-tag)
 * [Update Tag](https://api.configcat.com/docs/index.html#operation/update-tag)

@@ -1,6 +1,6 @@
 # configcat_configs Resource
 
-Use this data source to access information about existing **Configs**.
+Use this data source to access information about existing **Configs**. [What is a Config in ConfigCat?](https://configcat.com/docs/main-concepts)
 
 ## Example Usage
 
@@ -34,5 +34,5 @@ output "config_id" {
 * `config_id` - The unique Config ID.
 * `name` - The name of the Config.
 
-## User APIs
+## Endpoints used
 [Get Configs](https://api.configcat.com/docs/index.html#operation/get-configs)
