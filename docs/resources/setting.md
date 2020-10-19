@@ -1,6 +1,6 @@
 # configcat_setting Resource
 
-Creates and manages a **Feature Flag/Setting**.  
+Creates and manages a **Feature Flag/Setting**. [Read more about the anatomy of a Feature Flag or Setting.](https://configcat.com/docs/main-concepts) 
 
 ## Example Usage
 
@@ -51,7 +51,7 @@ $ terraform import configcat_setting.example 1234
 
 [Read more](https://learn.hashicorp.com/tutorials/terraform/state-import) about importing.
 
-## Used APIs
+## Endpoints used
 * [Get Setting](https://api.configcat.com/docs/index.html#operation/get-setting)
 * [Create Setting](https://api.configcat.com/docs/index.html#operation/create-setting)
 * [Update Setting](https://api.configcat.com/docs/index.html#operation/update-setting)

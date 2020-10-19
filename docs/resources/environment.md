@@ -1,6 +1,6 @@
 # configcat_environment Resource
 
-Creates and manages an **Environment**.  
+Creates and manages an **Environment**. [What is an Environment in ConfigCat?](https://configcat.com/docs/main-concepts)
 
 ## Example Usage
 
@@ -31,7 +31,7 @@ output "environment_id" {
 
 ## Import
 
-Environments can be imported using the EnvironmentId. Get the EnvironmentId using e.g. the [GetEnvironments API](https://api.configcat.com/docs/#operation/get-environments).
+Environments can be imported using the EnvironmentId. Get the EnvironmentId using the [GetEnvironments API](https://api.configcat.com/docs/#operation/get-environments) for example.
 
 ```
 $ terraform import configcat_environment.example 08d86d63-2726-47cd-8bfc-59608ecb91e2
@@ -39,7 +39,7 @@ $ terraform import configcat_environment.example 08d86d63-2726-47cd-8bfc-59608ec
 
 [Read more](https://learn.hashicorp.com/tutorials/terraform/state-import) about importing.
 
-## Used APIs
+## Endpoints used
 * [Get Environment](https://api.configcat.com/docs/index.html#operation/get-environment)
 * [Create Environment](https://api.configcat.com/docs/index.html#operation/create-environment)
 * [Update Environment](https://api.configcat.com/docs/index.html#operation/update-environment)

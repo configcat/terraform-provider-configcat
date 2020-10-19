@@ -1,6 +1,6 @@
 # configcat_setting_tag Resource
 
-Manages **Feature Flag/Setting**'s **Tags**.  
+Adds/Removes **Tags** to/from **Feature Flags and Settings**.
 
 ## Example Usage
 
@@ -48,6 +48,6 @@ $ terraform import configcat_setting_tag.example 1234:5678
 
 [Read more](https://learn.hashicorp.com/tutorials/terraform/state-import) about importing.
 
-## Used APIs
+## Endpoints used
 * [Get Setting](https://api.configcat.com/docs/#operation/get-setting)
 * [Update Setting](https://api.configcat.com/docs/#operation/update-setting)
