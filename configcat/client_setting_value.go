@@ -10,8 +10,8 @@ func (client *Client) GetSettingValue(environmentID string, settingID int32) (sw
 	return model, handleAPIError(err)
 }
 
-func (client *Client) ReplaceSettingValue(environmentID string, settingID int32, body sw.UpdateSettingValueModel) (sw.SettingValueModel, error) {
-	model, response, err := client.apiClient.FeatureFlagSettingValuesApi.ReplaceSettingValue(client.GetAuthContext(), body, environmentID, settingID, nil)
+func (client *Client) ReplaceSettingValue(environmentID string, settingID int32, body sw.UpdateSettingValueModel, localVarOptionals *sw.FeatureFlagSettingValuesApiReplaceSettingValueOpts) (sw.SettingValueModel, error) {
+	model, response, err := client.apiClient.FeatureFlagSettingValuesApi.ReplaceSettingValue(client.GetAuthContext(), body, environmentID, settingID, localVarOptionals)
 	defer response.Body.Close()
 	return model, handleAPIError(err)
 }

@@ -27,6 +27,8 @@ data "configcat_settings" "my_settings" {
 resource "configcat_setting_value" "my_setting_value" {
     environment_id = data.configcat_environments.my_environments.environments.0.environment_id
     setting_id = data.configcat_settings.my_settings.settings.0.setting_id
+
+    mandatory_notes = "mandatory notes"
     
     value = "true"
 
@@ -60,6 +62,7 @@ Parameters
 * `environment_id` - (Required) The ID of the Environment.
 * `setting_id` - (Required) The ID of the Feature Flag/Setting.
 * `setting_type` - (Required) The Setting's type.
+* `mandatory_notes` - (Optional) Default: "". If the Product's "Mandatory notes" preference is turned on for the environment the Mandatory note should be passed.  
 * `init_only` - (Optional) Default: true. Read more below.  
 
 The Feature Flag/Setting's value
