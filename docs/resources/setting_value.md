@@ -62,7 +62,7 @@ Parameters
 * `environment_id` - (Required) The ID of the Environment.
 * `setting_id` - (Required) The ID of the Feature Flag/Setting.
 * `setting_type` - (Required) The Setting's type.
-* `mandatory_notes` - (Optional) Default: "". If the Product's "Mandatory notes" preference is turned on for the environment the Mandatory note should be passed.  
+* `mandatory_notes` - (Optional) Default: "". If the Product's "Mandatory notes" preference is turned on for the Environment the Mandatory note must be passed.  
 * `init_only` - (Optional) Default: true. Read more below.  
 
 The Feature Flag/Setting's value
