@@ -35,8 +35,9 @@ const (
 	SETTING_HINT             = "hint"
 	SETTING_TYPE             = "setting_type"
 
-	SETTING_VALUE = "value"
-	INIT_ONLY     = "init_only"
+	SETTING_VALUE   = "value"
+	INIT_ONLY       = "init_only"
+	MANDATORY_NOTES = "mandatory_notes"
 
 	ROLLOUT_RULES                     = "rollout_rules"
 	ROLLOUT_RULE_COMPARISON_ATTRIBUTE = "comparison_attribute"

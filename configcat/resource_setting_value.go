@@ -6,6 +6,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/antihax/optional"
+
 	sw "github.com/configcat/configcat-publicapi-go-client"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -64,6 +66,12 @@ func resourceConfigCatSettingValue() *schema.Resource {
 			SETTING_TYPE: {
 				Type:     schema.TypeString,
 				Computed: true,
+			},
+
+			MANDATORY_NOTES: {
+				Type:     schema.TypeString,
+				Default:  "",
+				Optional: true,
 			},
 
 			ROLLOUT_RULES: {
@@ -154,6 +162,7 @@ func resourceSettingValueCreateOrUpdate(ctx context.Context, d *schema.ResourceD
 	if convErr != nil {
 		return diag.FromErr(convErr)
 	}
+	mandatoryNotes := d.Get(MANDATORY_NOTES).(string)
 
 	// Read the settingtype first so we know about the settingTypes
 	settingTypeString := d.Get(SETTING_TYPE).(string)
@@ -193,7 +202,11 @@ func resourceSettingValueCreateOrUpdate(ctx context.Context, d *schema.ResourceD
 		RolloutPercentageItems: *rolloutPercentageItems,
 	}
 
-	_, err := c.ReplaceSettingValue(environmentID, int32(settingID), body)
+	optional := sw.FeatureFlagSettingValuesApiReplaceSettingValueOpts{
+		Reason: optional.NewString(mandatoryNotes),
+	}
+
+	_, err := c.ReplaceSettingValue(environmentID, int32(settingID), body, &optional)
 	if err != nil {
 		if _, ok := err.(NotFoundError); ok {
 			d.SetId("")

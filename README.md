@@ -21,7 +21,7 @@ Refer to the [official documentation](https://registry.terraform.io/providers/co
 
 ## Need help?
 
-If you need help how to use this Terraform provider feel free to to contact the ConfigCat Staff on https://configcat.com. We're happy to help.
+If you need help how to use this Terraform provider feel free to contact the ConfigCat Staff on https://configcat.com/support. We're happy to help.
 
 ## Contributing
 
