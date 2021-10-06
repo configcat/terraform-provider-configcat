@@ -29,6 +29,7 @@ const (
 	KEY_ENVIRONMENTS  = "configcat_environments"
 	KEY_SETTINGS      = "configcat_settings"
 	KEY_TAGS          = "configcat_tags"
+	KEY_SDKKEYS       = "configcat_sdkkeys"
 
 	// Resources
 	KEY_PRODUCT       = "configcat_product"
@@ -81,6 +82,7 @@ func Provider() *schema.Provider {
 			KEY_ENVIRONMENTS:  dataSourceConfigCatEnvironments(),
 			KEY_SETTINGS:      dataSourceConfigCatSettings(),
 			KEY_TAGS:          dataSourceConfigCatTags(),
+			KEY_SDKKEYS:       dataSourceConfigCatSdkKeys(),
 		},
 
 		ConfigureContextFunc: providerConfigure,

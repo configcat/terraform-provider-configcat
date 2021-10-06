@@ -52,4 +52,7 @@ const (
 	ROLLOUT_PERCENTAGE_ITEMS           = "percentage_items"
 	ROLLOUT_PERCENTAGE_ITEM_PERCENTAGE = "percentage"
 	ROLLOUT_PERCENTAGE_ITEM_VALUE      = "value"
+
+	PRIMARY_SDK_KEY   = "primary"
+	SECONDARY_SDK_KEY = "secondary"
 )

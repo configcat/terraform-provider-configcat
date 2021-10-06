@@ -30,6 +30,10 @@ func resourceConfigCatConfig() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+			CONFIG_DESCRIPTION: {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 		},
 	}
 }
@@ -40,7 +44,8 @@ func resourceConfigCreate(ctx context.Context, d *schema.ResourceData, m interfa
 	productID := d.Get(PRODUCT_ID).(string)
 
 	body := sw.CreateConfigRequest{
-		Name: d.Get(CONFIG_NAME).(string),
+		Name:        d.Get(CONFIG_NAME).(string),
+		Description: d.Get(CONFIG_DESCRIPTION).(string),
 	}
 
 	config, err := c.CreateConfig(productID, body)
@@ -69,6 +74,7 @@ func resourceConfigRead(ctx context.Context, d *schema.ResourceData, m interface
 
 	d.Set(PRODUCT_ID, config.Product.ProductId)
 	d.Set(CONFIG_NAME, config.Name)
+	d.Set(CONFIG_DESCRIPTION, config.Description)
 
 	return diags
 }
@@ -78,7 +84,8 @@ func resourceConfigUpdate(ctx context.Context, d *schema.ResourceData, m interfa
 
 	if d.HasChanges(CONFIG_NAME) {
 		body := sw.UpdateConfigRequest{
-			Name: d.Get(CONFIG_NAME).(string),
+			Name:        d.Get(CONFIG_NAME).(string),
+			Description: d.Get(CONFIG_DESCRIPTION).(string),
 		}
 
 		_, err := c.UpdateConfig(d.Id(), body)
