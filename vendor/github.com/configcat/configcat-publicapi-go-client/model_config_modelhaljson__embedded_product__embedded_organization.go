@@ -9,7 +9,8 @@
  */
 package configcatpublicapi
 
-type UpdateProductRequest struct {
+type ConfigModelhaljsonEmbeddedProductEmbeddedOrganization struct {
+	OrganizationId string `json:"organizationId,omitempty"`
 	Name string `json:"name,omitempty"`
-	Description string `json:"description,omitempty"`
+	Links *ConfigModelhaljsonEmbeddedProductEmbeddedOrganizationLinks `json:"_links,omitempty"`
 }

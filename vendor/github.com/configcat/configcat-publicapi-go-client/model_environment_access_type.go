@@ -9,7 +9,11 @@
  */
 package configcatpublicapi
 
-type UpdateProductRequest struct {
-	Name string `json:"name,omitempty"`
-	Description string `json:"description,omitempty"`
-}
+type EnvironmentAccessType string
+
+// List of EnvironmentAccessType
+const (
+	FULL_EnvironmentAccessType EnvironmentAccessType = "full"
+	READ_ONLY_EnvironmentAccessType EnvironmentAccessType = "readOnly"
+	NONE_EnvironmentAccessType EnvironmentAccessType = "none"
+)

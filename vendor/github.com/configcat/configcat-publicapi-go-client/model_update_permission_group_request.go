@@ -9,7 +9,27 @@
  */
 package configcatpublicapi
 
-type UpdateProductRequest struct {
+type UpdatePermissionGroupRequest struct {
 	Name string `json:"name,omitempty"`
-	Description string `json:"description,omitempty"`
+	CanManageMembers bool `json:"canManageMembers,omitempty"`
+	CanCreateOrUpdateConfig bool `json:"canCreateOrUpdateConfig,omitempty"`
+	CanDeleteConfig bool `json:"canDeleteConfig,omitempty"`
+	CanCreateOrUpdateEnvironment bool `json:"canCreateOrUpdateEnvironment,omitempty"`
+	CanDeleteEnvironment bool `json:"canDeleteEnvironment,omitempty"`
+	CanCreateOrUpdateSetting bool `json:"canCreateOrUpdateSetting,omitempty"`
+	CanTagSetting bool `json:"canTagSetting,omitempty"`
+	CanDeleteSetting bool `json:"canDeleteSetting,omitempty"`
+	CanCreateOrUpdateTag bool `json:"canCreateOrUpdateTag,omitempty"`
+	CanDeleteTag bool `json:"canDeleteTag,omitempty"`
+	CanManageWebhook bool `json:"canManageWebhook,omitempty"`
+	CanUseExportImport bool `json:"canUseExportImport,omitempty"`
+	CanManageProductPreferences bool `json:"canManageProductPreferences,omitempty"`
+	CanManageIntegrations bool `json:"canManageIntegrations,omitempty"`
+	CanViewSdkKey bool `json:"canViewSdkKey,omitempty"`
+	CanRotateSdkKey bool `json:"canRotateSdkKey,omitempty"`
+	CanViewProductStatistics bool `json:"canViewProductStatistics,omitempty"`
+	CanViewProductAuditLog bool `json:"canViewProductAuditLog,omitempty"`
+	AccessType *AccessType `json:"accessType,omitempty"`
+	NewEnvironmentAccessType *EnvironmentAccessType `json:"newEnvironmentAccessType,omitempty"`
+	EnvironmentAccesses []EnvironmentAccessModel `json:"environmentAccesses,omitempty"`
 }

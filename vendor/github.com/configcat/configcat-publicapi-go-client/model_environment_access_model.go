@@ -9,7 +9,10 @@
  */
 package configcatpublicapi
 
-type UpdateProductRequest struct {
+type EnvironmentAccessModel struct {
+	EnvironmentId string `json:"environmentId,omitempty"`
 	Name string `json:"name,omitempty"`
+	Color string `json:"color,omitempty"`
 	Description string `json:"description,omitempty"`
+	EnvironmentAccessType *EnvironmentAccessType `json:"environmentAccessType,omitempty"`
 }

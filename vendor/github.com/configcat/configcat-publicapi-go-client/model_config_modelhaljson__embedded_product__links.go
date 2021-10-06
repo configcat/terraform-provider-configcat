@@ -9,7 +9,11 @@
  */
 package configcatpublicapi
 
-type UpdateProductRequest struct {
-	Name string `json:"name,omitempty"`
-	Description string `json:"description,omitempty"`
+type ConfigModelhaljsonEmbeddedProductLinks struct {
+	Self string `json:"self,omitempty"`
+	Configs string `json:"configs,omitempty"`
+	Environments string `json:"environments,omitempty"`
+	Tags string `json:"tags,omitempty"`
+	PermissionGroups string `json:"permission-groups,omitempty"`
+	Members string `json:"members,omitempty"`
 }

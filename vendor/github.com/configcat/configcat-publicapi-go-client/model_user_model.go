@@ -9,7 +9,8 @@
  */
 package configcatpublicapi
 
-type UpdateProductRequest struct {
-	Name string `json:"name,omitempty"`
-	Description string `json:"description,omitempty"`
+type UserModel struct {
+	UserId string `json:"userId,omitempty"`
+	FullName string `json:"fullName,omitempty"`
+	Email string `json:"email,omitempty"`
 }

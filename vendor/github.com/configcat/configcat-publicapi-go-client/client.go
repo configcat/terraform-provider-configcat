@@ -61,9 +61,15 @@ type APIClient struct {
 
 	MeApi *MeApiService
 
+	MembersApi *MembersApiService
+
 	OrganizationsApi *OrganizationsApiService
 
+	PermissionGroupsApi *PermissionGroupsApiService
+
 	ProductsApi *ProductsApiService
+
+	SDKKeysApi *SDKKeysApiService
 
 	TagsApi *TagsApiService
 }
@@ -92,8 +98,11 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.FeatureFlagsSettingsApi = (*FeatureFlagsSettingsApiService)(&c.common)
 	c.IntegrationLinksApi = (*IntegrationLinksApiService)(&c.common)
 	c.MeApi = (*MeApiService)(&c.common)
+	c.MembersApi = (*MembersApiService)(&c.common)
 	c.OrganizationsApi = (*OrganizationsApiService)(&c.common)
+	c.PermissionGroupsApi = (*PermissionGroupsApiService)(&c.common)
 	c.ProductsApi = (*ProductsApiService)(&c.common)
+	c.SDKKeysApi = (*SDKKeysApiService)(&c.common)
 	c.TagsApi = (*TagsApiService)(&c.common)
 
 	return c

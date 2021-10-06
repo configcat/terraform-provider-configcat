@@ -31,10 +31,16 @@ FeatureFlagSettingValuesUsingSDKKeyApiService Get value
 This endpoint returns the value of a Feature Flag or Setting  in a specified Environment identified by the &lt;a target&#x3D;\&quot;_blank\&quot; rel&#x3D;\&quot;noopener noreferrer\&quot; href&#x3D;\&quot;https://app.configcat.com/sdkkey\&quot;&gt;SDK key&lt;/a&gt; passed in the &#x60;X-CONFIGCAT-SDKKEY&#x60; header.  The most important attributes in the response are the &#x60;value&#x60;, &#x60;rolloutRules&#x60; and &#x60;percentageRules&#x60;. The &#x60;value&#x60; represents what the clients will get when the evaluation requests of our SDKs  are not matching to any of the defined Targeting or Percentage Rules, or when there are no additional rules to evaluate.  The &#x60;rolloutRules&#x60; and &#x60;percentageRules&#x60; attributes are representing the current  Targeting and Percentage Rules configuration of the actual Feature Flag or Setting  in an **ordered** collection, which means the order of the returned rules is matching to the evaluation order. You can read more about these rules [here](https://configcat.com/docs/advanced/targeting/).
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param settingKeyOrId The key or id of the Setting.
- * @param xCONFIGCATSDKKEY The ConfigCat SDK Key. (https://app.configcat.com/sdkkey)
+ * @param optional nil or *FeatureFlagSettingValuesUsingSDKKeyApiGetSettingValueBySdkkeyOpts - Optional Parameters:
+     * @param "XCONFIGCATSDKKEY" (optional.String) -  The ConfigCat SDK Key. (https://app.configcat.com/sdkkey)
 @return SettingValueModel
 */
-func (a *FeatureFlagSettingValuesUsingSDKKeyApiService) GetSettingValueBySdkkey(ctx context.Context, settingKeyOrId string, xCONFIGCATSDKKEY string) (SettingValueModel, *http.Response, error) {
+
+type FeatureFlagSettingValuesUsingSDKKeyApiGetSettingValueBySdkkeyOpts struct {
+    XCONFIGCATSDKKEY optional.String
+}
+
+func (a *FeatureFlagSettingValuesUsingSDKKeyApiService) GetSettingValueBySdkkey(ctx context.Context, settingKeyOrId string, localVarOptionals *FeatureFlagSettingValuesUsingSDKKeyApiGetSettingValueBySdkkeyOpts) (SettingValueModel, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
@@ -68,7 +74,9 @@ func (a *FeatureFlagSettingValuesUsingSDKKeyApiService) GetSettingValueBySdkkey(
 	if localVarHttpHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
 	}
-	localVarHeaderParams["X-CONFIGCAT-SDKKEY"] = parameterToString(xCONFIGCATSDKKEY, "")
+	if localVarOptionals != nil && localVarOptionals.XCONFIGCATSDKKEY.IsSet() {
+		localVarHeaderParams["X-CONFIGCAT-SDKKEY"] = parameterToString(localVarOptionals.XCONFIGCATSDKKEY.Value(), "")
+	}
 	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -118,18 +126,19 @@ FeatureFlagSettingValuesUsingSDKKeyApiService Replace value
 This endpoint replaces the value of a Feature Flag or Setting  in a specified Environment identified by the &lt;a target&#x3D;\&quot;_blank\&quot; rel&#x3D;\&quot;noopener noreferrer\&quot; href&#x3D;\&quot;https://app.configcat.com/sdkkey\&quot;&gt;SDK key&lt;/a&gt; passed in the &#x60;X-CONFIGCAT-SDKKEY&#x60; header.  Only the &#x60;value&#x60;, &#x60;rolloutRules&#x60; and &#x60;percentageRules&#x60; attributes are modifiable by this endpoint.  **Important:** As this endpoint is doing a complete replace, it&#x27;s important to set every other attribute that you don&#x27;t  want to change to its original state. Not listing one means that it will reset.  For example: We have the following resource. &#x60;&#x60;&#x60; {  \&quot;rolloutPercentageItems\&quot;: [   {    \&quot;percentage\&quot;: 30,    \&quot;value\&quot;: true   },   {    \&quot;percentage\&quot;: 70,    \&quot;value\&quot;: false   }  ],  \&quot;rolloutRules\&quot;: [],  \&quot;value\&quot;: false } &#x60;&#x60;&#x60; If we send a replace request body as below: &#x60;&#x60;&#x60; {  \&quot;value\&quot;: true } &#x60;&#x60;&#x60; Then besides that the default served value is set to &#x60;true&#x60;, all the Percentage Rules are deleted.  So we get a response like this: &#x60;&#x60;&#x60; {  \&quot;rolloutPercentageItems\&quot;: [],  \&quot;rolloutRules\&quot;: [],  \&quot;value\&quot;: true } &#x60;&#x60;&#x60;
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param body
- * @param xCONFIGCATSDKKEY The ConfigCat SDK Key. (https://app.configcat.com/sdkkey)
  * @param settingKeyOrId The key or id of the Setting.
  * @param optional nil or *FeatureFlagSettingValuesUsingSDKKeyApiReplaceSettingValueBySdkkeyOpts - Optional Parameters:
+     * @param "XCONFIGCATSDKKEY" (optional.String) -  The ConfigCat SDK Key. (https://app.configcat.com/sdkkey)
      * @param "Reason" (optional.String) -  The reason note for the Audit Log if the Product&#x27;s \&quot;Config changes require a reason\&quot; preference is turned on.
 @return SettingValueModel
 */
 
 type FeatureFlagSettingValuesUsingSDKKeyApiReplaceSettingValueBySdkkeyOpts struct {
+    XCONFIGCATSDKKEY optional.String
     Reason optional.String
 }
 
-func (a *FeatureFlagSettingValuesUsingSDKKeyApiService) ReplaceSettingValueBySdkkey(ctx context.Context, body UpdateSettingValueModel, xCONFIGCATSDKKEY string, settingKeyOrId string, localVarOptionals *FeatureFlagSettingValuesUsingSDKKeyApiReplaceSettingValueBySdkkeyOpts) (SettingValueModel, *http.Response, error) {
+func (a *FeatureFlagSettingValuesUsingSDKKeyApiService) ReplaceSettingValueBySdkkey(ctx context.Context, body UpdateSettingValueModel, settingKeyOrId string, localVarOptionals *FeatureFlagSettingValuesUsingSDKKeyApiReplaceSettingValueBySdkkeyOpts) (SettingValueModel, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Put")
 		localVarPostBody   interface{}
@@ -166,7 +175,9 @@ func (a *FeatureFlagSettingValuesUsingSDKKeyApiService) ReplaceSettingValueBySdk
 	if localVarHttpHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
 	}
-	localVarHeaderParams["X-CONFIGCAT-SDKKEY"] = parameterToString(xCONFIGCATSDKKEY, "")
+	if localVarOptionals != nil && localVarOptionals.XCONFIGCATSDKKEY.IsSet() {
+		localVarHeaderParams["X-CONFIGCAT-SDKKEY"] = parameterToString(localVarOptionals.XCONFIGCATSDKKEY.Value(), "")
+	}
 	// body params
 	localVarPostBody = &body
 	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
@@ -218,18 +229,19 @@ FeatureFlagSettingValuesUsingSDKKeyApiService Update value
 This endpoint updates the value of a Feature Flag or Setting  with a collection of [JSON Patch](http://jsonpatch.com) operations in a specified Environment identified by the &lt;a target&#x3D;\&quot;_blank\&quot; rel&#x3D;\&quot;noopener noreferrer\&quot; href&#x3D;\&quot;https://app.configcat.com/sdkkey\&quot;&gt;SDK key&lt;/a&gt; passed in the &#x60;X-CONFIGCAT-SDKKEY&#x60; header.  Only the &#x60;value&#x60;, &#x60;rolloutRules&#x60; and &#x60;percentageRules&#x60; attributes are modifiable by this endpoint.  The advantage of using JSON Patch is that you can describe individual update operations on a resource without touching attributes that you don&#x27;t want to change. It supports collection reordering, so it also  can be used for reordering the targeting rules of a Feature Flag or Setting.  For example: We have the following resource. &#x60;&#x60;&#x60; {  \&quot;rolloutPercentageItems\&quot;: [   {    \&quot;percentage\&quot;: 30,    \&quot;value\&quot;: true   },   {    \&quot;percentage\&quot;: 70,    \&quot;value\&quot;: false   }  ],  \&quot;rolloutRules\&quot;: [],  \&quot;value\&quot;: false } &#x60;&#x60;&#x60; If we send an update request body as below: &#x60;&#x60;&#x60; [  {   \&quot;op\&quot;: \&quot;replace\&quot;,   \&quot;path\&quot;: \&quot;/value\&quot;,   \&quot;value\&quot;: true  } ] &#x60;&#x60;&#x60; Only the default served value is going to be set to &#x60;true&#x60; and all the Percentage Rules are remaining unchanged. So we get a response like this: &#x60;&#x60;&#x60; {  \&quot;rolloutPercentageItems\&quot;: [   {    \&quot;percentage\&quot;: 30,    \&quot;value\&quot;: true   },   {    \&quot;percentage\&quot;: 70,    \&quot;value\&quot;: false   }  ],  \&quot;rolloutRules\&quot;: [],  \&quot;value\&quot;: true } &#x60;&#x60;&#x60;
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param body
- * @param xCONFIGCATSDKKEY The ConfigCat SDK Key. (https://app.configcat.com/sdkkey)
  * @param settingKeyOrId The key or id of the Setting.
  * @param optional nil or *FeatureFlagSettingValuesUsingSDKKeyApiUpdateSettingValueBySdkkeyOpts - Optional Parameters:
+     * @param "XCONFIGCATSDKKEY" (optional.String) -  The ConfigCat SDK Key. (https://app.configcat.com/sdkkey)
      * @param "Reason" (optional.String) -  The reason note for the Audit Log if the Product&#x27;s \&quot;Config changes require a reason\&quot; preference is turned on.
 @return SettingValueModel
 */
 
 type FeatureFlagSettingValuesUsingSDKKeyApiUpdateSettingValueBySdkkeyOpts struct {
+    XCONFIGCATSDKKEY optional.String
     Reason optional.String
 }
 
-func (a *FeatureFlagSettingValuesUsingSDKKeyApiService) UpdateSettingValueBySdkkey(ctx context.Context, body []Operation, xCONFIGCATSDKKEY string, settingKeyOrId string, localVarOptionals *FeatureFlagSettingValuesUsingSDKKeyApiUpdateSettingValueBySdkkeyOpts) (SettingValueModel, *http.Response, error) {
+func (a *FeatureFlagSettingValuesUsingSDKKeyApiService) UpdateSettingValueBySdkkey(ctx context.Context, body []Operation, settingKeyOrId string, localVarOptionals *FeatureFlagSettingValuesUsingSDKKeyApiUpdateSettingValueBySdkkeyOpts) (SettingValueModel, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Patch")
 		localVarPostBody   interface{}
@@ -266,7 +278,9 @@ func (a *FeatureFlagSettingValuesUsingSDKKeyApiService) UpdateSettingValueBySdkk
 	if localVarHttpHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
 	}
-	localVarHeaderParams["X-CONFIGCAT-SDKKEY"] = parameterToString(xCONFIGCATSDKKEY, "")
+	if localVarOptionals != nil && localVarOptionals.XCONFIGCATSDKKEY.IsSet() {
+		localVarHeaderParams["X-CONFIGCAT-SDKKEY"] = parameterToString(localVarOptionals.XCONFIGCATSDKKEY.Value(), "")
+	}
 	// body params
 	localVarPostBody = &body
 	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)

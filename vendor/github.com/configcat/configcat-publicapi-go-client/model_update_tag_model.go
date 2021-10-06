@@ -10,6 +10,6 @@
 package configcatpublicapi
 
 type UpdateTagModel struct {
-	Name string `json:"name"`
+	Name string `json:"name,omitempty"`
 	Color string `json:"color,omitempty"`
 }

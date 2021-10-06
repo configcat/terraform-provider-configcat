@@ -52,6 +52,8 @@ func TestEnvironmentValidFilter(t *testing.T) {
 					resource.TestCheckResourceAttr("data.configcat_environments.test", ENVIRONMENTS+".#", "1"),
 					resource.TestCheckResourceAttr("data.configcat_environments.test", ENVIRONMENTS+".0."+ENVIRONMENT_ID, environmentID),
 					resource.TestCheckResourceAttr("data.configcat_environments.test", ENVIRONMENTS+".0."+ENVIRONMENT_NAME, "Test"),
+					resource.TestCheckResourceAttr("data.configcat_environments.test", ENVIRONMENTS+".0."+ENVIRONMENT_DESCRIPTION, "Test Env Descriptionn"),
+					resource.TestCheckResourceAttr("data.configcat_environments.test", ENVIRONMENTS+".0."+ENVIRONMENT_COLOR, "#5c6bc0"),
 				),
 			},
 		},

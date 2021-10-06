@@ -9,8 +9,13 @@
  */
 package configcatpublicapi
 
+import (
+	"time"
+)
+
 type SettingValueModelHaljson struct {
 	ReadOnly                bool                              `json:"readOnly,omitempty"`
+	UpdatedAt               time.Time                         `json:"updatedAt,omitempty"`
 	LastUpdaterUserEmail    string                            `json:"lastUpdaterUserEmail,omitempty"`
 	LastUpdaterUserFullName string                            `json:"lastUpdaterUserFullName,omitempty"`
 	Embedded                *SettingValueModelhaljsonEmbedded `json:"_embedded,omitempty"`

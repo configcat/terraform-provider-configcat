@@ -13,5 +13,6 @@ type ConfigModelHaljson struct {
 	Embedded *ConfigModelhaljsonEmbedded `json:"_embedded,omitempty"`
 	ConfigId string `json:"configId,omitempty"`
 	Name string `json:"name,omitempty"`
+	Description string `json:"description,omitempty"`
 	Links *ConfigModelhaljsonLinks `json:"_links,omitempty"`
 }

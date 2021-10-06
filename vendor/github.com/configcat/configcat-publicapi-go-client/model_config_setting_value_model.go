@@ -13,10 +13,7 @@ import (
 	"time"
 )
 
-type SettingValueModel struct {
-	Config                  *ConfigModel           `json:"config,omitempty"`
-	Environment             *EnvironmentModel      `json:"environment,omitempty"`
-	ReadOnly                bool                   `json:"readOnly,omitempty"`
+type ConfigSettingValueModel struct {
 	Setting                 *SettingDataModel      `json:"setting,omitempty"`
 	UpdatedAt               time.Time              `json:"updatedAt,omitempty"`
 	LastUpdaterUserEmail    string                 `json:"lastUpdaterUserEmail,omitempty"`

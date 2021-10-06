@@ -9,7 +9,9 @@
  */
 package configcatpublicapi
 
-type UpdateProductRequest struct {
-	Name string `json:"name,omitempty"`
-	Description string `json:"description,omitempty"`
+type ConfigSettingValuesModel struct {
+	Config *ConfigModel `json:"config,omitempty"`
+	Environment *EnvironmentModel `json:"environment,omitempty"`
+	ReadOnly bool `json:"readOnly,omitempty"`
+	SettingValues []ConfigSettingValueModel `json:"settingValues,omitempty"`
 }

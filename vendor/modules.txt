@@ -10,8 +10,6 @@ cloud.google.com/go/internal/version
 cloud.google.com/go/storage
 # github.com/agext/levenshtein v1.2.2
 github.com/agext/levenshtein
-# github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412
-## explicit
 # github.com/antihax/optional v1.0.0
 ## explicit
 github.com/antihax/optional
@@ -59,7 +57,7 @@ github.com/aws/aws-sdk-go/service/sts
 github.com/aws/aws-sdk-go/service/sts/stsiface
 # github.com/bgentry/go-netrc v0.0.0-20140422174119-9fd32a8b3d3d
 github.com/bgentry/go-netrc/netrc
-# github.com/configcat/configcat-publicapi-go-client v1.0.0
+# github.com/configcat/configcat-publicapi-go-client v1.1.0
 ## explicit
 github.com/configcat/configcat-publicapi-go-client
 # github.com/davecgh/go-spew v1.1.1
@@ -78,8 +76,6 @@ github.com/golang/protobuf/ptypes/any
 github.com/golang/protobuf/ptypes/duration
 github.com/golang/protobuf/ptypes/empty
 github.com/golang/protobuf/ptypes/timestamp
-# github.com/golang/snappy v0.0.1
-## explicit
 # github.com/google/uuid v1.3.0
 ## explicit
 github.com/google/uuid
@@ -155,8 +151,6 @@ github.com/hashicorp/terraform-plugin-sdk/v2/internal/tfdiags
 github.com/hashicorp/terraform-plugin-sdk/v2/meta
 github.com/hashicorp/terraform-plugin-sdk/v2/plugin
 github.com/hashicorp/terraform-plugin-sdk/v2/terraform
-# github.com/hashicorp/terraform-plugin-test/v2 v2.1.2
-## explicit
 # github.com/hashicorp/yamux v0.0.0-20181012175058-2f1d1f20f75d
 github.com/hashicorp/yamux
 # github.com/jmespath/go-jmespath v0.0.0-20180206201540-c2b33e8439af
@@ -165,8 +159,6 @@ github.com/jmespath/go-jmespath
 github.com/jstemmer/go-junit-report
 github.com/jstemmer/go-junit-report/formatter
 github.com/jstemmer/go-junit-report/parser
-# github.com/keybase/go-crypto v0.0.0-20161004153544-93f5b35093ba
-## explicit
 # github.com/klauspost/compress v1.11.2
 github.com/klauspost/compress/fse
 github.com/klauspost/compress/huff0
@@ -191,8 +183,6 @@ github.com/mitchellh/mapstructure
 github.com/mitchellh/reflectwalk
 # github.com/oklog/run v1.0.0
 github.com/oklog/run
-# github.com/pierrec/lz4 v2.0.5+incompatible
-## explicit
 # github.com/ulikunitz/xz v0.5.8
 github.com/ulikunitz/xz
 github.com/ulikunitz/xz/internal/hash

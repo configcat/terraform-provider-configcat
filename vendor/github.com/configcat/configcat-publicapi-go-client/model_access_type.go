@@ -9,7 +9,11 @@
  */
 package configcatpublicapi
 
-type UpdateProductRequest struct {
-	Name string `json:"name,omitempty"`
-	Description string `json:"description,omitempty"`
-}
+type AccessType string
+
+// List of AccessType
+const (
+	READ_ONLY_AccessType AccessType = "readOnly"
+	FULL_AccessType AccessType = "full"
+	CUSTOM_AccessType AccessType = "custom"
+)

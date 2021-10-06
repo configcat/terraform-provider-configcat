@@ -9,16 +9,20 @@ const (
 	PRODUCTS                  = "products"
 	PRODUCT_ID                = "product_id"
 	PRODUCT_NAME              = "name"
+	PRODUCT_DESCRIPTION       = "description"
 	PRODUCT_NAME_FILTER_REGEX = "name_filter_regex"
 
 	CONFIGS                  = "configs"
 	CONFIG_ID                = "config_id"
 	CONFIG_NAME              = "name"
+	CONFIG_DESCRIPTION       = "description"
 	CONFIG_NAME_FILTER_REGEX = "name_filter_regex"
 
 	ENVIRONMENTS                  = "environments"
 	ENVIRONMENT_ID                = "environment_id"
 	ENVIRONMENT_NAME              = "name"
+	ENVIRONMENT_DESCRIPTION       = "description"
+	ENVIRONMENT_COLOR             = "color"
 	ENVIRONMENT_NAME_FILTER_REGEX = "name_filter_regex"
 
 	TAGS                  = "tags"

@@ -42,6 +42,14 @@ func dataSourceConfigCatEnvironments() *schema.Resource {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
+						ENVIRONMENT_DESCRIPTION: {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						ENVIRONMENT_COLOR: {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
 					},
 				},
 			},
@@ -88,6 +96,8 @@ func flattenEnvironmentsData(environments *[]sw.EnvironmentModel) []interface{} 
 
 			element[ENVIRONMENT_ID] = environment.EnvironmentId
 			element[ENVIRONMENT_NAME] = environment.Name
+			element[ENVIRONMENT_DESCRIPTION] = environment.Description
+			element[ENVIRONMENT_COLOR] = environment.Color
 
 			elements[i] = element
 		}
