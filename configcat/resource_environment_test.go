@@ -73,7 +73,7 @@ func TestResourceEnvironmentWrongColor(t *testing.T) {
 						color = "notvalid"
 					}
 				`,
-				ExpectError: regexp.MustCompile(`{"Color":["Invalid color."]}`),
+				ExpectError: regexp.MustCompile(`Invalid color.`),
 			},
 			{
 				Config: `
@@ -104,7 +104,7 @@ func TestResourceEnvironmentWrongColor(t *testing.T) {
 						color = "notvalid"
 					}
 				`,
-				ExpectError: regexp.MustCompile(`{"Color":["Invalid color."]}`),
+				ExpectError: regexp.MustCompile(`Invalid color.`),
 			},
 			{
 				ResourceName:      "configcat_environment.test",

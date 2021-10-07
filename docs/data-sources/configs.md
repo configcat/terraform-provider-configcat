@@ -33,6 +33,7 @@ output "config_id" {
 
 * `config_id` - The unique Config ID.
 * `name` - The name of the Config.
+* `description` - The description of the Config.
 
 ## Endpoints used
 [Get Configs](https://api.configcat.com/docs/index.html#operation/get-configs)

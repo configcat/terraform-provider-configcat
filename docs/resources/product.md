@@ -12,6 +12,7 @@ data "configcat_organizations" "my_organizations" {
 resource "configcat_product" "my_product" {
   organization_id = data.configcat_organizations.my_organizations.organizations.0.organization_id
   name = "My product"
+  description = "My product description"
 }
 
 
@@ -24,6 +25,7 @@ output "product_id" {
 
 * `organization_id` - (Required) The ID of the Organization.
 * `name` - (Required) The name of the Product.
+* `description` - (Optional) The description of the Product.
 
 ## Attribute Reference
 

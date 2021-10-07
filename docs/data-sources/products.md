@@ -27,6 +27,7 @@ output "product_id" {
 
 * `product_id` - The unique Product ID.
 * `name` - The name of the Product.
+* `description` - The description of the Product.
 
 ## Endpoints used
 - [Get Products](https://api.configcat.com/docs/index.html#operation/get-products)
