@@ -88,8 +88,8 @@ func TestResourceEnvironmentWrongColor(t *testing.T) {
 				`,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrSet("configcat_environment.test", "id"),
-					resource.TestCheckResourceAttr("configcat_environment.test", ENVIRONMENT_NAME, "testName2"),
-					resource.TestCheckResourceAttr("configcat_environment.test", ENVIRONMENT_DESCRIPTION, "testDescription2"),
+					resource.TestCheckResourceAttr("configcat_environment.test", ENVIRONMENT_NAME, "testName"),
+					resource.TestCheckResourceAttr("configcat_environment.test", ENVIRONMENT_DESCRIPTION, "testDescription"),
 					resource.TestCheckResourceAttr("configcat_environment.test", ENVIRONMENT_COLOR, "yellow"),
 				),
 			},
