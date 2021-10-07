@@ -12,5 +12,5 @@ package configcatpublicapi
 type OrganizationModelHaljson struct {
 	OrganizationId string `json:"organizationId,omitempty"`
 	Name string `json:"name,omitempty"`
-	Links *OrganizationModelhaljsonLinks `json:"_links,omitempty"`
+	Links *ConfigModelhaljsonEmbeddedProductEmbeddedOrganizationLinks `json:"_links,omitempty"`
 }

@@ -39,6 +39,11 @@ data "configcat_environments" "my_environments" {
   name_filter_regex = "Test"
 }
 
+data "configcat_sdkkeys" "my_sdkkeys" {
+  config_id = data.configcat_configs.my_configs.configs.0.config_id
+  environment_id = data.configcat_environments.my_environments.environments.0.environment_id
+}
+
 data "configcat_settings" "my_settings" {
   config_id = data.configcat_configs.my_configs.configs.0.config_id
   key_filter_regex = "isAwesomeFeatureEnabled"

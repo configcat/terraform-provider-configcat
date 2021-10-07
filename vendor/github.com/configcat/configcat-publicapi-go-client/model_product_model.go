@@ -13,4 +13,5 @@ type ProductModel struct {
 	Organization *OrganizationModel `json:"organization,omitempty"`
 	ProductId string `json:"productId,omitempty"`
 	Name string `json:"name,omitempty"`
+	Description string `json:"description,omitempty"`
 }

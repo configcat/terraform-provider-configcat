@@ -12,6 +12,8 @@ data "configcat_products" "my_products" {
 resource "configcat_environment" "my_environment" {
   product_id = data.configcat_products.my_products.products.0.product_id
   name = "Staging"
+  description = "Staging description"
+  color = "blue"
 }
 
 
@@ -24,6 +26,8 @@ output "environment_id" {
 
 * `product_id` - (Required) The ID of the Product.
 * `name` - (Required) The name of the Environment.
+* `description` - (Optional) The description of the Environment.
+* `color` - (Optional) The color (HTML color code) of the Environment.
 
 ## Attribute Reference
 

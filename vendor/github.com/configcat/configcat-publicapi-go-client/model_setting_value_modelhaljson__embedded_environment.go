@@ -13,5 +13,7 @@ type SettingValueModelhaljsonEmbeddedEnvironment struct {
 	Embedded *ConfigModelhaljsonEmbedded `json:"_embedded,omitempty"`
 	EnvironmentId string `json:"environmentId,omitempty"`
 	Name string `json:"name,omitempty"`
+	Color string `json:"color,omitempty"`
+	Description string `json:"description,omitempty"`
 	Links *EnvironmentModelhaljsonLinks `json:"_links,omitempty"`
 }

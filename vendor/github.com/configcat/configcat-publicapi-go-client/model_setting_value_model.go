@@ -9,11 +9,16 @@
  */
 package configcatpublicapi
 
+import (
+	"time"
+)
+
 type SettingValueModel struct {
 	Config                  *ConfigModel           `json:"config,omitempty"`
 	Environment             *EnvironmentModel      `json:"environment,omitempty"`
 	ReadOnly                bool                   `json:"readOnly,omitempty"`
 	Setting                 *SettingDataModel      `json:"setting,omitempty"`
+	UpdatedAt               time.Time              `json:"updatedAt,omitempty"`
 	LastUpdaterUserEmail    string                 `json:"lastUpdaterUserEmail,omitempty"`
 	LastUpdaterUserFullName string                 `json:"lastUpdaterUserFullName,omitempty"`
 	IntegrationLinks        []IntegrationLinkModel `json:"integrationLinks,omitempty"`

@@ -27,8 +27,8 @@ var (
 
 type AuditLogsApiService service
 /*
-AuditLogsApiService List Audit logs
-This endpoint returns the list of Audit logs for a given Product  and the result can be optionally filtered by Config and/or Environment.
+AuditLogsApiService List Audit log items for Product
+This endpoint returns the list of Audit log items for a given Product  and the result can be optionally filtered by Config and/or Environment.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param productId The identifier of the Product.
  * @param optional nil or *AuditLogsApiGetAuditlogsOpts - Optional Parameters:
@@ -65,6 +65,211 @@ func (a *AuditLogsApiService) GetAuditlogs(ctx context.Context, productId string
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
+	if localVarOptionals != nil && localVarOptionals.ConfigId.IsSet() {
+		localVarQueryParams.Add("configId", parameterToString(localVarOptionals.ConfigId.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.EnvironmentId.IsSet() {
+		localVarQueryParams.Add("environmentId", parameterToString(localVarOptionals.EnvironmentId.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.AuditLogType.IsSet() {
+		localVarQueryParams.Add("auditLogType", parameterToString(localVarOptionals.AuditLogType.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.FromUtcDateTime.IsSet() {
+		localVarQueryParams.Add("fromUtcDateTime", parameterToString(localVarOptionals.FromUtcDateTime.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.ToUtcDateTime.IsSet() {
+		localVarQueryParams.Add("toUtcDateTime", parameterToString(localVarOptionals.ToUtcDateTime.Value(), ""))
+	}
+	// to determine the Content-Type header
+	localVarHttpContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHttpContentType := selectHeaderContentType(localVarHttpContentTypes)
+	if localVarHttpContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHttpContentType
+	}
+
+	// to determine the Accept header
+	localVarHttpHeaderAccepts := []string{"application/json", "application/hal+json"}
+
+	// set Accept header
+	localVarHttpHeaderAccept := selectHeaderAccept(localVarHttpHeaderAccepts)
+	if localVarHttpHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
+	}
+	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHttpResponse, err := a.client.callAPI(r)
+	if err != nil || localVarHttpResponse == nil {
+		return localVarReturnValue, localVarHttpResponse, err
+	}
+
+	localVarBody, err := ioutil.ReadAll(localVarHttpResponse.Body)
+	localVarHttpResponse.Body.Close()
+	if err != nil {
+		return localVarReturnValue, localVarHttpResponse, err
+	}
+
+	if localVarHttpResponse.StatusCode < 300 {
+		// If we succeed, return the data, otherwise pass on to decode error.
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+		if err == nil { 
+			return localVarReturnValue, localVarHttpResponse, err
+		}
+	}
+
+	if localVarHttpResponse.StatusCode >= 300 {
+		newErr := GenericSwaggerError{
+			body: localVarBody,
+			error: localVarHttpResponse.Status,
+		}
+		if localVarHttpResponse.StatusCode == 200 {
+			var v []AuditLogItemModel
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		return localVarReturnValue, localVarHttpResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHttpResponse, nil
+}
+/*
+AuditLogsApiService List Deleted Settings
+This endpoint returns the list of Feature Flags and Settings that were deleted from the given Config.
+ * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ * @param configId The identifier of the Config.
+@return []SettingModel
+*/
+func (a *AuditLogsApiService) GetDeletedSettings(ctx context.Context, configId string) ([]SettingModel, *http.Response, error) {
+	var (
+		localVarHttpMethod = strings.ToUpper("Get")
+		localVarPostBody   interface{}
+		localVarFileName   string
+		localVarFileBytes  []byte
+		localVarReturnValue []SettingModel
+	)
+
+	// create path and map variables
+	localVarPath := a.client.cfg.BasePath + "/v1/configs/{configId}/deleted-settings"
+	localVarPath = strings.Replace(localVarPath, "{"+"configId"+"}", fmt.Sprintf("%v", configId), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHttpContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHttpContentType := selectHeaderContentType(localVarHttpContentTypes)
+	if localVarHttpContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHttpContentType
+	}
+
+	// to determine the Accept header
+	localVarHttpHeaderAccepts := []string{"application/json", "application/hal+json"}
+
+	// set Accept header
+	localVarHttpHeaderAccept := selectHeaderAccept(localVarHttpHeaderAccepts)
+	if localVarHttpHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
+	}
+	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHttpResponse, err := a.client.callAPI(r)
+	if err != nil || localVarHttpResponse == nil {
+		return localVarReturnValue, localVarHttpResponse, err
+	}
+
+	localVarBody, err := ioutil.ReadAll(localVarHttpResponse.Body)
+	localVarHttpResponse.Body.Close()
+	if err != nil {
+		return localVarReturnValue, localVarHttpResponse, err
+	}
+
+	if localVarHttpResponse.StatusCode < 300 {
+		// If we succeed, return the data, otherwise pass on to decode error.
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+		if err == nil { 
+			return localVarReturnValue, localVarHttpResponse, err
+		}
+	}
+
+	if localVarHttpResponse.StatusCode >= 300 {
+		newErr := GenericSwaggerError{
+			body: localVarBody,
+			error: localVarHttpResponse.Status,
+		}
+		if localVarHttpResponse.StatusCode == 200 {
+			var v []SettingModel
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		return localVarReturnValue, localVarHttpResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHttpResponse, nil
+}
+/*
+AuditLogsApiService List Audit log items for Organization
+This endpoint returns the list of Audit log items for a given Organization  and the result can be optionally filtered by Product and/or Config and/or Environment.
+ * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ * @param organizationId The identifier of the Organization.
+ * @param optional nil or *AuditLogsApiGetOrganizationAuditlogsOpts - Optional Parameters:
+     * @param "ProductId" (optional.Interface of string) -  The identifier of the Product.
+     * @param "ConfigId" (optional.Interface of string) -  The identifier of the Config.
+     * @param "EnvironmentId" (optional.Interface of string) -  The identifier of the Environment.
+     * @param "AuditLogType" (optional.Interface of AuditLogType1) -  Filter Audit logs by Audit log type.
+     * @param "FromUtcDateTime" (optional.Time) -  Filter Audit logs by starting UTC date.
+     * @param "ToUtcDateTime" (optional.Time) -  Filter Audit logs by ending UTC date.
+@return []AuditLogItemModel
+*/
+
+type AuditLogsApiGetOrganizationAuditlogsOpts struct {
+    ProductId optional.Interface
+    ConfigId optional.Interface
+    EnvironmentId optional.Interface
+    AuditLogType optional.Interface
+    FromUtcDateTime optional.Time
+    ToUtcDateTime optional.Time
+}
+
+func (a *AuditLogsApiService) GetOrganizationAuditlogs(ctx context.Context, organizationId string, localVarOptionals *AuditLogsApiGetOrganizationAuditlogsOpts) ([]AuditLogItemModel, *http.Response, error) {
+	var (
+		localVarHttpMethod = strings.ToUpper("Get")
+		localVarPostBody   interface{}
+		localVarFileName   string
+		localVarFileBytes  []byte
+		localVarReturnValue []AuditLogItemModel
+	)
+
+	// create path and map variables
+	localVarPath := a.client.cfg.BasePath + "/v1/organizations/{organizationId}/auditlogs"
+	localVarPath = strings.Replace(localVarPath, "{"+"organizationId"+"}", fmt.Sprintf("%v", organizationId), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if localVarOptionals != nil && localVarOptionals.ProductId.IsSet() {
+		localVarQueryParams.Add("productId", parameterToString(localVarOptionals.ProductId.Value(), ""))
+	}
 	if localVarOptionals != nil && localVarOptionals.ConfigId.IsSet() {
 		localVarQueryParams.Add("configId", parameterToString(localVarOptionals.ConfigId.Value(), ""))
 	}

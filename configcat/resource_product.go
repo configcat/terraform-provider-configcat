@@ -30,6 +30,11 @@ func resourceConfigCatProduct() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+
+			PRODUCT_DESCRIPTION: {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 		},
 	}
 }
@@ -40,7 +45,8 @@ func resourceProductCreate(ctx context.Context, d *schema.ResourceData, m interf
 	organizationID := d.Get(ORGANIZATION_ID).(string)
 
 	body := sw.CreateProductRequest{
-		Name: d.Get(PRODUCT_NAME).(string),
+		Name:        d.Get(PRODUCT_NAME).(string),
+		Description: d.Get(PRODUCT_DESCRIPTION).(string),
 	}
 
 	product, err := c.CreateProduct(organizationID, body)
@@ -69,6 +75,7 @@ func resourceProductRead(ctx context.Context, d *schema.ResourceData, m interfac
 
 	d.Set(ORGANIZATION_ID, product.Organization.OrganizationId)
 	d.Set(PRODUCT_NAME, product.Name)
+	d.Set(PRODUCT_DESCRIPTION, product.Description)
 
 	return diags
 }
@@ -78,7 +85,8 @@ func resourceProductUpdate(ctx context.Context, d *schema.ResourceData, m interf
 
 	if d.HasChanges(PRODUCT_NAME) {
 		body := sw.UpdateProductRequest{
-			Name: d.Get(PRODUCT_NAME).(string),
+			Name:        d.Get(PRODUCT_NAME).(string),
+			Description: d.Get(PRODUCT_DESCRIPTION).(string),
 		}
 
 		_, err := c.UpdateProduct(d.Id(), body)

@@ -33,6 +33,8 @@ output "environment_id" {
 
 * `environment_id` - The unique Environment ID.
 * `name` - The name of the Environment.
+* `description` - The description of the Environment.
+* `color` - The color of the Environment.
 
 ## Endpoints used
 - [Get Environments](https://api.configcat.com/docs/index.html#operation/get-environments)
