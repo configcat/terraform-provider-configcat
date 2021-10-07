@@ -94,19 +94,6 @@ func TestResourceEnvironmentWrongColor(t *testing.T) {
 				),
 			},
 			{
-				Config: `
-					data "configcat_products" "products" {
-					}
-					resource "configcat_environment" "test" {
-						product_id = data.configcat_products.products.products.0.product_id
-						name = "testName"
-						description = "testDescription"
-						color = "notvalid"
-					}
-				`,
-				ExpectError: regexp.MustCompile(`Invalid color.`),
-			},
-			{
 				ResourceName:      "configcat_environment.test",
 				ImportState:       true,
 				ImportStateVerify: true,
