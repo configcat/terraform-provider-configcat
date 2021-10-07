@@ -68,12 +68,8 @@ func TestSdkKeysNotFound(t *testing.T) {
 		Providers: testAccProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: dataSource,
-				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttrSet("data.configcat_sdkkeys.test", "id"),
-					resource.TestCheckResourceAttr("data.configcat_sdkkeys.test", "primary", ""),
-					resource.TestCheckResourceAttr("data.configcat_sdkkeys.test", "secondary", ""),
-				),
+				Config:      dataSource,
+				ExpectError: regexp.MustCompile(`404`),
 			},
 		},
 	})
