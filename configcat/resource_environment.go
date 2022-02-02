@@ -15,7 +15,7 @@ func resourceConfigCatEnvironment() *schema.Resource {
 		UpdateContext: resourceEnvironmentUpdate,
 		DeleteContext: resourceEnvironmentDelete,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 
 		Schema: map[string]*schema.Schema{

@@ -16,7 +16,7 @@ func resourceConfigCatTag() *schema.Resource {
 		UpdateContext: resourceTagUpdate,
 		DeleteContext: resourceTagDelete,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 
 		Schema: map[string]*schema.Schema{

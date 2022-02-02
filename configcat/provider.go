@@ -71,6 +71,7 @@ func Provider() *schema.Provider {
 			KEY_PRODUCT:       resourceConfigCatProduct(),
 			KEY_CONFIG:        resourceConfigCatConfig(),
 			KEY_ENVIRONMENT:   resourceConfigCatEnvironment(),
+			KEY_SEGMENT:       resourceConfigCatSegment(),
 			KEY_SETTING:       resourceConfigCatSetting(),
 			KEY_TAG:           resourceConfigCatTag(),
 			KEY_SETTING_VALUE: resourceConfigCatSettingValue(),
