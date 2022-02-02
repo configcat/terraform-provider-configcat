@@ -16,4 +16,5 @@ type ConfigModelhaljsonEmbeddedProductLinks struct {
 	Tags string `json:"tags,omitempty"`
 	PermissionGroups string `json:"permission-groups,omitempty"`
 	Members string `json:"members,omitempty"`
+	Segments string `json:"segments,omitempty"`
 }

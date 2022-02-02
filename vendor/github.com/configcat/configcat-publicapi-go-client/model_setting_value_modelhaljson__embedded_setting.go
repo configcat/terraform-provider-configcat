@@ -23,6 +23,5 @@ type SettingValueModelhaljsonEmbeddedSetting struct {
 	CreatorFullName string `json:"creatorFullName,omitempty"`
 	OwnerFullName string `json:"ownerFullName,omitempty"`
 	OwnerEmail string `json:"ownerEmail,omitempty"`
-	ExpirationWarningAt time.Time `json:"expirationWarningAt,omitempty"`
 	IsWatching bool `json:"isWatching,omitempty"`
 }

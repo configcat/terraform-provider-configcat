@@ -11,10 +11,13 @@ package configcatpublicapi
 
 type RolloutRuleModel struct {
 	// The user attribute to compare.
-	ComparisonAttribute string                 `json:"comparisonAttribute"`
+	ComparisonAttribute string                 `json:"comparisonAttribute,omitempty"`
 	Comparator          *RolloutRuleComparator `json:"comparator,omitempty"`
 	// The value to compare against.
-	ComparisonValue string `json:"comparisonValue"`
+	ComparisonValue string `json:"comparisonValue,omitempty"`
 	// The value to serve when the comparison matches. It must respect the setting type.
-	Value *interface{} `json:"value,omitempty"`
+	Value             *interface{}       `json:"value,omitempty"`
+	SegmentComparator *SegmentComparator `json:"segmentComparator,omitempty"`
+	// The segment to compare against.
+	SegmentId string `json:"segmentId,omitempty"`
 }

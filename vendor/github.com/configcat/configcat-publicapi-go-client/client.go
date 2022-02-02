@@ -71,6 +71,8 @@ type APIClient struct {
 
 	SDKKeysApi *SDKKeysApiService
 
+	SegmentsApi *SegmentsApiService
+
 	TagsApi *TagsApiService
 }
 
@@ -103,6 +105,7 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.PermissionGroupsApi = (*PermissionGroupsApiService)(&c.common)
 	c.ProductsApi = (*ProductsApiService)(&c.common)
 	c.SDKKeysApi = (*SDKKeysApiService)(&c.common)
+	c.SegmentsApi = (*SegmentsApiService)(&c.common)
 	c.TagsApi = (*TagsApiService)(&c.common)
 
 	return c

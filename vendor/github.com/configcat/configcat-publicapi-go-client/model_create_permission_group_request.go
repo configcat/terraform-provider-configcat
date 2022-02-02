@@ -29,6 +29,8 @@ type CreatePermissionGroupRequest struct {
 	CanRotateSdkKey bool `json:"canRotateSdkKey,omitempty"`
 	CanViewProductStatistics bool `json:"canViewProductStatistics,omitempty"`
 	CanViewProductAuditLog bool `json:"canViewProductAuditLog,omitempty"`
+	CanCreateOrUpdateSegments bool `json:"canCreateOrUpdateSegments,omitempty"`
+	CanDeleteSegments bool `json:"canDeleteSegments,omitempty"`
 	AccessType *AccessType `json:"accessType,omitempty"`
 	NewEnvironmentAccessType *EnvironmentAccessType `json:"newEnvironmentAccessType,omitempty"`
 	EnvironmentAccesses []EnvironmentAccessModel `json:"environmentAccesses,omitempty"`
