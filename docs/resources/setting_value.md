@@ -73,10 +73,13 @@ The Feature Flag/Setting's value
 ### `rollout_rules` list
 
 By adding a rule, you specify a group of your users and what feature flag - or other settings - value they should get.  
+Either the comparison_attribute/comparator/comparison_value attributes or the segment_comparator/segment_id attributes are required together.
 
-* `comparison_attribute` - (Required) The [comparison attribute](https://configcat.com/docs/advanced/targeting/#attribute).
-* `comparator` - (Required) The [comparator](https://configcat.com/docs/advanced/targeting/#comparator).
-* `comparison_value` - (Required) The [comparison value](https://configcat.com/docs/advanced/targeting/#comparison-value).
+* `comparison_attribute` - (Optional) The [comparison attribute](https://configcat.com/docs/advanced/targeting/#attribute).
+* `comparator` - (Optional) The [comparator](https://configcat.com/docs/advanced/targeting/#comparator).
+* `comparison_value` - (Optional) The [comparison value](https://configcat.com/docs/advanced/targeting/#comparison-value).
+* `segment_comparator` - (Optional) The segment_comparator. Possible values: isIn, isNotIn.
+* `segment_id` - (Optional) The Segment's unique identifier.
 * `value` - (Required) The exact [value](https://configcat.com/docs/advanced/targeting/#served-value) that will be served to the users who match the targeting rule. Type: `string`. It must be compatible with the `setting_type`.
 
 ### `percentage_items` list
