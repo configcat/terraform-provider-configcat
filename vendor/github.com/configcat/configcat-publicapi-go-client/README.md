@@ -151,6 +151,7 @@ Class | Method | HTTP request | Description
  - [SdkKeysModel](docs/SdkKeysModel.md)
  - [SegmentComparator](docs/SegmentComparator.md)
  - [SegmentListModel](docs/SegmentListModel.md)
+ - [SegmentListModelHaljson](docs/SegmentListModelHaljson.md)
  - [SegmentModel](docs/SegmentModel.md)
  - [SegmentModelHaljson](docs/SegmentModelHaljson.md)
  - [SettingDataModel](docs/SettingDataModel.md)

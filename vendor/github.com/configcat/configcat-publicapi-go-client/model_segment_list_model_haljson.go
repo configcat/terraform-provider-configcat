@@ -9,9 +9,21 @@
  */
 package configcatpublicapi
 
-type IntegrationLinkModel struct {
-	Key                 string               `json:"key,omitempty"`
-	Description         string               `json:"description,omitempty"`
-	IntegrationLinkType *IntegrationLinkType `json:"integrationLinkType,omitempty"`
-	Url                 string               `json:"url,omitempty"`
+import (
+	"time"
+)
+
+type SegmentListModelHaljson struct {
+	Usage               int32                         `json:"usage,omitempty"`
+	Embedded            *ConfigModelhaljsonEmbedded   `json:"_embedded,omitempty"`
+	SegmentId           string                        `json:"segmentId,omitempty"`
+	Name                string                        `json:"name,omitempty"`
+	Description         string                        `json:"description,omitempty"`
+	CreatorEmail        string                        `json:"creatorEmail,omitempty"`
+	CreatorFullName     string                        `json:"creatorFullName,omitempty"`
+	CreatedAt           time.Time                     `json:"createdAt,omitempty"`
+	LastUpdaterEmail    string                        `json:"lastUpdaterEmail,omitempty"`
+	LastUpdaterFullName string                        `json:"lastUpdaterFullName,omitempty"`
+	UpdatedAt           time.Time                     `json:"updatedAt,omitempty"`
+	Links               *EnvironmentModelhaljsonLinks `json:"_links,omitempty"`
 }
