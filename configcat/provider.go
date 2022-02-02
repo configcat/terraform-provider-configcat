@@ -27,6 +27,7 @@ const (
 	KEY_PRODUCTS      = "configcat_products"
 	KEY_CONFIGS       = "configcat_configs"
 	KEY_ENVIRONMENTS  = "configcat_environments"
+	KEY_SEGMENTS      = "configcat_segments"
 	KEY_SETTINGS      = "configcat_settings"
 	KEY_TAGS          = "configcat_tags"
 	KEY_SDKKEYS       = "configcat_sdkkeys"
@@ -35,6 +36,7 @@ const (
 	KEY_PRODUCT       = "configcat_product"
 	KEY_CONFIG        = "configcat_config"
 	KEY_ENVIRONMENT   = "configcat_environment"
+	KEY_SEGMENT       = "configcat_segment"
 	KEY_SETTING       = "configcat_setting"
 	KEY_TAG           = "configcat_tag"
 	KEY_SETTING_VALUE = "configcat_setting_value"
@@ -80,6 +82,7 @@ func Provider() *schema.Provider {
 			KEY_PRODUCTS:      dataSourceConfigCatProducts(),
 			KEY_CONFIGS:       dataSourceConfigCatConfigs(),
 			KEY_ENVIRONMENTS:  dataSourceConfigCatEnvironments(),
+			KEY_SEGMENTS:      dataSourceConfigCatSegments(),
 			KEY_SETTINGS:      dataSourceConfigCatSettings(),
 			KEY_TAGS:          dataSourceConfigCatTags(),
 			KEY_SDKKEYS:       dataSourceConfigCatSdkKeys(),
