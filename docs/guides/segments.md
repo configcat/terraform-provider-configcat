@@ -50,7 +50,7 @@ resource "configcat_segment" "sensitive_users" {
   name = "Sensitive users"
   description = "Exclude these users from beta testings."
   comparison_attribute = "email"
-  comparator = "isOneOfSensitive"
+  comparator = "sensitiveIsOneOf"
   comparison_value = "user@sensitivecompany.com,user2@sensitivecompany.com"
 }
 

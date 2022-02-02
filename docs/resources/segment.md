@@ -14,7 +14,7 @@ resource "configcat_segment" "my_segment" {
   name = "Beta users"
   description = "Beta users' description"
   comparison_attribute = "email"
-  comparator = "isOneOfSensitive"
+  comparator = "sensitiveIsOneOf"
   comparison_value = "betauser1@example.com,betauser2@example.com"
 }
 

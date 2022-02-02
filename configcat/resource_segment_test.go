@@ -21,7 +21,7 @@ func TestResourceSegmentFlow(t *testing.T) {
 						name = "testName"
 						description = "testDescription"
 						comparison_attribute = "email"
-						comparator = "isOneOfSensitive"
+						comparator = "sensitiveIsOneOf"
 						comparison_value="a@b.com,c@d.com"
 					}
 				`,
