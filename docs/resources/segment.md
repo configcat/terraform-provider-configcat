@@ -1,6 +1,6 @@
 # configcat_segment Resource
 
-Creates and manages a **Segment**.
+Creates and manages a **Segment**. [What is a Segment in ConfigCat?](https://configcat.com/docs/advanced/segments)
 
 ## Example Usage
 

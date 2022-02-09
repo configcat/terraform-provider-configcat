@@ -1,6 +1,6 @@
 # configcat_segments Resource
 
-Use this data source to access information about existing **Segments**.
+Use this data source to access information about existing **Segments**. [What is a Segment in ConfigCat?](https://configcat.com/docs/advanced/segments)
 
 ## Example Usage
 

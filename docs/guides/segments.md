@@ -1,5 +1,5 @@
 # Advanced usage of Resources with Segments
-
+Read more about [segmentation and segments](https://configcat.com/docs/advanced/segments) in ConfigCat.
 ## Prerequisites
 
 [Get your Public Management API credentials](https://app.configcat.com/my-account/public-api-credentials) and set the following environment variables:

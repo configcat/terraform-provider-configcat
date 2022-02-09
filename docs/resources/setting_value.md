@@ -79,7 +79,7 @@ Either the comparison_attribute/comparator/comparison_value attributes or the se
 * `comparator` - (Optional) The [comparator](https://configcat.com/docs/advanced/targeting/#comparator).
 * `comparison_value` - (Optional) The [comparison value](https://configcat.com/docs/advanced/targeting/#comparison-value).
 * `segment_comparator` - (Optional) The segment_comparator. Possible values: isIn, isNotIn.
-* `segment_id` - (Optional) The Segment's unique identifier.
+* `segment_id` - (Optional) The [Segment's](https://configcat.com/docs/advanced/segments) unique identifier.
 * `value` - (Required) The exact [value](https://configcat.com/docs/advanced/targeting/#served-value) that will be served to the users who match the targeting rule. Type: `string`. It must be compatible with the `setting_type`.
 
 ### `percentage_items` list
