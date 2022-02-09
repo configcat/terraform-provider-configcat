@@ -16,7 +16,7 @@ func resourceConfigCatTag() *schema.Resource {
 		UpdateContext: resourceTagUpdate,
 		DeleteContext: resourceTagDelete,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 
 		Schema: map[string]*schema.Schema{
@@ -96,7 +96,7 @@ func resourceTagUpdate(ctx context.Context, d *schema.ResourceData, m interface{
 		return diag.FromErr(convErr)
 	}
 
-	if d.HasChanges(TAG_NAME) {
+	if d.HasChanges(TAG_NAME, TAG_COLOR) {
 
 		body := sw.UpdateTagModel{
 			Name:  d.Get(TAG_NAME).(string),

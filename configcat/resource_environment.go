@@ -15,7 +15,7 @@ func resourceConfigCatEnvironment() *schema.Resource {
 		UpdateContext: resourceEnvironmentUpdate,
 		DeleteContext: resourceEnvironmentDelete,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 
 		Schema: map[string]*schema.Schema{
@@ -88,7 +88,7 @@ func resourceEnvironmentRead(ctx context.Context, d *schema.ResourceData, m inte
 func resourceEnvironmentUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*Client)
 
-	if d.HasChanges(ENVIRONMENT_NAME) {
+	if d.HasChanges(ENVIRONMENT_NAME, ENVIRONMENT_DESCRIPTION, ENVIRONMENT_COLOR) {
 		body := sw.UpdateEnvironmentModel{
 			Name:        d.Get(ENVIRONMENT_NAME).(string),
 			Description: d.Get(ENVIRONMENT_DESCRIPTION).(string),

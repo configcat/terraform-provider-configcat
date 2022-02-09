@@ -15,7 +15,7 @@ func resourceConfigCatConfig() *schema.Resource {
 		UpdateContext: resourceConfigUpdate,
 		DeleteContext: resourceConfigDelete,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 
 		Schema: map[string]*schema.Schema{
@@ -82,7 +82,7 @@ func resourceConfigRead(ctx context.Context, d *schema.ResourceData, m interface
 func resourceConfigUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*Client)
 
-	if d.HasChanges(CONFIG_NAME) {
+	if d.HasChanges(CONFIG_NAME, CONFIG_DESCRIPTION) {
 		body := sw.UpdateConfigRequest{
 			Name:        d.Get(CONFIG_NAME).(string),
 			Description: d.Get(CONFIG_DESCRIPTION).(string),

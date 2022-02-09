@@ -81,17 +81,27 @@ func resourceConfigCatSettingValue() *schema.Resource {
 					Schema: map[string]*schema.Schema{
 						ROLLOUT_RULE_COMPARISON_ATTRIBUTE: {
 							Type:     schema.TypeString,
-							Required: true,
+							Optional: true,
 						},
 
 						ROLLOUT_RULE_COMPARATOR: {
 							Type:     schema.TypeString,
-							Required: true,
+							Optional: true,
 						},
 
 						ROLLOUT_RULE_COMPARISON_VALUE: {
 							Type:     schema.TypeString,
-							Required: true,
+							Optional: true,
+						},
+
+						ROLLOUT_RULE_SEGMENT_COMPARATOR: {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+
+						ROLLOUT_RULE_SEGMENT_ID: {
+							Type:     schema.TypeString,
+							Optional: true,
 						},
 
 						ROLLOUT_RULE_VALUE: {
@@ -281,6 +291,8 @@ func flattenRolloutRulesData(rolloutRules *[]sw.RolloutRuleModel) []interface{} 
 			element[ROLLOUT_RULE_COMPARISON_ATTRIBUTE] = rolloutRule.ComparisonAttribute
 			element[ROLLOUT_RULE_COMPARATOR] = rolloutRule.Comparator
 			element[ROLLOUT_RULE_COMPARISON_VALUE] = rolloutRule.ComparisonValue
+			element[ROLLOUT_RULE_SEGMENT_COMPARATOR] = rolloutRule.SegmentComparator
+			element[ROLLOUT_RULE_SEGMENT_ID] = rolloutRule.SegmentId
 			element[ROLLOUT_RULE_VALUE] = fmt.Sprintf("%v", *rolloutRule.Value)
 
 			elements[i] = element
@@ -322,19 +334,47 @@ func getRolloutRulesData(rolloutRules []interface{}, settingType string) (*[]sw.
 				return nil, err
 			}
 
-			comparator, compErr := getComparator(item[ROLLOUT_RULE_COMPARATOR].(string))
-			if compErr != nil {
-				return nil, compErr
-			}
+			if len(item[ROLLOUT_RULE_COMPARATOR].(string)) > 0 {
+				if len(item[ROLLOUT_RULE_COMPARISON_ATTRIBUTE].(string)) == 0 {
+					return nil, fmt.Errorf("the %s field is required", ROLLOUT_RULE_COMPARISON_ATTRIBUTE)
+				}
+				if len(item[ROLLOUT_RULE_COMPARISON_VALUE].(string)) == 0 {
+					return nil, fmt.Errorf("the %s field is required", ROLLOUT_RULE_COMPARISON_VALUE)
+				}
 
-			element := sw.RolloutRuleModel{
-				ComparisonAttribute: item[ROLLOUT_RULE_COMPARISON_ATTRIBUTE].(string),
-				Comparator:          comparator,
-				ComparisonValue:     item[ROLLOUT_RULE_COMPARISON_VALUE].(string),
-				Value:               &value,
-			}
+				comparator, compErr := getComparator(item[ROLLOUT_RULE_COMPARATOR].(string))
+				if compErr != nil {
+					return nil, compErr
+				}
 
-			elements[i] = element
+				element := sw.RolloutRuleModel{
+					ComparisonAttribute: item[ROLLOUT_RULE_COMPARISON_ATTRIBUTE].(string),
+					Comparator:          comparator,
+					ComparisonValue:     item[ROLLOUT_RULE_COMPARISON_VALUE].(string),
+					Value:               &value,
+				}
+
+				elements[i] = element
+			} else if len(item[ROLLOUT_RULE_SEGMENT_COMPARATOR].(string)) > 0 {
+				if len(item[ROLLOUT_RULE_SEGMENT_ID].(string)) == 0 {
+					return nil, fmt.Errorf("the %s field is required", ROLLOUT_RULE_SEGMENT_ID)
+				}
+
+				segmentComparator, compErr := getSegmentComparator(item[ROLLOUT_RULE_SEGMENT_COMPARATOR].(string))
+				if compErr != nil {
+					return nil, compErr
+				}
+
+				element := sw.RolloutRuleModel{
+					SegmentComparator: segmentComparator,
+					SegmentId:         item[SEGMENT_ID].(string),
+					Value:             &value,
+				}
+
+				elements[i] = element
+			} else {
+				return nil, fmt.Errorf("either the Comparator or the SegmentComparator should be set")
+			}
 		}
 
 		return &elements, nil
@@ -456,6 +496,19 @@ func getComparator(comparator string) (*sw.RolloutRuleComparator, error) {
 	}
 
 	return nil, fmt.Errorf("could not parse Comparator: %s", comparator)
+}
+
+func getSegmentComparator(comparator string) (*sw.SegmentComparator, error) {
+	switch comparator {
+	case "isIn":
+		comparator := sw.IS_IN_SegmentComparator
+		return &comparator, nil
+	case "isNotIn":
+		comparator := sw.IS_NOT_IN_SegmentComparator
+		return &comparator, nil
+	}
+
+	return nil, fmt.Errorf("could not parse segment_comparator: %s", comparator)
 }
 
 func resourceConfigCatSettingValueParseID(id string) (string, string, error) {

@@ -25,6 +25,15 @@ const (
 	ENVIRONMENT_COLOR             = "color"
 	ENVIRONMENT_NAME_FILTER_REGEX = "name_filter_regex"
 
+	SEGMENTS                     = "segments"
+	SEGMENT_ID                   = "segment_id"
+	SEGMENT_NAME                 = "name"
+	SEGMENT_DESCRIPTION          = "description"
+	SEGMENT_COMPARISON_ATTRIBUTE = "comparison_attribute"
+	SEGMENT_COMPARATOR           = "comparator"
+	SEGMENT_COMPARISON_VALUE     = "comparison_value"
+	SEGMENT_NAME_FILTER_REGEX    = "name_filter_regex"
+
 	TAGS                  = "tags"
 	TAG_ID                = "tag_id"
 	TAG_NAME              = "name"
@@ -48,6 +57,8 @@ const (
 	ROLLOUT_RULE_COMPARATOR           = "comparator"
 	ROLLOUT_RULE_COMPARISON_VALUE     = "comparison_value"
 	ROLLOUT_RULE_VALUE                = "value"
+	ROLLOUT_RULE_SEGMENT_COMPARATOR   = "segment_comparator"
+	ROLLOUT_RULE_SEGMENT_ID           = "segment_id"
 
 	ROLLOUT_PERCENTAGE_ITEMS           = "percentage_items"
 	ROLLOUT_PERCENTAGE_ITEM_PERCENTAGE = "percentage"

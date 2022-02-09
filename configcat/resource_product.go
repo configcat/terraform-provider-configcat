@@ -15,7 +15,7 @@ func resourceConfigCatProduct() *schema.Resource {
 		UpdateContext: resourceProductUpdate,
 		DeleteContext: resourceProductDelete,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 
 		Schema: map[string]*schema.Schema{
@@ -83,7 +83,7 @@ func resourceProductRead(ctx context.Context, d *schema.ResourceData, m interfac
 func resourceProductUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*Client)
 
-	if d.HasChanges(PRODUCT_NAME) {
+	if d.HasChanges(PRODUCT_NAME, PRODUCT_DESCRIPTION) {
 		body := sw.UpdateProductRequest{
 			Name:        d.Get(PRODUCT_NAME).(string),
 			Description: d.Get(PRODUCT_DESCRIPTION).(string),
