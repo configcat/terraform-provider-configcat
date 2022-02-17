@@ -88,3 +88,4 @@ resource "configcat_setting_value" "is_awesome_value" {
         value = "true"
     }
 }
+```
