@@ -1,0 +1,1 @@
+Please check the (Github Releases)[https://github.com/configcat/terraform-provider-configcat/releases] page for the changelog of the ConfigCat Feature Flags Terraform Provider.
