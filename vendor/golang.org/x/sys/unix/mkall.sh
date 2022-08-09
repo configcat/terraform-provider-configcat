@@ -73,12 +73,12 @@ aix_ppc64)
 darwin_amd64)
 	mkerrors="$mkerrors -m64"
 	mktypes="GOARCH=$GOARCH go tool cgo -godefs"
-	mkasm="go run mkasm_darwin.go"
+	mkasm="go run mkasm.go"
 	;;
 darwin_arm64)
 	mkerrors="$mkerrors -m64"
 	mktypes="GOARCH=$GOARCH go tool cgo -godefs"
-	mkasm="go run mkasm_darwin.go"
+	mkasm="go run mkasm.go"
 	;;
 dragonfly_amd64)
 	mkerrors="$mkerrors -m64"
@@ -106,6 +106,11 @@ freebsd_arm)
 	mktypes="GOARCH=$GOARCH go tool cgo -godefs -- -fsigned-char"
 	;;
 freebsd_arm64)
+	mkerrors="$mkerrors -m64"
+	mksysnum="go run mksysnum.go 'https://cgit.freebsd.org/src/plain/sys/kern/syscalls.master?h=stable/12'"
+	mktypes="GOARCH=$GOARCH go tool cgo -godefs -- -fsigned-char"
+	;;
+freebsd_riscv64)
 	mkerrors="$mkerrors -m64"
 	mksysnum="go run mksysnum.go 'https://cgit.freebsd.org/src/plain/sys/kern/syscalls.master?h=stable/12'"
 	mktypes="GOARCH=$GOARCH go tool cgo -godefs -- -fsigned-char"
@@ -227,5 +232,5 @@ esac
 	if [ -n "$mksysctl" ]; then echo "$mksysctl |gofmt >$zsysctl"; fi
 	if [ -n "$mksysnum" ]; then echo "$mksysnum |gofmt >zsysnum_$GOOSARCH.go"; fi
 	if [ -n "$mktypes" ]; then echo "$mktypes types_$GOOS.go | go run mkpost.go > ztypes_$GOOSARCH.go"; fi
-	if [ -n "$mkasm" ]; then echo "$mkasm $GOARCH"; fi
+	if [ -n "$mkasm" ]; then echo "$mkasm $GOOS $GOARCH"; fi
 ) | $run
