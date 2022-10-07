@@ -161,9 +161,12 @@ func testStepNewImportState(ctx context.Context, t testing.T, helper *plugintest
 		newResources := importState.RootModule().Resources
 		oldResources := state.RootModule().Resources
 
-		for _, r := range newResources {
+		for rKey, r := range newResources {
 			// Find the existing resource
 			var oldR *terraform.ResourceState
+			if strings.HasPrefix(rKey, "data.") {
+				continue
+			}
 			for r2Key, r2 := range oldResources {
 				// Ensure that we do not match against data sources as they
 				// cannot be imported and are not what we want to verify.
