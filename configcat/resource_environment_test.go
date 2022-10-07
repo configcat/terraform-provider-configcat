@@ -49,10 +49,9 @@ func TestResourceEnvironmentFlow(t *testing.T) {
 				),
 			},
 			{
-				ResourceName:       "configcat_environment.test",
-				ImportState:        true,
-				ImportStateVerify:  true,
-				ImportStatePersist: true,
+				ResourceName:      "configcat_environment.test",
+				ImportState:       true,
+				ImportStateVerify: true,
 			},
 		},
 	})
@@ -95,10 +94,9 @@ func TestResourceEnvironmentWrongColor(t *testing.T) {
 				),
 			},
 			{
-				ResourceName:       "configcat_environment.test",
-				ImportState:        true,
-				ImportStateVerify:  true,
-				ImportStatePersist: true,
+				ResourceName:      "configcat_environment.test",
+				ImportState:       true,
+				ImportStateVerify: true,
 			},
 		},
 	})

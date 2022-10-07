@@ -121,10 +121,9 @@ func TestResourceSettingValueFloatNoFreeze(t *testing.T) {
 				),
 			},
 			{
-				ResourceName:       TEST_RESOURCE,
-				ImportState:        true,
-				ImportStateVerify:  true,
-				ImportStatePersist: true,
+				ResourceName:      TEST_RESOURCE,
+				ImportState:       true,
+				ImportStateVerify: true,
 			},
 		},
 	})

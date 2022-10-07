@@ -57,10 +57,9 @@ func TestResourceSegmentFlow(t *testing.T) {
 				),
 			},
 			{
-				ResourceName:       "configcat_segment.test",
-				ImportState:        true,
-				ImportStateVerify:  true,
-				ImportStatePersist: true,
+				ResourceName:      "configcat_segment.test",
+				ImportState:       true,
+				ImportStateVerify: true,
 			},
 		},
 	})
@@ -109,10 +108,9 @@ func TestResourceSegmentWrongComparator(t *testing.T) {
 				),
 			},
 			{
-				ResourceName:       "configcat_segment.test",
-				ImportState:        true,
-				ImportStateVerify:  true,
-				ImportStatePersist: true,
+				ResourceName:      "configcat_segment.test",
+				ImportState:       true,
+				ImportStateVerify: true,
 			},
 		},
 	})

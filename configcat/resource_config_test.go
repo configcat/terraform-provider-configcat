@@ -44,10 +44,9 @@ func TestResourceConfigFlow(t *testing.T) {
 				),
 			},
 			{
-				ResourceName:       "configcat_config.test",
-				ImportState:        true,
-				ImportStateVerify:  true,
-				ImportStatePersist: true,
+				ResourceName:      "configcat_config.test",
+				ImportState:       true,
+				ImportStateVerify: true,
 			},
 		},
 	})
