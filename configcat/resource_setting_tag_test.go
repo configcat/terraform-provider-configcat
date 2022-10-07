@@ -41,9 +41,10 @@ func TestResourceSettingTag(t *testing.T) {
 				),
 			},
 			{
-				ResourceName:      "configcat_setting_tag.setting_tag",
-				ImportState:       true,
-				ImportStateVerify: true,
+				ResourceName:       "configcat_setting_tag.setting_tag",
+				ImportState:        true,
+				ImportStateVerify:  true,
+				ImportStatePersist: true,
 			},
 		},
 	})

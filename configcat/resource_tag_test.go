@@ -44,9 +44,10 @@ func TestResourceTagFlow(t *testing.T) {
 				),
 			},
 			{
-				ResourceName:      "configcat_tag.test",
-				ImportState:       true,
-				ImportStateVerify: true,
+				ResourceName:       "configcat_tag.test",
+				ImportState:        true,
+				ImportStateVerify:  true,
+				ImportStatePersist: true,
 			},
 		},
 	})

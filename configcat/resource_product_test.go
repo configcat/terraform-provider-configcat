@@ -44,9 +44,10 @@ func TestResourceProductFlow(t *testing.T) {
 				),
 			},
 			{
-				ResourceName:      "configcat_product.test",
-				ImportState:       true,
-				ImportStateVerify: true,
+				ResourceName:       "configcat_product.test",
+				ImportState:        true,
+				ImportStateVerify:  true,
+				ImportStatePersist: true,
 			},
 		},
 	})

@@ -98,9 +98,10 @@ func testResourceSettingForSettingType(t *testing.T, settingType string) {
 				),
 			},
 			{
-				ResourceName:      "configcat_setting.testBoolean",
-				ImportState:       true,
-				ImportStateVerify: true,
+				ResourceName:       "configcat_setting.testBoolean",
+				ImportState:        true,
+				ImportStateVerify:  true,
+				ImportStatePersist: true,
 			},
 		},
 	})
