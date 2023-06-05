@@ -38,7 +38,7 @@ func (client *Client) GetOrganizations() ([]sw.OrganizationModel, error) {
 
 func NewClient(basePath, basicAuthUsername, basicAuthPassword string) (*Client, error) {
 	configuration := configcatpublicapi.NewConfiguration()
-	// configuration.BasePath = basePath
+	configuration.Servers[0].URL = basePath
 	configuration.UserAgent = "terraform-provider-configcat/1.0.3"
 	apiClient := configcatpublicapi.NewAPIClient(configuration)
 
