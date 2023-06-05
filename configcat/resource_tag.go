@@ -47,9 +47,10 @@ func resourceTagCreate(ctx context.Context, d *schema.ResourceData, m interface{
 
 	productID := d.Get(PRODUCT_ID).(string)
 
+	color := d.Get(TAG_COLOR).(string)
 	body := sw.CreateTagModel{
 		Name:  d.Get(TAG_NAME).(string),
-		Color: *sw.NewNullableString(d.Get(TAG_COLOR).(*string)),
+		Color: *sw.NewNullableString(&color),
 	}
 
 	tag, err := c.CreateTag(productID, body)
@@ -98,9 +99,11 @@ func resourceTagUpdate(ctx context.Context, d *schema.ResourceData, m interface{
 
 	if d.HasChanges(TAG_NAME, TAG_COLOR) {
 
+		name := d.Get(TAG_NAME).(string)
+		color := d.Get(TAG_COLOR).(string)
 		body := sw.UpdateTagModel{
-			Name:  *sw.NewNullableString(d.Get(TAG_NAME).(*string)),
-			Color: *sw.NewNullableString(d.Get(TAG_COLOR).(*string)),
+			Name:  *sw.NewNullableString(&name),
+			Color: *sw.NewNullableString(&color),
 		}
 
 		_, err := c.UpdateTag(tagID, body)

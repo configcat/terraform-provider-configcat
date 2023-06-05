@@ -341,10 +341,12 @@ func getRolloutRulesData(rolloutRules []interface{}, settingType string) (*[]sw.
 					return nil, compErr
 				}
 
+				comparisonAttribute := item[ROLLOUT_RULE_COMPARISON_ATTRIBUTE].(string)
+				comparisonValue := item[ROLLOUT_RULE_COMPARISON_VALUE].(string)
 				element := sw.RolloutRuleModel{
-					ComparisonAttribute: *sw.NewNullableString(item[ROLLOUT_RULE_COMPARISON_ATTRIBUTE].(*string)),
+					ComparisonAttribute: *sw.NewNullableString(&comparisonAttribute),
 					Comparator:          comparator,
-					ComparisonValue:     *sw.NewNullableString(item[ROLLOUT_RULE_COMPARISON_VALUE].(*string)),
+					ComparisonValue:     *sw.NewNullableString(&comparisonValue),
 					Value:               &value,
 				}
 

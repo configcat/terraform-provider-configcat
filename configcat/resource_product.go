@@ -43,10 +43,10 @@ func resourceProductCreate(ctx context.Context, d *schema.ResourceData, m interf
 	c := m.(*Client)
 
 	organizationID := d.Get(ORGANIZATION_ID).(string)
-
+	productDescription := d.Get(PRODUCT_DESCRIPTION).(string)
 	body := sw.CreateProductRequest{
 		Name:        d.Get(PRODUCT_NAME).(string),
-		Description: *sw.NewNullableString(d.Get(PRODUCT_DESCRIPTION).(*string)),
+		Description: *sw.NewNullableString(&productDescription),
 	}
 
 	product, err := c.CreateProduct(organizationID, body)
@@ -84,9 +84,13 @@ func resourceProductUpdate(ctx context.Context, d *schema.ResourceData, m interf
 	c := m.(*Client)
 
 	if d.HasChanges(PRODUCT_NAME, PRODUCT_DESCRIPTION) {
+
+		productName := d.Get(PRODUCT_NAME).(string)
+		productDescription := d.Get(PRODUCT_DESCRIPTION).(string)
+
 		body := sw.UpdateProductRequest{
-			Name:        *sw.NewNullableString(d.Get(PRODUCT_NAME).(*string)),
-			Description: *sw.NewNullableString(d.Get(PRODUCT_DESCRIPTION).(*string)),
+			Name:        *sw.NewNullableString(&productName),
+			Description: *sw.NewNullableString(&productDescription),
 		}
 
 		_, err := c.UpdateProduct(d.Id(), body)

@@ -61,9 +61,10 @@ func resourceSegmentCreate(ctx context.Context, d *schema.ResourceData, m interf
 		return diag.FromErr(compErr)
 	}
 
+	segmentDescription := d.Get(SEGMENT_DESCRIPTION).(string)
 	body := sw.CreateSegmentModel{
 		Name:                d.Get(SEGMENT_NAME).(string),
-		Description:         *sw.NewNullableString(d.Get(SEGMENT_DESCRIPTION).(*string)),
+		Description:         *sw.NewNullableString(&segmentDescription),
 		ComparisonAttribute: d.Get(SEGMENT_COMPARISON_ATTRIBUTE).(string),
 		Comparator:          *comparator,
 		ComparisonValue:     d.Get(SEGMENT_COMPARISON_VALUE).(string),
@@ -113,12 +114,16 @@ func resourceSegmentUpdate(ctx context.Context, d *schema.ResourceData, m interf
 			return diag.FromErr(compErr)
 		}
 
+		segmentName := d.Get(SEGMENT_NAME).(string)
+		segmentDescription := d.Get(SEGMENT_DESCRIPTION).(string)
+		segmentComparisonAttribute := d.Get(SEGMENT_COMPARISON_ATTRIBUTE).(string)
+		segmentComparisonValue := d.Get(SEGMENT_COMPARISON_VALUE).(string)
 		body := sw.UpdateSegmentModel{
-			Name:                *sw.NewNullableString(d.Get(SEGMENT_NAME).(*string)),
-			Description:         *sw.NewNullableString(d.Get(SEGMENT_DESCRIPTION).(*string)),
-			ComparisonAttribute: *sw.NewNullableString(d.Get(SEGMENT_COMPARISON_ATTRIBUTE).(*string)),
+			Name:                *sw.NewNullableString(&segmentName),
+			Description:         *sw.NewNullableString(&segmentDescription),
+			ComparisonAttribute: *sw.NewNullableString(&segmentComparisonAttribute),
 			Comparator:          comparator,
-			ComparisonValue:     *sw.NewNullableString(d.Get(SEGMENT_COMPARISON_VALUE).(*string)),
+			ComparisonValue:     *sw.NewNullableString(&segmentComparisonValue),
 		}
 
 		_, err := c.UpdateSegment(d.Id(), body)

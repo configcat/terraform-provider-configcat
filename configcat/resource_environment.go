@@ -47,10 +47,12 @@ func resourceEnvironmentCreate(ctx context.Context, d *schema.ResourceData, m in
 
 	productID := d.Get(PRODUCT_ID).(string)
 
+	environmentDescription := d.Get(ENVIRONMENT_DESCRIPTION).(string)
+	environmentColor := d.Get(ENVIRONMENT_COLOR).(string)
 	body := sw.CreateEnvironmentModel{
 		Name:        d.Get(ENVIRONMENT_NAME).(string),
-		Description: *sw.NewNullableString(d.Get(ENVIRONMENT_DESCRIPTION).(*string)),
-		Color:       *sw.NewNullableString(d.Get(ENVIRONMENT_COLOR).(*string)),
+		Description: *sw.NewNullableString(&environmentDescription),
+		Color:       *sw.NewNullableString(&environmentColor),
 	}
 
 	environment, err := c.CreateEnvironment(productID, body)
@@ -89,10 +91,14 @@ func resourceEnvironmentUpdate(ctx context.Context, d *schema.ResourceData, m in
 	c := m.(*Client)
 
 	if d.HasChanges(ENVIRONMENT_NAME, ENVIRONMENT_DESCRIPTION, ENVIRONMENT_COLOR) {
+		environmentName := d.Get(ENVIRONMENT_NAME).(string)
+		environmentDescription := d.Get(ENVIRONMENT_DESCRIPTION).(string)
+		environmentColor := d.Get(ENVIRONMENT_COLOR).(string)
+
 		body := sw.UpdateEnvironmentModel{
-			Name:        *sw.NewNullableString(d.Get(ENVIRONMENT_NAME).(*string)),
-			Description: *sw.NewNullableString(d.Get(ENVIRONMENT_DESCRIPTION).(*string)),
-			Color:       *sw.NewNullableString(d.Get(ENVIRONMENT_COLOR).(*string)),
+			Name:        *sw.NewNullableString(&environmentName),
+			Description: *sw.NewNullableString(&environmentDescription),
+			Color:       *sw.NewNullableString(&environmentColor),
 		}
 
 		_, err := c.UpdateEnvironment(d.Id(), body)

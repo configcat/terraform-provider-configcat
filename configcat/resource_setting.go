@@ -75,10 +75,11 @@ func resourceSettingCreate(ctx context.Context, d *schema.ResourceData, m interf
 		return diag.FromErr(fmt.Errorf("setting_type parse failed: %s. Valid values: boolean/string/int/double", settingTypeString))
 	}
 
+	hint := d.Get(SETTING_HINT).(string)
 	body := sw.CreateSettingInitialValues{
 		Key:         d.Get(SETTING_KEY).(string),
 		Name:        d.Get(SETTING_NAME).(string),
-		Hint:        *sw.NewNullableString(d.Get(SETTING_HINT).(*string)),
+		Hint:        *sw.NewNullableString(&hint),
 		SettingType: settingType,
 	}
 
