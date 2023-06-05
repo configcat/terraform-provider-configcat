@@ -59,7 +59,7 @@ func organizationRead(ctx context.Context, d *schema.ResourceData, m interface{}
 	} else {
 		regex := regexp.MustCompile(organizationNameFilterRegex)
 		for i := range organizations {
-			if regex.MatchString(organizations[i].Name) {
+			if regex.MatchString(*organizations[i].Name.Get()) {
 				filteredOrganizations = append(filteredOrganizations, organizations[i])
 			}
 		}

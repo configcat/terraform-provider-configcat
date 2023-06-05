@@ -24,21 +24,21 @@ func (client *Client) GetAuthContext() context.Context {
 	})
 }
 
-func (client *Client) GetMe() (sw.MeModel, error) {
-	model, response, err := client.apiClient.MeApi.GetMe(client.GetAuthContext())
+func (client *Client) GetMe() (*sw.MeModel, error) {
+	model, response, err := client.apiClient.MeApi.GetMe(client.GetAuthContext()).Execute()
 	defer response.Body.Close()
 	return model, handleAPIError(err)
 }
 
 func (client *Client) GetOrganizations() ([]sw.OrganizationModel, error) {
-	model, response, err := client.apiClient.OrganizationsApi.GetOrganizations(client.GetAuthContext())
+	model, response, err := client.apiClient.OrganizationsApi.GetOrganizations(client.GetAuthContext()).Execute()
 	defer response.Body.Close()
 	return model, handleAPIError(err)
 }
 
 func NewClient(basePath, basicAuthUsername, basicAuthPassword string) (*Client, error) {
 	configuration := configcatpublicapi.NewConfiguration()
-	configuration.BasePath = basePath
+	// configuration.BasePath = basePath
 	configuration.UserAgent = "terraform-provider-configcat/1.0.3"
 	apiClient := configcatpublicapi.NewAPIClient(configuration)
 
@@ -53,8 +53,8 @@ func NewClient(basePath, basicAuthUsername, basicAuthPassword string) (*Client, 
 	if err != nil {
 		return nil, err
 	}
-	client.authEmail = meModel.Email
-	client.authFullName = meModel.FullName
+	client.authEmail = *meModel.Email.Get()
+	client.authFullName = *meModel.FullName.Get()
 
 	return client, nil
 }
@@ -63,14 +63,14 @@ func handleAPIError(err error) error {
 	if err == nil {
 		return nil
 	}
-	if swaggerErr, ok := err.(sw.GenericSwaggerError); ok {
-		if swaggerErr.Error() == "404 Not Found" {
+	if openApiErr, ok := err.(sw.GenericOpenAPIError); ok {
+		if openApiErr.Error() == "404 Not Found" {
 			return NotFoundError{
-				error: swaggerErr.Error(),
-				body:  string(swaggerErr.Body()),
+				error: openApiErr.Error(),
+				body:  string(openApiErr.Body()),
 			}
 		}
-		return fmt.Errorf("%s: %s", swaggerErr.Error(), string(swaggerErr.Body()))
+		return fmt.Errorf("%s: %s", openApiErr.Error(), string(openApiErr.Body()))
 	}
 	return err
 }

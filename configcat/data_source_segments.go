@@ -70,7 +70,7 @@ func segmentRead(ctx context.Context, d *schema.ResourceData, m interface{}) dia
 	} else {
 		regex := regexp.MustCompile(segmentNameFilterRegex)
 		for i := range segments {
-			if regex.MatchString(segments[i].Name) {
+			if regex.MatchString(*segments[i].Name.Get()) {
 				filteredSegments = append(filteredSegments, segments[i])
 			}
 		}

@@ -63,23 +63,23 @@ func resourceSettingCreate(ctx context.Context, d *schema.ResourceData, m interf
 	var settingType sw.SettingType
 	switch d.Get(SETTING_TYPE).(string) {
 	case "boolean":
-		settingType = sw.BOOLEAN_SettingType
+		settingType = sw.SETTINGTYPE_BOOLEAN
 	case "string":
-		settingType = sw.STRING__SettingType
+		settingType = sw.SETTINGTYPE_STRING
 	case "int":
-		settingType = sw.INT__SettingType
+		settingType = sw.SETTINGTYPE_INT
 	case "double":
-		settingType = sw.DOUBLE_SettingType
+		settingType = sw.SETTINGTYPE_DOUBLE
 	default:
 		d.SetId("")
 		return diag.FromErr(fmt.Errorf("setting_type parse failed: %s. Valid values: boolean/string/int/double", settingTypeString))
 	}
 
-	body := sw.CreateSettingModel{
+	body := sw.CreateSettingInitialValues{
 		Key:         d.Get(SETTING_KEY).(string),
 		Name:        d.Get(SETTING_NAME).(string),
-		Hint:        d.Get(SETTING_HINT).(string),
-		SettingType: &settingType,
+		Hint:        *sw.NewNullableString(d.Get(SETTING_HINT).(*string)),
+		SettingType: settingType,
 	}
 
 	setting, err := c.CreateSetting(configID, body)
@@ -127,11 +127,11 @@ func resourceSettingUpdate(ctx context.Context, d *schema.ResourceData, m interf
 	}
 
 	if d.HasChanges(SETTING_NAME, SETTING_HINT) {
-		body := []sw.Operation{}
+		operations := []sw.PatchOperation{}
 		if d.HasChange(SETTING_NAME) {
 			settingName := d.Get(SETTING_NAME)
-			body = append(body, sw.Operation{
-				Op:    "replace",
+			operations = append(operations, sw.PatchOperation{
+				Op:    sw.OPERATIONTYPE_REPLACE.Ptr(),
 				Path:  "/name",
 				Value: &settingName,
 			})
@@ -139,14 +139,14 @@ func resourceSettingUpdate(ctx context.Context, d *schema.ResourceData, m interf
 
 		if d.HasChange(SETTING_HINT) {
 			settingHint := d.Get(SETTING_HINT)
-			body = append(body, sw.Operation{
-				Op:    "replace",
+			operations = append(operations, sw.PatchOperation{
+				Op:    sw.OPERATIONTYPE_REPLACE.Ptr(),
 				Path:  "/hint",
 				Value: &settingHint,
 			})
 		}
 
-		_, err := c.UpdateSetting(int32(settingID), body)
+		_, err := c.UpdateSetting(int32(settingID), sw.JsonPatch{Operations: operations})
 		if err != nil {
 			if _, ok := err.(NotFoundError); ok {
 				d.SetId("")

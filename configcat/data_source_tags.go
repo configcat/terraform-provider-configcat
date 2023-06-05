@@ -71,7 +71,7 @@ func tagRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Di
 	} else {
 		regex := regexp.MustCompile(tagNameFilterRegex)
 		for i := range tags {
-			if regex.MatchString(tags[i].Name) {
+			if regex.MatchString(*tags[i].Name.Get()) {
 				filteredTags = append(filteredTags, tags[i])
 			}
 		}

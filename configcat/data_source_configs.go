@@ -70,7 +70,7 @@ func configRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag
 	} else {
 		regex := regexp.MustCompile(configNameFilterRegex)
 		for i := range configs {
-			if regex.MatchString(configs[i].Name) {
+			if regex.MatchString(*configs[i].Name.Get()) {
 				filteredConfigs = append(filteredConfigs, configs[i])
 			}
 		}

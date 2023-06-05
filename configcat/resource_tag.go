@@ -49,7 +49,7 @@ func resourceTagCreate(ctx context.Context, d *schema.ResourceData, m interface{
 
 	body := sw.CreateTagModel{
 		Name:  d.Get(TAG_NAME).(string),
-		Color: d.Get(TAG_COLOR).(string),
+		Color: *sw.NewNullableString(d.Get(TAG_COLOR).(*string)),
 	}
 
 	tag, err := c.CreateTag(productID, body)
@@ -57,7 +57,7 @@ func resourceTagCreate(ctx context.Context, d *schema.ResourceData, m interface{
 		return diag.FromErr(err)
 	}
 
-	d.SetId(strconv.FormatInt(tag.TagId, 10))
+	d.SetId(strconv.FormatInt(*tag.TagId, 10))
 
 	return resourceTagRead(ctx, d, m)
 }
@@ -99,8 +99,8 @@ func resourceTagUpdate(ctx context.Context, d *schema.ResourceData, m interface{
 	if d.HasChanges(TAG_NAME, TAG_COLOR) {
 
 		body := sw.UpdateTagModel{
-			Name:  d.Get(TAG_NAME).(string),
-			Color: d.Get(TAG_COLOR).(string),
+			Name:  *sw.NewNullableString(d.Get(TAG_NAME).(*string)),
+			Color: *sw.NewNullableString(d.Get(TAG_COLOR).(*string)),
 		}
 
 		_, err := c.UpdateTag(tagID, body)

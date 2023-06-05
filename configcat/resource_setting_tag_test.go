@@ -67,7 +67,7 @@ func checkTag(s *terraform.State) error {
 	}
 
 	for _, tag := range setting.Tags {
-		if tag.TagId == tagID {
+		if *tag.TagId == tagID {
 			return nil
 		}
 	}

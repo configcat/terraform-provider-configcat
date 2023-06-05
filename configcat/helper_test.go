@@ -80,8 +80,8 @@ func checkValue(s *terraform.State, value *interface{}) error {
 		return err
 	}
 
-	if fmt.Sprintf("%v", *settingValue.Value) != fmt.Sprintf("%v", *value) {
-		return fmt.Errorf("%v != %v", *settingValue.Value, *value)
+	if fmt.Sprintf("%v", settingValue.Value) != fmt.Sprintf("%v", *value) {
+		return fmt.Errorf("%v != %v", settingValue.Value, *value)
 	}
 
 	return nil
@@ -99,5 +99,5 @@ func getValue(s *terraform.State) (*sw.SettingValueModel, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &settingValue, nil
+	return settingValue, nil
 }

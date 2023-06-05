@@ -46,7 +46,7 @@ func resourceProductCreate(ctx context.Context, d *schema.ResourceData, m interf
 
 	body := sw.CreateProductRequest{
 		Name:        d.Get(PRODUCT_NAME).(string),
-		Description: d.Get(PRODUCT_DESCRIPTION).(string),
+		Description: *sw.NewNullableString(d.Get(PRODUCT_DESCRIPTION).(*string)),
 	}
 
 	product, err := c.CreateProduct(organizationID, body)
@@ -54,7 +54,7 @@ func resourceProductCreate(ctx context.Context, d *schema.ResourceData, m interf
 		return diag.FromErr(err)
 	}
 
-	d.SetId(product.ProductId)
+	d.SetId(*product.ProductId)
 
 	return resourceProductRead(ctx, d, m)
 }
@@ -85,8 +85,8 @@ func resourceProductUpdate(ctx context.Context, d *schema.ResourceData, m interf
 
 	if d.HasChanges(PRODUCT_NAME, PRODUCT_DESCRIPTION) {
 		body := sw.UpdateProductRequest{
-			Name:        d.Get(PRODUCT_NAME).(string),
-			Description: d.Get(PRODUCT_DESCRIPTION).(string),
+			Name:        *sw.NewNullableString(d.Get(PRODUCT_NAME).(*string)),
+			Description: *sw.NewNullableString(d.Get(PRODUCT_DESCRIPTION).(*string)),
 		}
 
 		_, err := c.UpdateProduct(d.Id(), body)

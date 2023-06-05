@@ -74,7 +74,7 @@ func environmentRead(ctx context.Context, d *schema.ResourceData, m interface{})
 	} else {
 		regex := regexp.MustCompile(environmentNameFilterRegex)
 		for i := range environments {
-			if regex.MatchString(environments[i].Name) {
+			if regex.MatchString(*environments[i].Name.Get()) {
 				filteredEnvironments = append(filteredEnvironments, environments[i])
 			}
 		}

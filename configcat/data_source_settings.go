@@ -83,7 +83,7 @@ func settingRead(ctx context.Context, d *schema.ResourceData, m interface{}) dia
 	} else {
 		regex := regexp.MustCompile(settingKeyFilterRegex)
 		for i := range settings {
-			if regex.MatchString(settings[i].Key) {
+			if regex.MatchString(*settings[i].Key.Get()) {
 				filteredSettings = append(filteredSettings, settings[i])
 			}
 		}

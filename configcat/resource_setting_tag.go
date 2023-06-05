@@ -50,13 +50,13 @@ func resourceSettingTagCreate(ctx context.Context, d *schema.ResourceData, m int
 		return diag.FromErr(tConvErr)
 	}
 
-	body := []sw.Operation{{
-		Op:    "add",
+	operations := []sw.PatchOperation{{
+		Op:    sw.OPERATIONTYPE_ADD.Ptr(),
 		Path:  "/tags/-",
 		Value: &tagIDInterface,
 	}}
 
-	_, err := c.UpdateSetting(int32(settingID), body)
+	_, err := c.UpdateSetting(int32(settingID), sw.JsonPatch{Operations: operations})
 	if err != nil {
 		if _, ok := err.(NotFoundError); ok {
 			d.SetId("")
@@ -92,7 +92,7 @@ func resourceSettingTagRead(ctx context.Context, d *schema.ResourceData, m inter
 	}
 
 	for _, tag := range setting.Tags {
-		if tag.TagId == tagID {
+		if *tag.TagId == tagID {
 			d.Set(SETTING_ID, fmt.Sprintf("%d", settingID))
 			d.Set(TAG_ID, fmt.Sprintf("%d", tagID))
 
@@ -117,13 +117,13 @@ func resourceSettingTagDelete(ctx context.Context, d *schema.ResourceData, m int
 
 	tagIDInterface := d.Get(TAG_ID)
 
-	body := []sw.Operation{{
-		Op:    "remove",
+	operations := []sw.PatchOperation{{
+		Op:    sw.OPERATIONTYPE_REMOVE.Ptr(),
 		Path:  "/tags/-",
 		Value: &tagIDInterface,
 	}}
 
-	_, err := c.UpdateSetting(int32(settingID), body)
+	_, err := c.UpdateSetting(int32(settingID), sw.JsonPatch{Operations: operations})
 	if err != nil {
 		if _, ok := err.(NotFoundError); ok {
 			d.SetId("")

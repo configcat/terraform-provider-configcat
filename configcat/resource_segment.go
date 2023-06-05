@@ -63,9 +63,9 @@ func resourceSegmentCreate(ctx context.Context, d *schema.ResourceData, m interf
 
 	body := sw.CreateSegmentModel{
 		Name:                d.Get(SEGMENT_NAME).(string),
-		Description:         d.Get(SEGMENT_DESCRIPTION).(string),
+		Description:         *sw.NewNullableString(d.Get(SEGMENT_DESCRIPTION).(*string)),
 		ComparisonAttribute: d.Get(SEGMENT_COMPARISON_ATTRIBUTE).(string),
-		Comparator:          comparator,
+		Comparator:          *comparator,
 		ComparisonValue:     d.Get(SEGMENT_COMPARISON_VALUE).(string),
 	}
 
@@ -74,7 +74,7 @@ func resourceSegmentCreate(ctx context.Context, d *schema.ResourceData, m interf
 		return diag.FromErr(err)
 	}
 
-	d.SetId(segment.SegmentId)
+	d.SetId(*segment.SegmentId)
 
 	return resourceSegmentRead(ctx, d, m)
 }
@@ -114,11 +114,11 @@ func resourceSegmentUpdate(ctx context.Context, d *schema.ResourceData, m interf
 		}
 
 		body := sw.UpdateSegmentModel{
-			Name:                d.Get(SEGMENT_NAME).(string),
-			Description:         d.Get(SEGMENT_DESCRIPTION).(string),
-			ComparisonAttribute: d.Get(SEGMENT_COMPARISON_ATTRIBUTE).(string),
+			Name:                *sw.NewNullableString(d.Get(SEGMENT_NAME).(*string)),
+			Description:         *sw.NewNullableString(d.Get(SEGMENT_DESCRIPTION).(*string)),
+			ComparisonAttribute: *sw.NewNullableString(d.Get(SEGMENT_COMPARISON_ATTRIBUTE).(*string)),
 			Comparator:          comparator,
-			ComparisonValue:     d.Get(SEGMENT_COMPARISON_VALUE).(string),
+			ComparisonValue:     *sw.NewNullableString(d.Get(SEGMENT_COMPARISON_VALUE).(*string)),
 		}
 
 		_, err := c.UpdateSegment(d.Id(), body)
@@ -159,52 +159,52 @@ func resourceSegmentDelete(ctx context.Context, d *schema.ResourceData, m interf
 func getComparatorForSegment(comparator string) (*sw.RolloutRuleComparator, error) {
 	switch comparator {
 	case "contains":
-		comparator := sw.CONTAINS_RolloutRuleComparator
+		comparator := sw.ROLLOUTRULECOMPARATOR_CONTAINS
 		return &comparator, nil
 	case "doesNotContain":
-		comparator := sw.DOES_NOT_CONTAIN_RolloutRuleComparator
+		comparator := sw.ROLLOUTRULECOMPARATOR_DOES_NOT_CONTAIN
 		return &comparator, nil
 	case "semVerIsOneOf":
-		comparator := sw.SEM_VER_IS_ONE_OF_RolloutRuleComparator
+		comparator := sw.ROLLOUTRULECOMPARATOR_SEM_VER_IS_ONE_OF
 		return &comparator, nil
 	case "semVerIsNotOneOf":
-		comparator := sw.SEM_VER_IS_NOT_ONE_OF_RolloutRuleComparator
+		comparator := sw.ROLLOUTRULECOMPARATOR_SEM_VER_IS_NOT_ONE_OF
 		return &comparator, nil
 	case "semVerLess":
-		comparator := sw.SEM_VER_LESS_RolloutRuleComparator
+		comparator := sw.ROLLOUTRULECOMPARATOR_SEM_VER_LESS
 		return &comparator, nil
 	case "semVerLessOrEquals":
-		comparator := sw.SEM_VER_LESS_OR_EQUALS_RolloutRuleComparator
+		comparator := sw.ROLLOUTRULECOMPARATOR_SEM_VER_LESS_OR_EQUALS
 		return &comparator, nil
 	case "semVerGreater":
-		comparator := sw.SEM_VER_GREATER_RolloutRuleComparator
+		comparator := sw.ROLLOUTRULECOMPARATOR_SEM_VER_GREATER
 		return &comparator, nil
 	case "semVerGreaterOrEquals":
-		comparator := sw.SEM_VER_GREATER_OR_EQUALS_RolloutRuleComparator
+		comparator := sw.ROLLOUTRULECOMPARATOR_SEM_VER_GREATER_OR_EQUALS
 		return &comparator, nil
 	case "numberEquals":
-		comparator := sw.NUMBER_EQUALS_RolloutRuleComparator
+		comparator := sw.ROLLOUTRULECOMPARATOR_NUMBER_EQUALS
 		return &comparator, nil
 	case "numberDoesNotEqual":
-		comparator := sw.NUMBER_DOES_NOT_EQUAL_RolloutRuleComparator
+		comparator := sw.ROLLOUTRULECOMPARATOR_NUMBER_DOES_NOT_EQUAL
 		return &comparator, nil
 	case "numberLess":
-		comparator := sw.NUMBER_LESS_RolloutRuleComparator
+		comparator := sw.ROLLOUTRULECOMPARATOR_NUMBER_LESS
 		return &comparator, nil
 	case "numberLessOrEquals":
-		comparator := sw.NUMBER_LESS_OR_EQUALS_RolloutRuleComparator
+		comparator := sw.ROLLOUTRULECOMPARATOR_NUMBER_LESS_OR_EQUALS
 		return &comparator, nil
 	case "numberGreater":
-		comparator := sw.NUMBER_GREATER_RolloutRuleComparator
+		comparator := sw.ROLLOUTRULECOMPARATOR_NUMBER_GREATER
 		return &comparator, nil
 	case "numberGreaterOrEquals":
-		comparator := sw.NUMBER_GREATER_OR_EQUALS_RolloutRuleComparator
+		comparator := sw.ROLLOUTRULECOMPARATOR_NUMBER_GREATER_OR_EQUALS
 		return &comparator, nil
 	case "sensitiveIsOneOf":
-		comparator := sw.SENSITIVE_IS_ONE_OF_RolloutRuleComparator
+		comparator := sw.ROLLOUTRULECOMPARATOR_SENSITIVE_IS_ONE_OF
 		return &comparator, nil
 	case "sensitiveIsNotOneOf":
-		comparator := sw.SENSITIVE_IS_NOT_ONE_OF_RolloutRuleComparator
+		comparator := sw.ROLLOUTRULECOMPARATOR_SENSITIVE_IS_NOT_ONE_OF
 		return &comparator, nil
 	}
 

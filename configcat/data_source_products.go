@@ -63,7 +63,7 @@ func productRead(ctx context.Context, d *schema.ResourceData, m interface{}) dia
 	} else {
 		regex := regexp.MustCompile(productNameFilterRegex)
 		for i := range products {
-			if regex.MatchString(products[i].Name) {
+			if regex.MatchString(*products[i].Name.Get()) {
 				filteredProducts = append(filteredProducts, products[i])
 			}
 		}
