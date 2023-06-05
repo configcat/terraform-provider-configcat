@@ -86,14 +86,14 @@ func tagRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Di
 
 func flattenTagsData(tags *[]sw.TagModel) []interface{} {
 	if tags != nil {
-		elements := make([]interface{}, len(*tags), len(*tags))
+		elements := make([]interface{}, len(*tags))
 
 		for i, tag := range *tags {
 			element := make(map[string]interface{})
 
 			element[TAG_ID] = fmt.Sprintf("%d", tag.TagId)
-			element[TAG_NAME] = tag.Name
-			element[TAG_COLOR] = tag.Color
+			element[TAG_NAME] = tag.Name.Get()
+			element[TAG_COLOR] = tag.Color.Get()
 
 			elements[i] = element
 		}

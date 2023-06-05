@@ -74,8 +74,8 @@ func resourceProductRead(ctx context.Context, d *schema.ResourceData, m interfac
 	}
 
 	d.Set(ORGANIZATION_ID, product.Organization.OrganizationId)
-	d.Set(PRODUCT_NAME, product.Name)
-	d.Set(PRODUCT_DESCRIPTION, product.Description)
+	d.Set(PRODUCT_NAME, product.Name.Get())
+	d.Set(PRODUCT_DESCRIPTION, product.Description.Get())
 
 	return diags
 }

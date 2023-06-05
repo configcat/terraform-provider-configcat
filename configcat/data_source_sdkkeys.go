@@ -52,8 +52,8 @@ func sdkKeysRead(ctx context.Context, d *schema.ResourceData, m interface{}) dia
 	}
 
 	d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
-	d.Set(PRIMARY_SDK_KEY, sdkKeys.Primary)
-	d.Set(SECONDARY_SDK_KEY, sdkKeys.Secondary)
+	d.Set(PRIMARY_SDK_KEY, sdkKeys.Primary.Get())
+	d.Set(SECONDARY_SDK_KEY, sdkKeys.Secondary.Get())
 
 	var diags diag.Diagnostics
 	return diags

@@ -78,9 +78,9 @@ func resourceEnvironmentRead(ctx context.Context, d *schema.ResourceData, m inte
 	}
 
 	d.Set(PRODUCT_ID, environment.Product.ProductId)
-	d.Set(ENVIRONMENT_NAME, environment.Name)
-	d.Set(ENVIRONMENT_DESCRIPTION, environment.Description)
-	d.Set(ENVIRONMENT_COLOR, environment.Color)
+	d.Set(ENVIRONMENT_NAME, environment.Name.Get())
+	d.Set(ENVIRONMENT_DESCRIPTION, environment.Description.Get())
+	d.Set(ENVIRONMENT_COLOR, environment.Color.Get())
 
 	return diags
 }

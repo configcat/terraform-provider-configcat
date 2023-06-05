@@ -277,16 +277,16 @@ func resourceSettingValueDelete(ctx context.Context, d *schema.ResourceData, m i
 
 func flattenRolloutRulesData(rolloutRules *[]sw.RolloutRuleModel) []interface{} {
 	if rolloutRules != nil {
-		elements := make([]interface{}, len(*rolloutRules), len(*rolloutRules))
+		elements := make([]interface{}, len(*rolloutRules))
 
 		for i, rolloutRule := range *rolloutRules {
 			element := make(map[string]interface{})
 
-			element[ROLLOUT_RULE_COMPARISON_ATTRIBUTE] = rolloutRule.ComparisonAttribute
+			element[ROLLOUT_RULE_COMPARISON_ATTRIBUTE] = rolloutRule.ComparisonAttribute.Get()
 			element[ROLLOUT_RULE_COMPARATOR] = rolloutRule.Comparator
-			element[ROLLOUT_RULE_COMPARISON_VALUE] = rolloutRule.ComparisonValue
+			element[ROLLOUT_RULE_COMPARISON_VALUE] = rolloutRule.ComparisonValue.Get()
 			element[ROLLOUT_RULE_SEGMENT_COMPARATOR] = rolloutRule.SegmentComparator
-			element[ROLLOUT_RULE_SEGMENT_ID] = rolloutRule.SegmentId
+			element[ROLLOUT_RULE_SEGMENT_ID] = rolloutRule.SegmentId.Get()
 			element[ROLLOUT_RULE_VALUE] = fmt.Sprintf("%v", rolloutRule.Value)
 
 			elements[i] = element
@@ -300,7 +300,7 @@ func flattenRolloutRulesData(rolloutRules *[]sw.RolloutRuleModel) []interface{} 
 
 func flattenRolloutPercentageItemsData(rolloutPercentageItems *[]sw.RolloutPercentageItemModel) []interface{} {
 	if rolloutPercentageItems != nil {
-		elements := make([]interface{}, len(*rolloutPercentageItems), len(*rolloutPercentageItems))
+		elements := make([]interface{}, len(*rolloutPercentageItems))
 
 		for i, rolloutPercentageItem := range *rolloutPercentageItems {
 			element := make(map[string]interface{})
@@ -318,7 +318,7 @@ func flattenRolloutPercentageItemsData(rolloutPercentageItems *[]sw.RolloutPerce
 
 func getRolloutRulesData(rolloutRules []interface{}, settingType string) (*[]sw.RolloutRuleModel, error) {
 	if rolloutRules != nil {
-		elements := make([]sw.RolloutRuleModel, len(rolloutRules), len(rolloutRules))
+		elements := make([]sw.RolloutRuleModel, len(rolloutRules))
 
 		for i, rolloutRule := range rolloutRules {
 			item := rolloutRule.(map[string]interface{})
@@ -379,7 +379,7 @@ func getRolloutRulesData(rolloutRules []interface{}, settingType string) (*[]sw.
 
 func getRolloutPercentageItemsData(rolloutPercentageItems []interface{}, settingType string) (*[]sw.RolloutPercentageItemModel, error) {
 	if rolloutPercentageItems != nil {
-		elements := make([]sw.RolloutPercentageItemModel, len(rolloutPercentageItems), len(rolloutPercentageItems))
+		elements := make([]sw.RolloutPercentageItemModel, len(rolloutPercentageItems))
 
 		for i, rolloutPercentageItem := range rolloutPercentageItems {
 			item := rolloutPercentageItem.(map[string]interface{})
@@ -427,7 +427,7 @@ func getSettingValue(settingType, value string) (interface{}, error) {
 		f, err := strconv.ParseFloat(value, 64)
 		return f, err
 	default:
-		return nil, fmt.Errorf("Could not parse SettingType and Value: %s, %s", settingType, value)
+		return nil, fmt.Errorf("could not parse SettingType and Value: %s, %s", settingType, value)
 	}
 }
 

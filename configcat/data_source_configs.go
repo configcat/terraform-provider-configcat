@@ -85,14 +85,14 @@ func configRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag
 
 func flattenConfigsData(configs *[]sw.ConfigModel) []interface{} {
 	if configs != nil {
-		elements := make([]interface{}, len(*configs), len(*configs))
+		elements := make([]interface{}, len(*configs))
 
 		for i, config := range *configs {
 			element := make(map[string]interface{})
 
 			element[CONFIG_ID] = config.ConfigId
-			element[CONFIG_NAME] = config.Name
-			element[CONFIG_DESCRIPTION] = config.Description
+			element[CONFIG_NAME] = config.Name.Get()
+			element[CONFIG_DESCRIPTION] = config.Description.Get()
 
 			elements[i] = element
 		}

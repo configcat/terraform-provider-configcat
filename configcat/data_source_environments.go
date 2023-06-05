@@ -89,15 +89,15 @@ func environmentRead(ctx context.Context, d *schema.ResourceData, m interface{})
 
 func flattenEnvironmentsData(environments *[]sw.EnvironmentModel) []interface{} {
 	if environments != nil {
-		elements := make([]interface{}, len(*environments), len(*environments))
+		elements := make([]interface{}, len(*environments))
 
 		for i, environment := range *environments {
 			element := make(map[string]interface{})
 
 			element[ENVIRONMENT_ID] = environment.EnvironmentId
-			element[ENVIRONMENT_NAME] = environment.Name
-			element[ENVIRONMENT_DESCRIPTION] = environment.Description
-			element[ENVIRONMENT_COLOR] = environment.Color
+			element[ENVIRONMENT_NAME] = environment.Name.Get()
+			element[ENVIRONMENT_DESCRIPTION] = environment.Description.Get()
+			element[ENVIRONMENT_COLOR] = environment.Color.Get()
 
 			elements[i] = element
 		}

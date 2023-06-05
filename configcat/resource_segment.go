@@ -94,11 +94,11 @@ func resourceSegmentRead(ctx context.Context, d *schema.ResourceData, m interfac
 	}
 
 	d.Set(PRODUCT_ID, segment.Product.ProductId)
-	d.Set(SEGMENT_NAME, segment.Name)
-	d.Set(SEGMENT_DESCRIPTION, segment.Description)
-	d.Set(SEGMENT_COMPARISON_ATTRIBUTE, segment.ComparisonAttribute)
+	d.Set(SEGMENT_NAME, segment.Name.Get())
+	d.Set(SEGMENT_DESCRIPTION, segment.Description.Get())
+	d.Set(SEGMENT_COMPARISON_ATTRIBUTE, segment.ComparisonAttribute.Get())
 	d.Set(SEGMENT_COMPARATOR, segment.Comparator)
-	d.Set(SEGMENT_COMPARISON_VALUE, segment.ComparisonValue)
+	d.Set(SEGMENT_COMPARISON_VALUE, segment.ComparisonValue.Get())
 
 	return diags
 }

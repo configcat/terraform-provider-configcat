@@ -82,8 +82,8 @@ func resourceTagRead(ctx context.Context, d *schema.ResourceData, m interface{})
 	}
 
 	d.Set(PRODUCT_ID, tag.Product.ProductId)
-	d.Set(TAG_NAME, tag.Name)
-	d.Set(TAG_COLOR, tag.Color)
+	d.Set(TAG_NAME, tag.Name.Get())
+	d.Set(TAG_COLOR, tag.Color.Get())
 
 	return diags
 }

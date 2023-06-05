@@ -73,8 +73,8 @@ func resourceConfigRead(ctx context.Context, d *schema.ResourceData, m interface
 	}
 
 	d.Set(PRODUCT_ID, config.Product.ProductId)
-	d.Set(CONFIG_NAME, config.Name)
-	d.Set(CONFIG_DESCRIPTION, config.Description)
+	d.Set(CONFIG_NAME, config.Name.Get())
+	d.Set(CONFIG_DESCRIPTION, config.Description.Get())
 
 	return diags
 }

@@ -74,13 +74,13 @@ func organizationRead(ctx context.Context, d *schema.ResourceData, m interface{}
 
 func flattenOrganizationsData(organizations *[]sw.OrganizationModel) []interface{} {
 	if organizations != nil {
-		elements := make([]interface{}, len(*organizations), len(*organizations))
+		elements := make([]interface{}, len(*organizations))
 
 		for i, organization := range *organizations {
 			element := make(map[string]interface{})
 
 			element[ORGANIZATION_ID] = organization.OrganizationId
-			element[ORGANIZATION_NAME] = organization.Name
+			element[ORGANIZATION_NAME] = organization.Name.Get()
 
 			elements[i] = element
 		}

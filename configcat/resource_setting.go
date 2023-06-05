@@ -110,9 +110,9 @@ func resourceSettingRead(ctx context.Context, d *schema.ResourceData, m interfac
 		return diag.FromErr(err)
 	}
 
-	d.Set(SETTING_KEY, setting.Key)
-	d.Set(SETTING_NAME, setting.Name)
-	d.Set(SETTING_HINT, setting.Hint)
+	d.Set(SETTING_KEY, setting.Key.Get())
+	d.Set(SETTING_NAME, setting.Name.Get())
+	d.Set(SETTING_HINT, setting.Hint.Get())
 	d.Set(SETTING_TYPE, setting.SettingType)
 	d.Set(CONFIG_ID, setting.ConfigId)
 
