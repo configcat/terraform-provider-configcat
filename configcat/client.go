@@ -71,7 +71,7 @@ func handleAPIError(err error) error {
 				body:  string(openApiErr.Body()),
 			}
 		}
-		return fmt.Errorf("%s: %s. %s", openApiErr.Error(), openApiErr.Body(), openApiErr.Model())
+		return fmt.Errorf("%s: %s", openApiErr.Error(), openApiErr.Body())
 	}
 	if openApiErr, ok := err.(configcatpublicapi.GenericOpenAPIError); ok {
 		if openApiErr.Error() == "404 Not Found" {
@@ -80,7 +80,7 @@ func handleAPIError(err error) error {
 				body:  string(openApiErr.Body()),
 			}
 		}
-		return fmt.Errorf("%s: %s. %s", openApiErr.Error(), openApiErr.Body(), openApiErr.Model())
+		return fmt.Errorf("%s: %s", openApiErr.Error(), openApiErr.Body())
 	}
 	return fmt.Errorf("Error. Type: %T Error: %s", err, err)
 }
