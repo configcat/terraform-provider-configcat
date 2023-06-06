@@ -88,7 +88,7 @@ func resourceSettingCreate(ctx context.Context, d *schema.ResourceData, m interf
 		return diag.FromErr(err)
 	}
 
-	d.SetId(fmt.Sprint(setting.SettingId))
+	d.SetId(fmt.Sprintf("%d", *setting.SettingId))
 
 	return resourceSettingRead(ctx, d, m)
 }

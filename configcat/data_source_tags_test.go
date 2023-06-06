@@ -13,8 +13,6 @@ func TestTagValid(t *testing.T) {
 			product_id = "08d86d63-2721-4da6-8c06-584521d516bc"
 		}
 	`
-	const productID = "08d86d63-2721-4da6-8c06-584521d516bc"
-	const tagID = "08d86d63-2726-47cd-8bfc-59608ecb91e2"
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:  func() { testAccPreCheck(t) },
@@ -38,7 +36,6 @@ func TestTagValidFilter(t *testing.T) {
 			product_id = "08d86d63-2721-4da6-8c06-584521d516bc"
 		}
 	`
-	const productID = "08d86d63-2721-4da6-8c06-584521d516bc"
 	const tagID = "46"
 
 	resource.Test(t, resource.TestCase{
@@ -66,8 +63,6 @@ func TestTagNotFoundFilter(t *testing.T) {
 			product_id = "08d86d63-2721-4da6-8c06-584521d516bc"
 		}
 	`
-	const productID = "08d86d63-2721-4da6-8c06-584521d516bc"
-	const tagID = "08d86d63-2726-47cd-8bfc-59608ecb91e2"
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:  func() { testAccPreCheck(t) },

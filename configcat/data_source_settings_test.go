@@ -13,8 +13,6 @@ func TestSettingValid(t *testing.T) {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
 		}
 	`
-	const configID = "08d86d63-2731-4b8b-823a-56ddda9da038"
-	const settingID = "67639"
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:  func() { testAccPreCheck(t) },
@@ -38,7 +36,6 @@ func TestSettingValidFilter(t *testing.T) {
 			key_filter_regex = "isAwesomeFeatureEnabled"
 		}
 	`
-	const configID = "08d86d63-2731-4b8b-823a-56ddda9da038"
 	const settingID = "67639"
 
 	resource.Test(t, resource.TestCase{

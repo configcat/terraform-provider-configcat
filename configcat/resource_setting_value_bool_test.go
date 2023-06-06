@@ -7,7 +7,6 @@ import (
 )
 
 func TestResourceSettingValueBoolFreeze(t *testing.T) {
-	const settingID = "67639"
 	const environmentID = "08d86d63-2726-47cd-8bfc-59608ecb91e2"
 
 	const settingValueResource = `
@@ -64,7 +63,6 @@ func TestResourceSettingValueBoolFreeze(t *testing.T) {
 }
 
 func TestResourceSettingValueBoolNoFreeze(t *testing.T) {
-	const settingID = "67639"
 	const environmentID = "08d86d63-2726-47cd-8bfc-59608ecb91e2"
 
 	const settingValueResource = `
@@ -127,7 +125,6 @@ func TestResourceSettingValueBoolNoFreeze(t *testing.T) {
 }
 
 func TestResourceSettingValueBoolRules(t *testing.T) {
-	const settingID = "67639"
 	const environmentID = "08d86d63-2726-47cd-8bfc-59608ecb91e2"
 
 	const settingValueResource = `
@@ -228,7 +225,6 @@ func TestResourceSettingValueBoolRules(t *testing.T) {
 }
 
 func TestResourceSettingValueBoolPercentageItems(t *testing.T) {
-	const settingID = "67639"
 	const environmentID = "08d86d63-2726-47cd-8bfc-59608ecb91e2"
 
 	const settingValueResource = `
