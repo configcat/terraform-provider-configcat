@@ -147,7 +147,7 @@ func resourceSettingUpdate(ctx context.Context, d *schema.ResourceData, m interf
 			})
 		}
 
-		_, err := c.UpdateSetting(int32(settingID), sw.JsonPatch{Operations: operations})
+		_, err := c.UpdateSetting(int32(settingID), operations)
 		if err != nil {
 			if _, ok := err.(NotFoundError); ok {
 				d.SetId("")

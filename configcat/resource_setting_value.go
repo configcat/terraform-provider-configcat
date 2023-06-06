@@ -361,9 +361,10 @@ func getRolloutRulesData(rolloutRules []interface{}, settingType string) (*[]sw.
 					return nil, compErr
 				}
 
+				segmentId := item[SEGMENT_ID].(string)
 				element := sw.RolloutRuleModel{
 					SegmentComparator: segmentComparator,
-					SegmentId:         *sw.NewNullableString(item[SEGMENT_ID].(*string)),
+					SegmentId:         *sw.NewNullableString(&segmentId),
 					Value:             &value,
 				}
 

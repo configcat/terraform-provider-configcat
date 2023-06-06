@@ -56,7 +56,7 @@ func resourceSettingTagCreate(ctx context.Context, d *schema.ResourceData, m int
 		Value: &tagIDInterface,
 	}}
 
-	_, err := c.UpdateSetting(int32(settingID), sw.JsonPatch{Operations: operations})
+	_, err := c.UpdateSetting(int32(settingID), operations)
 	if err != nil {
 		if _, ok := err.(NotFoundError); ok {
 			d.SetId("")
@@ -123,7 +123,7 @@ func resourceSettingTagDelete(ctx context.Context, d *schema.ResourceData, m int
 		Value: &tagIDInterface,
 	}}
 
-	_, err := c.UpdateSetting(int32(settingID), sw.JsonPatch{Operations: operations})
+	_, err := c.UpdateSetting(int32(settingID), operations)
 	if err != nil {
 		if _, ok := err.(NotFoundError); ok {
 			d.SetId("")
