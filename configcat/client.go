@@ -5,40 +5,41 @@ import (
 	"fmt"
 
 	configcatpublicapi "github.com/configcat/configcat-publicapi-go-client"
-	sw "github.com/configcat/configcat-publicapi-go-client"
 )
 
 type Client struct {
 	basePath          string
 	basicAuthUsername string
 	basicAuthPassword string
-	apiClient         *sw.APIClient
+	apiClient         *configcatpublicapi.APIClient
 	authEmail         string
 	authFullName      string
 }
 
 func (client *Client) GetAuthContext() context.Context {
-	return context.WithValue(context.Background(), sw.ContextBasicAuth, sw.BasicAuth{
+	return context.WithValue(context.Background(), configcatpublicapi.ContextBasicAuth, configcatpublicapi.BasicAuth{
 		UserName: client.basicAuthUsername,
 		Password: client.basicAuthPassword,
 	})
 }
 
-func (client *Client) GetMe() (sw.MeModel, error) {
-	model, response, err := client.apiClient.MeApi.GetMe(client.GetAuthContext())
+func (client *Client) GetMe() (*configcatpublicapi.MeModel, error) {
+	model, response, err := client.apiClient.MeApi.GetMe(client.GetAuthContext()).Execute()
+	error := handleAPIError(err)
 	defer response.Body.Close()
-	return model, handleAPIError(err)
+	return model, error
 }
 
-func (client *Client) GetOrganizations() ([]sw.OrganizationModel, error) {
-	model, response, err := client.apiClient.OrganizationsApi.GetOrganizations(client.GetAuthContext())
+func (client *Client) GetOrganizations() ([]configcatpublicapi.OrganizationModel, error) {
+	model, response, err := client.apiClient.OrganizationsApi.GetOrganizations(client.GetAuthContext()).Execute()
+	error := handleAPIError(err)
 	defer response.Body.Close()
-	return model, handleAPIError(err)
+	return model, error
 }
 
 func NewClient(basePath, basicAuthUsername, basicAuthPassword string) (*Client, error) {
 	configuration := configcatpublicapi.NewConfiguration()
-	configuration.BasePath = basePath
+	configuration.Servers[0].URL = basePath
 	configuration.UserAgent = "terraform-provider-configcat/1.0.3"
 	apiClient := configcatpublicapi.NewAPIClient(configuration)
 
@@ -53,8 +54,8 @@ func NewClient(basePath, basicAuthUsername, basicAuthPassword string) (*Client, 
 	if err != nil {
 		return nil, err
 	}
-	client.authEmail = meModel.Email
-	client.authFullName = meModel.FullName
+	client.authEmail = *meModel.Email.Get()
+	client.authFullName = *meModel.FullName.Get()
 
 	return client, nil
 }
@@ -63,16 +64,25 @@ func handleAPIError(err error) error {
 	if err == nil {
 		return nil
 	}
-	if swaggerErr, ok := err.(sw.GenericSwaggerError); ok {
-		if swaggerErr.Error() == "404 Not Found" {
+	if openApiErr, ok := err.(*configcatpublicapi.GenericOpenAPIError); ok {
+		if openApiErr.Error() == "404 Not Found" {
 			return NotFoundError{
-				error: swaggerErr.Error(),
-				body:  string(swaggerErr.Body()),
+				error: openApiErr.Error(),
+				body:  string(openApiErr.Body()),
 			}
 		}
-		return fmt.Errorf("%s: %s", swaggerErr.Error(), string(swaggerErr.Body()))
+		return fmt.Errorf("%s: %s", openApiErr.Error(), openApiErr.Body())
 	}
-	return err
+	if openApiErr, ok := err.(configcatpublicapi.GenericOpenAPIError); ok {
+		if openApiErr.Error() == "404 Not Found" {
+			return NotFoundError{
+				error: openApiErr.Error(),
+				body:  string(openApiErr.Body()),
+			}
+		}
+		return fmt.Errorf("%s: %s", openApiErr.Error(), openApiErr.Body())
+	}
+	return fmt.Errorf("Error. Type: %T Error: %s", err, err)
 }
 
 // NotFoundError Provides access to the body, error in case of 404 Not Found.

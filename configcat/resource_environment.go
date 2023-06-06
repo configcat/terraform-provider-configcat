@@ -47,10 +47,12 @@ func resourceEnvironmentCreate(ctx context.Context, d *schema.ResourceData, m in
 
 	productID := d.Get(PRODUCT_ID).(string)
 
+	environmentDescription := d.Get(ENVIRONMENT_DESCRIPTION).(string)
+	environmentColor := d.Get(ENVIRONMENT_COLOR).(string)
 	body := sw.CreateEnvironmentModel{
 		Name:        d.Get(ENVIRONMENT_NAME).(string),
-		Description: d.Get(ENVIRONMENT_DESCRIPTION).(string),
-		Color:       d.Get(ENVIRONMENT_COLOR).(string),
+		Description: *sw.NewNullableString(&environmentDescription),
+		Color:       *sw.NewNullableString(&environmentColor),
 	}
 
 	environment, err := c.CreateEnvironment(productID, body)
@@ -58,7 +60,7 @@ func resourceEnvironmentCreate(ctx context.Context, d *schema.ResourceData, m in
 		return diag.FromErr(err)
 	}
 
-	d.SetId(environment.EnvironmentId)
+	d.SetId(*environment.EnvironmentId)
 
 	return resourceEnvironmentRead(ctx, d, m)
 }
@@ -78,9 +80,9 @@ func resourceEnvironmentRead(ctx context.Context, d *schema.ResourceData, m inte
 	}
 
 	d.Set(PRODUCT_ID, environment.Product.ProductId)
-	d.Set(ENVIRONMENT_NAME, environment.Name)
-	d.Set(ENVIRONMENT_DESCRIPTION, environment.Description)
-	d.Set(ENVIRONMENT_COLOR, environment.Color)
+	d.Set(ENVIRONMENT_NAME, environment.Name.Get())
+	d.Set(ENVIRONMENT_DESCRIPTION, environment.Description.Get())
+	d.Set(ENVIRONMENT_COLOR, environment.Color.Get())
 
 	return diags
 }
@@ -89,10 +91,14 @@ func resourceEnvironmentUpdate(ctx context.Context, d *schema.ResourceData, m in
 	c := m.(*Client)
 
 	if d.HasChanges(ENVIRONMENT_NAME, ENVIRONMENT_DESCRIPTION, ENVIRONMENT_COLOR) {
+		environmentName := d.Get(ENVIRONMENT_NAME).(string)
+		environmentDescription := d.Get(ENVIRONMENT_DESCRIPTION).(string)
+		environmentColor := d.Get(ENVIRONMENT_COLOR).(string)
+
 		body := sw.UpdateEnvironmentModel{
-			Name:        d.Get(ENVIRONMENT_NAME).(string),
-			Description: d.Get(ENVIRONMENT_DESCRIPTION).(string),
-			Color:       d.Get(ENVIRONMENT_COLOR).(string),
+			Name:        *sw.NewNullableString(&environmentName),
+			Description: *sw.NewNullableString(&environmentDescription),
+			Color:       *sw.NewNullableString(&environmentColor),
 		}
 
 		_, err := c.UpdateEnvironment(d.Id(), body)

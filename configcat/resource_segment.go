@@ -61,11 +61,12 @@ func resourceSegmentCreate(ctx context.Context, d *schema.ResourceData, m interf
 		return diag.FromErr(compErr)
 	}
 
+	segmentDescription := d.Get(SEGMENT_DESCRIPTION).(string)
 	body := sw.CreateSegmentModel{
 		Name:                d.Get(SEGMENT_NAME).(string),
-		Description:         d.Get(SEGMENT_DESCRIPTION).(string),
+		Description:         *sw.NewNullableString(&segmentDescription),
 		ComparisonAttribute: d.Get(SEGMENT_COMPARISON_ATTRIBUTE).(string),
-		Comparator:          comparator,
+		Comparator:          *comparator,
 		ComparisonValue:     d.Get(SEGMENT_COMPARISON_VALUE).(string),
 	}
 
@@ -74,7 +75,7 @@ func resourceSegmentCreate(ctx context.Context, d *schema.ResourceData, m interf
 		return diag.FromErr(err)
 	}
 
-	d.SetId(segment.SegmentId)
+	d.SetId(*segment.SegmentId)
 
 	return resourceSegmentRead(ctx, d, m)
 }
@@ -94,11 +95,11 @@ func resourceSegmentRead(ctx context.Context, d *schema.ResourceData, m interfac
 	}
 
 	d.Set(PRODUCT_ID, segment.Product.ProductId)
-	d.Set(SEGMENT_NAME, segment.Name)
-	d.Set(SEGMENT_DESCRIPTION, segment.Description)
-	d.Set(SEGMENT_COMPARISON_ATTRIBUTE, segment.ComparisonAttribute)
+	d.Set(SEGMENT_NAME, segment.Name.Get())
+	d.Set(SEGMENT_DESCRIPTION, segment.Description.Get())
+	d.Set(SEGMENT_COMPARISON_ATTRIBUTE, segment.ComparisonAttribute.Get())
 	d.Set(SEGMENT_COMPARATOR, segment.Comparator)
-	d.Set(SEGMENT_COMPARISON_VALUE, segment.ComparisonValue)
+	d.Set(SEGMENT_COMPARISON_VALUE, segment.ComparisonValue.Get())
 
 	return diags
 }
@@ -113,12 +114,16 @@ func resourceSegmentUpdate(ctx context.Context, d *schema.ResourceData, m interf
 			return diag.FromErr(compErr)
 		}
 
+		segmentName := d.Get(SEGMENT_NAME).(string)
+		segmentDescription := d.Get(SEGMENT_DESCRIPTION).(string)
+		segmentComparisonAttribute := d.Get(SEGMENT_COMPARISON_ATTRIBUTE).(string)
+		segmentComparisonValue := d.Get(SEGMENT_COMPARISON_VALUE).(string)
 		body := sw.UpdateSegmentModel{
-			Name:                d.Get(SEGMENT_NAME).(string),
-			Description:         d.Get(SEGMENT_DESCRIPTION).(string),
-			ComparisonAttribute: d.Get(SEGMENT_COMPARISON_ATTRIBUTE).(string),
+			Name:                *sw.NewNullableString(&segmentName),
+			Description:         *sw.NewNullableString(&segmentDescription),
+			ComparisonAttribute: *sw.NewNullableString(&segmentComparisonAttribute),
 			Comparator:          comparator,
-			ComparisonValue:     d.Get(SEGMENT_COMPARISON_VALUE).(string),
+			ComparisonValue:     *sw.NewNullableString(&segmentComparisonValue),
 		}
 
 		_, err := c.UpdateSegment(d.Id(), body)
@@ -159,52 +164,52 @@ func resourceSegmentDelete(ctx context.Context, d *schema.ResourceData, m interf
 func getComparatorForSegment(comparator string) (*sw.RolloutRuleComparator, error) {
 	switch comparator {
 	case "contains":
-		comparator := sw.CONTAINS_RolloutRuleComparator
+		comparator := sw.ROLLOUTRULECOMPARATOR_CONTAINS
 		return &comparator, nil
 	case "doesNotContain":
-		comparator := sw.DOES_NOT_CONTAIN_RolloutRuleComparator
+		comparator := sw.ROLLOUTRULECOMPARATOR_DOES_NOT_CONTAIN
 		return &comparator, nil
 	case "semVerIsOneOf":
-		comparator := sw.SEM_VER_IS_ONE_OF_RolloutRuleComparator
+		comparator := sw.ROLLOUTRULECOMPARATOR_SEM_VER_IS_ONE_OF
 		return &comparator, nil
 	case "semVerIsNotOneOf":
-		comparator := sw.SEM_VER_IS_NOT_ONE_OF_RolloutRuleComparator
+		comparator := sw.ROLLOUTRULECOMPARATOR_SEM_VER_IS_NOT_ONE_OF
 		return &comparator, nil
 	case "semVerLess":
-		comparator := sw.SEM_VER_LESS_RolloutRuleComparator
+		comparator := sw.ROLLOUTRULECOMPARATOR_SEM_VER_LESS
 		return &comparator, nil
 	case "semVerLessOrEquals":
-		comparator := sw.SEM_VER_LESS_OR_EQUALS_RolloutRuleComparator
+		comparator := sw.ROLLOUTRULECOMPARATOR_SEM_VER_LESS_OR_EQUALS
 		return &comparator, nil
 	case "semVerGreater":
-		comparator := sw.SEM_VER_GREATER_RolloutRuleComparator
+		comparator := sw.ROLLOUTRULECOMPARATOR_SEM_VER_GREATER
 		return &comparator, nil
 	case "semVerGreaterOrEquals":
-		comparator := sw.SEM_VER_GREATER_OR_EQUALS_RolloutRuleComparator
+		comparator := sw.ROLLOUTRULECOMPARATOR_SEM_VER_GREATER_OR_EQUALS
 		return &comparator, nil
 	case "numberEquals":
-		comparator := sw.NUMBER_EQUALS_RolloutRuleComparator
+		comparator := sw.ROLLOUTRULECOMPARATOR_NUMBER_EQUALS
 		return &comparator, nil
 	case "numberDoesNotEqual":
-		comparator := sw.NUMBER_DOES_NOT_EQUAL_RolloutRuleComparator
+		comparator := sw.ROLLOUTRULECOMPARATOR_NUMBER_DOES_NOT_EQUAL
 		return &comparator, nil
 	case "numberLess":
-		comparator := sw.NUMBER_LESS_RolloutRuleComparator
+		comparator := sw.ROLLOUTRULECOMPARATOR_NUMBER_LESS
 		return &comparator, nil
 	case "numberLessOrEquals":
-		comparator := sw.NUMBER_LESS_OR_EQUALS_RolloutRuleComparator
+		comparator := sw.ROLLOUTRULECOMPARATOR_NUMBER_LESS_OR_EQUALS
 		return &comparator, nil
 	case "numberGreater":
-		comparator := sw.NUMBER_GREATER_RolloutRuleComparator
+		comparator := sw.ROLLOUTRULECOMPARATOR_NUMBER_GREATER
 		return &comparator, nil
 	case "numberGreaterOrEquals":
-		comparator := sw.NUMBER_GREATER_OR_EQUALS_RolloutRuleComparator
+		comparator := sw.ROLLOUTRULECOMPARATOR_NUMBER_GREATER_OR_EQUALS
 		return &comparator, nil
 	case "sensitiveIsOneOf":
-		comparator := sw.SENSITIVE_IS_ONE_OF_RolloutRuleComparator
+		comparator := sw.ROLLOUTRULECOMPARATOR_SENSITIVE_IS_ONE_OF
 		return &comparator, nil
 	case "sensitiveIsNotOneOf":
-		comparator := sw.SENSITIVE_IS_NOT_ONE_OF_RolloutRuleComparator
+		comparator := sw.ROLLOUTRULECOMPARATOR_SENSITIVE_IS_NOT_ONE_OF
 		return &comparator, nil
 	}
 

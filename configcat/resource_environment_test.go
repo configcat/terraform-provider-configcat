@@ -18,14 +18,14 @@ func TestResourceEnvironmentFlow(t *testing.T) {
 					}
 					resource "configcat_environment" "test" {
 						product_id = data.configcat_products.products.products.0.product_id
-						name = "testName"
+						name = "TestResourceEnvironmentFlow"
 						description = "testDescription"
 						color = "blue"
 					}
 				`,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrSet("configcat_environment.test", "id"),
-					resource.TestCheckResourceAttr("configcat_environment.test", ENVIRONMENT_NAME, "testName"),
+					resource.TestCheckResourceAttr("configcat_environment.test", ENVIRONMENT_NAME, "TestResourceEnvironmentFlow"),
 					resource.TestCheckResourceAttr("configcat_environment.test", ENVIRONMENT_DESCRIPTION, "testDescription"),
 					resource.TestCheckResourceAttr("configcat_environment.test", ENVIRONMENT_COLOR, "blue"),
 				),
@@ -36,14 +36,14 @@ func TestResourceEnvironmentFlow(t *testing.T) {
 					}
 					resource "configcat_environment" "test" {
 						product_id = data.configcat_products.products.products.0.product_id
-						name = "testName2"
+						name = "TestResourceEnvironmentFlow2"
 						description = "testDescription2"
 						color = "yellow"
 					}
 				`,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrSet("configcat_environment.test", "id"),
-					resource.TestCheckResourceAttr("configcat_environment.test", ENVIRONMENT_NAME, "testName2"),
+					resource.TestCheckResourceAttr("configcat_environment.test", ENVIRONMENT_NAME, "TestResourceEnvironmentFlow2"),
 					resource.TestCheckResourceAttr("configcat_environment.test", ENVIRONMENT_DESCRIPTION, "testDescription2"),
 					resource.TestCheckResourceAttr("configcat_environment.test", ENVIRONMENT_COLOR, "yellow"),
 				),
@@ -68,7 +68,7 @@ func TestResourceEnvironmentWrongColor(t *testing.T) {
 					}
 					resource "configcat_environment" "test" {
 						product_id = data.configcat_products.products.products.0.product_id
-						name = "testName"
+						name = "TestResourceEnvironmentWrongColor"
 						description = "testDescription"
 						color = "notvalid"
 					}
@@ -81,14 +81,14 @@ func TestResourceEnvironmentWrongColor(t *testing.T) {
 					}
 					resource "configcat_environment" "test" {
 						product_id = data.configcat_products.products.products.0.product_id
-						name = "testName"
+						name = "TestResourceEnvironmentWrongColor"
 						description = "testDescription"
 						color = "yellow"
 					}
 				`,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrSet("configcat_environment.test", "id"),
-					resource.TestCheckResourceAttr("configcat_environment.test", ENVIRONMENT_NAME, "testName"),
+					resource.TestCheckResourceAttr("configcat_environment.test", ENVIRONMENT_NAME, "TestResourceEnvironmentWrongColor"),
 					resource.TestCheckResourceAttr("configcat_environment.test", ENVIRONMENT_DESCRIPTION, "testDescription"),
 					resource.TestCheckResourceAttr("configcat_environment.test", ENVIRONMENT_COLOR, "yellow"),
 				),

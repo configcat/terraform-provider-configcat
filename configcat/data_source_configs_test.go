@@ -13,8 +13,6 @@ func TestConfigValid(t *testing.T) {
 			product_id = "08d86d63-2721-4da6-8c06-584521d516bc"
 		}
 	`
-	const productID = "08d86d63-2721-4da6-8c06-584521d516bc"
-	const configID = "08d86d63-2731-4b8b-823a-56ddda9da038"
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:  func() { testAccPreCheck(t) },
@@ -38,7 +36,6 @@ func TestConfigValidFilter(t *testing.T) {
 			product_id = "08d86d63-2721-4da6-8c06-584521d516bc"
 		}
 	`
-	const productID = "08d86d63-2721-4da6-8c06-584521d516bc"
 	const configID = "08d86d63-2731-4b8b-823a-56ddda9da038"
 
 	resource.Test(t, resource.TestCase{

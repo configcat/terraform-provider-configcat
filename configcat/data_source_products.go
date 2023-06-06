@@ -63,7 +63,7 @@ func productRead(ctx context.Context, d *schema.ResourceData, m interface{}) dia
 	} else {
 		regex := regexp.MustCompile(productNameFilterRegex)
 		for i := range products {
-			if regex.MatchString(products[i].Name) {
+			if regex.MatchString(*products[i].Name.Get()) {
 				filteredProducts = append(filteredProducts, products[i])
 			}
 		}
@@ -78,14 +78,14 @@ func productRead(ctx context.Context, d *schema.ResourceData, m interface{}) dia
 
 func flattenProductsData(products *[]sw.ProductModel) []interface{} {
 	if products != nil {
-		elements := make([]interface{}, len(*products), len(*products))
+		elements := make([]interface{}, len(*products))
 
 		for i, product := range *products {
 			element := make(map[string]interface{})
 
 			element[PRODUCT_ID] = product.ProductId
-			element[PRODUCT_NAME] = product.Name
-			element[PRODUCT_DESCRIPTION] = product.Description
+			element[PRODUCT_NAME] = product.Name.Get()
+			element[PRODUCT_DESCRIPTION] = product.Description.Get()
 
 			elements[i] = element
 		}

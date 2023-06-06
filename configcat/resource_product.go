@@ -43,10 +43,10 @@ func resourceProductCreate(ctx context.Context, d *schema.ResourceData, m interf
 	c := m.(*Client)
 
 	organizationID := d.Get(ORGANIZATION_ID).(string)
-
+	productDescription := d.Get(PRODUCT_DESCRIPTION).(string)
 	body := sw.CreateProductRequest{
 		Name:        d.Get(PRODUCT_NAME).(string),
-		Description: d.Get(PRODUCT_DESCRIPTION).(string),
+		Description: *sw.NewNullableString(&productDescription),
 	}
 
 	product, err := c.CreateProduct(organizationID, body)
@@ -54,7 +54,7 @@ func resourceProductCreate(ctx context.Context, d *schema.ResourceData, m interf
 		return diag.FromErr(err)
 	}
 
-	d.SetId(product.ProductId)
+	d.SetId(*product.ProductId)
 
 	return resourceProductRead(ctx, d, m)
 }
@@ -74,8 +74,8 @@ func resourceProductRead(ctx context.Context, d *schema.ResourceData, m interfac
 	}
 
 	d.Set(ORGANIZATION_ID, product.Organization.OrganizationId)
-	d.Set(PRODUCT_NAME, product.Name)
-	d.Set(PRODUCT_DESCRIPTION, product.Description)
+	d.Set(PRODUCT_NAME, product.Name.Get())
+	d.Set(PRODUCT_DESCRIPTION, product.Description.Get())
 
 	return diags
 }
@@ -84,9 +84,13 @@ func resourceProductUpdate(ctx context.Context, d *schema.ResourceData, m interf
 	c := m.(*Client)
 
 	if d.HasChanges(PRODUCT_NAME, PRODUCT_DESCRIPTION) {
+
+		productName := d.Get(PRODUCT_NAME).(string)
+		productDescription := d.Get(PRODUCT_DESCRIPTION).(string)
+
 		body := sw.UpdateProductRequest{
-			Name:        d.Get(PRODUCT_NAME).(string),
-			Description: d.Get(PRODUCT_DESCRIPTION).(string),
+			Name:        *sw.NewNullableString(&productName),
+			Description: *sw.NewNullableString(&productDescription),
 		}
 
 		_, err := c.UpdateProduct(d.Id(), body)

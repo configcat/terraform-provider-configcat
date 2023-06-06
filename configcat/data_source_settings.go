@@ -83,7 +83,7 @@ func settingRead(ctx context.Context, d *schema.ResourceData, m interface{}) dia
 	} else {
 		regex := regexp.MustCompile(settingKeyFilterRegex)
 		for i := range settings {
-			if regex.MatchString(settings[i].Key) {
+			if regex.MatchString(*settings[i].Key.Get()) {
 				filteredSettings = append(filteredSettings, settings[i])
 			}
 		}
@@ -98,15 +98,15 @@ func settingRead(ctx context.Context, d *schema.ResourceData, m interface{}) dia
 
 func flattenSettingsData(settings *[]sw.SettingModel) []interface{} {
 	if settings != nil {
-		elements := make([]interface{}, len(*settings), len(*settings))
+		elements := make([]interface{}, len(*settings))
 
 		for i, setting := range *settings {
 			element := make(map[string]interface{})
 
-			element[SETTING_ID] = fmt.Sprintf("%d", setting.SettingId)
-			element[SETTING_KEY] = setting.Key
-			element[SETTING_NAME] = setting.Name
-			element[SETTING_HINT] = setting.Hint
+			element[SETTING_ID] = fmt.Sprintf("%d", *setting.SettingId)
+			element[SETTING_KEY] = setting.Key.Get()
+			element[SETTING_NAME] = setting.Name.Get()
+			element[SETTING_HINT] = setting.Hint.Get()
 			element[SETTING_TYPE] = setting.SettingType
 
 			elements[i] = element

@@ -12,7 +12,7 @@ func TestResourceSettingValueIntFreeze(t *testing.T) {
 	const settingValueResource = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testInt"
+			key = "TestResourceSettingValueIntFreeze"
 			name = "testInt"
 			setting_type = "int"
 		}
@@ -26,7 +26,7 @@ func TestResourceSettingValueIntFreeze(t *testing.T) {
 	const settingValueResourceUpdated = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testInt"
+			key = "TestResourceSettingValueIntFreeze"
 			name = "testInt"
 			setting_type = "int"
 		}
@@ -70,7 +70,7 @@ func TestResourceSettingValueIntNoFreeze(t *testing.T) {
 	const settingValueResource = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testInt"
+			key = "TestResourceSettingValueIntNoFreeze"
 			name = "testInt"
 			setting_type = "int"
 		}
@@ -85,7 +85,7 @@ func TestResourceSettingValueIntNoFreeze(t *testing.T) {
 	const settingValueResourceUpdated = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testInt"
+			key = "TestResourceSettingValueIntNoFreeze"
 			name = "testInt"
 			setting_type = "int"
 		}
@@ -135,7 +135,7 @@ func TestResourceSettingValueIntRules(t *testing.T) {
 	const settingValueResource = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testInt"
+			key = "TestResourceSettingValueIntRules"
 			name = "testInt"
 			setting_type = "int"
 		}
@@ -149,7 +149,7 @@ func TestResourceSettingValueIntRules(t *testing.T) {
 	const settingValueResourceRule1 = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testInt"
+			key = "TestResourceSettingValueIntRules"
 			name = "testInt"
 			setting_type = "int"
 		}	
@@ -170,7 +170,7 @@ func TestResourceSettingValueIntRules(t *testing.T) {
 	const settingValueResourceRule2 = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testInt"
+			key = "TestResourceSettingValueIntRules"
 			name = "testInt"
 			setting_type = "int"
 		}	
@@ -237,7 +237,7 @@ func TestResourceSettingValueIntPercentageItems(t *testing.T) {
 	const settingValueResource = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testInt"
+			key = "TestResourceSettingValueIntPercentageItems"
 			name = "testInt"
 			setting_type = "int"
 		} 
@@ -251,7 +251,7 @@ func TestResourceSettingValueIntPercentageItems(t *testing.T) {
 	const settingValueResourceItem1 = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testInt"
+			key = "TestResourceSettingValueIntPercentageItems"
 			name = "testInt"
 			setting_type = "int"
 		}
@@ -274,7 +274,7 @@ func TestResourceSettingValueIntPercentageItems(t *testing.T) {
 	const settingValueResourceItem2 = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testInt"
+			key = "TestResourceSettingValueIntPercentageItems"
 			name = "testInt"
 			setting_type = "int"
 		}

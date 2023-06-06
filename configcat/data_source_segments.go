@@ -70,7 +70,7 @@ func segmentRead(ctx context.Context, d *schema.ResourceData, m interface{}) dia
 	} else {
 		regex := regexp.MustCompile(segmentNameFilterRegex)
 		for i := range segments {
-			if regex.MatchString(segments[i].Name) {
+			if regex.MatchString(*segments[i].Name.Get()) {
 				filteredSegments = append(filteredSegments, segments[i])
 			}
 		}
@@ -85,14 +85,14 @@ func segmentRead(ctx context.Context, d *schema.ResourceData, m interface{}) dia
 
 func flattenSegmentsData(segments *[]sw.SegmentListModel) []interface{} {
 	if segments != nil {
-		elements := make([]interface{}, len(*segments), len(*segments))
+		elements := make([]interface{}, len(*segments))
 
 		for i, segment := range *segments {
 			element := make(map[string]interface{})
 
 			element[SEGMENT_ID] = segment.SegmentId
-			element[SEGMENT_NAME] = segment.Name
-			element[SEGMENT_DESCRIPTION] = segment.Description
+			element[SEGMENT_NAME] = segment.Name.Get()
+			element[SEGMENT_DESCRIPTION] = segment.Description.Get()
 
 			elements[i] = element
 		}

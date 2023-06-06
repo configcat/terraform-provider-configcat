@@ -12,7 +12,7 @@ func TestResourceSettingValueStringFreeze(t *testing.T) {
 	const settingValueResource = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testString"
+			key = "TestResourceSettingValueStringFreeze"
 			name = "testString"
 			setting_type = "string"
 		}
@@ -26,7 +26,7 @@ func TestResourceSettingValueStringFreeze(t *testing.T) {
 	const settingValueResourceUpdated = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testString"
+			key = "TestResourceSettingValueStringFreeze"
 			name = "testString"
 			setting_type = "string"
 		}
@@ -70,7 +70,7 @@ func TestResourceSettingValueStringNoFreeze(t *testing.T) {
 	const settingValueResource = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testString"
+			key = "TestResourceSettingValueStringNoFreeze"
 			name = "testString"
 			setting_type = "string"
 		}
@@ -85,7 +85,7 @@ func TestResourceSettingValueStringNoFreeze(t *testing.T) {
 	const settingValueResourceUpdated = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testString"
+			key = "TestResourceSettingValueStringNoFreeze"
 			name = "testString"
 			setting_type = "string"
 		}
@@ -135,7 +135,7 @@ func TestResourceSettingValueStringRules(t *testing.T) {
 	const settingValueResource = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testString"
+			key = "TestResourceSettingValueStringRules"
 			name = "testString"
 			setting_type = "string"
 		}
@@ -149,7 +149,7 @@ func TestResourceSettingValueStringRules(t *testing.T) {
 	const settingValueResourceRule1 = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testString"
+			key = "TestResourceSettingValueStringRules"
 			name = "testString"
 			setting_type = "string"
 		}	
@@ -170,7 +170,7 @@ func TestResourceSettingValueStringRules(t *testing.T) {
 	const settingValueResourceRule2 = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testString"
+			key = "TestResourceSettingValueStringRules"
 			name = "testString"
 			setting_type = "string"
 		}	
@@ -237,7 +237,7 @@ func TestResourceSettingValueStringPercentageItems(t *testing.T) {
 	const settingValueResource = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testString"
+			key = "TestResourceSettingValueStringPercentageItems"
 			name = "testString"
 			setting_type = "string"
 		} 
@@ -251,7 +251,7 @@ func TestResourceSettingValueStringPercentageItems(t *testing.T) {
 	const settingValueResourceItem1 = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testString"
+			key = "TestResourceSettingValueStringPercentageItems"
 			name = "testString"
 			setting_type = "string"
 		}
@@ -274,7 +274,7 @@ func TestResourceSettingValueStringPercentageItems(t *testing.T) {
 	const settingValueResourceItem2 = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testString"
+			key = "TestResourceSettingValueStringPercentageItems"
 			name = "testString"
 			setting_type = "string"
 		}

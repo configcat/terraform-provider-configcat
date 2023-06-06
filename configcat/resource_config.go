@@ -43,9 +43,10 @@ func resourceConfigCreate(ctx context.Context, d *schema.ResourceData, m interfa
 
 	productID := d.Get(PRODUCT_ID).(string)
 
+	configDescription := d.Get(CONFIG_DESCRIPTION).(string)
 	body := sw.CreateConfigRequest{
 		Name:        d.Get(CONFIG_NAME).(string),
-		Description: d.Get(CONFIG_DESCRIPTION).(string),
+		Description: *sw.NewNullableString(&configDescription),
 	}
 
 	config, err := c.CreateConfig(productID, body)
@@ -53,7 +54,7 @@ func resourceConfigCreate(ctx context.Context, d *schema.ResourceData, m interfa
 		return diag.FromErr(err)
 	}
 
-	d.SetId(config.ConfigId)
+	d.SetId(*config.ConfigId)
 
 	return resourceConfigRead(ctx, d, m)
 }
@@ -73,8 +74,8 @@ func resourceConfigRead(ctx context.Context, d *schema.ResourceData, m interface
 	}
 
 	d.Set(PRODUCT_ID, config.Product.ProductId)
-	d.Set(CONFIG_NAME, config.Name)
-	d.Set(CONFIG_DESCRIPTION, config.Description)
+	d.Set(CONFIG_NAME, config.Name.Get())
+	d.Set(CONFIG_DESCRIPTION, config.Description.Get())
 
 	return diags
 }
@@ -83,9 +84,11 @@ func resourceConfigUpdate(ctx context.Context, d *schema.ResourceData, m interfa
 	c := m.(*Client)
 
 	if d.HasChanges(CONFIG_NAME, CONFIG_DESCRIPTION) {
+		configName := d.Get(CONFIG_NAME).(string)
+		configDescription := d.Get(CONFIG_DESCRIPTION).(string)
 		body := sw.UpdateConfigRequest{
-			Name:        d.Get(CONFIG_NAME).(string),
-			Description: d.Get(CONFIG_DESCRIPTION).(string),
+			Name:        *sw.NewNullableString(&configName),
+			Description: *sw.NewNullableString(&configDescription),
 		}
 
 		_, err := c.UpdateConfig(d.Id(), body)

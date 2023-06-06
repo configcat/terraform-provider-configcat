@@ -13,14 +13,14 @@ func TestResourceSettingValueMandatory(t *testing.T) {
 	const settingResource = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testMandatory"
+			key = "TestResourceSettingValueMandatory"
 			name = "testMandatory"
 		}
 	`
 	const settingValueResourceUpdatedWithoutMandatory = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testMandatory"
+			key = "TestResourceSettingValueMandatory"
 			name = "testMandatory"
 		}
 

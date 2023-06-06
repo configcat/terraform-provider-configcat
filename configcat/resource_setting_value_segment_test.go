@@ -14,7 +14,7 @@ func TestResourceSettingValueBoolSegmentRules(t *testing.T) {
 	const settingValueResource = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testBoolWithSegment"
+			key = "TestResourceSettingValueBoolSegmentRules"
 			name = "testBoolWithSegment"
 		}
 		
@@ -28,7 +28,7 @@ func TestResourceSettingValueBoolSegmentRules(t *testing.T) {
 	const settingValueResourceRule1 = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testBoolWithSegment"
+			key = "TestResourceSettingValueBoolSegmentRules"
 			name = "testBoolWithSegment"
 		}
 		resource "configcat_setting_value" "test" {
@@ -47,7 +47,7 @@ func TestResourceSettingValueBoolSegmentRules(t *testing.T) {
 	const settingValueResourceRule2 = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testBoolWithSegment"
+			key = "TestResourceSettingValueBoolSegmentRules"
 			name = "testBoolWithSegment"
 		}
 		resource "configcat_setting_value" "test" {
