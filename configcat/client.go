@@ -26,14 +26,16 @@ func (client *Client) GetAuthContext() context.Context {
 
 func (client *Client) GetMe() (*sw.MeModel, error) {
 	model, response, err := client.apiClient.MeApi.GetMe(client.GetAuthContext()).Execute()
+	error := handleAPIError(err)
 	defer response.Body.Close()
-	return model, handleAPIError(err)
+	return model, error
 }
 
 func (client *Client) GetOrganizations() ([]sw.OrganizationModel, error) {
 	model, response, err := client.apiClient.OrganizationsApi.GetOrganizations(client.GetAuthContext()).Execute()
+	error := handleAPIError(err)
 	defer response.Body.Close()
-	return model, handleAPIError(err)
+	return model, error
 }
 
 func NewClient(basePath, basicAuthUsername, basicAuthPassword string) (*Client, error) {
