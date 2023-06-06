@@ -70,7 +70,7 @@ func handleAPIError(err error) error {
 				body:  string(openApiErr.Body()),
 			}
 		}
-		return fmt.Errorf("%s: %s", openApiErr.Error(), string(openApiErr.Body()))
+		return fmt.Errorf("%s: %s. %s", openApiErr.Error(), openApiErr.Body(), openApiErr.Model())
 	}
 	return err
 }
