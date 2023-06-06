@@ -64,7 +64,7 @@ func handleAPIError(err error) error {
 	if err == nil {
 		return nil
 	}
-	if openApiErr, ok := err.(configcatpublicapi.GenericOpenAPIError); ok {
+	if openApiErr, ok := err.(*configcatpublicapi.GenericOpenAPIError); ok {
 		if openApiErr.Error() == "404 Not Found" {
 			return NotFoundError{
 				error: openApiErr.Error(),
