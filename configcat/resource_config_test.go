@@ -17,13 +17,13 @@ func TestResourceConfigFlow(t *testing.T) {
 					}
 					resource "configcat_config" "test" {
 						product_id = data.configcat_products.products.products.0.product_id
-						name = "testName"
+						name = "TestResourceConfigFlow"
 						description = "testDescription"
 					}
 				`,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrSet("configcat_config.test", "id"),
-					resource.TestCheckResourceAttr("configcat_config.test", CONFIG_NAME, "testName"),
+					resource.TestCheckResourceAttr("configcat_config.test", CONFIG_NAME, "TestResourceConfigFlow"),
 					resource.TestCheckResourceAttr("configcat_config.test", CONFIG_DESCRIPTION, "testDescription"),
 				),
 			},

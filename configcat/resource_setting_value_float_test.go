@@ -12,7 +12,7 @@ func TestResourceSettingValueFloatFreeze(t *testing.T) {
 	const settingValueResource = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testFloat"
+			key = "TestResourceSettingValueFloatFreeze"
 			name = "testFloat"
 			setting_type = "double"
 		}
@@ -26,7 +26,7 @@ func TestResourceSettingValueFloatFreeze(t *testing.T) {
 	const settingValueResourceUpdated = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testFloat"
+			key = "TestResourceSettingValueFloatFreeze"
 			name = "testFloat"
 			setting_type = "double"
 		}
@@ -70,7 +70,7 @@ func TestResourceSettingValueFloatNoFreeze(t *testing.T) {
 	const settingValueResource = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testFloat"
+			key = "TestResourceSettingValueFloatNoFreeze"
 			name = "testFloat"
 			setting_type = "double"
 		}
@@ -85,7 +85,7 @@ func TestResourceSettingValueFloatNoFreeze(t *testing.T) {
 	const settingValueResourceUpdated = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testFloat"
+			key = "TestResourceSettingValueFloatNoFreeze"
 			name = "testFloat"
 			setting_type = "double"
 		}
@@ -135,7 +135,7 @@ func TestResourceSettingValueFloatRules(t *testing.T) {
 	const settingValueResource = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testFloat"
+			key = "TestResourceSettingValueFloatRules"
 			name = "testFloat"
 			setting_type = "double"
 		}
@@ -149,7 +149,7 @@ func TestResourceSettingValueFloatRules(t *testing.T) {
 	const settingValueResourceRule1 = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testFloat"
+			key = "TestResourceSettingValueFloatRules"
 			name = "testFloat"
 			setting_type = "double"
 		}	
@@ -170,7 +170,7 @@ func TestResourceSettingValueFloatRules(t *testing.T) {
 	const settingValueResourceRule2 = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testFloat"
+			key = "TestResourceSettingValueFloatRules"
 			name = "testFloat"
 			setting_type = "double"
 		}	
@@ -237,7 +237,7 @@ func TestResourceSettingValueFloatPercentageItems(t *testing.T) {
 	const settingValueResource = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testFloat"
+			key = "TestResourceSettingValueFloatPercentageItems"
 			name = "testFloat"
 			setting_type = "double"
 		} 
@@ -251,7 +251,7 @@ func TestResourceSettingValueFloatPercentageItems(t *testing.T) {
 	const settingValueResourceItem1 = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testFloat"
+			key = "TestResourceSettingValueFloatPercentageItems"
 			name = "testFloat"
 			setting_type = "double"
 		}
@@ -274,7 +274,7 @@ func TestResourceSettingValueFloatPercentageItems(t *testing.T) {
 	const settingValueResourceItem2 = `
 		resource "configcat_setting" "testsetting" {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-			key = "testFloat"
+			key = "TestResourceSettingValueFloatPercentageItems"
 			name = "testFloat"
 			setting_type = "double"
 		}

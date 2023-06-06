@@ -18,7 +18,7 @@ func TestResourceSegmentFlow(t *testing.T) {
 					}
 					resource "configcat_segment" "test" {
 						product_id = data.configcat_products.products.products.0.product_id
-						name = "testName"
+						name = "TestResourceSegmentFlow"
 						description = "testDescription"
 						comparison_attribute = "email"
 						comparator = "sensitiveIsOneOf"
@@ -27,7 +27,7 @@ func TestResourceSegmentFlow(t *testing.T) {
 				`,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrSet("configcat_segment.test", "id"),
-					resource.TestCheckResourceAttr("configcat_segment.test", SEGMENT_NAME, "testName"),
+					resource.TestCheckResourceAttr("configcat_segment.test", SEGMENT_NAME, "TestResourceSegmentFlow"),
 					resource.TestCheckResourceAttr("configcat_segment.test", SEGMENT_DESCRIPTION, "testDescription"),
 					resource.TestCheckResourceAttr("configcat_segment.test", SEGMENT_COMPARISON_ATTRIBUTE, "email"),
 					resource.TestCheckResourceAttr("configcat_segment.test", SEGMENT_COMPARATOR, "sensitiveIsOneOf"),
@@ -40,7 +40,7 @@ func TestResourceSegmentFlow(t *testing.T) {
 					}
 					resource "configcat_segment" "test" {
 						product_id = data.configcat_products.products.products.0.product_id
-						name = "testName2"
+						name = "TestResourceSegmentFlow2"
 						description = "testDescription2"
 						comparison_attribute = "version"
 						comparator = "semVerLess"
@@ -49,7 +49,7 @@ func TestResourceSegmentFlow(t *testing.T) {
 				`,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrSet("configcat_segment.test", "id"),
-					resource.TestCheckResourceAttr("configcat_segment.test", SEGMENT_NAME, "testName2"),
+					resource.TestCheckResourceAttr("configcat_segment.test", SEGMENT_NAME, "TestResourceSegmentFlow2"),
 					resource.TestCheckResourceAttr("configcat_segment.test", SEGMENT_DESCRIPTION, "testDescription2"),
 					resource.TestCheckResourceAttr("configcat_segment.test", SEGMENT_COMPARISON_ATTRIBUTE, "version"),
 					resource.TestCheckResourceAttr("configcat_segment.test", SEGMENT_COMPARATOR, "semVerLess"),
@@ -76,7 +76,7 @@ func TestResourceSegmentWrongComparator(t *testing.T) {
 				}
 				resource "configcat_segment" "test" {
 					product_id = data.configcat_products.products.products.0.product_id
-					name = "testName"
+					name = "TestResourceSegmentWrongComparator"
 					description = "testDescription"
 					comparison_attribute = "email"
 					comparator = "isOneOf"
@@ -91,7 +91,7 @@ func TestResourceSegmentWrongComparator(t *testing.T) {
 				}
 				resource "configcat_segment" "test" {
 					product_id = data.configcat_products.products.products.0.product_id
-					name = "testName"
+					name = "TestResourceSegmentWrongComparator"
 					description = "testDescription"
 					comparison_attribute = "email"
 					comparator = "sensitiveIsOneOf"
@@ -100,7 +100,7 @@ func TestResourceSegmentWrongComparator(t *testing.T) {
 				`,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrSet("configcat_segment.test", "id"),
-					resource.TestCheckResourceAttr("configcat_segment.test", SEGMENT_NAME, "testName"),
+					resource.TestCheckResourceAttr("configcat_segment.test", SEGMENT_NAME, "TestResourceSegmentWrongComparator"),
 					resource.TestCheckResourceAttr("configcat_segment.test", SEGMENT_DESCRIPTION, "testDescription"),
 					resource.TestCheckResourceAttr("configcat_segment.test", SEGMENT_COMPARISON_ATTRIBUTE, "email"),
 					resource.TestCheckResourceAttr("configcat_segment.test", SEGMENT_COMPARATOR, "sensitiveIsOneOf"),
