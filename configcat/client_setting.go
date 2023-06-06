@@ -23,8 +23,8 @@ func (client *Client) CreateSetting(configID string, body sw.CreateSettingInitia
 	return model, error
 }
 
-func (client *Client) UpdateSetting(settingID int32, patchOperations []sw.PatchOperation) (*sw.SettingModel, error) {
-	model, response, err := client.apiClient.FeatureFlagsSettingsApi.UpdateSetting(client.GetAuthContext(), settingID).PatchOperations(patchOperations).Execute()
+func (client *Client) UpdateSetting(settingID int32, patchOperation []sw.JsonPatchOperation) (*sw.SettingModel, error) {
+	model, response, err := client.apiClient.FeatureFlagsSettingsApi.UpdateSetting(client.GetAuthContext(), settingID).JsonPatchOperation(patchOperation).Execute()
 	error := handleAPIError(err)
 	defer response.Body.Close()
 	return model, error

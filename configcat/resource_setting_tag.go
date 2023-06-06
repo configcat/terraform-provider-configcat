@@ -50,10 +50,10 @@ func resourceSettingTagCreate(ctx context.Context, d *schema.ResourceData, m int
 		return diag.FromErr(tConvErr)
 	}
 
-	operations := []sw.PatchOperation{{
-		Op:    sw.OPERATIONTYPE_ADD.Ptr(),
+	operations := []sw.JsonPatchOperation{{
+		Op:    sw.OPERATIONTYPE_ADD,
 		Path:  "/tags/-",
-		Value: &tagIDInterface,
+		Value: tagIDInterface,
 	}}
 
 	_, err := c.UpdateSetting(int32(settingID), operations)
@@ -117,10 +117,10 @@ func resourceSettingTagDelete(ctx context.Context, d *schema.ResourceData, m int
 
 	tagIDInterface := d.Get(TAG_ID)
 
-	operations := []sw.PatchOperation{{
-		Op:    sw.OPERATIONTYPE_REMOVE.Ptr(),
+	operations := []sw.JsonPatchOperation{{
+		Op:    sw.OPERATIONTYPE_REMOVE,
 		Path:  "/tags/-",
-		Value: &tagIDInterface,
+		Value: tagIDInterface,
 	}}
 
 	_, err := c.UpdateSetting(int32(settingID), operations)

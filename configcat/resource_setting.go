@@ -128,22 +128,22 @@ func resourceSettingUpdate(ctx context.Context, d *schema.ResourceData, m interf
 	}
 
 	if d.HasChanges(SETTING_NAME, SETTING_HINT) {
-		operations := []sw.PatchOperation{}
+		operations := []sw.JsonPatchOperation{}
 		if d.HasChange(SETTING_NAME) {
 			settingName := d.Get(SETTING_NAME)
-			operations = append(operations, sw.PatchOperation{
-				Op:    sw.OPERATIONTYPE_REPLACE.Ptr(),
+			operations = append(operations, sw.JsonPatchOperation{
+				Op:    sw.OPERATIONTYPE_REPLACE,
 				Path:  "/name",
-				Value: &settingName,
+				Value: settingName,
 			})
 		}
 
 		if d.HasChange(SETTING_HINT) {
 			settingHint := d.Get(SETTING_HINT)
-			operations = append(operations, sw.PatchOperation{
-				Op:    sw.OPERATIONTYPE_REPLACE.Ptr(),
+			operations = append(operations, sw.JsonPatchOperation{
+				Op:    sw.OPERATIONTYPE_REPLACE,
 				Path:  "/hint",
-				Value: &settingHint,
+				Value: settingHint,
 			})
 		}
 
