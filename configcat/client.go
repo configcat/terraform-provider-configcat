@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	configcatpublicapi "github.com/configcat/configcat-publicapi-go-client"
+	configcatpublicapi "github.com/configcat/terraform-provider-configcat/vendor/github.com/configcat/configcat-publicapi-go-client"
 )
 
 type Client struct {
@@ -65,6 +65,15 @@ func handleAPIError(err error) error {
 		return nil
 	}
 	if openApiErr, ok := err.(*configcatpublicapi.GenericOpenAPIError); ok {
+		if openApiErr.Error() == "404 Not Found" {
+			return NotFoundError{
+				error: openApiErr.Error(),
+				body:  string(openApiErr.Body()),
+			}
+		}
+		return fmt.Errorf("%s: %s. %s", openApiErr.Error(), openApiErr.Body(), openApiErr.Model())
+	}
+	if openApiErr, ok := err.(configcatpublicapi.GenericOpenAPIError); ok {
 		if openApiErr.Error() == "404 Not Found" {
 			return NotFoundError{
 				error: openApiErr.Error(),
