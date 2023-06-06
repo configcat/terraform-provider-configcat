@@ -5,33 +5,32 @@ import (
 	"fmt"
 
 	configcatpublicapi "github.com/configcat/configcat-publicapi-go-client"
-	sw "github.com/configcat/configcat-publicapi-go-client"
 )
 
 type Client struct {
 	basePath          string
 	basicAuthUsername string
 	basicAuthPassword string
-	apiClient         *sw.APIClient
+	apiClient         *configcatpublicapi.APIClient
 	authEmail         string
 	authFullName      string
 }
 
 func (client *Client) GetAuthContext() context.Context {
-	return context.WithValue(context.Background(), sw.ContextBasicAuth, sw.BasicAuth{
+	return context.WithValue(context.Background(), configcatpublicapi.ContextBasicAuth, configcatpublicapi.BasicAuth{
 		UserName: client.basicAuthUsername,
 		Password: client.basicAuthPassword,
 	})
 }
 
-func (client *Client) GetMe() (*sw.MeModel, error) {
+func (client *Client) GetMe() (*configcatpublicapi.MeModel, error) {
 	model, response, err := client.apiClient.MeApi.GetMe(client.GetAuthContext()).Execute()
 	error := handleAPIError(err)
 	defer response.Body.Close()
 	return model, error
 }
 
-func (client *Client) GetOrganizations() ([]sw.OrganizationModel, error) {
+func (client *Client) GetOrganizations() ([]configcatpublicapi.OrganizationModel, error) {
 	model, response, err := client.apiClient.OrganizationsApi.GetOrganizations(client.GetAuthContext()).Execute()
 	error := handleAPIError(err)
 	defer response.Body.Close()
@@ -65,7 +64,7 @@ func handleAPIError(err error) error {
 	if err == nil {
 		return nil
 	}
-	if openApiErr, ok := err.(sw.GenericOpenAPIError); ok {
+	if openApiErr, ok := err.(configcatpublicapi.GenericOpenAPIError); ok {
 		if openApiErr.Error() == "404 Not Found" {
 			return NotFoundError{
 				error: openApiErr.Error(),
