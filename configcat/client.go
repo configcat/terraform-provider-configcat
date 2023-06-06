@@ -74,7 +74,7 @@ func handleAPIError(err error) error {
 		}
 		return fmt.Errorf("%s: %s. %s", openApiErr.Error(), openApiErr.Body(), openApiErr.Model())
 	}
-	return fmt.Errorf("Error. Type: %t Error: %s", err, err)
+	return fmt.Errorf("Error. Type: %T Error: %s", err, err)
 }
 
 // NotFoundError Provides access to the body, error in case of 404 Not Found.
