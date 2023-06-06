@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	configcatpublicapi "github.com/configcat/terraform-provider-configcat/vendor/github.com/configcat/configcat-publicapi-go-client"
+	configcatpublicapi "github.com/configcat/configcat-publicapi-go-client"
 )
 
 type Client struct {
