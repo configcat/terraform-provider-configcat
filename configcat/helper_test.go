@@ -11,7 +11,7 @@ import (
 const TEST_RESOURCE = "configcat_setting_value.test"
 
 func checkTest1Value(s *terraform.State) error {
-	value, err := getSettingValue("string", "test1")
+	value, err := getSettingValue(sw.SETTINGTYPE_STRING.Ptr(), "test1")
 	if err != nil {
 		return err
 	}
@@ -19,7 +19,7 @@ func checkTest1Value(s *terraform.State) error {
 }
 
 func checkTest2Value(s *terraform.State) error {
-	value, err := getSettingValue("string", "test2")
+	value, err := getSettingValue(sw.SETTINGTYPE_STRING.Ptr(), "test2")
 	if err != nil {
 		return err
 	}
@@ -27,7 +27,7 @@ func checkTest2Value(s *terraform.State) error {
 }
 
 func checkTest1IntValue(s *terraform.State) error {
-	value, err := getSettingValue("int", "1")
+	value, err := getSettingValue(sw.SETTINGTYPE_INT.Ptr(), "1")
 	if err != nil {
 		return err
 	}
@@ -35,7 +35,7 @@ func checkTest1IntValue(s *terraform.State) error {
 }
 
 func checkTest2IntValue(s *terraform.State) error {
-	value, err := getSettingValue("int", "2")
+	value, err := getSettingValue(sw.SETTINGTYPE_INT.Ptr(), "2")
 	if err != nil {
 		return err
 	}
@@ -43,7 +43,7 @@ func checkTest2IntValue(s *terraform.State) error {
 }
 
 func checkTest1FloatValue(s *terraform.State) error {
-	value, err := getSettingValue("double", "1.1")
+	value, err := getSettingValue(sw.SETTINGTYPE_DOUBLE.Ptr(), "1.1")
 	if err != nil {
 		return err
 	}
@@ -51,7 +51,7 @@ func checkTest1FloatValue(s *terraform.State) error {
 }
 
 func checkTest2FloatValue(s *terraform.State) error {
-	value, err := getSettingValue("double", "2.1")
+	value, err := getSettingValue(sw.SETTINGTYPE_DOUBLE.Ptr(), "2.1")
 	if err != nil {
 		return err
 	}
@@ -59,7 +59,7 @@ func checkTest2FloatValue(s *terraform.State) error {
 }
 
 func checkTrueValue(s *terraform.State) error {
-	value, err := getSettingValue("boolean", "true")
+	value, err := getSettingValue(sw.SETTINGTYPE_BOOLEAN.Ptr(), "true")
 	if err != nil {
 		return err
 	}
@@ -67,7 +67,7 @@ func checkTrueValue(s *terraform.State) error {
 }
 
 func checkFalseValue(s *terraform.State) error {
-	value, err := getSettingValue("boolean", "false")
+	value, err := getSettingValue(sw.SETTINGTYPE_BOOLEAN.Ptr(), "false")
 	if err != nil {
 		return err
 	}

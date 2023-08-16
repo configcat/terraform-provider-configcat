@@ -79,11 +79,11 @@ func TestResourceSegmentWrongComparator(t *testing.T) {
 					name = "TestResourceSegmentWrongComparator"
 					description = "testDescription"
 					comparison_attribute = "email"
-					comparator = "isOneOf"
+					comparator = "invalid"
 					comparison_value="a@b.com,c@d.com"
 				}
 				`,
-				ExpectError: regexp.MustCompile(`could not parse Comparator`),
+				ExpectError: regexp.MustCompile(`invalid value 'invalid' for RolloutRuleComparator: valid values are \[isOneOf isNotOneOf contains doesNotContain semVerIsOneOf semVerIsNotOneOf semVerLess semVerLessOrEquals semVerGreater semVerGreaterOrEquals numberEquals numberDoesNotEqual numberLess numberLessOrEquals numberGreater numberGreaterOrEquals sensitiveIsOneOf sensitiveIsNotOneOf\]`),
 			},
 			{
 				Config: `

@@ -435,7 +435,7 @@ func getSettingValue(settingType *sw.SettingType, value string) (interface{}, er
 		f, err := strconv.ParseFloat(value, 64)
 		return f, err
 	default:
-		return nil, fmt.Errorf("could not parse SettingType and Value: %s, %s", settingType, value)
+		return nil, fmt.Errorf("could not parse SettingType and Value: %s, %s", *settingType, value)
 	}
 }
 
