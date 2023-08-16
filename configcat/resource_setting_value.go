@@ -265,8 +265,8 @@ func resourceSettingValueReadInternal(ctx context.Context, d *schema.ResourceDat
 
 	d.Set(SETTING_VALUE, fmt.Sprintf("%v", settingValue.Value))
 	d.Set(SETTING_TYPE, settingValue.Setting.SettingType)
-	d.Set(ROLLOUT_RULES, flattenRolloutRulesData(&settingValue.RolloutRules))
-	d.Set(ROLLOUT_PERCENTAGE_ITEMS, flattenRolloutPercentageItemsData(&settingValue.RolloutPercentageItems))
+	d.Set(ROLLOUT_RULES, flattenRolloutRulesData(settingValue.RolloutRules))
+	d.Set(ROLLOUT_PERCENTAGE_ITEMS, flattenRolloutPercentageItemsData(settingValue.RolloutPercentageItems))
 
 	return nil
 }
@@ -280,11 +280,11 @@ func resourceSettingValueDelete(ctx context.Context, d *schema.ResourceData, m i
 	return diags
 }
 
-func flattenRolloutRulesData(rolloutRules *[]sw.RolloutRuleModel) []interface{} {
+func flattenRolloutRulesData(rolloutRules []sw.RolloutRuleModel) []interface{} {
 	if rolloutRules != nil {
-		elements := make([]interface{}, len(*rolloutRules))
+		elements := make([]interface{}, len(rolloutRules))
 
-		for i, rolloutRule := range *rolloutRules {
+		for i, rolloutRule := range rolloutRules {
 			element := make(map[string]interface{})
 
 			element[ROLLOUT_RULE_COMPARISON_ATTRIBUTE] = rolloutRule.ComparisonAttribute.Get()
@@ -303,11 +303,11 @@ func flattenRolloutRulesData(rolloutRules *[]sw.RolloutRuleModel) []interface{} 
 	return make([]interface{}, 0)
 }
 
-func flattenRolloutPercentageItemsData(rolloutPercentageItems *[]sw.RolloutPercentageItemModel) []interface{} {
+func flattenRolloutPercentageItemsData(rolloutPercentageItems []sw.RolloutPercentageItemModel) []interface{} {
 	if rolloutPercentageItems != nil {
-		elements := make([]interface{}, len(*rolloutPercentageItems))
+		elements := make([]interface{}, len(rolloutPercentageItems))
 
-		for i, rolloutPercentageItem := range *rolloutPercentageItems {
+		for i, rolloutPercentageItem := range rolloutPercentageItems {
 			element := make(map[string]interface{})
 
 			element[ROLLOUT_PERCENTAGE_ITEM_PERCENTAGE] = strconv.FormatInt(rolloutPercentageItem.Percentage, 10)
