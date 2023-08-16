@@ -7,6 +7,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 )
 
+const testTagResourceName = "data.configcat_tags.test"
+
 func TestTagValid(t *testing.T) {
 	const dataSource = `
 		data "configcat_tags" "test" {
@@ -21,8 +23,8 @@ func TestTagValid(t *testing.T) {
 			{
 				Config: dataSource,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttrSet("data.configcat_tags.test", "id"),
-					resource.TestCheckResourceAttr("data.configcat_tags.test", TAGS+".#", "1"),
+					resource.TestCheckResourceAttrSet(testTagResourceName, "id"),
+					resource.TestCheckResourceAttr(testTagResourceName, TAGS+".#", "1"),
 				),
 			},
 		},
@@ -45,11 +47,11 @@ func TestTagValidFilter(t *testing.T) {
 			{
 				Config: dataSource,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttrSet("data.configcat_tags.test", "id"),
-					resource.TestCheckResourceAttr("data.configcat_tags.test", TAGS+".#", "1"),
-					resource.TestCheckResourceAttr("data.configcat_tags.test", TAGS+".0."+TAG_ID, tagID),
-					resource.TestCheckResourceAttr("data.configcat_tags.test", TAGS+".0."+TAG_NAME, "Test"),
-					resource.TestCheckResourceAttr("data.configcat_tags.test", TAGS+".0."+TAG_COLOR, "panther"),
+					resource.TestCheckResourceAttrSet(testTagResourceName, "id"),
+					resource.TestCheckResourceAttr(testTagResourceName, TAGS+".#", "1"),
+					resource.TestCheckResourceAttr(testTagResourceName, TAGS+".0."+TAG_ID, tagID),
+					resource.TestCheckResourceAttr(testTagResourceName, TAGS+".0."+TAG_NAME, "Test"),
+					resource.TestCheckResourceAttr(testTagResourceName, TAGS+".0."+TAG_COLOR, "panther"),
 				),
 			},
 		},
@@ -71,8 +73,8 @@ func TestTagNotFoundFilter(t *testing.T) {
 			{
 				Config: dataSource,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttrSet("data.configcat_tags.test", "id"),
-					resource.TestCheckResourceAttr("data.configcat_tags.test", TAGS+".#", "0"),
+					resource.TestCheckResourceAttrSet(testTagResourceName, "id"),
+					resource.TestCheckResourceAttr(testTagResourceName, TAGS+".#", "0"),
 				),
 			},
 		},
