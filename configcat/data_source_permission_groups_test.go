@@ -25,14 +25,14 @@ func TestPermissionGroupValid(t *testing.T) {
 				Config: dataSource,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrSet(testPermissionGroupResourceName, "id"),
-					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUPS+".#", "1"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUPS+".#", "2"),
 				),
 			},
 		},
 	})
 }
 
-func TestPermissionGroupValidFilter(t *testing.T) {
+func TestAdministratorsPermissionGroupValidFilter(t *testing.T) {
 	const dataSource = `
 		data "configcat_permission_groups" "test_permission_group" {
 			name_filter_regex = "Administrators"
@@ -76,6 +76,62 @@ func TestPermissionGroupValidFilter(t *testing.T) {
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_ACCESSTYPE, "full"),
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_NEW_ENVIRONMENT_ACCESSTYPE, "full"),
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".#", "0"),
+				),
+			},
+		},
+	})
+}
+
+func TestOnlyTestEnvironmentPermissionGroupValidFilter(t *testing.T) {
+	const dataSource = `
+		data "configcat_permission_groups" "test_permission_group" {
+			name_filter_regex = "Only test environment"
+			product_id = "08d86d63-2721-4da6-8c06-584521d516bc"
+		}
+	`
+	const permissionGroupID = "29859"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:  func() { testAccPreCheck(t) },
+		Providers: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: dataSource,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttrSet(testPermissionGroupResourceName, "id"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUPS+".#", "1"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_ID, permissionGroupID),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_NAME, "Only test environment"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_CAN_CREATEORUPDATE_CONFIG, "false"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_CAN_MANAGE_MEMBERS, "false"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_CAN_CREATEORUPDATE_CONFIG, "false"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_CAN_DELETE_CONFIG, "false"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_CAN_CREATEORUPDATE_ENVIRONMENT, "false"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_CAN_DELETE_ENVIRONMENT, "false"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_CAN_CREATEORUPDATE_SETTING, "false"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_CAN_TAG_SETTING, "false"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_CAN_DELETE_SETTING, "false"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_CAN_CREATEORUPDATE_TAG, "false"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_CAN_DELETE_TAG, "false"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_CAN_MANAGE_WEBHOOK, "false"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_CAN_USE_EXPORTIMPORT, "false"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_CAN_MANAGE_PRODUCT_PREFERENCES, "false"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_CAN_MANAGE_INTEGRATIONS, "false"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_CAN_VIEW_SDKKEY, "false"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_CAN_ROTATE_SDKKEY, "false"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_CAN_CREATEORUPDATE_SEGMENTS, "false"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_CAN_DELETE_SEGMENTS, "false"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_CAN_VIEW_PRODUCT_AUDITLOG, "false"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_CAN_VIEW_PRODUCT_STATISTICS, "false"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_ACCESSTYPE, "custom"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_NEW_ENVIRONMENT_ACCESSTYPE, "readOnly"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".#", "3"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID, "08d8becf-d4d9-4c66-8b48-6ac74cd95fba"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESS_TYPE, "none"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".1."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID, "08d86d63-272c-4355-8027-4b52787bc1bd"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".1."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESS_TYPE, "none"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".2."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID, "08d86d63-2726-47cd-8bfc-59608ecb91e2"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".2."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESS_TYPE, "full"),
 				),
 			},
 		},
