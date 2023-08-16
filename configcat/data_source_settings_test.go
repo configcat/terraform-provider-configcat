@@ -7,6 +7,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 )
 
+const testSettingResourceName = "data.configcat_settings.test"
+
 func TestSettingValid(t *testing.T) {
 	const dataSource = `
 		data "configcat_settings" "test" {
@@ -21,8 +23,8 @@ func TestSettingValid(t *testing.T) {
 			{
 				Config: dataSource,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttrSet("data.configcat_settings.test", "id"),
-					resource.TestCheckResourceAttr("data.configcat_settings.test", SETTINGS+".#", "1"),
+					resource.TestCheckResourceAttrSet(testSettingResourceName, "id"),
+					resource.TestCheckResourceAttr(testSettingResourceName, SETTINGS+".#", "1"),
 				),
 			},
 		},
@@ -45,13 +47,13 @@ func TestSettingValidFilter(t *testing.T) {
 			{
 				Config: dataSource,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttrSet("data.configcat_settings.test", "id"),
-					resource.TestCheckResourceAttr("data.configcat_settings.test", SETTINGS+".#", "1"),
-					resource.TestCheckResourceAttr("data.configcat_settings.test", SETTINGS+".0."+SETTING_ID, settingID),
-					resource.TestCheckResourceAttr("data.configcat_settings.test", SETTINGS+".0."+SETTING_KEY, "isAwesomeFeatureEnabled"),
-					resource.TestCheckResourceAttr("data.configcat_settings.test", SETTINGS+".0."+SETTING_NAME, "My awesome feature flag"),
-					resource.TestCheckResourceAttr("data.configcat_settings.test", SETTINGS+".0."+SETTING_HINT, "This is the hint for my awesome feature flag"),
-					resource.TestCheckResourceAttr("data.configcat_settings.test", SETTINGS+".0."+SETTING_TYPE, "boolean"),
+					resource.TestCheckResourceAttrSet(testSettingResourceName, "id"),
+					resource.TestCheckResourceAttr(testSettingResourceName, SETTINGS+".#", "1"),
+					resource.TestCheckResourceAttr(testSettingResourceName, SETTINGS+".0."+SETTING_ID, settingID),
+					resource.TestCheckResourceAttr(testSettingResourceName, SETTINGS+".0."+SETTING_KEY, "isAwesomeFeatureEnabled"),
+					resource.TestCheckResourceAttr(testSettingResourceName, SETTINGS+".0."+SETTING_NAME, "My awesome feature flag"),
+					resource.TestCheckResourceAttr(testSettingResourceName, SETTINGS+".0."+SETTING_HINT, "This is the hint for my awesome feature flag"),
+					resource.TestCheckResourceAttr(testSettingResourceName, SETTINGS+".0."+SETTING_TYPE, "boolean"),
 				),
 			},
 		},
@@ -73,8 +75,8 @@ func TestSettingInvalid(t *testing.T) {
 			{
 				Config: dataSource,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttrSet("data.configcat_settings.test", "id"),
-					resource.TestCheckResourceAttr("data.configcat_settings.test", SETTINGS+".#", "0"),
+					resource.TestCheckResourceAttrSet(testSettingResourceName, "id"),
+					resource.TestCheckResourceAttr(testSettingResourceName, SETTINGS+".#", "0"),
 				),
 			},
 		},
