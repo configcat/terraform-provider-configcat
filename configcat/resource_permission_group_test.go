@@ -282,8 +282,6 @@ func TestResourcePermissionGroupAccessTypeFlow(t *testing.T) {
 					resource "configcat_permission_group" "test" {
 						product_id = data.configcat_products.products.products.0.product_id
 						name = "TestPermissionGroup"
-
-						new_environment_accesstype = "readOnly"
 						
 						environment_access {
 							environment_id = "08d86d63-2726-47cd-8bfc-59608ecb91e2"
@@ -295,10 +293,65 @@ func TestResourcePermissionGroupAccessTypeFlow(t *testing.T) {
 					resource.TestCheckResourceAttrSet(testPermissionGroupResourceName, "id"),
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_NAME, "TestPermissionGroup"),
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ACCESSTYPE, "custom"),
-					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_NEW_ENVIRONMENT_ACCESSTYPE, "readOnly"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_NEW_ENVIRONMENT_ACCESSTYPE, "none"),
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".#", "1"),
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID, "08d86d63-2726-47cd-8bfc-59608ecb91e2"),
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESS_TYPE, "readOnly"),
+				),
+			},
+			{
+				Config: `
+					data "configcat_products" "products" {
+					}
+					resource "configcat_permission_group" "test" {
+						product_id = data.configcat_products.products.products.0.product_id
+						name = "TestPermissionGroup"
+						accesstype = "full"
+					}
+				`,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttrSet(testPermissionGroupResourceName, "id"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_NAME, "TestPermissionGroup"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ACCESSTYPE, "full"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_NEW_ENVIRONMENT_ACCESSTYPE, "none"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".#", "0"),
+				),
+			},
+			{
+				Config: `
+					data "configcat_products" "products" {
+					}
+					resource "configcat_permission_group" "test" {
+						product_id = data.configcat_products.products.products.0.product_id
+						name = "TestPermissionGroup"
+						
+						new_environment_accesstype = "readOnly"
+						environment_access {
+							environment_id = "08d8becf-d4d9-4c66-8b48-6ac74cd95fba"
+							environment_access_type = "readOnly"
+						}
+						environment_access {
+							environment_id = "08d86d63-272c-4355-8027-4b52787bc1bd"
+							environment_access_type = "full"
+						}
+						environment_access {
+							environment_id = "08d86d63-2726-47cd-8bfc-59608ecb91e2"
+							environment_access_type = "none"
+						}
+					}
+				`,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttrSet(testPermissionGroupResourceName, "id"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_NAME, "TestPermissionGroup"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ACCESSTYPE, "custom"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_NEW_ENVIRONMENT_ACCESSTYPE, "readOnly"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".#", "3"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID, "08d8becf-d4d9-4c66-8b48-6ac74cd95fba"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESS_TYPE, "readOnly"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".1."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID, "08d86d63-272c-4355-8027-4b52787bc1bd"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".1."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESS_TYPE, "full"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".2."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID, "08d86d63-2726-47cd-8bfc-59608ecb91e2"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".2."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESS_TYPE, "none"),
 				),
 			},
 			{
@@ -330,7 +383,7 @@ func TestResourcePermissionGroupAccessTypeErrorFlow(t *testing.T) {
 						}
 					}
 				`,
-				ExpectError: regexp.MustCompile(`Error: environment_access can only be set if the accesstype is custom.`),
+				ExpectError: regexp.MustCompile(`Error: environment_access can only be set if the accesstype is custom`),
 			},
 		},
 	})
