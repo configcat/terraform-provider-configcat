@@ -132,7 +132,7 @@ func resourceConfigCatPermissionGroup() *schema.Resource {
 							Required:     true,
 							ValidateFunc: validateGUIDFunc,
 						},
-						PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESS_TYPE: {
+						PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESSTYPE: {
 							Type:     schema.TypeString,
 							Optional: true,
 							Default:  sw.ENVIRONMENTACCESSTYPE_NONE,
@@ -399,7 +399,7 @@ func getEnvironmentAccesses(environmentAccesses []interface{}, accessType sw.Acc
 	for _, environmentAccess := range environmentAccesses {
 		item := environmentAccess.(map[string]interface{})
 
-		environmentAccessTypeString := item[PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESS_TYPE].(string)
+		environmentAccessTypeString := item[PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESSTYPE].(string)
 		environmentAccessType, environmentAccessTypeParseError := sw.NewEnvironmentAccessTypeFromValue(environmentAccessTypeString)
 		if environmentAccessTypeParseError != nil {
 			return nil, environmentAccessTypeParseError

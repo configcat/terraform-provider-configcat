@@ -285,7 +285,7 @@ func TestResourcePermissionGroupAccessTypeFlow(t *testing.T) {
 						
 						environment_access {
 							environment_id = "08d86d63-2726-47cd-8bfc-59608ecb91e2"
-							environment_access_type = "readOnly"
+							environment_accesstype = "readOnly"
 						}
 					}
 				`,
@@ -296,7 +296,7 @@ func TestResourcePermissionGroupAccessTypeFlow(t *testing.T) {
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_NEW_ENVIRONMENT_ACCESSTYPE, "none"),
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESS+".#", "1"),
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESS+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID, "08d86d63-2726-47cd-8bfc-59608ecb91e2"),
-					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESS+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESS_TYPE, "readOnly"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESS+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESSTYPE, "readOnly"),
 				),
 			},
 			{
@@ -328,15 +328,15 @@ func TestResourcePermissionGroupAccessTypeFlow(t *testing.T) {
 						new_environment_accesstype = "readOnly"
 						environment_access {
 							environment_id = "08d8becf-d4d9-4c66-8b48-6ac74cd95fba"
-							environment_access_type = "readOnly"
+							environment_accesstype = "readOnly"
 						}
 						environment_access {
 							environment_id = "08d86d63-272c-4355-8027-4b52787bc1bd"
-							environment_access_type = "full"
+							environment_accesstype = "full"
 						}
 						environment_access {
 							environment_id = "08d86d63-2726-47cd-8bfc-59608ecb91e2"
-							environment_access_type = "none"
+							environment_accesstype = "none"
 						}
 					}
 				`,
@@ -347,9 +347,9 @@ func TestResourcePermissionGroupAccessTypeFlow(t *testing.T) {
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_NEW_ENVIRONMENT_ACCESSTYPE, "readOnly"),
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESS+".#", "2"),
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESS+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID, "08d8becf-d4d9-4c66-8b48-6ac74cd95fba"),
-					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESS+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESS_TYPE, "readOnly"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESS+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESSTYPE, "readOnly"),
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESS+".1."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID, "08d86d63-272c-4355-8027-4b52787bc1bd"),
-					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESS+".1."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESS_TYPE, "full"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESS+".1."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESSTYPE, "full"),
 				),
 			},
 			{
@@ -377,7 +377,7 @@ func TestResourcePermissionGroupAccessTypeErrorFlow(t *testing.T) {
 
 						environment_access {
 							environment_id = "08d86d63-2726-47cd-8bfc-59608ecb91e2"
-							environment_access_type = "readOnly"
+							environment_accesstype = "readOnly"
 						}
 					}
 				`,

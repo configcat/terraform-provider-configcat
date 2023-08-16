@@ -59,7 +59,7 @@ output "permission_group_id" {
 
 ### The `environment_access` [list](https://www.terraform.io/docs/configuration/types.html#list-) block
 * `environment_id` - The unique [Environment](https://configcat.com/docs/main-concepts/#environment) ID.
-* `environment_access_type` - Represent the environment specific Feature Management permission. Possible values: full, readOnly, none
+* `environment_accesstype` - Represent the environment specific Feature Management permission. Possible values: full, readOnly, none
 
 ## Endpoints used
 - [List Permission Groups](https://api.configcat.com/docs/index.html#tag/Permission-Groups/operation/get-permission-groups)

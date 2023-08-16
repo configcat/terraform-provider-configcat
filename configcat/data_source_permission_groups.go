@@ -139,7 +139,7 @@ func dataSourceConfigCatPermissionGroups() *schema.Resource {
 										Type:     schema.TypeString,
 										Computed: true,
 									},
-									PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESS_TYPE: {
+									PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESSTYPE: {
 										Type:     schema.TypeString,
 										Computed: true,
 									},
@@ -239,7 +239,7 @@ func flattenPermissionGroupEnvironmentAccessData(environmentAccesses []sw.Enviro
 		}
 
 		element[PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID] = environmentAccess.EnvironmentId
-		element[PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESS_TYPE] = *environmentAccess.EnvironmentAccessType
+		element[PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESSTYPE] = *environmentAccess.EnvironmentAccessType
 
 		elements = append(elements, element)
 	}

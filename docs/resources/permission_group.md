@@ -63,12 +63,12 @@ resource "configcat_permission_group" "my_permission_group" {
 
   environment_access {
     environment_id = data.configcat_environments.my_test_environments.environments.0.environment_id
-    environment_access_type = "full"
+    environment_accesstype = "full"
   }
   
   environment_access {
     environment_id = data.configcat_environments.my_production_environments.environments.0.environment_id
-    environment_access_type = "none"
+    environment_accesstype = "none"
   }
 }
 
@@ -107,7 +107,7 @@ output "permission_group_id" {
 
 ### The `environment_access` [list](https://www.terraform.io/docs/configuration/types.html#list-) block
 * `environment_id` - (Required) The unique [Environment](https://configcat.com/docs/main-concepts/#environment) ID.
-* `environment_access_type` - (Optional) Represent the environment specific Feature Management permission. Possible values: full, readOnly, none. Default: none.
+* `environment_accesstype` - (Optional) Represent the environment specific Feature Management permission. Possible values: full, readOnly, none. Default: none.
 
 ## Attribute Reference
 
