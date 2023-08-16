@@ -404,11 +404,7 @@ func getEnvironmentAccesses(environmentAccesses []interface{}, accessType sw.Acc
 			return nil, environmentAccessTypeParseError
 		}
 
-		if *environmentAccessType == sw.ENVIRONMENTACCESSTYPE_NONE {
-			continue
-		}
 		environmentID := item[PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID].(string)
-
 		element := sw.CreateOrUpdateEnvironmentAccessModel{
 			EnvironmentId:         &environmentID,
 			EnvironmentAccessType: environmentAccessType,
