@@ -9,6 +9,26 @@ import (
 
 const testPermissionGroupsDataSourceName = "data.configcat_permission_groups.test_permission_group"
 
+func TestPermissionGroupNotFoundProduct(t *testing.T) {
+
+	const dataSource = ` 
+		data "configcat_permission_groups" "test_permission_group" {
+			product_id = "08d86d63-2721-4da6-8c06-000000000000"
+		}
+	`
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:  func() { testAccPreCheck(t) },
+		Providers: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config:      dataSource,
+				ExpectError: regexp.MustCompile(`Error: 404 Not Found`),
+			},
+		},
+	})
+}
+
 func TestPermissionGroupValid(t *testing.T) {
 
 	const dataSource = ` 

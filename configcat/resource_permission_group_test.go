@@ -424,3 +424,69 @@ func TestResourcePermissionGroupApiErrorFlow(t *testing.T) {
 		},
 	})
 }
+
+func TestResourcePermissionGroupInvalidAccessTypeFlow(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:  func() { testAccPreCheck(t) },
+		Providers: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: `
+					data "configcat_products" "products" {
+					}
+					resource "configcat_permission_group" "test" {
+						product_id = data.configcat_products.products.products.0.product_id
+						name = "TestPermissionGroup"
+						accesstype = "invalid"
+					}
+				`,
+				ExpectError: regexp.MustCompile(`Error: invalid value 'invalid' for AccessType: valid values are \[readOnly full custom\]`),
+			},
+		},
+	})
+}
+
+func TestResourcePermissionGroupInvalidNewEnvironmentAccessTypeFlow(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:  func() { testAccPreCheck(t) },
+		Providers: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: `
+					data "configcat_products" "products" {
+					}
+					resource "configcat_permission_group" "test" {
+						product_id = data.configcat_products.products.products.0.product_id
+						name = "TestPermissionGroup"
+						new_environment_accesstype = "invalid"
+					}
+				`,
+				ExpectError: regexp.MustCompile(`Error: invalid value 'invalid' for EnvironmentAccessType: valid values are \[full readOnly none\]`),
+			},
+		},
+	})
+}
+
+func TestResourcePermissionGroupInvalidEnvironmentAccessTypeFlow(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:  func() { testAccPreCheck(t) },
+		Providers: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: `
+					data "configcat_products" "products" {
+					}
+					resource "configcat_permission_group" "test" {
+						product_id = data.configcat_products.products.products.0.product_id
+						name = "TestPermissionGroup"
+						environment_access {
+							environment_id = "08d86d63-2726-47cd-8bfc-59608ecb91e2"
+							environment_accesstype = "invalid"
+						}
+					}
+				`,
+				ExpectError: regexp.MustCompile(`Error: invalid value 'invalid' for EnvironmentAccessType: valid values are \[full readOnly none\]`),
+			},
+		},
+	})
+}
