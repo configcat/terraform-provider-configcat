@@ -1,3 +1,8 @@
 {
     "go.testEnvFile": "${workspaceFolder}/.env",
+    "go.testTimeout": "300s",
+    "sonarlint.connectedMode.project": {
+        "connectionId": "ConfigCat SonarCloud",
+        "projectKey": "configcat_terraform-provider-configcat"
+    }
 }
