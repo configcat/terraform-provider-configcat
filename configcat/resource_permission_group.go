@@ -128,8 +128,9 @@ func resourceConfigCatPermissionGroup() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID: {
-							Type:     schema.TypeString,
-							Required: true,
+							Type:         schema.TypeString,
+							Required:     true,
+							ValidateFunc: validateGUIDFunc,
 						},
 						PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESS_TYPE: {
 							Type:     schema.TypeString,
@@ -390,8 +391,8 @@ func resourcePermissionGroupUpdate(ctx context.Context, d *schema.ResourceData, 
 func getEnvironmentAccesses(environmentAccesses []interface{}, accessType sw.AccessType) (*[]sw.CreateOrUpdateEnvironmentAccessModel, error) {
 	elements := make([]sw.CreateOrUpdateEnvironmentAccessModel, 0)
 
-	if accessType != sw.ACCESSTYPE_CUSTOM {
-		return &elements, nil
+	if accessType != sw.ACCESSTYPE_CUSTOM && environmentAccesses != nil && len(environmentAccesses) > 0 {
+		return nil, fmt.Errorf("Error: environment_access can only be set if the accesstype is custom")
 	}
 
 	for _, environmentAccess := range environmentAccesses {
@@ -406,9 +407,10 @@ func getEnvironmentAccesses(environmentAccesses []interface{}, accessType sw.Acc
 		if *environmentAccessType == sw.ENVIRONMENTACCESSTYPE_NONE {
 			continue
 		}
+		environmentID := item[PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID].(string)
 
 		element := sw.CreateOrUpdateEnvironmentAccessModel{
-			EnvironmentId:         item[PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID].(*string),
+			EnvironmentId:         &environmentID,
 			EnvironmentAccessType: environmentAccessType,
 		}
 

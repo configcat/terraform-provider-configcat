@@ -9,7 +9,7 @@ import (
 
 const testPermissionGroupResourceName = "configcat_permission_group.test"
 
-func TestResourcePermissionGroupFlow(t *testing.T) {
+func TestResourcePermissionGroupCanXXFlow(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:  func() { testAccPreCheck(t) },
 		Providers: testAccProviders,
@@ -209,6 +209,128 @@ func TestResourcePermissionGroupFlow(t *testing.T) {
 				ResourceName:      testPermissionGroupResourceName,
 				ImportState:       true,
 				ImportStateVerify: true,
+			},
+		},
+	})
+}
+
+func TestResourcePermissionGroupAccessTypeFlow(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:  func() { testAccPreCheck(t) },
+		Providers: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: `
+					data "configcat_products" "products" {
+					}
+					resource "configcat_permission_group" "test" {
+						product_id = data.configcat_products.products.products.0.product_id
+						name = "TestPermissionGroup"
+					}
+				`,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttrSet(testPermissionGroupResourceName, "id"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_NAME, "TestPermissionGroup"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ACCESSTYPE, "custom"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_NEW_ENVIRONMENT_ACCESSTYPE, "none"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".#", "0"),
+				),
+			},
+			{
+				Config: `
+					data "configcat_products" "products" {
+					}
+					resource "configcat_permission_group" "test" {
+						product_id = data.configcat_products.products.products.0.product_id
+						name = "TestPermissionGroup"
+
+						accesstype = "full"
+					}
+				`,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttrSet(testPermissionGroupResourceName, "id"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_NAME, "TestPermissionGroup"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ACCESSTYPE, "full"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_NEW_ENVIRONMENT_ACCESSTYPE, "none"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".#", "0"),
+				),
+			},
+			{
+				Config: `
+					data "configcat_products" "products" {
+					}
+					resource "configcat_permission_group" "test" {
+						product_id = data.configcat_products.products.products.0.product_id
+						name = "TestPermissionGroup"
+
+						accesstype = "readOnly"
+						new_environment_accesstype = "full"
+					}
+				`,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttrSet(testPermissionGroupResourceName, "id"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_NAME, "TestPermissionGroup"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ACCESSTYPE, "readOnly"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_NEW_ENVIRONMENT_ACCESSTYPE, "full"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".#", "0"),
+				),
+			},
+			{
+				Config: `
+					data "configcat_products" "products" {
+					}
+					resource "configcat_permission_group" "test" {
+						product_id = data.configcat_products.products.products.0.product_id
+						name = "TestPermissionGroup"
+
+						new_environment_accesstype = "readOnly"
+						
+						environment_access {
+							environment_id = "08d86d63-2726-47cd-8bfc-59608ecb91e2"
+							environment_access_type = "readOnly"
+						}
+					}
+				`,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttrSet(testPermissionGroupResourceName, "id"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_NAME, "TestPermissionGroup"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ACCESSTYPE, "custom"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_NEW_ENVIRONMENT_ACCESSTYPE, "readOnly"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".#", "1"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID, "08d86d63-2726-47cd-8bfc-59608ecb91e2"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESS_TYPE, "readOnly"),
+				),
+			},
+			{
+				ResourceName:      testPermissionGroupResourceName,
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+		},
+	})
+}
+
+func TestResourcePermissionGroupAccessTypeErrorFlow(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:  func() { testAccPreCheck(t) },
+		Providers: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: `
+					data "configcat_products" "products" {
+					}
+					resource "configcat_permission_group" "test" {
+						product_id = data.configcat_products.products.products.0.product_id
+						name = "TestPermissionGroup"
+						accesstype = "full"
+
+						environment_access {
+							environment_id = "08d86d63-2726-47cd-8bfc-59608ecb91e2"
+							environment_access_type = "readOnly"
+						}
+					}
+				`,
+				ExpectError: regexp.MustCompile(`Error: environment_access can only be set if the accesstype is custom.`),
 			},
 		},
 	})
