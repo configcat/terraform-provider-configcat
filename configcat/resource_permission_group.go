@@ -113,12 +113,14 @@ func resourceConfigCatPermissionGroup() *schema.Resource {
 				Optional: true,
 			},
 			PERMISSION_GROUP_ACCESSTYPE: {
-				Type:    schema.TypeString,
-				Default: sw.ACCESSTYPE_CUSTOM,
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  sw.ACCESSTYPE_CUSTOM,
 			},
 			PERMISSION_GROUP_NEW_ENVIRONMENT_ACCESSTYPE: {
-				Type:    schema.TypeString,
-				Default: sw.ENVIRONMENTACCESSTYPE_NONE,
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  sw.ENVIRONMENTACCESSTYPE_NONE,
 			},
 			PERMISSION_GROUP_ENVIRONMENT_ACCESSES: {
 				Type:     schema.TypeList,
@@ -164,28 +166,49 @@ func resourcePermissionGroupCreate(ctx context.Context, d *schema.ResourceData, 
 		return diag.FromErr(environmentAccessParseError)
 	}
 
+	canManageMembers := d.Get(PERMISSION_GROUP_CAN_MANAGE_MEMBERS).(bool)
+	canCreateOrUpdateConfig := d.Get(PERMISSION_GROUP_CAN_CREATEORUPDATE_CONFIG).(bool)
+	canDeleteConfig := d.Get(PERMISSION_GROUP_CAN_DELETE_CONFIG).(bool)
+	canCreateOrUpdateEnvironment := d.Get(PERMISSION_GROUP_CAN_CREATEORUPDATE_ENVIRONMENT).(bool)
+	canDeleteEnvironment := d.Get(PERMISSION_GROUP_CAN_DELETE_ENVIRONMENT).(bool)
+	canCreateOrUpdateSetting := d.Get(PERMISSION_GROUP_CAN_CREATEORUPDATE_SETTING).(bool)
+	canTagSetting := d.Get(PERMISSION_GROUP_CAN_TAG_SETTING).(bool)
+	canDeleteSetting := d.Get(PERMISSION_GROUP_CAN_DELETE_SETTING).(bool)
+	canCreateOrUpdateTag := d.Get(PERMISSION_GROUP_CAN_CREATEORUPDATE_TAG).(bool)
+	canDeleteTag := d.Get(PERMISSION_GROUP_CAN_DELETE_TAG).(bool)
+	canManageWebhook := d.Get(PERMISSION_GROUP_CAN_MANAGE_WEBHOOK).(bool)
+	canUseExportImport := d.Get(PERMISSION_GROUP_CAN_USE_EXPORTIMPORT).(bool)
+	canManageProductPreferences := d.Get(PERMISSION_GROUP_CAN_MANAGE_PRODUCT_PREFERENCES).(bool)
+	canManageIntegrations := d.Get(PERMISSION_GROUP_CAN_MANAGE_INTEGRATIONS).(bool)
+	canViewSdkKey := d.Get(PERMISSION_GROUP_CAN_VIEW_SDKKEY).(bool)
+	canRotateSdkKey := d.Get(PERMISSION_GROUP_CAN_ROTATE_SDKKEY).(bool)
+	canCreateOrUpdateSegments := d.Get(PERMISSION_GROUP_CAN_CREATEORUPDATE_SEGMENTS).(bool)
+	canDeleteSegments := d.Get(PERMISSION_GROUP_CAN_DELETE_SEGMENTS).(bool)
+	canViewProductAuditLog := d.Get(PERMISSION_GROUP_CAN_VIEW_PRODUCT_AUDITLOG).(bool)
+	canViewProductStatistics := d.Get(PERMISSION_GROUP_CAN_VIEW_PRODUCT_STATISTICS).(bool)
+
 	body := sw.CreatePermissionGroupRequest{
 		Name:                         d.Get(ENVIRONMENT_NAME).(string),
-		CanManageMembers:             d.Get(PERMISSION_GROUP_CAN_MANAGE_MEMBERS).(*bool),
-		CanCreateOrUpdateConfig:      d.Get(PERMISSION_GROUP_CAN_CREATEORUPDATE_CONFIG).(*bool),
-		CanDeleteConfig:              d.Get(PERMISSION_GROUP_CAN_DELETE_CONFIG).(*bool),
-		CanCreateOrUpdateEnvironment: d.Get(PERMISSION_GROUP_CAN_CREATEORUPDATE_ENVIRONMENT).(*bool),
-		CanDeleteEnvironment:         d.Get(PERMISSION_GROUP_CAN_DELETE_ENVIRONMENT).(*bool),
-		CanCreateOrUpdateSetting:     d.Get(PERMISSION_GROUP_CAN_CREATEORUPDATE_SETTING).(*bool),
-		CanTagSetting:                d.Get(PERMISSION_GROUP_CAN_TAG_SETTING).(*bool),
-		CanDeleteSetting:             d.Get(PERMISSION_GROUP_CAN_DELETE_SETTING).(*bool),
-		CanCreateOrUpdateTag:         d.Get(PERMISSION_GROUP_CAN_CREATEORUPDATE_TAG).(*bool),
-		CanDeleteTag:                 d.Get(PERMISSION_GROUP_CAN_DELETE_TAG).(*bool),
-		CanManageWebhook:             d.Get(PERMISSION_GROUP_CAN_MANAGE_WEBHOOK).(*bool),
-		CanUseExportImport:           d.Get(PERMISSION_GROUP_CAN_USE_EXPORTIMPORT).(*bool),
-		CanManageProductPreferences:  d.Get(PERMISSION_GROUP_CAN_MANAGE_PRODUCT_PREFERENCES).(*bool),
-		CanManageIntegrations:        d.Get(PERMISSION_GROUP_CAN_MANAGE_INTEGRATIONS).(*bool),
-		CanViewSdkKey:                d.Get(PERMISSION_GROUP_CAN_VIEW_SDKKEY).(*bool),
-		CanRotateSdkKey:              d.Get(PERMISSION_GROUP_CAN_ROTATE_SDKKEY).(*bool),
-		CanCreateOrUpdateSegments:    d.Get(PERMISSION_GROUP_CAN_CREATEORUPDATE_SEGMENTS).(*bool),
-		CanDeleteSegments:            d.Get(PERMISSION_GROUP_CAN_DELETE_SEGMENTS).(*bool),
-		CanViewProductAuditLog:       d.Get(PERMISSION_GROUP_CAN_VIEW_PRODUCT_AUDITLOG).(*bool),
-		CanViewProductStatistics:     d.Get(PERMISSION_GROUP_CAN_VIEW_PRODUCT_STATISTICS).(*bool),
+		CanManageMembers:             &canManageMembers,
+		CanCreateOrUpdateConfig:      &canCreateOrUpdateConfig,
+		CanDeleteConfig:              &canDeleteConfig,
+		CanCreateOrUpdateEnvironment: &canCreateOrUpdateEnvironment,
+		CanDeleteEnvironment:         &canDeleteEnvironment,
+		CanCreateOrUpdateSetting:     &canCreateOrUpdateSetting,
+		CanTagSetting:                &canTagSetting,
+		CanDeleteSetting:             &canDeleteSetting,
+		CanCreateOrUpdateTag:         &canCreateOrUpdateTag,
+		CanDeleteTag:                 &canDeleteTag,
+		CanManageWebhook:             &canManageWebhook,
+		CanUseExportImport:           &canUseExportImport,
+		CanManageProductPreferences:  &canManageProductPreferences,
+		CanManageIntegrations:        &canManageIntegrations,
+		CanViewSdkKey:                &canViewSdkKey,
+		CanRotateSdkKey:              &canRotateSdkKey,
+		CanCreateOrUpdateSegments:    &canCreateOrUpdateSegments,
+		CanDeleteSegments:            &canDeleteSegments,
+		CanViewProductAuditLog:       &canViewProductAuditLog,
+		CanViewProductStatistics:     &canViewProductStatistics,
 		AccessType:                   accessType,
 		NewEnvironmentAccessType:     newEnvironmentAccessType,
 		EnvironmentAccesses:          *environmentAccesses,
@@ -296,28 +319,49 @@ func resourcePermissionGroupUpdate(ctx context.Context, d *schema.ResourceData, 
 			return diag.FromErr(environmentAccessParseError)
 		}
 
+		canManageMembers := d.Get(PERMISSION_GROUP_CAN_MANAGE_MEMBERS).(bool)
+		canCreateOrUpdateConfig := d.Get(PERMISSION_GROUP_CAN_CREATEORUPDATE_CONFIG).(bool)
+		canDeleteConfig := d.Get(PERMISSION_GROUP_CAN_DELETE_CONFIG).(bool)
+		canCreateOrUpdateEnvironment := d.Get(PERMISSION_GROUP_CAN_CREATEORUPDATE_ENVIRONMENT).(bool)
+		canDeleteEnvironment := d.Get(PERMISSION_GROUP_CAN_DELETE_ENVIRONMENT).(bool)
+		canCreateOrUpdateSetting := d.Get(PERMISSION_GROUP_CAN_CREATEORUPDATE_SETTING).(bool)
+		canTagSetting := d.Get(PERMISSION_GROUP_CAN_TAG_SETTING).(bool)
+		canDeleteSetting := d.Get(PERMISSION_GROUP_CAN_DELETE_SETTING).(bool)
+		canCreateOrUpdateTag := d.Get(PERMISSION_GROUP_CAN_CREATEORUPDATE_TAG).(bool)
+		canDeleteTag := d.Get(PERMISSION_GROUP_CAN_DELETE_TAG).(bool)
+		canManageWebhook := d.Get(PERMISSION_GROUP_CAN_MANAGE_WEBHOOK).(bool)
+		canUseExportImport := d.Get(PERMISSION_GROUP_CAN_USE_EXPORTIMPORT).(bool)
+		canManageProductPreferences := d.Get(PERMISSION_GROUP_CAN_MANAGE_PRODUCT_PREFERENCES).(bool)
+		canManageIntegrations := d.Get(PERMISSION_GROUP_CAN_MANAGE_INTEGRATIONS).(bool)
+		canViewSdkKey := d.Get(PERMISSION_GROUP_CAN_VIEW_SDKKEY).(bool)
+		canRotateSdkKey := d.Get(PERMISSION_GROUP_CAN_ROTATE_SDKKEY).(bool)
+		canCreateOrUpdateSegments := d.Get(PERMISSION_GROUP_CAN_CREATEORUPDATE_SEGMENTS).(bool)
+		canDeleteSegments := d.Get(PERMISSION_GROUP_CAN_DELETE_SEGMENTS).(bool)
+		canViewProductAuditLog := d.Get(PERMISSION_GROUP_CAN_VIEW_PRODUCT_AUDITLOG).(bool)
+		canViewProductStatistics := d.Get(PERMISSION_GROUP_CAN_VIEW_PRODUCT_STATISTICS).(bool)
+
 		body := sw.UpdatePermissionGroupRequest{
 			Name:                         *sw.NewNullableString(&permimssionGroupName),
-			CanManageMembers:             *sw.NewNullableBool(d.Get(PERMISSION_GROUP_CAN_MANAGE_MEMBERS).(*bool)),
-			CanCreateOrUpdateConfig:      *sw.NewNullableBool(d.Get(PERMISSION_GROUP_CAN_CREATEORUPDATE_CONFIG).(*bool)),
-			CanDeleteConfig:              *sw.NewNullableBool(d.Get(PERMISSION_GROUP_CAN_DELETE_CONFIG).(*bool)),
-			CanCreateOrUpdateEnvironment: *sw.NewNullableBool(d.Get(PERMISSION_GROUP_CAN_CREATEORUPDATE_ENVIRONMENT).(*bool)),
-			CanDeleteEnvironment:         *sw.NewNullableBool(d.Get(PERMISSION_GROUP_CAN_DELETE_ENVIRONMENT).(*bool)),
-			CanCreateOrUpdateSetting:     *sw.NewNullableBool(d.Get(PERMISSION_GROUP_CAN_CREATEORUPDATE_SETTING).(*bool)),
-			CanTagSetting:                *sw.NewNullableBool(d.Get(PERMISSION_GROUP_CAN_TAG_SETTING).(*bool)),
-			CanDeleteSetting:             *sw.NewNullableBool(d.Get(PERMISSION_GROUP_CAN_DELETE_SETTING).(*bool)),
-			CanCreateOrUpdateTag:         *sw.NewNullableBool(d.Get(PERMISSION_GROUP_CAN_CREATEORUPDATE_TAG).(*bool)),
-			CanDeleteTag:                 *sw.NewNullableBool(d.Get(PERMISSION_GROUP_CAN_DELETE_TAG).(*bool)),
-			CanManageWebhook:             *sw.NewNullableBool(d.Get(PERMISSION_GROUP_CAN_MANAGE_WEBHOOK).(*bool)),
-			CanUseExportImport:           *sw.NewNullableBool(d.Get(PERMISSION_GROUP_CAN_USE_EXPORTIMPORT).(*bool)),
-			CanManageProductPreferences:  *sw.NewNullableBool(d.Get(PERMISSION_GROUP_CAN_MANAGE_PRODUCT_PREFERENCES).(*bool)),
-			CanManageIntegrations:        *sw.NewNullableBool(d.Get(PERMISSION_GROUP_CAN_MANAGE_INTEGRATIONS).(*bool)),
-			CanViewSdkKey:                *sw.NewNullableBool(d.Get(PERMISSION_GROUP_CAN_VIEW_SDKKEY).(*bool)),
-			CanRotateSdkKey:              *sw.NewNullableBool(d.Get(PERMISSION_GROUP_CAN_ROTATE_SDKKEY).(*bool)),
-			CanCreateOrUpdateSegments:    *sw.NewNullableBool(d.Get(PERMISSION_GROUP_CAN_CREATEORUPDATE_SEGMENTS).(*bool)),
-			CanDeleteSegments:            *sw.NewNullableBool(d.Get(PERMISSION_GROUP_CAN_DELETE_SEGMENTS).(*bool)),
-			CanViewProductAuditLog:       *sw.NewNullableBool(d.Get(PERMISSION_GROUP_CAN_VIEW_PRODUCT_AUDITLOG).(*bool)),
-			CanViewProductStatistics:     *sw.NewNullableBool(d.Get(PERMISSION_GROUP_CAN_VIEW_PRODUCT_STATISTICS).(*bool)),
+			CanManageMembers:             *sw.NewNullableBool(&canManageMembers),
+			CanCreateOrUpdateConfig:      *sw.NewNullableBool(&canCreateOrUpdateConfig),
+			CanDeleteConfig:              *sw.NewNullableBool(&canDeleteConfig),
+			CanCreateOrUpdateEnvironment: *sw.NewNullableBool(&canCreateOrUpdateEnvironment),
+			CanDeleteEnvironment:         *sw.NewNullableBool(&canDeleteEnvironment),
+			CanCreateOrUpdateSetting:     *sw.NewNullableBool(&canCreateOrUpdateSetting),
+			CanTagSetting:                *sw.NewNullableBool(&canTagSetting),
+			CanDeleteSetting:             *sw.NewNullableBool(&canDeleteSetting),
+			CanCreateOrUpdateTag:         *sw.NewNullableBool(&canCreateOrUpdateTag),
+			CanDeleteTag:                 *sw.NewNullableBool(&canDeleteTag),
+			CanManageWebhook:             *sw.NewNullableBool(&canManageWebhook),
+			CanUseExportImport:           *sw.NewNullableBool(&canUseExportImport),
+			CanManageProductPreferences:  *sw.NewNullableBool(&canManageProductPreferences),
+			CanManageIntegrations:        *sw.NewNullableBool(&canManageIntegrations),
+			CanViewSdkKey:                *sw.NewNullableBool(&canViewSdkKey),
+			CanRotateSdkKey:              *sw.NewNullableBool(&canRotateSdkKey),
+			CanCreateOrUpdateSegments:    *sw.NewNullableBool(&canCreateOrUpdateSegments),
+			CanDeleteSegments:            *sw.NewNullableBool(&canDeleteSegments),
+			CanViewProductAuditLog:       *sw.NewNullableBool(&canViewProductAuditLog),
+			CanViewProductStatistics:     *sw.NewNullableBool(&canViewProductStatistics),
 			AccessType:                   accessType,
 			NewEnvironmentAccessType:     newEnvironmentAccessType,
 			EnvironmentAccesses:          *environmentAccesses,
