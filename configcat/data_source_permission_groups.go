@@ -130,7 +130,7 @@ func dataSourceConfigCatPermissionGroups() *schema.Resource {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						PERMISSION_GROUP_ENVIRONMENT_ACCESSES: {
+						PERMISSION_GROUP_ENVIRONMENT_ACCESS: {
 							Type:     schema.TypeList,
 							Computed: true,
 							Elem: &schema.Resource{
@@ -214,7 +214,7 @@ func flattenPermissionGroupsData(permissionGroups *[]sw.PermissionGroupModel) []
 			element[PERMISSION_GROUP_CAN_VIEW_PRODUCT_STATISTICS] = permissionGroup.CanViewProductStatistics
 			element[PERMISSION_GROUP_ACCESSTYPE] = *permissionGroup.AccessType
 			element[PERMISSION_GROUP_NEW_ENVIRONMENT_ACCESSTYPE] = *permissionGroup.NewEnvironmentAccessType
-			element[PERMISSION_GROUP_ENVIRONMENT_ACCESSES] = flattenPermissionGroupEnvironmentAccessData(permissionGroup.EnvironmentAccesses, *permissionGroup.AccessType)
+			element[PERMISSION_GROUP_ENVIRONMENT_ACCESS] = flattenPermissionGroupEnvironmentAccessData(permissionGroup.EnvironmentAccesses, *permissionGroup.AccessType)
 
 			elements[i] = element
 		}

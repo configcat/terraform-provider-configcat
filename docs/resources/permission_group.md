@@ -47,8 +47,12 @@ data "configcat_products" "my_products" {
   name_filter_regex = "ConfigCat's product"
 }
 
-data "configcat_environments" "my_environments" {
+data "configcat_environments" "my_test_environments" {
   name_filter_regex = "Test"
+}
+
+data "configcat_environments" "my_production_environments" {
+  name_filter_regex = "Production"
 }
 
 resource "configcat_permission_group" "my_permission_group" {
@@ -58,8 +62,13 @@ resource "configcat_permission_group" "my_permission_group" {
   accesstype = "custom"
 
   environment_access {
-    environment_id = data.configcat_environments.my_environments.environments.0.environment_id
+    environment_id = data.configcat_environments.my_test_environments.environments.0.environment_id
     environment_access_type = "full"
+  }
+  
+  environment_access {
+    environment_id = data.configcat_environments.my_production_environments.environments.0.environment_id
+    environment_access_type = "none"
   }
 }
 
@@ -92,11 +101,11 @@ output "permission_group_id" {
 * `can_delete_segments` - (Optional) Group members can delete Segments. Default: false.
 * `can_view_product_auditlog` - (Optional) Group members has access to audit logs. Default: false.
 * `can_view_product_statistics` - (Optional) Group members has access to product statistics. Default: false.
-* `accesstype` - Represent the Feature Management permission. Possible values: readOnly, full, custom. Default: custom
-* `new_environment_accesstype` - Represent the environment specific Feature Management permission for new Environments and for those that are not specified in the environment_accesses list. Possible values: full, readOnly, none. Default: none.
-* `environment_accesses` - The environment specific permissions [list](https://www.terraform.io/docs/configuration/types.html#list-) block defined as below.
+* `accesstype` - (Optional) Represent the Feature Management permission. Possible values: readOnly, full, custom. Default: custom
+* `new_environment_accesstype` - (Optional) Represent the environment specific Feature Management permission for new Environments and for those that are not specified in the environment_access list. Possible values: full, readOnly, none. Default: none.
+* `environment_access` - (Optional) The environment specific permissions [list](https://www.terraform.io/docs/configuration/types.html#list-) block defined as below.
 
-### The `environment_accesses` [list](https://www.terraform.io/docs/configuration/types.html#list-) block
+### The `environment_access` [list](https://www.terraform.io/docs/configuration/types.html#list-) block
 * `environment_id` - (Required) The unique [Environment](https://configcat.com/docs/main-concepts/#environment) ID.
 * `environment_access_type` - (Optional) Represent the environment specific Feature Management permission. Possible values: full, readOnly, none. Default: none.
 

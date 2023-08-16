@@ -55,9 +55,9 @@ output "permission_group_id" {
 * `can_view_product_statistics` - Group members has access to product statistics.
 * `accesstype` - Represent the Feature Management permission. Possible values: readOnly, full, custom
 * `new_environment_accesstype` - Represent the environment specific Feature Management permission for new Environments. Possible values: full, readOnly, none
-* `environment_accesses` - The environment specific permissions [list](https://www.terraform.io/docs/configuration/types.html#list-) block defined as below.
+* `environment_access` - The environment specific permissions [list](https://www.terraform.io/docs/configuration/types.html#list-) block defined as below.
 
-### The `environment_accesses` [list](https://www.terraform.io/docs/configuration/types.html#list-) block
+### The `environment_access` [list](https://www.terraform.io/docs/configuration/types.html#list-) block
 * `environment_id` - The unique [Environment](https://configcat.com/docs/main-concepts/#environment) ID.
 * `environment_access_type` - Represent the environment specific Feature Management permission. Possible values: full, readOnly, none
 

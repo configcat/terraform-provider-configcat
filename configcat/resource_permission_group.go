@@ -122,7 +122,7 @@ func resourceConfigCatPermissionGroup() *schema.Resource {
 				Optional: true,
 				Default:  sw.ENVIRONMENTACCESSTYPE_NONE,
 			},
-			PERMISSION_GROUP_ENVIRONMENT_ACCESSES: {
+			PERMISSION_GROUP_ENVIRONMENT_ACCESS: {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Resource{
@@ -163,7 +163,7 @@ func resourcePermissionGroupCreate(ctx context.Context, d *schema.ResourceData, 
 		return diag.FromErr(newEnvironmentAccessTypeParseErr)
 	}
 
-	environmentAccesses, environmentAccessParseError := getEnvironmentAccesses(d.Get(PERMISSION_GROUP_ENVIRONMENT_ACCESSES).([]interface{}), *accessType)
+	environmentAccesses, environmentAccessParseError := getEnvironmentAccesses(d.Get(PERMISSION_GROUP_ENVIRONMENT_ACCESS).([]interface{}), *accessType)
 	if environmentAccessParseError != nil {
 		return diag.FromErr(environmentAccessParseError)
 	}
@@ -269,7 +269,7 @@ func resourcePermissionGroupRead(ctx context.Context, d *schema.ResourceData, m 
 	d.Set(PERMISSION_GROUP_CAN_VIEW_PRODUCT_STATISTICS, permissionGroup.CanViewProductStatistics)
 	d.Set(PERMISSION_GROUP_ACCESSTYPE, permissionGroup.AccessType)
 	d.Set(PERMISSION_GROUP_NEW_ENVIRONMENT_ACCESSTYPE, permissionGroup.NewEnvironmentAccessType)
-	d.Set(PERMISSION_GROUP_ENVIRONMENT_ACCESSES, flattenPermissionGroupEnvironmentAccessData(permissionGroup.EnvironmentAccesses, *permissionGroup.AccessType))
+	d.Set(PERMISSION_GROUP_ENVIRONMENT_ACCESS, flattenPermissionGroupEnvironmentAccessData(permissionGroup.EnvironmentAccesses, *permissionGroup.AccessType))
 
 	return diags
 }
@@ -300,7 +300,7 @@ func resourcePermissionGroupUpdate(ctx context.Context, d *schema.ResourceData, 
 		PERMISSION_GROUP_CAN_VIEW_PRODUCT_STATISTICS,
 		PERMISSION_GROUP_ACCESSTYPE,
 		PERMISSION_GROUP_NEW_ENVIRONMENT_ACCESSTYPE,
-		PERMISSION_GROUP_ENVIRONMENT_ACCESSES) {
+		PERMISSION_GROUP_ENVIRONMENT_ACCESS) {
 
 		permimssionGroupName := d.Get(PERMISSION_GROUP_NAME).(string)
 
@@ -316,7 +316,7 @@ func resourcePermissionGroupUpdate(ctx context.Context, d *schema.ResourceData, 
 			return diag.FromErr(newEnvironmentAccessTypeParseErr)
 		}
 
-		environmentAccesses, environmentAccessParseError := getEnvironmentAccesses(d.Get(PERMISSION_GROUP_ENVIRONMENT_ACCESSES).([]interface{}), *accessType)
+		environmentAccesses, environmentAccessParseError := getEnvironmentAccesses(d.Get(PERMISSION_GROUP_ENVIRONMENT_ACCESS).([]interface{}), *accessType)
 		if environmentAccessParseError != nil {
 			return diag.FromErr(environmentAccessParseError)
 		}

@@ -51,7 +51,7 @@ const (
 	PERMISSION_GROUP_CAN_VIEW_PRODUCT_STATISTICS                = "can_view_product_statistics"
 	PERMISSION_GROUP_ACCESSTYPE                                 = "accesstype"
 	PERMISSION_GROUP_NEW_ENVIRONMENT_ACCESSTYPE                 = "new_environment_accesstype"
-	PERMISSION_GROUP_ENVIRONMENT_ACCESSES                       = "environment_access"
+	PERMISSION_GROUP_ENVIRONMENT_ACCESS                         = "environment_access"
 	PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID          = "environment_id"
 	PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESS_TYPE = "environment_access_type"
 
