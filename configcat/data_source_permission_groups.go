@@ -106,11 +106,11 @@ func dataSourceConfigCatPermissionGroups() *schema.Resource {
 							Type:     schema.TypeBool,
 							Computed: true,
 						},
-						PERMISSION_GROUP_CAN_CREATEORUPDATE_SEGMENTS: {
+						PERMISSION_GROUP_CAN_CREATEORUPDATE_SEGMENT: {
 							Type:     schema.TypeBool,
 							Computed: true,
 						},
-						PERMISSION_GROUP_CAN_DELETE_SEGMENTS: {
+						PERMISSION_GROUP_CAN_DELETE_SEGMENT: {
 							Type:     schema.TypeBool,
 							Computed: true,
 						},
@@ -208,13 +208,13 @@ func flattenPermissionGroupsData(permissionGroups *[]sw.PermissionGroupModel) []
 			element[PERMISSION_GROUP_CAN_MANAGE_INTEGRATIONS] = permissionGroup.CanManageIntegrations
 			element[PERMISSION_GROUP_CAN_VIEW_SDKKEY] = permissionGroup.CanViewSdkKey
 			element[PERMISSION_GROUP_CAN_ROTATE_SDKKEY] = permissionGroup.CanRotateSdkKey
-			element[PERMISSION_GROUP_CAN_CREATEORUPDATE_SEGMENTS] = permissionGroup.CanCreateOrUpdateSegments
-			element[PERMISSION_GROUP_CAN_DELETE_SEGMENTS] = permissionGroup.CanDeleteSegments
+			element[PERMISSION_GROUP_CAN_CREATEORUPDATE_SEGMENT] = permissionGroup.CanCreateOrUpdateSegments
+			element[PERMISSION_GROUP_CAN_DELETE_SEGMENT] = permissionGroup.CanDeleteSegments
 			element[PERMISSION_GROUP_CAN_VIEW_PRODUCT_AUDITLOG] = permissionGroup.CanViewProductAuditLog
 			element[PERMISSION_GROUP_CAN_VIEW_PRODUCT_STATISTICS] = permissionGroup.CanViewProductStatistics
 			element[PERMISSION_GROUP_ACCESSTYPE] = *permissionGroup.AccessType
 			element[PERMISSION_GROUP_NEW_ENVIRONMENT_ACCESSTYPE] = *permissionGroup.NewEnvironmentAccessType
-			element[PERMISSION_GROUP_ENVIRONMENT_ACCESSES] = flattenPermissionGroupEnvironmentAccessData(permissionGroup.EnvironmentAccesses)
+			element[PERMISSION_GROUP_ENVIRONMENT_ACCESSES] = flattenPermissionGroupEnvironmentAccessData(permissionGroup.EnvironmentAccesses, *permissionGroup.AccessType)
 
 			elements[i] = element
 		}
@@ -225,8 +225,12 @@ func flattenPermissionGroupsData(permissionGroups *[]sw.PermissionGroupModel) []
 	return make([]interface{}, 0)
 }
 
-func flattenPermissionGroupEnvironmentAccessData(environmentAccesses []sw.EnvironmentAccessModel) []interface{} {
+func flattenPermissionGroupEnvironmentAccessData(environmentAccesses []sw.EnvironmentAccessModel, accessType sw.AccessType) []interface{} {
 	elements := make([]interface{}, 0)
+	if accessType != sw.ACCESSTYPE_CUSTOM {
+		return elements
+	}
+
 	for _, environmentAccess := range environmentAccesses {
 		element := make(map[string]interface{})
 

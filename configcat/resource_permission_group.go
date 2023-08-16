@@ -96,11 +96,11 @@ func resourceConfigCatPermissionGroup() *schema.Resource {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			PERMISSION_GROUP_CAN_CREATEORUPDATE_SEGMENTS: {
+			PERMISSION_GROUP_CAN_CREATEORUPDATE_SEGMENT: {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			PERMISSION_GROUP_CAN_DELETE_SEGMENTS: {
+			PERMISSION_GROUP_CAN_DELETE_SEGMENT: {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
@@ -161,7 +161,7 @@ func resourcePermissionGroupCreate(ctx context.Context, d *schema.ResourceData, 
 		return diag.FromErr(newEnvironmentAccessTypeParseErr)
 	}
 
-	environmentAccesses, environmentAccessParseError := getEnvironmentAccesses(d.Get(PERMISSION_GROUP_ENVIRONMENT_ACCESSES).([]interface{}))
+	environmentAccesses, environmentAccessParseError := getEnvironmentAccesses(d.Get(PERMISSION_GROUP_ENVIRONMENT_ACCESSES).([]interface{}), *accessType)
 	if environmentAccessParseError != nil {
 		return diag.FromErr(environmentAccessParseError)
 	}
@@ -182,8 +182,8 @@ func resourcePermissionGroupCreate(ctx context.Context, d *schema.ResourceData, 
 	canManageIntegrations := d.Get(PERMISSION_GROUP_CAN_MANAGE_INTEGRATIONS).(bool)
 	canViewSdkKey := d.Get(PERMISSION_GROUP_CAN_VIEW_SDKKEY).(bool)
 	canRotateSdkKey := d.Get(PERMISSION_GROUP_CAN_ROTATE_SDKKEY).(bool)
-	canCreateOrUpdateSegments := d.Get(PERMISSION_GROUP_CAN_CREATEORUPDATE_SEGMENTS).(bool)
-	canDeleteSegments := d.Get(PERMISSION_GROUP_CAN_DELETE_SEGMENTS).(bool)
+	canCreateOrUpdateSegments := d.Get(PERMISSION_GROUP_CAN_CREATEORUPDATE_SEGMENT).(bool)
+	canDeleteSegments := d.Get(PERMISSION_GROUP_CAN_DELETE_SEGMENT).(bool)
 	canViewProductAuditLog := d.Get(PERMISSION_GROUP_CAN_VIEW_PRODUCT_AUDITLOG).(bool)
 	canViewProductStatistics := d.Get(PERMISSION_GROUP_CAN_VIEW_PRODUCT_STATISTICS).(bool)
 
@@ -261,13 +261,13 @@ func resourcePermissionGroupRead(ctx context.Context, d *schema.ResourceData, m 
 	d.Set(PERMISSION_GROUP_CAN_MANAGE_INTEGRATIONS, permissionGroup.CanManageIntegrations)
 	d.Set(PERMISSION_GROUP_CAN_VIEW_SDKKEY, permissionGroup.CanViewSdkKey)
 	d.Set(PERMISSION_GROUP_CAN_ROTATE_SDKKEY, permissionGroup.CanRotateSdkKey)
-	d.Set(PERMISSION_GROUP_CAN_CREATEORUPDATE_SEGMENTS, permissionGroup.CanCreateOrUpdateSegments)
-	d.Set(PERMISSION_GROUP_CAN_DELETE_SEGMENTS, permissionGroup.CanDeleteSegments)
+	d.Set(PERMISSION_GROUP_CAN_CREATEORUPDATE_SEGMENT, permissionGroup.CanCreateOrUpdateSegments)
+	d.Set(PERMISSION_GROUP_CAN_DELETE_SEGMENT, permissionGroup.CanDeleteSegments)
 	d.Set(PERMISSION_GROUP_CAN_VIEW_PRODUCT_AUDITLOG, permissionGroup.CanViewProductAuditLog)
 	d.Set(PERMISSION_GROUP_CAN_VIEW_PRODUCT_STATISTICS, permissionGroup.CanViewProductStatistics)
 	d.Set(PERMISSION_GROUP_ACCESSTYPE, permissionGroup.AccessType)
 	d.Set(PERMISSION_GROUP_NEW_ENVIRONMENT_ACCESSTYPE, permissionGroup.NewEnvironmentAccessType)
-	d.Set(PERMISSION_GROUP_ENVIRONMENT_ACCESSES, flattenPermissionGroupEnvironmentAccessData(permissionGroup.EnvironmentAccesses))
+	d.Set(PERMISSION_GROUP_ENVIRONMENT_ACCESSES, flattenPermissionGroupEnvironmentAccessData(permissionGroup.EnvironmentAccesses, *permissionGroup.AccessType))
 
 	return diags
 }
@@ -292,8 +292,8 @@ func resourcePermissionGroupUpdate(ctx context.Context, d *schema.ResourceData, 
 		PERMISSION_GROUP_CAN_MANAGE_INTEGRATIONS,
 		PERMISSION_GROUP_CAN_VIEW_SDKKEY,
 		PERMISSION_GROUP_CAN_ROTATE_SDKKEY,
-		PERMISSION_GROUP_CAN_CREATEORUPDATE_SEGMENTS,
-		PERMISSION_GROUP_CAN_DELETE_SEGMENTS,
+		PERMISSION_GROUP_CAN_CREATEORUPDATE_SEGMENT,
+		PERMISSION_GROUP_CAN_DELETE_SEGMENT,
 		PERMISSION_GROUP_CAN_VIEW_PRODUCT_AUDITLOG,
 		PERMISSION_GROUP_CAN_VIEW_PRODUCT_STATISTICS,
 		PERMISSION_GROUP_ACCESSTYPE,
@@ -314,7 +314,7 @@ func resourcePermissionGroupUpdate(ctx context.Context, d *schema.ResourceData, 
 			return diag.FromErr(newEnvironmentAccessTypeParseErr)
 		}
 
-		environmentAccesses, environmentAccessParseError := getEnvironmentAccesses(d.Get(PERMISSION_GROUP_ENVIRONMENT_ACCESSES).([]interface{}))
+		environmentAccesses, environmentAccessParseError := getEnvironmentAccesses(d.Get(PERMISSION_GROUP_ENVIRONMENT_ACCESSES).([]interface{}), *accessType)
 		if environmentAccessParseError != nil {
 			return diag.FromErr(environmentAccessParseError)
 		}
@@ -335,8 +335,8 @@ func resourcePermissionGroupUpdate(ctx context.Context, d *schema.ResourceData, 
 		canManageIntegrations := d.Get(PERMISSION_GROUP_CAN_MANAGE_INTEGRATIONS).(bool)
 		canViewSdkKey := d.Get(PERMISSION_GROUP_CAN_VIEW_SDKKEY).(bool)
 		canRotateSdkKey := d.Get(PERMISSION_GROUP_CAN_ROTATE_SDKKEY).(bool)
-		canCreateOrUpdateSegments := d.Get(PERMISSION_GROUP_CAN_CREATEORUPDATE_SEGMENTS).(bool)
-		canDeleteSegments := d.Get(PERMISSION_GROUP_CAN_DELETE_SEGMENTS).(bool)
+		canCreateOrUpdateSegments := d.Get(PERMISSION_GROUP_CAN_CREATEORUPDATE_SEGMENT).(bool)
+		canDeleteSegments := d.Get(PERMISSION_GROUP_CAN_DELETE_SEGMENT).(bool)
 		canViewProductAuditLog := d.Get(PERMISSION_GROUP_CAN_VIEW_PRODUCT_AUDITLOG).(bool)
 		canViewProductStatistics := d.Get(PERMISSION_GROUP_CAN_VIEW_PRODUCT_STATISTICS).(bool)
 
@@ -387,35 +387,35 @@ func resourcePermissionGroupUpdate(ctx context.Context, d *schema.ResourceData, 
 	return resourcePermissionGroupRead(ctx, d, m)
 }
 
-func getEnvironmentAccesses(environmentAccesses []interface{}) (*[]sw.CreateOrUpdateEnvironmentAccessModel, error) {
-	if environmentAccesses != nil {
-		elements := make([]sw.CreateOrUpdateEnvironmentAccessModel, len(environmentAccesses))
+func getEnvironmentAccesses(environmentAccesses []interface{}, accessType sw.AccessType) (*[]sw.CreateOrUpdateEnvironmentAccessModel, error) {
+	elements := make([]sw.CreateOrUpdateEnvironmentAccessModel, 0)
 
-		for i, environmentAccess := range environmentAccesses {
-			item := environmentAccess.(map[string]interface{})
-
-			environmentAccessTypeString := item[PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESS_TYPE].(string)
-			environmentAccessType, environmentAccessTypeParseError := sw.NewEnvironmentAccessTypeFromValue(environmentAccessTypeString)
-			if environmentAccessTypeParseError != nil {
-				return nil, environmentAccessTypeParseError
-			}
-
-			if *environmentAccessType == sw.ENVIRONMENTACCESSTYPE_NONE {
-				continue
-			}
-
-			element := sw.CreateOrUpdateEnvironmentAccessModel{
-				EnvironmentId:         item[PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID].(*string),
-				EnvironmentAccessType: environmentAccessType,
-			}
-
-			elements[i] = element
-		}
-
+	if accessType != sw.ACCESSTYPE_CUSTOM {
 		return &elements, nil
 	}
-	empty := make([]sw.CreateOrUpdateEnvironmentAccessModel, 0)
-	return &empty, nil
+
+	for _, environmentAccess := range environmentAccesses {
+		item := environmentAccess.(map[string]interface{})
+
+		environmentAccessTypeString := item[PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESS_TYPE].(string)
+		environmentAccessType, environmentAccessTypeParseError := sw.NewEnvironmentAccessTypeFromValue(environmentAccessTypeString)
+		if environmentAccessTypeParseError != nil {
+			return nil, environmentAccessTypeParseError
+		}
+
+		if *environmentAccessType == sw.ENVIRONMENTACCESSTYPE_NONE {
+			continue
+		}
+
+		element := sw.CreateOrUpdateEnvironmentAccessModel{
+			EnvironmentId:         item[PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID].(*string),
+			EnvironmentAccessType: environmentAccessType,
+		}
+
+		elements = append(elements, element)
+	}
+
+	return &elements, nil
 }
 
 func resourcePermissionGroupDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
