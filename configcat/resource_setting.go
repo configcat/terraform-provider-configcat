@@ -60,19 +60,10 @@ func resourceSettingCreate(ctx context.Context, d *schema.ResourceData, m interf
 	configID := d.Get(CONFIG_ID).(string)
 
 	settingTypeString := d.Get(SETTING_TYPE).(string)
-	var settingType sw.SettingType
-	switch d.Get(SETTING_TYPE).(string) {
-	case "boolean":
-		settingType = sw.SETTINGTYPE_BOOLEAN
-	case "string":
-		settingType = sw.SETTINGTYPE_STRING
-	case "int":
-		settingType = sw.SETTINGTYPE_INT
-	case "double":
-		settingType = sw.SETTINGTYPE_DOUBLE
-	default:
+	settingType, err := sw.NewSettingTypeFromValue(settingTypeString)
+	if err != nil {
 		d.SetId("")
-		return diag.FromErr(fmt.Errorf("setting_type parse failed: %s. Valid values: boolean/string/int/double", settingTypeString))
+		return diag.FromErr(err)
 	}
 
 	hint := d.Get(SETTING_HINT).(string)
@@ -80,7 +71,7 @@ func resourceSettingCreate(ctx context.Context, d *schema.ResourceData, m interf
 		Key:         d.Get(SETTING_KEY).(string),
 		Name:        d.Get(SETTING_NAME).(string),
 		Hint:        *sw.NewNullableString(&hint),
-		SettingType: settingType,
+		SettingType: *settingType,
 	}
 
 	setting, err := c.CreateSetting(configID, body)

@@ -34,14 +34,15 @@ const (
 	KEY_PERMISSION_GROUPS = "configcat_permission_groups"
 
 	// Resources
-	KEY_PRODUCT       = "configcat_product"
-	KEY_CONFIG        = "configcat_config"
-	KEY_ENVIRONMENT   = "configcat_environment"
-	KEY_SEGMENT       = "configcat_segment"
-	KEY_SETTING       = "configcat_setting"
-	KEY_TAG           = "configcat_tag"
-	KEY_SETTING_VALUE = "configcat_setting_value"
-	KEY_SETTING_TAG   = "configcat_setting_tag"
+	KEY_PRODUCT          = "configcat_product"
+	KEY_CONFIG           = "configcat_config"
+	KEY_ENVIRONMENT      = "configcat_environment"
+	KEY_SEGMENT          = "configcat_segment"
+	KEY_SETTING          = "configcat_setting"
+	KEY_TAG              = "configcat_tag"
+	KEY_SETTING_VALUE    = "configcat_setting_value"
+	KEY_SETTING_TAG      = "configcat_setting_tag"
+	KEY_PERMISSION_GROUP = "configcat_permission_group"
 )
 
 // Provider returns a *schema.Provider.
@@ -69,14 +70,15 @@ func Provider() *schema.Provider {
 		},
 
 		ResourcesMap: map[string]*schema.Resource{
-			KEY_PRODUCT:       resourceConfigCatProduct(),
-			KEY_CONFIG:        resourceConfigCatConfig(),
-			KEY_ENVIRONMENT:   resourceConfigCatEnvironment(),
-			KEY_SEGMENT:       resourceConfigCatSegment(),
-			KEY_SETTING:       resourceConfigCatSetting(),
-			KEY_TAG:           resourceConfigCatTag(),
-			KEY_SETTING_VALUE: resourceConfigCatSettingValue(),
-			KEY_SETTING_TAG:   resourceConfigCatSettingTag(),
+			KEY_PRODUCT:          resourceConfigCatProduct(),
+			KEY_CONFIG:           resourceConfigCatConfig(),
+			KEY_ENVIRONMENT:      resourceConfigCatEnvironment(),
+			KEY_SEGMENT:          resourceConfigCatSegment(),
+			KEY_SETTING:          resourceConfigCatSetting(),
+			KEY_TAG:              resourceConfigCatTag(),
+			KEY_SETTING_VALUE:    resourceConfigCatSettingValue(),
+			KEY_SETTING_TAG:      resourceConfigCatSettingTag(),
+			KEY_PERMISSION_GROUP: resourceConfigCatPermissionGroup(),
 		},
 
 		DataSourcesMap: map[string]*schema.Resource{
