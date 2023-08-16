@@ -32,6 +32,11 @@ resource "configcat_product" "my_product" {
   description = "My product description"
 }
 
+resource "configcat_permission_group" "my_permission_group" {
+  product_id = configcat_product.my_product.id
+  name = "Administrators"
+}
+
 resource "configcat_config" "my_config" {
   product_id = configcat_product.my_product.id
   name = "My config"
