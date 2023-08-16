@@ -226,20 +226,19 @@ func flattenPermissionGroupsData(permissionGroups *[]sw.PermissionGroupModel) []
 }
 
 func flattenPermissionGroupEnvironmentAccessData(environmentAccesses []sw.EnvironmentAccessModel) []interface{} {
-	if environmentAccesses != nil {
-		elements := make([]interface{}, len(environmentAccesses))
+	elements := make([]interface{}, 0)
+	for _, environmentAccess := range environmentAccesses {
+		element := make(map[string]interface{})
 
-		for i, environmentAccess := range environmentAccesses {
-			element := make(map[string]interface{})
-
-			element[PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID] = environmentAccess.EnvironmentId
-			element[PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESS_TYPE] = *environmentAccess.EnvironmentAccessType
-
-			elements[i] = element
+		if *environmentAccess.EnvironmentAccessType == sw.ENVIRONMENTACCESSTYPE_NONE {
+			continue
 		}
 
-		return elements
+		element[PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID] = environmentAccess.EnvironmentId
+		element[PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESS_TYPE] = *environmentAccess.EnvironmentAccessType
+
+		elements = append(elements, element)
 	}
 
-	return make([]interface{}, 0)
+	return elements
 }

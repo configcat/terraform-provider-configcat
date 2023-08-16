@@ -26,7 +26,6 @@ func TestResourcePermissionGroupFlow(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrSet(testPermissionGroupResourceName, "id"),
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_NAME, "TestPermissionGroup"),
-					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_CAN_CREATEORUPDATE_CONFIG, "false"),
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_CAN_MANAGE_MEMBERS, "false"),
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_CAN_CREATEORUPDATE_CONFIG, "false"),
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_CAN_DELETE_CONFIG, "false"),
@@ -49,13 +48,7 @@ func TestResourcePermissionGroupFlow(t *testing.T) {
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_CAN_VIEW_PRODUCT_STATISTICS, "false"),
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ACCESSTYPE, "custom"),
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_NEW_ENVIRONMENT_ACCESSTYPE, "none"),
-					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".#", "3"),
-					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID, "08d8becf-d4d9-4c66-8b48-6ac74cd95fba"),
-					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESS_TYPE, "none"),
-					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".1."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID, "08d86d63-272c-4355-8027-4b52787bc1bd"),
-					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".1."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESS_TYPE, "none"),
-					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".2."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID, "08d86d63-2726-47cd-8bfc-59608ecb91e2"),
-					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".2."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESS_TYPE, "none"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".#", "0"),
 				),
 			},
 			{
@@ -68,7 +61,7 @@ func TestResourcePermissionGroupFlow(t *testing.T) {
 						can_delete_config = true
 					}
 				`,
-				ExpectError: regexp.MustCompile(`Invalid color.`),
+				ExpectError: regexp.MustCompile(`CanDeleteConfig is not allowed without the CanCreateOrUpdateConfig and CanDeleteSetting permissions.`),
 			},
 			{
 				Config: `
@@ -78,17 +71,18 @@ func TestResourcePermissionGroupFlow(t *testing.T) {
 						product_id = data.configcat_products.products.products.0.product_id
 						name = "TestPermissionGroup renamed"
 						can_createorupdate_config = true
+						can_createorupdate_environment = true
+						can_delete_environment = true
 					}
 				`,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrSet(testPermissionGroupResourceName, "id"),
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_NAME, "TestPermissionGroup renamed"),
-					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_CAN_CREATEORUPDATE_CONFIG, "false"),
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_CAN_MANAGE_MEMBERS, "false"),
-					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_CAN_CREATEORUPDATE_CONFIG, "false"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_CAN_CREATEORUPDATE_CONFIG, "true"),
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_CAN_DELETE_CONFIG, "false"),
-					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_CAN_CREATEORUPDATE_ENVIRONMENT, "false"),
-					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_CAN_DELETE_ENVIRONMENT, "false"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_CAN_CREATEORUPDATE_ENVIRONMENT, "true"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_CAN_DELETE_ENVIRONMENT, "true"),
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_CAN_CREATEORUPDATE_SETTING, "false"),
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_CAN_TAG_SETTING, "false"),
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_CAN_DELETE_SETTING, "false"),
