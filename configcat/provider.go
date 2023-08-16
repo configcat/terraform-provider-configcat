@@ -23,14 +23,15 @@ const (
 	DEFAULT_BASE_PATH = "https://api.configcat.com"
 
 	// Data sources
-	KEY_ORGANIZATIONS = "configcat_organizations"
-	KEY_PRODUCTS      = "configcat_products"
-	KEY_CONFIGS       = "configcat_configs"
-	KEY_ENVIRONMENTS  = "configcat_environments"
-	KEY_SEGMENTS      = "configcat_segments"
-	KEY_SETTINGS      = "configcat_settings"
-	KEY_TAGS          = "configcat_tags"
-	KEY_SDKKEYS       = "configcat_sdkkeys"
+	KEY_ORGANIZATIONS     = "configcat_organizations"
+	KEY_PRODUCTS          = "configcat_products"
+	KEY_CONFIGS           = "configcat_configs"
+	KEY_ENVIRONMENTS      = "configcat_environments"
+	KEY_SEGMENTS          = "configcat_segments"
+	KEY_SETTINGS          = "configcat_settings"
+	KEY_TAGS              = "configcat_tags"
+	KEY_SDKKEYS           = "configcat_sdkkeys"
+	KEY_PERMISSION_GROUPS = "configcat_permission_groups"
 
 	// Resources
 	KEY_PRODUCT       = "configcat_product"
@@ -79,14 +80,15 @@ func Provider() *schema.Provider {
 		},
 
 		DataSourcesMap: map[string]*schema.Resource{
-			KEY_ORGANIZATIONS: dataSourceConfigCatOrganizations(),
-			KEY_PRODUCTS:      dataSourceConfigCatProducts(),
-			KEY_CONFIGS:       dataSourceConfigCatConfigs(),
-			KEY_ENVIRONMENTS:  dataSourceConfigCatEnvironments(),
-			KEY_SEGMENTS:      dataSourceConfigCatSegments(),
-			KEY_SETTINGS:      dataSourceConfigCatSettings(),
-			KEY_TAGS:          dataSourceConfigCatTags(),
-			KEY_SDKKEYS:       dataSourceConfigCatSdkKeys(),
+			KEY_ORGANIZATIONS:     dataSourceConfigCatOrganizations(),
+			KEY_PRODUCTS:          dataSourceConfigCatProducts(),
+			KEY_CONFIGS:           dataSourceConfigCatConfigs(),
+			KEY_ENVIRONMENTS:      dataSourceConfigCatEnvironments(),
+			KEY_SEGMENTS:          dataSourceConfigCatSegments(),
+			KEY_SETTINGS:          dataSourceConfigCatSettings(),
+			KEY_TAGS:              dataSourceConfigCatTags(),
+			KEY_SDKKEYS:           dataSourceConfigCatSdkKeys(),
+			KEY_PERMISSION_GROUPS: dataSourceConfigCatPermissionGroups(),
 		},
 
 		ConfigureContextFunc: providerConfigure,

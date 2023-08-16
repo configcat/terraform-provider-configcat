@@ -35,7 +35,7 @@ func dataSourceConfigCatPermissionGroups() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						PERMISSION_GROUP_ID: {
-							Type:     schema.TypeString,
+							Type:     schema.TypeInt,
 							Computed: true,
 						},
 						PERMISSION_GROUP_NAME: {
