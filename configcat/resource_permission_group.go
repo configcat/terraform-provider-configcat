@@ -134,7 +134,8 @@ func resourceConfigCatPermissionGroup() *schema.Resource {
 						},
 						PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESS_TYPE: {
 							Type:     schema.TypeString,
-							Required: true,
+							Optional: true,
+							Default:  sw.ENVIRONMENTACCESSTYPE_NONE,
 						},
 					},
 				},
