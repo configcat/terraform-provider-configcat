@@ -35,7 +35,7 @@ output "environment_id" {
 
 ## Import
 
-Environments can be imported using the EnvironmentId. Get the EnvironmentId using the [GetEnvironments API](https://api.configcat.com/docs/#operation/get-environments) for example.
+Environments can be imported using the EnvironmentId. Get the EnvironmentId using the [List Environments API](https://api.configcat.com/docs/#tag/Environments/operation/get-environments) for example.
 
 ```
 $ terraform import configcat_environment.example 08d86d63-2726-47cd-8bfc-59608ecb91e2
@@ -44,7 +44,7 @@ $ terraform import configcat_environment.example 08d86d63-2726-47cd-8bfc-59608ec
 [Read more](https://learn.hashicorp.com/tutorials/terraform/state-import) about importing.
 
 ## Endpoints used
-* [Get Environment](https://api.configcat.com/docs/index.html#operation/get-environment)
-* [Create Environment](https://api.configcat.com/docs/index.html#operation/create-environment)
-* [Update Environment](https://api.configcat.com/docs/index.html#operation/update-environment)
-* [Delete Environment](https://api.configcat.com/docs/index.html#operation/delete-environment)
+* [Get Environment](https://api.configcat.com/docs/#tag/Environments/operation/get-environment)
+* [Create Environment](https://api.configcat.com/docs/#tag/Environments/operation/create-environment)
+* [Update Environment](https://api.configcat.com/docs/#tag/Environments/operation/update-environment)
+* [Delete Environment](https://api.configcat.com/docs/#tag/Environments/operation/delete-environment)

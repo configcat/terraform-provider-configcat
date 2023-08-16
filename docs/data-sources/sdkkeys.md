@@ -41,4 +41,4 @@ output "secondary_sdkkey" {
 * `secondary` - The secondary SDK Key associated with your **Config** and **Environment**.
 
 ## Endpoints used
-- [Get SDK Key](https://api.configcat.com/docs/index.html#operation/get-sdk-keys)
+- [Get SDK Key](https://api.configcat.com/docs/#tag/SDK-Keys/operation/get-sdk-keys)

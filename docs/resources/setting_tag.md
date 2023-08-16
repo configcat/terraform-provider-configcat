@@ -39,8 +39,8 @@ Parameters
 ## Import
 
 Tags can be imported using a combined SettingId:TagId ID.  
-Get the SettingId using e.g. the [GetSettings API](https://api.configcat.com/docs/#operation/get-settings).  
-Get the TagId using e.g. the [GetTags API](https://api.configcat.com/docs/#operation/get-tags).  
+Get the SettingId using e.g. the [List Flags API](https://api.configcat.com/docs/#tag/Feature-Flags-and-Settings/operation/get-settings).  
+Get the TagId using e.g. the [List Tags API](https://api.configcat.com/docs/#tag/Tags/operation/get-tags).  
 
 ```
 $ terraform import configcat_setting_tag.example 1234:5678
@@ -49,5 +49,5 @@ $ terraform import configcat_setting_tag.example 1234:5678
 [Read more](https://learn.hashicorp.com/tutorials/terraform/state-import) about importing.
 
 ## Endpoints used
-* [Get Setting](https://api.configcat.com/docs/#operation/get-setting)
-* [Update Setting](https://api.configcat.com/docs/#operation/update-setting)
+* [Get Flag](https://api.configcat.com/docs/#tag/Feature-Flags-and-Settings/operation/get-setting)
+* [Update Flag](https://api.configcat.com/docs/#tag/Feature-Flags-and-Settings/operation/update-setting)

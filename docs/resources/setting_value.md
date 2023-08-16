@@ -100,8 +100,8 @@ If you want to fully manage the Feature Flag/Setting's value from Terraform, set
 ## Import
 
 Feature Flag/Setting values can be imported using a combined EnvironmentID:SettingId ID.  
-Get the SettingId using e.g. the [GetSettings API](https://api.configcat.com/docs/#operation/get-settings).  
-Get the EnvironmentId using e.g. the [GetEnvironments API](https://api.configcat.com/docs/#operation/get-environments).
+Get the SettingId using e.g. the [List Flags API](https://api.configcat.com/docs/#tag/Feature-Flags-and-Settings/operation/get-settings).  
+Get the EnvironmentId using e.g. the [List Environments API](https://api.configcat.com/docs/#tag/Environments/operation/get-environments).
 
 ```
 $ terraform import configcat_setting_value.example 08d86d63-2726-47cd-8bfc-59608ecb91e2:1234
@@ -110,5 +110,5 @@ $ terraform import configcat_setting_value.example 08d86d63-2726-47cd-8bfc-59608
 [Read more](https://learn.hashicorp.com/tutorials/terraform/state-import) about importing.
 
 ## Endpoints used
-* [Get Setting Value](https://api.configcat.com/docs/#operation/get-setting-value)
-* [Replace Setting Value](https://api.configcat.com/docs/#operation/replace-setting-value)
+* [Get Value](https://api.configcat.com/docs/#tag/Feature-Flag-and-Setting-values/operation/get-setting-value)
+* [Replace Value](https://api.configcat.com/docs/#tag/Feature-Flag-and-Setting-values/operation/replace-setting-value)

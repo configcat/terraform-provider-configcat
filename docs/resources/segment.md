@@ -39,7 +39,7 @@ output "segment_id" {
 
 ## Import
 
-Segments can be imported using the SegmentId. Get the SegmentId using the [GetSegments API](https://api.configcat.com/docs/#operation/get-segments) for example.
+Segments can be imported using the SegmentId. Get the SegmentId using the [List Segments API](https://api.configcat.com/docs/#tag/Segments/operation/get-segments) for example.
 
 ```
 $ terraform import configcat_segment.example 08d86d63-2726-47cd-8bfc-59608ecb91e2
@@ -48,7 +48,7 @@ $ terraform import configcat_segment.example 08d86d63-2726-47cd-8bfc-59608ecb91e
 [Read more](https://learn.hashicorp.com/tutorials/terraform/state-import) about importing.
 
 ## Endpoints used
-* [Get Segment](https://api.configcat.com/docs/index.html#operation/get-segment)
-* [Create Segment](https://api.configcat.com/docs/index.html#operation/create-segment)
-* [Update Segment](https://api.configcat.com/docs/index.html#operation/update-segment)
-* [Delete Segment](https://api.configcat.com/docs/index.html#operation/delete-segment)
+* [Get Segment](https://api.configcat.com/docs/#tag/Segments/operation/get-segment)
+* [Create Segment](https://api.configcat.com/docs/#tag/Segments/operation/create-segment)
+* [Update Segment](https://api.configcat.com/docs/#tag/Segments/operation/update-segment)
+* [Delete Segment](https://api.configcat.com/docs/#tag/Segments/operation/delete-segment)

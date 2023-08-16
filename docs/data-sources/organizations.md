@@ -29,4 +29,4 @@ output "organization_id" {
 * `name` - The name of the Organization.
 
 ## Endpoints used
-- [Get Organizations](https://api.configcat.com/docs/index.html#operation/get-organizations)
+- [List Organizations](https://api.configcat.com/docs/#tag/Organizations/operation/get-organizations)

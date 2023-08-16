@@ -62,4 +62,4 @@ output "permission_group_id" {
 * `environment_access_type` - Represent the environment specific Feature Management permission. Possible values: full, readOnly, none
 
 ## Endpoints used
-- [Get Permission Groups](https://api.configcat.com/docs/index.html#tag/Permission-Groups/operation/get-permission-groups)
+- [List Permission Groups](https://api.configcat.com/docs/index.html#tag/Permission-Groups/operation/get-permission-groups)

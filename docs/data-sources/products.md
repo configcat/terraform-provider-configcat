@@ -30,4 +30,4 @@ output "product_id" {
 * `description` - The description of the Product.
 
 ## Endpoints used
-- [Get Products](https://api.configcat.com/docs/index.html#operation/get-products)
+- [List Products](https://api.configcat.com/docs/#tag/Products/operation/get-products)
