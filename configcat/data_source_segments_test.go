@@ -7,7 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 )
 
-const testSegmentResourceName = "data.configcat_segments.test"
+const testSegmentsDataSourceName = "data.configcat_segments.test"
 
 func TestSegmentValid(t *testing.T) {
 	const dataSource = `
@@ -23,8 +23,8 @@ func TestSegmentValid(t *testing.T) {
 			{
 				Config: dataSource,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttrSet(testSegmentResourceName, "id"),
-					resource.TestCheckResourceAttr(testSegmentResourceName, SEGMENTS+".#", "2"),
+					resource.TestCheckResourceAttrSet(testSegmentsDataSourceName, "id"),
+					resource.TestCheckResourceAttr(testSegmentsDataSourceName, SEGMENTS+".#", "2"),
 				),
 			},
 		},
@@ -47,11 +47,11 @@ func TestSegmentValidFilter(t *testing.T) {
 			{
 				Config: dataSource,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttrSet(testSegmentResourceName, "id"),
-					resource.TestCheckResourceAttr(testSegmentResourceName, SEGMENTS+".#", "1"),
-					resource.TestCheckResourceAttr(testSegmentResourceName, SEGMENTS+".0."+SEGMENT_ID, segmentID),
-					resource.TestCheckResourceAttr(testSegmentResourceName, SEGMENTS+".0."+SEGMENT_NAME, "Beta users"),
-					resource.TestCheckResourceAttr(testSegmentResourceName, SEGMENTS+".0."+SEGMENT_DESCRIPTION, "Beta users segment's description"),
+					resource.TestCheckResourceAttrSet(testSegmentsDataSourceName, "id"),
+					resource.TestCheckResourceAttr(testSegmentsDataSourceName, SEGMENTS+".#", "1"),
+					resource.TestCheckResourceAttr(testSegmentsDataSourceName, SEGMENTS+".0."+SEGMENT_ID, segmentID),
+					resource.TestCheckResourceAttr(testSegmentsDataSourceName, SEGMENTS+".0."+SEGMENT_NAME, "Beta users"),
+					resource.TestCheckResourceAttr(testSegmentsDataSourceName, SEGMENTS+".0."+SEGMENT_DESCRIPTION, "Beta users segment's description"),
 				),
 			},
 		},
@@ -73,8 +73,8 @@ func TestSegmentNotFoundFilter(t *testing.T) {
 			{
 				Config: dataSource,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttrSet(testSegmentResourceName, "id"),
-					resource.TestCheckResourceAttr(testSegmentResourceName, SEGMENTS+".#", "0"),
+					resource.TestCheckResourceAttrSet(testSegmentsDataSourceName, "id"),
+					resource.TestCheckResourceAttr(testSegmentsDataSourceName, SEGMENTS+".#", "0"),
 				),
 			},
 		},

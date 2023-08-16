@@ -6,7 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 )
 
-const testProductResourceName = "data.configcat_products.test"
+const testProductsDataSourceName = "data.configcat_products.test"
 
 func TestProductValid(t *testing.T) {
 	const dataSource = `
@@ -21,8 +21,8 @@ func TestProductValid(t *testing.T) {
 			{
 				Config: dataSource,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttrSet(testProductResourceName, "id"),
-					resource.TestCheckResourceAttr(testProductResourceName, PRODUCTS+".#", "1"),
+					resource.TestCheckResourceAttrSet(testProductsDataSourceName, "id"),
+					resource.TestCheckResourceAttr(testProductsDataSourceName, PRODUCTS+".#", "1"),
 				),
 			},
 		},
@@ -44,11 +44,11 @@ func TestProductValidFilter(t *testing.T) {
 			{
 				Config: dataSource,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttrSet(testProductResourceName, "id"),
-					resource.TestCheckResourceAttr(testProductResourceName, PRODUCTS+".#", "1"),
-					resource.TestCheckResourceAttr(testProductResourceName, PRODUCTS+".0."+PRODUCT_ID, productID),
-					resource.TestCheckResourceAttr(testProductResourceName, PRODUCTS+".0."+PRODUCT_NAME, "ConfigCat's product"),
-					resource.TestCheckResourceAttr(testProductResourceName, PRODUCTS+".0."+PRODUCT_DESCRIPTION, "ConfigCat's product description"),
+					resource.TestCheckResourceAttrSet(testProductsDataSourceName, "id"),
+					resource.TestCheckResourceAttr(testProductsDataSourceName, PRODUCTS+".#", "1"),
+					resource.TestCheckResourceAttr(testProductsDataSourceName, PRODUCTS+".0."+PRODUCT_ID, productID),
+					resource.TestCheckResourceAttr(testProductsDataSourceName, PRODUCTS+".0."+PRODUCT_NAME, "ConfigCat's product"),
+					resource.TestCheckResourceAttr(testProductsDataSourceName, PRODUCTS+".0."+PRODUCT_DESCRIPTION, "ConfigCat's product description"),
 				),
 			},
 		},
@@ -69,8 +69,8 @@ func TestProductNotFound(t *testing.T) {
 			{
 				Config: dataSource,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttrSet(testProductResourceName, "id"),
-					resource.TestCheckResourceAttr(testProductResourceName, PRODUCTS+".#", "0"),
+					resource.TestCheckResourceAttrSet(testProductsDataSourceName, "id"),
+					resource.TestCheckResourceAttr(testProductsDataSourceName, PRODUCTS+".#", "0"),
 				),
 			},
 		},

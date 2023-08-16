@@ -6,7 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 )
 
-const testOrganizationResourceName = "data.configcat_organizations.test"
+const testOrganizationsDataSourceName = "data.configcat_organizations.test"
 
 func TestOrganizationValid(t *testing.T) {
 	const dataSource = `
@@ -21,8 +21,8 @@ func TestOrganizationValid(t *testing.T) {
 			{
 				Config: dataSource,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttrSet(testOrganizationResourceName, "id"),
-					resource.TestCheckResourceAttr(testOrganizationResourceName, ORGANIZATIONS+".#", "1"),
+					resource.TestCheckResourceAttrSet(testOrganizationsDataSourceName, "id"),
+					resource.TestCheckResourceAttr(testOrganizationsDataSourceName, ORGANIZATIONS+".#", "1"),
 				),
 			},
 		},
@@ -44,10 +44,10 @@ func TestOrganizationValidFilter(t *testing.T) {
 			{
 				Config: dataSource,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttrSet(testOrganizationResourceName, "id"),
-					resource.TestCheckResourceAttr(testOrganizationResourceName, ORGANIZATIONS+".#", "1"),
-					resource.TestCheckResourceAttr(testOrganizationResourceName, ORGANIZATIONS+".0."+ORGANIZATION_ID, organizationID),
-					resource.TestCheckResourceAttr(testOrganizationResourceName, ORGANIZATIONS+".0."+ORGANIZATION_NAME, "ConfigCat"),
+					resource.TestCheckResourceAttrSet(testOrganizationsDataSourceName, "id"),
+					resource.TestCheckResourceAttr(testOrganizationsDataSourceName, ORGANIZATIONS+".#", "1"),
+					resource.TestCheckResourceAttr(testOrganizationsDataSourceName, ORGANIZATIONS+".0."+ORGANIZATION_ID, organizationID),
+					resource.TestCheckResourceAttr(testOrganizationsDataSourceName, ORGANIZATIONS+".0."+ORGANIZATION_NAME, "ConfigCat"),
 				),
 			},
 		},
@@ -68,8 +68,8 @@ func TestOrganizationNotFound(t *testing.T) {
 			{
 				Config: dataSource,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttrSet(testOrganizationResourceName, "id"),
-					resource.TestCheckResourceAttr(testOrganizationResourceName, ORGANIZATIONS+".#", "0"),
+					resource.TestCheckResourceAttrSet(testOrganizationsDataSourceName, "id"),
+					resource.TestCheckResourceAttr(testOrganizationsDataSourceName, ORGANIZATIONS+".#", "0"),
 				),
 			},
 		},

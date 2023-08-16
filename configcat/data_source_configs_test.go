@@ -7,7 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 )
 
-const testConfigResourceName = "data.configcat_configs.test"
+const testConfigsDataSourceName = "data.configcat_configs.test"
 
 func TestConfigValid(t *testing.T) {
 	const dataSource = `
@@ -23,8 +23,8 @@ func TestConfigValid(t *testing.T) {
 			{
 				Config: dataSource,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttrSet(testConfigResourceName, "id"),
-					resource.TestCheckResourceAttr(testConfigResourceName, CONFIGS+".#", "1"),
+					resource.TestCheckResourceAttrSet(testConfigsDataSourceName, "id"),
+					resource.TestCheckResourceAttr(testConfigsDataSourceName, CONFIGS+".#", "1"),
 				),
 			},
 		},
@@ -47,11 +47,11 @@ func TestConfigValidFilter(t *testing.T) {
 			{
 				Config: dataSource,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttrSet(testConfigResourceName, "id"),
-					resource.TestCheckResourceAttr(testConfigResourceName, CONFIGS+".#", "1"),
-					resource.TestCheckResourceAttr(testConfigResourceName, CONFIGS+".0."+CONFIG_ID, configID),
-					resource.TestCheckResourceAttr(testConfigResourceName, CONFIGS+".0."+CONFIG_NAME, "Main Config"),
-					resource.TestCheckResourceAttr(testConfigResourceName, CONFIGS+".0."+CONFIG_DESCRIPTION, "Main Config Description"),
+					resource.TestCheckResourceAttrSet(testConfigsDataSourceName, "id"),
+					resource.TestCheckResourceAttr(testConfigsDataSourceName, CONFIGS+".#", "1"),
+					resource.TestCheckResourceAttr(testConfigsDataSourceName, CONFIGS+".0."+CONFIG_ID, configID),
+					resource.TestCheckResourceAttr(testConfigsDataSourceName, CONFIGS+".0."+CONFIG_NAME, "Main Config"),
+					resource.TestCheckResourceAttr(testConfigsDataSourceName, CONFIGS+".0."+CONFIG_DESCRIPTION, "Main Config Description"),
 				),
 			},
 		},
@@ -73,8 +73,8 @@ func TestConfigNotFoundFilter(t *testing.T) {
 			{
 				Config: dataSource,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttrSet(testConfigResourceName, "id"),
-					resource.TestCheckResourceAttr(testConfigResourceName, CONFIGS+".#", "0"),
+					resource.TestCheckResourceAttrSet(testConfigsDataSourceName, "id"),
+					resource.TestCheckResourceAttr(testConfigsDataSourceName, CONFIGS+".#", "0"),
 				),
 			},
 		},

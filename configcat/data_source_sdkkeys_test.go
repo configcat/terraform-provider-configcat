@@ -7,7 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 )
 
-const testSdkKeysResourceName = "data.configcat_sdkkeys.test"
+const testSdkKeysDataSourceName = "data.configcat_sdkkeys.test"
 
 func TestSdkKeysValidWithoutSecondary(t *testing.T) {
 	const dataSource = `
@@ -24,9 +24,9 @@ func TestSdkKeysValidWithoutSecondary(t *testing.T) {
 			{
 				Config: dataSource,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttrSet(testSdkKeysResourceName, "id"),
-					resource.TestCheckResourceAttr(testSdkKeysResourceName, "primary", "Y23YCCEnpk2MBlhFIdUWvA/nJmlkmynTE-t3GUMoJjOAQ"),
-					resource.TestCheckResourceAttr(testSdkKeysResourceName, "secondary", ""),
+					resource.TestCheckResourceAttrSet(testSdkKeysDataSourceName, "id"),
+					resource.TestCheckResourceAttr(testSdkKeysDataSourceName, "primary", "Y23YCCEnpk2MBlhFIdUWvA/nJmlkmynTE-t3GUMoJjOAQ"),
+					resource.TestCheckResourceAttr(testSdkKeysDataSourceName, "secondary", ""),
 				),
 			},
 		},
@@ -48,9 +48,9 @@ func TestSdkKeysValidWithSecondary(t *testing.T) {
 			{
 				Config: dataSource,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttrSet(testSdkKeysResourceName, "id"),
-					resource.TestCheckResourceAttr(testSdkKeysResourceName, "primary", "Y23YCCEnpk2MBlhFIdUWvA/k-nG8bhE10K41sa8C2rYOQ"),
-					resource.TestCheckResourceAttr(testSdkKeysResourceName, "secondary", "Y23YCCEnpk2MBlhFIdUWvA/q7dBIG43LkuX8NJbCeAzdg"),
+					resource.TestCheckResourceAttrSet(testSdkKeysDataSourceName, "id"),
+					resource.TestCheckResourceAttr(testSdkKeysDataSourceName, "primary", "Y23YCCEnpk2MBlhFIdUWvA/k-nG8bhE10K41sa8C2rYOQ"),
+					resource.TestCheckResourceAttr(testSdkKeysDataSourceName, "secondary", "Y23YCCEnpk2MBlhFIdUWvA/q7dBIG43LkuX8NJbCeAzdg"),
 				),
 			},
 		},
