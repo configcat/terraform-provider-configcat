@@ -43,4 +43,4 @@ output "setting_id" {
 * `setting_type` - The Setting's type. Available values: `boolean`|`string`|`int`|`double`.
 
 ## Endpoints used
-- [Get Settings](https://api.configcat.com/docs/index.html#operation/get-settings)
+- [List Flags](https://api.configcat.com/docs/#tag/Feature-Flags-and-Settings/operation/get-settings)

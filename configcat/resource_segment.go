@@ -2,7 +2,6 @@ package configcat
 
 import (
 	"context"
-	"fmt"
 
 	sw "github.com/configcat/configcat-publicapi-go-client"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -56,7 +55,7 @@ func resourceSegmentCreate(ctx context.Context, d *schema.ResourceData, m interf
 
 	productID := d.Get(PRODUCT_ID).(string)
 
-	comparator, compErr := getComparatorForSegment(d.Get(SEGMENT_COMPARATOR).(string))
+	comparator, compErr := sw.NewRolloutRuleComparatorFromValue(d.Get(SEGMENT_COMPARATOR).(string))
 	if compErr != nil {
 		return diag.FromErr(compErr)
 	}
@@ -109,7 +108,7 @@ func resourceSegmentUpdate(ctx context.Context, d *schema.ResourceData, m interf
 
 	if d.HasChanges(SEGMENT_NAME, SEGMENT_DESCRIPTION, SEGMENT_COMPARISON_ATTRIBUTE, SEGMENT_COMPARATOR, SEGMENT_COMPARISON_VALUE) {
 
-		comparator, compErr := getComparatorForSegment(d.Get(SEGMENT_COMPARATOR).(string))
+		comparator, compErr := sw.NewRolloutRuleComparatorFromValue(d.Get(SEGMENT_COMPARATOR).(string))
 		if compErr != nil {
 			return diag.FromErr(compErr)
 		}
@@ -159,59 +158,4 @@ func resourceSegmentDelete(ctx context.Context, d *schema.ResourceData, m interf
 
 	d.SetId("")
 	return diags
-}
-
-func getComparatorForSegment(comparator string) (*sw.RolloutRuleComparator, error) {
-	switch comparator {
-	case "contains":
-		comparator := sw.ROLLOUTRULECOMPARATOR_CONTAINS
-		return &comparator, nil
-	case "doesNotContain":
-		comparator := sw.ROLLOUTRULECOMPARATOR_DOES_NOT_CONTAIN
-		return &comparator, nil
-	case "semVerIsOneOf":
-		comparator := sw.ROLLOUTRULECOMPARATOR_SEM_VER_IS_ONE_OF
-		return &comparator, nil
-	case "semVerIsNotOneOf":
-		comparator := sw.ROLLOUTRULECOMPARATOR_SEM_VER_IS_NOT_ONE_OF
-		return &comparator, nil
-	case "semVerLess":
-		comparator := sw.ROLLOUTRULECOMPARATOR_SEM_VER_LESS
-		return &comparator, nil
-	case "semVerLessOrEquals":
-		comparator := sw.ROLLOUTRULECOMPARATOR_SEM_VER_LESS_OR_EQUALS
-		return &comparator, nil
-	case "semVerGreater":
-		comparator := sw.ROLLOUTRULECOMPARATOR_SEM_VER_GREATER
-		return &comparator, nil
-	case "semVerGreaterOrEquals":
-		comparator := sw.ROLLOUTRULECOMPARATOR_SEM_VER_GREATER_OR_EQUALS
-		return &comparator, nil
-	case "numberEquals":
-		comparator := sw.ROLLOUTRULECOMPARATOR_NUMBER_EQUALS
-		return &comparator, nil
-	case "numberDoesNotEqual":
-		comparator := sw.ROLLOUTRULECOMPARATOR_NUMBER_DOES_NOT_EQUAL
-		return &comparator, nil
-	case "numberLess":
-		comparator := sw.ROLLOUTRULECOMPARATOR_NUMBER_LESS
-		return &comparator, nil
-	case "numberLessOrEquals":
-		comparator := sw.ROLLOUTRULECOMPARATOR_NUMBER_LESS_OR_EQUALS
-		return &comparator, nil
-	case "numberGreater":
-		comparator := sw.ROLLOUTRULECOMPARATOR_NUMBER_GREATER
-		return &comparator, nil
-	case "numberGreaterOrEquals":
-		comparator := sw.ROLLOUTRULECOMPARATOR_NUMBER_GREATER_OR_EQUALS
-		return &comparator, nil
-	case "sensitiveIsOneOf":
-		comparator := sw.ROLLOUTRULECOMPARATOR_SENSITIVE_IS_ONE_OF
-		return &comparator, nil
-	case "sensitiveIsNotOneOf":
-		comparator := sw.ROLLOUTRULECOMPARATOR_SENSITIVE_IS_NOT_ONE_OF
-		return &comparator, nil
-	}
-
-	return nil, fmt.Errorf("could not parse Comparator: %s", comparator)
 }

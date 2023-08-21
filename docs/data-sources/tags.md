@@ -35,4 +35,4 @@ output "tag_id" {
 * `color` - The color of the Tag.
 
 ## Endpoints used
-- [Get Tags](https://api.configcat.com/docs/index.html#operation/get-tags)
+- [List Tags](https://api.configcat.com/docs/#tag/Tags/operation/get-tags)

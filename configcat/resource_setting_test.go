@@ -121,7 +121,7 @@ func TestResourceSettingInvalidSettingType(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config:      settingResource,
-				ExpectError: regexp.MustCompile(`setting_type parse failed: invalid. Valid values: boolean/string/int/double`),
+				ExpectError: regexp.MustCompile(`invalid value 'invalid' for SettingType: valid values are \[boolean string int double\]`),
 			},
 		},
 	})

@@ -33,7 +33,7 @@ output "product_id" {
 
 ## Import
 
-Products can be imported using the ProductId. Get the ProductId using the [GetProducts API](https://api.configcat.com/docs/#operation/get-products) for example.
+Products can be imported using the ProductId. Get the ProductId using the [List Products API](https://api.configcat.com/docs/#tag/Products/operation/get-products) for example.
 
 ```
 $ terraform import configcat_product.example 08d86d63-2726-47cd-8bfc-59608ecb91e2
@@ -42,7 +42,7 @@ $ terraform import configcat_product.example 08d86d63-2726-47cd-8bfc-59608ecb91e
 [Read more](https://learn.hashicorp.com/tutorials/terraform/state-import) about importing.
 
 ## Endpoints used
-* [Get Product](https://api.configcat.com/docs/index.html#operation/get-product)
-* [Create Product](https://api.configcat.com/docs/index.html#operation/create-product)
-* [Update Product](https://api.configcat.com/docs/index.html#operation/update-product)
-* [Delete Product](https://api.configcat.com/docs/index.html#operation/delete-product)
+* [Get Product](https://api.configcat.com/docs/#tag/Products/operation/get-product)
+* [Create Product](https://api.configcat.com/docs/#tag/Products/operation/create-product)
+* [Update Product](https://api.configcat.com/docs/#tag/Products/operation/update-product)
+* [Delete Product](https://api.configcat.com/docs/#tag/Products/operation/delete-product)

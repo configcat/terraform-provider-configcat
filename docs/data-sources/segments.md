@@ -36,4 +36,4 @@ output "segment_id" {
 * `description` - The description of the Segment.
 
 ## Endpoints used
-- [Get Segments](https://api.configcat.com/docs/index.html#operation/get-segments)
+- [List Segments](https://api.configcat.com/docs/#tag/Segments/operation/get-segments)

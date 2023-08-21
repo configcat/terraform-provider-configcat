@@ -43,7 +43,7 @@ Available values: `boolean`|`string`|`int`|`double`.
 
 ## Import
 
-Feature Flags/Settings can be imported using the SettingId. Get the SettingId using e.g. the [GetSettings API](https://api.configcat.com/docs/#operation/get-settings).
+Feature Flags/Settings can be imported using the SettingId. Get the SettingId using e.g. the [List Flags API](https://api.configcat.com/docs/#tag/Feature-Flags-and-Settings/operation/get-settings).
 
 ```
 $ terraform import configcat_setting.example 1234
@@ -52,7 +52,7 @@ $ terraform import configcat_setting.example 1234
 [Read more](https://learn.hashicorp.com/tutorials/terraform/state-import) about importing.
 
 ## Endpoints used
-* [Get Setting](https://api.configcat.com/docs/index.html#operation/get-setting)
-* [Create Setting](https://api.configcat.com/docs/index.html#operation/create-setting)
-* [Update Setting](https://api.configcat.com/docs/index.html#operation/update-setting)
-* [Delete Setting](https://api.configcat.com/docs/index.html#operation/delete-setting)
+* [Get Flag](https://api.configcat.com/docs/#tag/Feature-Flags-and-Settings/operation/get-setting)
+* [Create Flag](https://api.configcat.com/docs/#tag/Feature-Flags-and-Settings/operation/create-setting)
+* [Update Flag](https://api.configcat.com/docs/#tag/Feature-Flags-and-Settings/operation/update-setting)
+* [Delete Flag](https://api.configcat.com/docs/#tag/Feature-Flags-and-Settings/operation/delete-setting)

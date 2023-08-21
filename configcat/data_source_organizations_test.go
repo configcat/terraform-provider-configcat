@@ -6,6 +6,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 )
 
+const testOrganizationsDataSourceName = "data.configcat_organizations.test"
+
 func TestOrganizationValid(t *testing.T) {
 	const dataSource = `
 		data "configcat_organizations" "test" {
@@ -19,8 +21,8 @@ func TestOrganizationValid(t *testing.T) {
 			{
 				Config: dataSource,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttrSet("data.configcat_organizations.test", "id"),
-					resource.TestCheckResourceAttr("data.configcat_organizations.test", ORGANIZATIONS+".#", "1"),
+					resource.TestCheckResourceAttrSet(testOrganizationsDataSourceName, "id"),
+					resource.TestCheckResourceAttr(testOrganizationsDataSourceName, ORGANIZATIONS+".#", "1"),
 				),
 			},
 		},
@@ -42,10 +44,10 @@ func TestOrganizationValidFilter(t *testing.T) {
 			{
 				Config: dataSource,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttrSet("data.configcat_organizations.test", "id"),
-					resource.TestCheckResourceAttr("data.configcat_organizations.test", ORGANIZATIONS+".#", "1"),
-					resource.TestCheckResourceAttr("data.configcat_organizations.test", ORGANIZATIONS+".0."+ORGANIZATION_ID, organizationID),
-					resource.TestCheckResourceAttr("data.configcat_organizations.test", ORGANIZATIONS+".0."+ORGANIZATION_NAME, "ConfigCat"),
+					resource.TestCheckResourceAttrSet(testOrganizationsDataSourceName, "id"),
+					resource.TestCheckResourceAttr(testOrganizationsDataSourceName, ORGANIZATIONS+".#", "1"),
+					resource.TestCheckResourceAttr(testOrganizationsDataSourceName, ORGANIZATIONS+".0."+ORGANIZATION_ID, organizationID),
+					resource.TestCheckResourceAttr(testOrganizationsDataSourceName, ORGANIZATIONS+".0."+ORGANIZATION_NAME, "ConfigCat"),
 				),
 			},
 		},
@@ -66,8 +68,8 @@ func TestOrganizationNotFound(t *testing.T) {
 			{
 				Config: dataSource,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttrSet("data.configcat_organizations.test", "id"),
-					resource.TestCheckResourceAttr("data.configcat_organizations.test", ORGANIZATIONS+".#", "0"),
+					resource.TestCheckResourceAttrSet(testOrganizationsDataSourceName, "id"),
+					resource.TestCheckResourceAttr(testOrganizationsDataSourceName, ORGANIZATIONS+".#", "0"),
 				),
 			},
 		},

@@ -7,6 +7,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 )
 
+const testEnvironmentsDataSourceName = "data.configcat_environments.test"
+
 func TestEnvironmentValid(t *testing.T) {
 	const dataSource = `
 		data "configcat_environments" "test" {
@@ -21,8 +23,8 @@ func TestEnvironmentValid(t *testing.T) {
 			{
 				Config: dataSource,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttrSet("data.configcat_environments.test", "id"),
-					resource.TestCheckResourceAttr("data.configcat_environments.test", ENVIRONMENTS+".#", "3"),
+					resource.TestCheckResourceAttrSet(testEnvironmentsDataSourceName, "id"),
+					resource.TestCheckResourceAttr(testEnvironmentsDataSourceName, ENVIRONMENTS+".#", "3"),
 				),
 			},
 		},
@@ -45,12 +47,12 @@ func TestEnvironmentValidFilter(t *testing.T) {
 			{
 				Config: dataSource,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttrSet("data.configcat_environments.test", "id"),
-					resource.TestCheckResourceAttr("data.configcat_environments.test", ENVIRONMENTS+".#", "1"),
-					resource.TestCheckResourceAttr("data.configcat_environments.test", ENVIRONMENTS+".0."+ENVIRONMENT_ID, environmentID),
-					resource.TestCheckResourceAttr("data.configcat_environments.test", ENVIRONMENTS+".0."+ENVIRONMENT_NAME, "Test"),
-					resource.TestCheckResourceAttr("data.configcat_environments.test", ENVIRONMENTS+".0."+ENVIRONMENT_DESCRIPTION, "Test Env Description"),
-					resource.TestCheckResourceAttr("data.configcat_environments.test", ENVIRONMENTS+".0."+ENVIRONMENT_COLOR, "#5c6bc0"),
+					resource.TestCheckResourceAttrSet(testEnvironmentsDataSourceName, "id"),
+					resource.TestCheckResourceAttr(testEnvironmentsDataSourceName, ENVIRONMENTS+".#", "1"),
+					resource.TestCheckResourceAttr(testEnvironmentsDataSourceName, ENVIRONMENTS+".0."+ENVIRONMENT_ID, environmentID),
+					resource.TestCheckResourceAttr(testEnvironmentsDataSourceName, ENVIRONMENTS+".0."+ENVIRONMENT_NAME, "Test"),
+					resource.TestCheckResourceAttr(testEnvironmentsDataSourceName, ENVIRONMENTS+".0."+ENVIRONMENT_DESCRIPTION, "Test Env Description"),
+					resource.TestCheckResourceAttr(testEnvironmentsDataSourceName, ENVIRONMENTS+".0."+ENVIRONMENT_COLOR, "#5c6bc0"),
 				),
 			},
 		},
@@ -72,8 +74,8 @@ func TestEnvironmentNotFoundFilter(t *testing.T) {
 			{
 				Config: dataSource,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttrSet("data.configcat_environments.test", "id"),
-					resource.TestCheckResourceAttr("data.configcat_environments.test", ENVIRONMENTS+".#", "0"),
+					resource.TestCheckResourceAttrSet(testEnvironmentsDataSourceName, "id"),
+					resource.TestCheckResourceAttr(testEnvironmentsDataSourceName, ENVIRONMENTS+".#", "0"),
 				),
 			},
 		},

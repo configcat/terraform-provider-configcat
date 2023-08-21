@@ -23,24 +23,26 @@ const (
 	DEFAULT_BASE_PATH = "https://api.configcat.com"
 
 	// Data sources
-	KEY_ORGANIZATIONS = "configcat_organizations"
-	KEY_PRODUCTS      = "configcat_products"
-	KEY_CONFIGS       = "configcat_configs"
-	KEY_ENVIRONMENTS  = "configcat_environments"
-	KEY_SEGMENTS      = "configcat_segments"
-	KEY_SETTINGS      = "configcat_settings"
-	KEY_TAGS          = "configcat_tags"
-	KEY_SDKKEYS       = "configcat_sdkkeys"
+	KEY_ORGANIZATIONS     = "configcat_organizations"
+	KEY_PRODUCTS          = "configcat_products"
+	KEY_CONFIGS           = "configcat_configs"
+	KEY_ENVIRONMENTS      = "configcat_environments"
+	KEY_SEGMENTS          = "configcat_segments"
+	KEY_SETTINGS          = "configcat_settings"
+	KEY_TAGS              = "configcat_tags"
+	KEY_SDKKEYS           = "configcat_sdkkeys"
+	KEY_PERMISSION_GROUPS = "configcat_permission_groups"
 
 	// Resources
-	KEY_PRODUCT       = "configcat_product"
-	KEY_CONFIG        = "configcat_config"
-	KEY_ENVIRONMENT   = "configcat_environment"
-	KEY_SEGMENT       = "configcat_segment"
-	KEY_SETTING       = "configcat_setting"
-	KEY_TAG           = "configcat_tag"
-	KEY_SETTING_VALUE = "configcat_setting_value"
-	KEY_SETTING_TAG   = "configcat_setting_tag"
+	KEY_PRODUCT          = "configcat_product"
+	KEY_CONFIG           = "configcat_config"
+	KEY_ENVIRONMENT      = "configcat_environment"
+	KEY_SEGMENT          = "configcat_segment"
+	KEY_SETTING          = "configcat_setting"
+	KEY_TAG              = "configcat_tag"
+	KEY_SETTING_VALUE    = "configcat_setting_value"
+	KEY_SETTING_TAG      = "configcat_setting_tag"
+	KEY_PERMISSION_GROUP = "configcat_permission_group"
 )
 
 // Provider returns a *schema.Provider.
@@ -68,25 +70,27 @@ func Provider() *schema.Provider {
 		},
 
 		ResourcesMap: map[string]*schema.Resource{
-			KEY_PRODUCT:       resourceConfigCatProduct(),
-			KEY_CONFIG:        resourceConfigCatConfig(),
-			KEY_ENVIRONMENT:   resourceConfigCatEnvironment(),
-			KEY_SEGMENT:       resourceConfigCatSegment(),
-			KEY_SETTING:       resourceConfigCatSetting(),
-			KEY_TAG:           resourceConfigCatTag(),
-			KEY_SETTING_VALUE: resourceConfigCatSettingValue(),
-			KEY_SETTING_TAG:   resourceConfigCatSettingTag(),
+			KEY_PRODUCT:          resourceConfigCatProduct(),
+			KEY_CONFIG:           resourceConfigCatConfig(),
+			KEY_ENVIRONMENT:      resourceConfigCatEnvironment(),
+			KEY_SEGMENT:          resourceConfigCatSegment(),
+			KEY_SETTING:          resourceConfigCatSetting(),
+			KEY_TAG:              resourceConfigCatTag(),
+			KEY_SETTING_VALUE:    resourceConfigCatSettingValue(),
+			KEY_SETTING_TAG:      resourceConfigCatSettingTag(),
+			KEY_PERMISSION_GROUP: resourceConfigCatPermissionGroup(),
 		},
 
 		DataSourcesMap: map[string]*schema.Resource{
-			KEY_ORGANIZATIONS: dataSourceConfigCatOrganizations(),
-			KEY_PRODUCTS:      dataSourceConfigCatProducts(),
-			KEY_CONFIGS:       dataSourceConfigCatConfigs(),
-			KEY_ENVIRONMENTS:  dataSourceConfigCatEnvironments(),
-			KEY_SEGMENTS:      dataSourceConfigCatSegments(),
-			KEY_SETTINGS:      dataSourceConfigCatSettings(),
-			KEY_TAGS:          dataSourceConfigCatTags(),
-			KEY_SDKKEYS:       dataSourceConfigCatSdkKeys(),
+			KEY_ORGANIZATIONS:     dataSourceConfigCatOrganizations(),
+			KEY_PRODUCTS:          dataSourceConfigCatProducts(),
+			KEY_CONFIGS:           dataSourceConfigCatConfigs(),
+			KEY_ENVIRONMENTS:      dataSourceConfigCatEnvironments(),
+			KEY_SEGMENTS:          dataSourceConfigCatSegments(),
+			KEY_SETTINGS:          dataSourceConfigCatSettings(),
+			KEY_TAGS:              dataSourceConfigCatTags(),
+			KEY_SDKKEYS:           dataSourceConfigCatSdkKeys(),
+			KEY_PERMISSION_GROUPS: dataSourceConfigCatPermissionGroups(),
 		},
 
 		ConfigureContextFunc: providerConfigure,

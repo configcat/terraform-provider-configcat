@@ -32,7 +32,7 @@ output "tag_id" {
 
 ## Import
 
-Tags can be imported using the TagId. Get the TagId using e.g. the [GetTags API](https://api.configcat.com/docs/#operation/get-tags).
+Tags can be imported using the TagId. Get the TagId using e.g. the [List Tags API](https://api.configcat.com/docs/#tag/Tags/operation/get-tags).
 
 ```
 $ terraform import configcat_tag.example 1234
@@ -41,7 +41,7 @@ $ terraform import configcat_tag.example 1234
 [Read more](https://learn.hashicorp.com/tutorials/terraform/state-import) about importing.
 
 ## Endpoints used
-* [Get Tag](https://api.configcat.com/docs/index.html#operation/get-tag)
-* [Create Tag](https://api.configcat.com/docs/index.html#operation/create-tag)
-* [Update Tag](https://api.configcat.com/docs/index.html#operation/update-tag)
-* [Delete Tag](https://api.configcat.com/docs/index.html#operation/delete-tag)
+* [Get Tag](https://api.configcat.com/docs/#tag/Tags/operation/get-tag)
+* [Create Tag](https://api.configcat.com/docs/#tag/Tags/operation/create-tag)
+* [Update Tag](https://api.configcat.com/docs/#tag/Tags/operation/update-tag)
+* [Delete Tag](https://api.configcat.com/docs/#tag/Tags/operation/delete-tag)

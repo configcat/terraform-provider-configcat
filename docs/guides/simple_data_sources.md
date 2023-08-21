@@ -29,6 +29,11 @@ data "configcat_products" "my_products" {
   name_filter_regex = "ConfigCat's product"
 }
 
+data "configcat_permission_groups" "my_permission_groups" {
+  product_id = data.configcat_products.my_products.products.0.product_id
+  name_filter_regex = "Administrators"
+}
+
 data "configcat_configs" "my_configs" {
   product_id = data.configcat_products.my_products.products.0.product_id
   name_filter_regex = "Main Config"

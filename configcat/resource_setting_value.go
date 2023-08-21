@@ -188,18 +188,23 @@ func resourceSettingValueCreateOrUpdate(ctx context.Context, d *schema.ResourceD
 		settingTypeString = fmt.Sprintf("%v", *setting.SettingType)
 	}
 
-	settingValue, settingValueErr := getSettingValue(settingTypeString, d.Get(SETTING_VALUE).(string))
+	settingType, settingTypeConvertErr := sw.NewSettingTypeFromValue(settingTypeString)
+	if settingTypeConvertErr != nil {
+		return diag.FromErr(settingTypeConvertErr)
+	}
+
+	settingValue, settingValueErr := getSettingValue(settingType, d.Get(SETTING_VALUE).(string))
 
 	if settingValueErr != nil {
 		return diag.FromErr(settingValueErr)
 	}
 
-	rolloutRules, rolloutRulesErr := getRolloutRulesData(d.Get(ROLLOUT_RULES).([]interface{}), settingTypeString)
+	rolloutRules, rolloutRulesErr := getRolloutRulesData(d.Get(ROLLOUT_RULES).([]interface{}), settingType)
 	if rolloutRulesErr != nil {
 		return diag.FromErr(rolloutRulesErr)
 	}
 
-	rolloutPercentageItems, rolloutPercentageItemsErr := getRolloutPercentageItemsData(d.Get(ROLLOUT_PERCENTAGE_ITEMS).([]interface{}), settingTypeString)
+	rolloutPercentageItems, rolloutPercentageItemsErr := getRolloutPercentageItemsData(d.Get(ROLLOUT_PERCENTAGE_ITEMS).([]interface{}), settingType)
 	if rolloutPercentageItemsErr != nil {
 		return diag.FromErr(rolloutPercentageItemsErr)
 	}
@@ -260,8 +265,8 @@ func resourceSettingValueReadInternal(ctx context.Context, d *schema.ResourceDat
 
 	d.Set(SETTING_VALUE, fmt.Sprintf("%v", settingValue.Value))
 	d.Set(SETTING_TYPE, settingValue.Setting.SettingType)
-	d.Set(ROLLOUT_RULES, flattenRolloutRulesData(&settingValue.RolloutRules))
-	d.Set(ROLLOUT_PERCENTAGE_ITEMS, flattenRolloutPercentageItemsData(&settingValue.RolloutPercentageItems))
+	d.Set(ROLLOUT_RULES, flattenRolloutRulesData(settingValue.RolloutRules))
+	d.Set(ROLLOUT_PERCENTAGE_ITEMS, flattenRolloutPercentageItemsData(settingValue.RolloutPercentageItems))
 
 	return nil
 }
@@ -275,11 +280,11 @@ func resourceSettingValueDelete(ctx context.Context, d *schema.ResourceData, m i
 	return diags
 }
 
-func flattenRolloutRulesData(rolloutRules *[]sw.RolloutRuleModel) []interface{} {
+func flattenRolloutRulesData(rolloutRules []sw.RolloutRuleModel) []interface{} {
 	if rolloutRules != nil {
-		elements := make([]interface{}, len(*rolloutRules))
+		elements := make([]interface{}, len(rolloutRules))
 
-		for i, rolloutRule := range *rolloutRules {
+		for i, rolloutRule := range rolloutRules {
 			element := make(map[string]interface{})
 
 			element[ROLLOUT_RULE_COMPARISON_ATTRIBUTE] = rolloutRule.ComparisonAttribute.Get()
@@ -298,11 +303,11 @@ func flattenRolloutRulesData(rolloutRules *[]sw.RolloutRuleModel) []interface{} 
 	return make([]interface{}, 0)
 }
 
-func flattenRolloutPercentageItemsData(rolloutPercentageItems *[]sw.RolloutPercentageItemModel) []interface{} {
+func flattenRolloutPercentageItemsData(rolloutPercentageItems []sw.RolloutPercentageItemModel) []interface{} {
 	if rolloutPercentageItems != nil {
-		elements := make([]interface{}, len(*rolloutPercentageItems))
+		elements := make([]interface{}, len(rolloutPercentageItems))
 
-		for i, rolloutPercentageItem := range *rolloutPercentageItems {
+		for i, rolloutPercentageItem := range rolloutPercentageItems {
 			element := make(map[string]interface{})
 
 			element[ROLLOUT_PERCENTAGE_ITEM_PERCENTAGE] = strconv.FormatInt(rolloutPercentageItem.Percentage, 10)
@@ -316,7 +321,7 @@ func flattenRolloutPercentageItemsData(rolloutPercentageItems *[]sw.RolloutPerce
 	return make([]interface{}, 0)
 }
 
-func getRolloutRulesData(rolloutRules []interface{}, settingType string) (*[]sw.RolloutRuleModel, error) {
+func getRolloutRulesData(rolloutRules []interface{}, settingType *sw.SettingType) (*[]sw.RolloutRuleModel, error) {
 	if rolloutRules != nil {
 		elements := make([]sw.RolloutRuleModel, len(rolloutRules))
 
@@ -336,7 +341,7 @@ func getRolloutRulesData(rolloutRules []interface{}, settingType string) (*[]sw.
 					return nil, fmt.Errorf("the %s field is required", ROLLOUT_RULE_COMPARISON_VALUE)
 				}
 
-				comparator, compErr := getComparator(item[ROLLOUT_RULE_COMPARATOR].(string))
+				comparator, compErr := sw.NewRolloutRuleComparatorFromValue(item[ROLLOUT_RULE_COMPARATOR].(string))
 				if compErr != nil {
 					return nil, compErr
 				}
@@ -356,7 +361,7 @@ func getRolloutRulesData(rolloutRules []interface{}, settingType string) (*[]sw.
 					return nil, fmt.Errorf("the %s field is required", ROLLOUT_RULE_SEGMENT_ID)
 				}
 
-				segmentComparator, compErr := getSegmentComparator(item[ROLLOUT_RULE_SEGMENT_COMPARATOR].(string))
+				segmentComparator, compErr := sw.NewSegmentComparatorFromValue(item[ROLLOUT_RULE_SEGMENT_COMPARATOR].(string))
 				if compErr != nil {
 					return nil, compErr
 				}
@@ -380,7 +385,7 @@ func getRolloutRulesData(rolloutRules []interface{}, settingType string) (*[]sw.
 	return &empty, nil
 }
 
-func getRolloutPercentageItemsData(rolloutPercentageItems []interface{}, settingType string) (*[]sw.RolloutPercentageItemModel, error) {
+func getRolloutPercentageItemsData(rolloutPercentageItems []interface{}, settingType *sw.SettingType) (*[]sw.RolloutPercentageItemModel, error) {
 	if rolloutPercentageItems != nil {
 		elements := make([]sw.RolloutPercentageItemModel, len(rolloutPercentageItems))
 
@@ -412,100 +417,26 @@ func getRolloutPercentageItemsData(rolloutPercentageItems []interface{}, setting
 	return &empty, nil
 }
 
-func getSettingValue(settingType, value string) (interface{}, error) {
+func getSettingValue(settingType *sw.SettingType, value string) (interface{}, error) {
 
-	switch settingType {
-	case "boolean":
+	switch *settingType {
+	case sw.SETTINGTYPE_BOOLEAN:
 		b, err := strconv.ParseBool(value)
 		return b, err
-	case "string":
+	case sw.SETTINGTYPE_STRING:
 		return value, nil
-	case "int":
+	case sw.SETTINGTYPE_INT:
 		i, err := strconv.ParseInt(value, 10, 32)
 		if err == nil {
 			return int32(i), nil
 		}
 		return nil, err
-	case "double":
+	case sw.SETTINGTYPE_DOUBLE:
 		f, err := strconv.ParseFloat(value, 64)
 		return f, err
 	default:
-		return nil, fmt.Errorf("could not parse SettingType and Value: %s, %s", settingType, value)
+		return nil, fmt.Errorf("could not parse SettingType and Value: %s, %s", *settingType, value)
 	}
-}
-
-func getComparator(comparator string) (*sw.RolloutRuleComparator, error) {
-	switch comparator {
-	case "isOneOf":
-		comparator := sw.ROLLOUTRULECOMPARATOR_IS_ONE_OF
-		return &comparator, nil
-	case "isNotOneOf":
-		comparator := sw.ROLLOUTRULECOMPARATOR_IS_NOT_ONE_OF
-		return &comparator, nil
-	case "contains":
-		comparator := sw.ROLLOUTRULECOMPARATOR_CONTAINS
-		return &comparator, nil
-	case "doesNotContain":
-		comparator := sw.ROLLOUTRULECOMPARATOR_DOES_NOT_CONTAIN
-		return &comparator, nil
-	case "semVerIsOneOf":
-		comparator := sw.ROLLOUTRULECOMPARATOR_SEM_VER_IS_ONE_OF
-		return &comparator, nil
-	case "semVerIsNotOneOf":
-		comparator := sw.ROLLOUTRULECOMPARATOR_SEM_VER_IS_NOT_ONE_OF
-		return &comparator, nil
-	case "semVerLess":
-		comparator := sw.ROLLOUTRULECOMPARATOR_SEM_VER_LESS
-		return &comparator, nil
-	case "semVerLessOrEquals":
-		comparator := sw.ROLLOUTRULECOMPARATOR_SEM_VER_LESS_OR_EQUALS
-		return &comparator, nil
-	case "semVerGreater":
-		comparator := sw.ROLLOUTRULECOMPARATOR_SEM_VER_GREATER
-		return &comparator, nil
-	case "semVerGreaterOrEquals":
-		comparator := sw.ROLLOUTRULECOMPARATOR_SEM_VER_GREATER_OR_EQUALS
-		return &comparator, nil
-	case "numberEquals":
-		comparator := sw.ROLLOUTRULECOMPARATOR_NUMBER_EQUALS
-		return &comparator, nil
-	case "numberDoesNotEqual":
-		comparator := sw.ROLLOUTRULECOMPARATOR_NUMBER_DOES_NOT_EQUAL
-		return &comparator, nil
-	case "numberLess":
-		comparator := sw.ROLLOUTRULECOMPARATOR_NUMBER_LESS
-		return &comparator, nil
-	case "numberLessOrEquals":
-		comparator := sw.ROLLOUTRULECOMPARATOR_NUMBER_LESS_OR_EQUALS
-		return &comparator, nil
-	case "numberGreater":
-		comparator := sw.ROLLOUTRULECOMPARATOR_NUMBER_GREATER
-		return &comparator, nil
-	case "numberGreaterOrEquals":
-		comparator := sw.ROLLOUTRULECOMPARATOR_NUMBER_GREATER_OR_EQUALS
-		return &comparator, nil
-	case "sensitiveIsOneOf":
-		comparator := sw.ROLLOUTRULECOMPARATOR_SENSITIVE_IS_ONE_OF
-		return &comparator, nil
-	case "sensitiveIsNotOneOf":
-		comparator := sw.ROLLOUTRULECOMPARATOR_SENSITIVE_IS_NOT_ONE_OF
-		return &comparator, nil
-	}
-
-	return nil, fmt.Errorf("could not parse Comparator: %s", comparator)
-}
-
-func getSegmentComparator(comparator string) (*sw.SegmentComparator, error) {
-	switch comparator {
-	case "isIn":
-		comparator := sw.SEGMENTCOMPARATOR_IS_IN
-		return &comparator, nil
-	case "isNotIn":
-		comparator := sw.SEGMENTCOMPARATOR_IS_NOT_IN
-		return &comparator, nil
-	}
-
-	return nil, fmt.Errorf("could not parse segment_comparator: %s", comparator)
 }
 
 func resourceConfigCatSettingValueParseID(id string) (string, string, error) {

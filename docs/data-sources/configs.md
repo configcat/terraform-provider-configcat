@@ -36,4 +36,4 @@ output "config_id" {
 * `description` - The description of the Config.
 
 ## Endpoints used
-[Get Configs](https://api.configcat.com/docs/index.html#operation/get-configs)
+[List Configs](https://api.configcat.com/docs/#tag/Configs/operation/get-configs)

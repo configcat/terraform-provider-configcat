@@ -37,4 +37,4 @@ output "environment_id" {
 * `color` - The color of the Environment.
 
 ## Endpoints used
-- [Get Environments](https://api.configcat.com/docs/index.html#operation/get-environments)
+- [List Environments](https://api.configcat.com/docs/#tag/Environments/operation/get-environments)
