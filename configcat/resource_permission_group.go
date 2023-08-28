@@ -397,7 +397,7 @@ func getEnvironmentAccesses(newEnvironmentAccesses map[string]any, oldEnvironmen
 		return nil, fmt.Errorf("Error: environment_accesses can only be set if the accesstype is custom")
 	}
 
-	if accessType == sw.ACCESSTYPE_CUSTOM {
+	if accessType != sw.ACCESSTYPE_CUSTOM {
 		return &elements, nil
 	}
 
