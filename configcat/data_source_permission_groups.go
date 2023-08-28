@@ -131,8 +131,9 @@ func dataSourceConfigCatPermissionGroups() *schema.Resource {
 							Computed: true,
 						},
 						PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED: {
-							Type:     schema.TypeList,
-							Computed: true,
+							Type:       schema.TypeList,
+							Computed:   true,
+							Deprecated: "Use environment_accesses instead. This attribute will be removed in the next major version of the provider.",
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID_DEPRECATED: {
@@ -144,6 +145,13 @@ func dataSourceConfigCatPermissionGroups() *schema.Resource {
 										Computed: true,
 									},
 								},
+							},
+						},
+						PERMISSION_GROUP_ENVIRONMENT_ACCESSES: {
+							Type:     schema.TypeMap,
+							Optional: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
 							},
 						},
 					},
@@ -214,7 +222,8 @@ func flattenPermissionGroupsData(permissionGroups *[]sw.PermissionGroupModel) []
 			element[PERMISSION_GROUP_CAN_VIEW_PRODUCT_STATISTICS] = permissionGroup.CanViewProductStatistics
 			element[PERMISSION_GROUP_ACCESSTYPE] = *permissionGroup.AccessType
 			element[PERMISSION_GROUP_NEW_ENVIRONMENT_ACCESSTYPE] = *permissionGroup.NewEnvironmentAccessType
-			element[PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED] = flattenPermissionGroupEnvironmentAccessData(permissionGroup.EnvironmentAccesses, *permissionGroup.AccessType)
+			element[PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED] = flattenPermissionGroupEnvironmentAccessDataDeprecated(permissionGroup.EnvironmentAccesses, *permissionGroup.AccessType)
+			element[PERMISSION_GROUP_ENVIRONMENT_ACCESSES] = flattenPermissionGroupEnvironmentAccessData(permissionGroup.EnvironmentAccesses, *permissionGroup.AccessType)
 
 			elements[i] = element
 		}
@@ -225,7 +234,7 @@ func flattenPermissionGroupsData(permissionGroups *[]sw.PermissionGroupModel) []
 	return make([]interface{}, 0)
 }
 
-func flattenPermissionGroupEnvironmentAccessData(environmentAccesses []sw.EnvironmentAccessModel, accessType sw.AccessType) []interface{} {
+func flattenPermissionGroupEnvironmentAccessDataDeprecated(environmentAccesses []sw.EnvironmentAccessModel, accessType sw.AccessType) []interface{} {
 	elements := make([]interface{}, 0)
 	if accessType != sw.ACCESSTYPE_CUSTOM {
 		return elements
@@ -238,6 +247,19 @@ func flattenPermissionGroupEnvironmentAccessData(environmentAccesses []sw.Enviro
 		element[PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESSTYPE_DEPRECATED] = *environmentAccess.EnvironmentAccessType
 
 		elements = append(elements, element)
+	}
+
+	return elements
+}
+
+func flattenPermissionGroupEnvironmentAccessData(environmentAccesses []sw.EnvironmentAccessModel, accessType sw.AccessType) map[string]any {
+	elements := make(map[string]any)
+	if accessType != sw.ACCESSTYPE_CUSTOM {
+		return elements
+	}
+
+	for _, environmentAccess := range environmentAccesses {
+		elements[*environmentAccess.EnvironmentId] = *environmentAccess.EnvironmentAccessType
 	}
 
 	return elements

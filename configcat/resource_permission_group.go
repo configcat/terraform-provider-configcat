@@ -174,7 +174,7 @@ func resourcePermissionGroupCreate(ctx context.Context, d *schema.ResourceData, 
 	var environmentAccesses *[]sw.CreateOrUpdateEnvironmentAccessModel
 
 	environmentAccessesDeprecatedValue := d.Get(PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED).([]interface{})
-	if environmentAccessesDeprecatedValue != nil && len(environmentAccessesDeprecatedValue) > 0 {
+	if len(environmentAccessesDeprecatedValue) > 0 {
 		parsedEnvironmentAccessesDeprecated, environmentAccessDepreceatedParseError := getEnvironmentAccessesDeprecated(environmentAccessesDeprecatedValue, *accessType)
 		if environmentAccessDepreceatedParseError != nil {
 			return diag.FromErr(environmentAccessDepreceatedParseError)
@@ -289,7 +289,8 @@ func resourcePermissionGroupRead(ctx context.Context, d *schema.ResourceData, m 
 	d.Set(PERMISSION_GROUP_CAN_VIEW_PRODUCT_STATISTICS, permissionGroup.CanViewProductStatistics)
 	d.Set(PERMISSION_GROUP_ACCESSTYPE, permissionGroup.AccessType)
 	d.Set(PERMISSION_GROUP_NEW_ENVIRONMENT_ACCESSTYPE, permissionGroup.NewEnvironmentAccessType)
-	d.Set(PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED, flattenPermissionGroupEnvironmentAccessData(permissionGroup.EnvironmentAccesses, *permissionGroup.AccessType))
+	d.Set(PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED, flattenPermissionGroupEnvironmentAccessDataDeprecated(permissionGroup.EnvironmentAccesses, *permissionGroup.AccessType))
+	d.Set(PERMISSION_GROUP_ENVIRONMENT_ACCESSES, flattenPermissionGroupEnvironmentAccessData(permissionGroup.EnvironmentAccesses, *permissionGroup.AccessType))
 
 	return diags
 }
@@ -340,7 +341,7 @@ func resourcePermissionGroupUpdate(ctx context.Context, d *schema.ResourceData, 
 		var environmentAccesses *[]sw.CreateOrUpdateEnvironmentAccessModel
 
 		environmentAccessesDeprecatedValue := d.Get(PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED).([]interface{})
-		if environmentAccessesDeprecatedValue != nil && len(environmentAccessesDeprecatedValue) > 0 {
+		if len(environmentAccessesDeprecatedValue) > 0 {
 			parsedEnvironmentAccessesDeprecated, environmentAccessDepreceatedParseError := getEnvironmentAccessesDeprecated(environmentAccessesDeprecatedValue, *accessType)
 			if environmentAccessDepreceatedParseError != nil {
 				return diag.FromErr(environmentAccessDepreceatedParseError)
