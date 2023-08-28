@@ -413,7 +413,8 @@ func getEnvironmentAccesses(newEnvironmentAccesses map[string]any, oldEnvironmen
 	}
 
 	// We should set none to those environment accesses that were deleted
-	for environmentId := range oldEnvironmentAccesses {
+	for environmentIdKey := range oldEnvironmentAccesses {
+		environmentId := environmentIdKey
 		_, ok := newEnvironmentAccesses[environmentId]
 		if !ok {
 			element := sw.CreateOrUpdateEnvironmentAccessModel{
