@@ -181,7 +181,7 @@ func resourcePermissionGroupCreate(ctx context.Context, d *schema.ResourceData, 
 		}
 		environmentAccesses = parsedEnvironmentAccessesDeprecated
 	} else {
-		parsedEnvironmentAccesses, environmentAccessParseError := getEnvironmentAccesses(d.Get(PERMISSION_GROUP_ENVIRONMENT_ACCESSES).(map[string]interface{}), *accessType)
+		parsedEnvironmentAccesses, environmentAccessParseError := getEnvironmentAccesses(d.Get(PERMISSION_GROUP_ENVIRONMENT_ACCESSES).(map[string]any), nil, *accessType)
 		if environmentAccessParseError != nil {
 			return diag.FromErr(environmentAccessParseError)
 		}
@@ -348,11 +348,21 @@ func resourcePermissionGroupUpdate(ctx context.Context, d *schema.ResourceData, 
 			}
 			environmentAccesses = parsedEnvironmentAccessesDeprecated
 		} else {
-			parsedEnvironmentAccesses, environmentAccessParseError := getEnvironmentAccesses(d.Get(PERMISSION_GROUP_ENVIRONMENT_ACCESSES).(map[string]interface{}), *accessType)
-			if environmentAccessParseError != nil {
-				return diag.FromErr(environmentAccessParseError)
+
+			if d.HasChange(PERMISSION_GROUP_ENVIRONMENT_ACCESSES) {
+				oldEnvironmentAccesses, newEnvironmentAccesses := d.GetChange(PERMISSION_GROUP_ENVIRONMENT_ACCESSES)
+				parsedEnvironmentAccesses, environmentAccessParseError := getEnvironmentAccesses(newEnvironmentAccesses.(map[string]any), oldEnvironmentAccesses.(map[string]any), *accessType)
+				if environmentAccessParseError != nil {
+					return diag.FromErr(environmentAccessParseError)
+				}
+				environmentAccesses = parsedEnvironmentAccesses
+			} else {
+				parsedEnvironmentAccesses, environmentAccessParseError := getEnvironmentAccesses(d.Get(PERMISSION_GROUP_ENVIRONMENT_ACCESSES).(map[string]any), nil, *accessType)
+				if environmentAccessParseError != nil {
+					return diag.FromErr(environmentAccessParseError)
+				}
+				environmentAccesses = parsedEnvironmentAccesses
 			}
-			environmentAccesses = parsedEnvironmentAccesses
 		}
 
 		canManageMembers := d.Get(PERMISSION_GROUP_CAN_MANAGE_MEMBERS).(bool)
@@ -451,26 +461,37 @@ func getEnvironmentAccessesDeprecated(environmentAccesses []interface{}, accessT
 	return &elements, nil
 }
 
-func getEnvironmentAccesses(environmentAccesses map[string]any, accessType sw.AccessType) (*[]sw.CreateOrUpdateEnvironmentAccessModel, error) {
+func getEnvironmentAccesses(newEnvironmentAccesses map[string]any, oldEnvironmentAccesses map[string]any, accessType sw.AccessType) (*[]sw.CreateOrUpdateEnvironmentAccessModel, error) {
 	elements := make([]sw.CreateOrUpdateEnvironmentAccessModel, 0)
 
-	if accessType != sw.ACCESSTYPE_CUSTOM && environmentAccesses != nil && len(environmentAccesses) > 0 {
-		return nil, fmt.Errorf("Error: environment_access can only be set if the accesstype is custom")
+	if accessType != sw.ACCESSTYPE_CUSTOM && len(newEnvironmentAccesses) > 0 {
+		return nil, fmt.Errorf("Error: environment_accesses can only be set if the accesstype is custom")
 	}
 
-	for environmentId, environmentAccessType := range environmentAccesses {
+	for environmentId, environmentAccessType := range newEnvironmentAccesses {
 		environmentAccessTypeString := environmentAccessType.(string)
 		environmentAccessType, environmentAccessTypeParseError := sw.NewEnvironmentAccessTypeFromValue(environmentAccessTypeString)
-		if environmentAccessTypeParseError != nil {
-			return nil, environmentAccessTypeParseError
+		if environmentAccessTypeParseError != nil || *environmentAccessType == sw.ENVIRONMENTACCESSTYPE_NONE {
+			return nil, fmt.Errorf("Error: invalid value '" + environmentAccessTypeString + "' for EnvironmentAccessType: valid values are [full readOnly]")
 		}
-
 		element := sw.CreateOrUpdateEnvironmentAccessModel{
 			EnvironmentId:         &environmentId,
 			EnvironmentAccessType: environmentAccessType,
 		}
 
 		elements = append(elements, element)
+	}
+
+	// We should set none to those environment accesses that were deleted
+	for environmentId := range oldEnvironmentAccesses {
+		_, ok := newEnvironmentAccesses[environmentId]
+		if !ok {
+			element := sw.CreateOrUpdateEnvironmentAccessModel{
+				EnvironmentId:         &environmentId,
+				EnvironmentAccessType: sw.ENVIRONMENTACCESSTYPE_NONE.Ptr(),
+			}
+			elements = append(elements, element)
+		}
 	}
 
 	return &elements, nil

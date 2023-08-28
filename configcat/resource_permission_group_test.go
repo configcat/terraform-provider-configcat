@@ -49,7 +49,7 @@ func TestResourcePermissionGroupCanXXFlow(t *testing.T) {
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_CAN_VIEW_PRODUCT_STATISTICS, "false"),
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ACCESSTYPE, "full"),
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_NEW_ENVIRONMENT_ACCESSTYPE, "none"),
-					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED+".#", "0"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".%", "0"),
 				),
 			},
 			{
@@ -90,7 +90,7 @@ func TestResourcePermissionGroupCanXXFlow(t *testing.T) {
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_CAN_VIEW_PRODUCT_STATISTICS, "false"),
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ACCESSTYPE, "full"),
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_NEW_ENVIRONMENT_ACCESSTYPE, "none"),
-					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED+".#", "0"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".%", "0"),
 				),
 			},
 			{
@@ -148,7 +148,7 @@ func TestResourcePermissionGroupCanXXFlow(t *testing.T) {
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_CAN_VIEW_PRODUCT_STATISTICS, "false"),
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ACCESSTYPE, "full"),
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_NEW_ENVIRONMENT_ACCESSTYPE, "none"),
-					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED+".#", "0"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".%", "0"),
 				),
 			},
 			{
@@ -206,7 +206,7 @@ func TestResourcePermissionGroupCanXXFlow(t *testing.T) {
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_CAN_VIEW_PRODUCT_STATISTICS, "true"),
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ACCESSTYPE, "full"),
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_NEW_ENVIRONMENT_ACCESSTYPE, "none"),
-					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED+".#", "0"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".%", "0"),
 				),
 			},
 			{
@@ -239,7 +239,7 @@ func TestResourcePermissionGroupAccessTypeFlow(t *testing.T) {
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_NAME, "TestPermissionGroup"),
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ACCESSTYPE, "full"),
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_NEW_ENVIRONMENT_ACCESSTYPE, "none"),
-					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED+".#", "0"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".%", "0"),
 				),
 			},
 			{
@@ -259,7 +259,7 @@ func TestResourcePermissionGroupAccessTypeFlow(t *testing.T) {
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_NAME, "TestPermissionGroup"),
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ACCESSTYPE, "readOnly"),
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_NEW_ENVIRONMENT_ACCESSTYPE, "full"),
-					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED+".#", "0"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".%", "0"),
 				),
 			},
 			{
@@ -270,17 +270,8 @@ func TestResourcePermissionGroupAccessTypeFlow(t *testing.T) {
 						product_id = data.configcat_products.products.products.0.product_id
 						name = "TestPermissionGroup"
 						
-						environment_access {
-							environment_id = "08d8becf-d4d9-4c66-8b48-6ac74cd95fba"
-							environment_accesstype = "none"
-						}
-						environment_access {
-							environment_id = "08d86d63-272c-4355-8027-4b52787bc1bd"
-							environment_accesstype = "none"
-						}
-						environment_access {
-							environment_id = "08d86d63-2726-47cd-8bfc-59608ecb91e2"
-							environment_accesstype = "readOnly"
+						environment_accesses = {
+							"08d86d63-2726-47cd-8bfc-59608ecb91e2" = "readOnly"
 						}
 					}
 				`,
@@ -289,13 +280,8 @@ func TestResourcePermissionGroupAccessTypeFlow(t *testing.T) {
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_NAME, "TestPermissionGroup"),
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ACCESSTYPE, "custom"),
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_NEW_ENVIRONMENT_ACCESSTYPE, "none"),
-					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED+".#", "3"),
-					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID_DEPRECATED, "08d8becf-d4d9-4c66-8b48-6ac74cd95fba"),
-					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESSTYPE_DEPRECATED, "none"),
-					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED+".1."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID_DEPRECATED, "08d86d63-272c-4355-8027-4b52787bc1bd"),
-					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED+".1."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESSTYPE_DEPRECATED, "none"),
-					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED+".2."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID_DEPRECATED, "08d86d63-2726-47cd-8bfc-59608ecb91e2"),
-					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED+".2."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESSTYPE_DEPRECATED, "readOnly"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".%", "1"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".08d86d63-2726-47cd-8bfc-59608ecb91e2", "readOnly"),
 				),
 			},
 			{
@@ -313,7 +299,7 @@ func TestResourcePermissionGroupAccessTypeFlow(t *testing.T) {
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_NAME, "TestPermissionGroup"),
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ACCESSTYPE, "full"),
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_NEW_ENVIRONMENT_ACCESSTYPE, "none"),
-					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED+".#", "0"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".%", "0"),
 				),
 			},
 			{
@@ -325,17 +311,9 @@ func TestResourcePermissionGroupAccessTypeFlow(t *testing.T) {
 						name = "TestPermissionGroup"
 						
 						new_environment_accesstype = "readOnly"
-						environment_access {
-							environment_id = "08d8becf-d4d9-4c66-8b48-6ac74cd95fba"
-							environment_accesstype = "readOnly"
-						}
-						environment_access {
-							environment_id = "08d86d63-272c-4355-8027-4b52787bc1bd"
-							environment_accesstype = "full"
-						}
-						environment_access {
-							environment_id = "08d86d63-2726-47cd-8bfc-59608ecb91e2"
-							environment_accesstype = "none"
+						environment_accesses = {
+							"08d8becf-d4d9-4c66-8b48-6ac74cd95fba" = "readOnly"
+							"08d86d63-272c-4355-8027-4b52787bc1bd" = "full"
 						}
 					}
 				`,
@@ -344,13 +322,9 @@ func TestResourcePermissionGroupAccessTypeFlow(t *testing.T) {
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_NAME, "TestPermissionGroup"),
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ACCESSTYPE, "custom"),
 					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_NEW_ENVIRONMENT_ACCESSTYPE, "readOnly"),
-					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED+".#", "3"),
-					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID_DEPRECATED, "08d8becf-d4d9-4c66-8b48-6ac74cd95fba"),
-					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESSTYPE_DEPRECATED, "readOnly"),
-					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED+".1."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID_DEPRECATED, "08d86d63-272c-4355-8027-4b52787bc1bd"),
-					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED+".1."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESSTYPE_DEPRECATED, "full"),
-					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED+".2."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID_DEPRECATED, "08d86d63-2726-47cd-8bfc-59608ecb91e2"),
-					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED+".2."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESSTYPE_DEPRECATED, "none"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".%", "2"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".08d8becf-d4d9-4c66-8b48-6ac74cd95fba", "readOnly"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".08d86d63-272c-4355-8027-4b52787bc1bd", "full"),
 				),
 			},
 			{
@@ -376,13 +350,12 @@ func TestResourcePermissionGroupAccessTypeErrorFlow(t *testing.T) {
 						name = "TestPermissionGroup"
 						accesstype = "full"
 
-						environment_access {
-							environment_id = "08d86d63-2726-47cd-8bfc-59608ecb91e2"
-							environment_accesstype = "readOnly"
+						environment_accesses = {
+							"08d86d63-2726-47cd-8bfc-59608ecb91e2" = "readOnly"
 						}
 					}
 				`,
-				ExpectError: regexp.MustCompile(`Error: environment_access can only be set if the accesstype is custom`),
+				ExpectError: regexp.MustCompile(`Error: environment_accesses can only be set if the accesstype is custom`),
 			},
 		},
 	})
@@ -479,13 +452,35 @@ func TestResourcePermissionGroupInvalidEnvironmentAccessTypeFlow(t *testing.T) {
 					resource "configcat_permission_group" "test" {
 						product_id = data.configcat_products.products.products.0.product_id
 						name = "TestPermissionGroup"
-						environment_access {
-							environment_id = "08d86d63-2726-47cd-8bfc-59608ecb91e2"
-							environment_accesstype = "invalid"
+						environment_accesses = {
+							"08d86d63-2726-47cd-8bfc-59608ecb91e2" = "invalid"
 						}
 					}
 				`,
-				ExpectError: regexp.MustCompile(`Error: invalid value 'invalid' for EnvironmentAccessType: valid values are \[full readOnly none\]`),
+				ExpectError: regexp.MustCompile(`Error: invalid value 'invalid' for EnvironmentAccessType: valid values are \[full readOnly\]`),
+			},
+		},
+	})
+}
+
+func TestResourcePermissionGroupNoneEnvironmentAccessTypeFlow(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:  func() { testAccPreCheck(t) },
+		Providers: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: `
+					data "configcat_products" "products" {
+					}
+					resource "configcat_permission_group" "test" {
+						product_id = data.configcat_products.products.products.0.product_id
+						name = "TestPermissionGroup"
+						environment_accesses = {
+							"08d86d63-2726-47cd-8bfc-59608ecb91e2" = "none"
+						}
+					}
+				`,
+				ExpectError: regexp.MustCompile(`Error: invalid value 'invalid' for EnvironmentAccessType: valid values are \[full readOnly\]`),
 			},
 		},
 	})

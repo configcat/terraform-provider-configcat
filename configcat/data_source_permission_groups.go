@@ -259,6 +259,10 @@ func flattenPermissionGroupEnvironmentAccessData(environmentAccesses []sw.Enviro
 	}
 
 	for _, environmentAccess := range environmentAccesses {
+		if *environmentAccess.EnvironmentAccessType == sw.ENVIRONMENTACCESSTYPE_NONE {
+			continue
+		}
+
 		elements[*environmentAccess.EnvironmentId] = *environmentAccess.EnvironmentAccessType
 	}
 
