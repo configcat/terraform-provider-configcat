@@ -97,7 +97,7 @@ output "permission_group_id" {
 * `can_view_product_auditlog` - (Optional) Group members has access to audit logs. Default: false.
 * `can_view_product_statistics` - (Optional) Group members has access to product statistics. Default: false.
 * `accesstype` - (Optional) Represent the Feature Management permission. Possible values: readOnly, full, custom. Default: custom
-* `new_environment_accesstype` - (Optional) Represent the environment specific Feature Management permission for new Environments and for those that are not specified in the environment_access list. Possible values: full, readOnly, none. Default: none.
+* `new_environment_accesstype` - (Optional) Represent the environment specific Feature Management permission for new Environments. Possible values: full, readOnly, none. Default: none.
 * `environment_accesses` - (Optional) The environment specific permissions map block defined as below.
 
 ### The `environment_accesses` map block
