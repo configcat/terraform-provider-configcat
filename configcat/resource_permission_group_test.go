@@ -328,6 +328,29 @@ func TestResourcePermissionGroupAccessTypeFlow(t *testing.T) {
 				),
 			},
 			{
+				Config: `
+					data "configcat_products" "products" {
+					}
+					resource "configcat_permission_group" "test" {
+						product_id = data.configcat_products.products.products.0.product_id
+						name = "TestPermissionGroup"
+						
+						new_environment_accesstype = "readOnly"
+						environment_accesses = {
+							"08d8becf-d4d9-4c66-8b48-6ac74cd95fba" = "readOnly"
+						}
+					}
+				`,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttrSet(testPermissionGroupResourceName, "id"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_NAME, "TestPermissionGroup"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ACCESSTYPE, "custom"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_NEW_ENVIRONMENT_ACCESSTYPE, "readOnly"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".%", "1"),
+					resource.TestCheckResourceAttr(testPermissionGroupResourceName, PERMISSION_GROUP_ENVIRONMENT_ACCESSES+".08d8becf-d4d9-4c66-8b48-6ac74cd95fba", "readOnly"),
+				),
+			},
+			{
 				ResourceName:      testPermissionGroupResourceName,
 				ImportState:       true,
 				ImportStateVerify: true,
