@@ -480,7 +480,7 @@ func TestResourcePermissionGroupNoneEnvironmentAccessTypeFlow(t *testing.T) {
 						}
 					}
 				`,
-				ExpectError: regexp.MustCompile(`Error: invalid value 'invalid' for EnvironmentAccessType: valid values are \[full readOnly\]`),
+				ExpectError: regexp.MustCompile(`Error: invalid value 'none' for EnvironmentAccessType: valid values are \[full readOnly\]`),
 			},
 		},
 	})
