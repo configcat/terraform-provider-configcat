@@ -61,14 +61,9 @@ resource "configcat_permission_group" "my_permission_group" {
 
   accesstype = "custom"
 
-  environment_access {
-    environment_id = data.configcat_environments.my_test_environments.environments.0.environment_id
-    environment_accesstype = "full"
-  }
-  
-  environment_access {
-    environment_id = data.configcat_environments.my_production_environments.environments.0.environment_id
-    environment_accesstype = "none"
+  environment_accesses {
+    "${data.configcat_environments.my_test_environments.environments.0.environment_id}" = "full"
+    "${data.configcat_environments.my_test_environments.environments.1.environment_id}" = "readOnly"
   }
 }
 
@@ -103,11 +98,11 @@ output "permission_group_id" {
 * `can_view_product_statistics` - (Optional) Group members has access to product statistics. Default: false.
 * `accesstype` - (Optional) Represent the Feature Management permission. Possible values: readOnly, full, custom. Default: custom
 * `new_environment_accesstype` - (Optional) Represent the environment specific Feature Management permission for new Environments and for those that are not specified in the environment_access list. Possible values: full, readOnly, none. Default: none.
-* `environment_access` - (Optional) The environment specific permissions [list](https://www.terraform.io/docs/configuration/types.html#list-) block defined as below.
+* `environment_accesses` - (Optional) The environment specific permissions map block defined as below.
 
-### The `environment_access` [list](https://www.terraform.io/docs/configuration/types.html#list-) block
-* `environment_id` - (Required) The unique [Environment](https://configcat.com/docs/main-concepts/#environment) ID.
-* `environment_accesstype` - (Optional) Represent the environment specific Feature Management permission. Possible values: full, readOnly, none. Default: none.
+### The `environment_accesses` map block
+* `key` - (Required) The unique [Environment](https://configcat.com/docs/main-concepts/#environment) ID.
+* `value` - (Required) Represent the environment specific Feature Management permission. Possible values: full, readOnly.
 
 ## Attribute Reference
 
