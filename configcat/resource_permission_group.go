@@ -122,22 +122,30 @@ func resourceConfigCatPermissionGroup() *schema.Resource {
 				Optional: true,
 				Default:  sw.ENVIRONMENTACCESSTYPE_NONE,
 			},
-			PERMISSION_GROUP_ENVIRONMENT_ACCESS: {
-				Type:     schema.TypeList,
-				Optional: true,
+			PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED: {
+				Type:       schema.TypeList,
+				Optional:   true,
+				Deprecated: "Configure environment_accesses instead. This attribute will be removed in the next major version of the provider.",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID: {
+						PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID_DEPRECATED: {
 							Type:         schema.TypeString,
 							Required:     true,
 							ValidateFunc: validateGUIDFunc,
 						},
-						PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESSTYPE: {
+						PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESSTYPE_DEPRECATED: {
 							Type:     schema.TypeString,
 							Optional: true,
 							Default:  sw.ENVIRONMENTACCESSTYPE_NONE,
 						},
 					},
+				},
+			},
+			PERMISSION_GROUP_ENVIRONMENT_ACCESSES: {
+				Type:     schema.TypeMap,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
 				},
 			},
 		},
@@ -163,9 +171,21 @@ func resourcePermissionGroupCreate(ctx context.Context, d *schema.ResourceData, 
 		return diag.FromErr(newEnvironmentAccessTypeParseErr)
 	}
 
-	environmentAccesses, environmentAccessParseError := getEnvironmentAccesses(d.Get(PERMISSION_GROUP_ENVIRONMENT_ACCESS).([]interface{}), *accessType)
-	if environmentAccessParseError != nil {
-		return diag.FromErr(environmentAccessParseError)
+	var environmentAccesses *[]sw.CreateOrUpdateEnvironmentAccessModel
+
+	environmentAccessesDeprecatedValue := d.Get(PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED).([]interface{})
+	if environmentAccessesDeprecatedValue != nil && len(environmentAccessesDeprecatedValue) > 0 {
+		parsedEnvironmentAccessesDeprecated, environmentAccessDepreceatedParseError := getEnvironmentAccessesDeprecated(environmentAccessesDeprecatedValue, *accessType)
+		if environmentAccessDepreceatedParseError != nil {
+			return diag.FromErr(environmentAccessDepreceatedParseError)
+		}
+		environmentAccesses = parsedEnvironmentAccessesDeprecated
+	} else {
+		parsedEnvironmentAccesses, environmentAccessParseError := getEnvironmentAccesses(d.Get(PERMISSION_GROUP_ENVIRONMENT_ACCESSES).(map[string]interface{}), *accessType)
+		if environmentAccessParseError != nil {
+			return diag.FromErr(environmentAccessParseError)
+		}
+		environmentAccesses = parsedEnvironmentAccesses
 	}
 
 	canManageMembers := d.Get(PERMISSION_GROUP_CAN_MANAGE_MEMBERS).(bool)
@@ -269,7 +289,7 @@ func resourcePermissionGroupRead(ctx context.Context, d *schema.ResourceData, m 
 	d.Set(PERMISSION_GROUP_CAN_VIEW_PRODUCT_STATISTICS, permissionGroup.CanViewProductStatistics)
 	d.Set(PERMISSION_GROUP_ACCESSTYPE, permissionGroup.AccessType)
 	d.Set(PERMISSION_GROUP_NEW_ENVIRONMENT_ACCESSTYPE, permissionGroup.NewEnvironmentAccessType)
-	d.Set(PERMISSION_GROUP_ENVIRONMENT_ACCESS, flattenPermissionGroupEnvironmentAccessData(permissionGroup.EnvironmentAccesses, *permissionGroup.AccessType))
+	d.Set(PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED, flattenPermissionGroupEnvironmentAccessData(permissionGroup.EnvironmentAccesses, *permissionGroup.AccessType))
 
 	return diags
 }
@@ -300,7 +320,8 @@ func resourcePermissionGroupUpdate(ctx context.Context, d *schema.ResourceData, 
 		PERMISSION_GROUP_CAN_VIEW_PRODUCT_STATISTICS,
 		PERMISSION_GROUP_ACCESSTYPE,
 		PERMISSION_GROUP_NEW_ENVIRONMENT_ACCESSTYPE,
-		PERMISSION_GROUP_ENVIRONMENT_ACCESS) {
+		PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED,
+		PERMISSION_GROUP_ENVIRONMENT_ACCESSES) {
 
 		permimssionGroupName := d.Get(PERMISSION_GROUP_NAME).(string)
 
@@ -316,9 +337,21 @@ func resourcePermissionGroupUpdate(ctx context.Context, d *schema.ResourceData, 
 			return diag.FromErr(newEnvironmentAccessTypeParseErr)
 		}
 
-		environmentAccesses, environmentAccessParseError := getEnvironmentAccesses(d.Get(PERMISSION_GROUP_ENVIRONMENT_ACCESS).([]interface{}), *accessType)
-		if environmentAccessParseError != nil {
-			return diag.FromErr(environmentAccessParseError)
+		var environmentAccesses *[]sw.CreateOrUpdateEnvironmentAccessModel
+
+		environmentAccessesDeprecatedValue := d.Get(PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED).([]interface{})
+		if environmentAccessesDeprecatedValue != nil && len(environmentAccessesDeprecatedValue) > 0 {
+			parsedEnvironmentAccessesDeprecated, environmentAccessDepreceatedParseError := getEnvironmentAccessesDeprecated(environmentAccessesDeprecatedValue, *accessType)
+			if environmentAccessDepreceatedParseError != nil {
+				return diag.FromErr(environmentAccessDepreceatedParseError)
+			}
+			environmentAccesses = parsedEnvironmentAccessesDeprecated
+		} else {
+			parsedEnvironmentAccesses, environmentAccessParseError := getEnvironmentAccesses(d.Get(PERMISSION_GROUP_ENVIRONMENT_ACCESSES).(map[string]interface{}), *accessType)
+			if environmentAccessParseError != nil {
+				return diag.FromErr(environmentAccessParseError)
+			}
+			environmentAccesses = parsedEnvironmentAccesses
 		}
 
 		canManageMembers := d.Get(PERMISSION_GROUP_CAN_MANAGE_MEMBERS).(bool)
@@ -389,7 +422,7 @@ func resourcePermissionGroupUpdate(ctx context.Context, d *schema.ResourceData, 
 	return resourcePermissionGroupRead(ctx, d, m)
 }
 
-func getEnvironmentAccesses(environmentAccesses []interface{}, accessType sw.AccessType) (*[]sw.CreateOrUpdateEnvironmentAccessModel, error) {
+func getEnvironmentAccessesDeprecated(environmentAccesses []interface{}, accessType sw.AccessType) (*[]sw.CreateOrUpdateEnvironmentAccessModel, error) {
 	elements := make([]sw.CreateOrUpdateEnvironmentAccessModel, 0)
 
 	if accessType != sw.ACCESSTYPE_CUSTOM && environmentAccesses != nil && len(environmentAccesses) > 0 {
@@ -399,15 +432,40 @@ func getEnvironmentAccesses(environmentAccesses []interface{}, accessType sw.Acc
 	for _, environmentAccess := range environmentAccesses {
 		item := environmentAccess.(map[string]interface{})
 
-		environmentAccessTypeString := item[PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESSTYPE].(string)
+		environmentAccessTypeString := item[PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESSTYPE_DEPRECATED].(string)
 		environmentAccessType, environmentAccessTypeParseError := sw.NewEnvironmentAccessTypeFromValue(environmentAccessTypeString)
 		if environmentAccessTypeParseError != nil {
 			return nil, environmentAccessTypeParseError
 		}
 
-		environmentID := item[PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID].(string)
+		environmentID := item[PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID_DEPRECATED].(string)
 		element := sw.CreateOrUpdateEnvironmentAccessModel{
 			EnvironmentId:         &environmentID,
+			EnvironmentAccessType: environmentAccessType,
+		}
+
+		elements = append(elements, element)
+	}
+
+	return &elements, nil
+}
+
+func getEnvironmentAccesses(environmentAccesses map[string]any, accessType sw.AccessType) (*[]sw.CreateOrUpdateEnvironmentAccessModel, error) {
+	elements := make([]sw.CreateOrUpdateEnvironmentAccessModel, 0)
+
+	if accessType != sw.ACCESSTYPE_CUSTOM && environmentAccesses != nil && len(environmentAccesses) > 0 {
+		return nil, fmt.Errorf("Error: environment_access can only be set if the accesstype is custom")
+	}
+
+	for environmentId, environmentAccessType := range environmentAccesses {
+		environmentAccessTypeString := environmentAccessType.(string)
+		environmentAccessType, environmentAccessTypeParseError := sw.NewEnvironmentAccessTypeFromValue(environmentAccessTypeString)
+		if environmentAccessTypeParseError != nil {
+			return nil, environmentAccessTypeParseError
+		}
+
+		element := sw.CreateOrUpdateEnvironmentAccessModel{
+			EnvironmentId:         &environmentId,
 			EnvironmentAccessType: environmentAccessType,
 		}
 

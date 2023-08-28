@@ -94,7 +94,7 @@ func TestAdministratorsPermissionGroupValidFilter(t *testing.T) {
 					resource.TestCheckResourceAttr(testPermissionGroupsDataSourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_CAN_VIEW_PRODUCT_STATISTICS, "true"),
 					resource.TestCheckResourceAttr(testPermissionGroupsDataSourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_ACCESSTYPE, "full"),
 					resource.TestCheckResourceAttr(testPermissionGroupsDataSourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_NEW_ENVIRONMENT_ACCESSTYPE, "full"),
-					resource.TestCheckResourceAttr(testPermissionGroupsDataSourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESS+".#", "0"),
+					resource.TestCheckResourceAttr(testPermissionGroupsDataSourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED+".#", "0"),
 				),
 			},
 		},
@@ -108,7 +108,7 @@ func TestOnlyTestEnvironmentPermissionGroupValidFilter(t *testing.T) {
 			product_id = "08d86d63-2721-4da6-8c06-584521d516bc"
 		}
 	`
-	const permissionGroupID = "29859"
+	const permissionGroupID = "31126"
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:  func() { testAccPreCheck(t) },
@@ -143,13 +143,13 @@ func TestOnlyTestEnvironmentPermissionGroupValidFilter(t *testing.T) {
 					resource.TestCheckResourceAttr(testPermissionGroupsDataSourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_CAN_VIEW_PRODUCT_STATISTICS, "false"),
 					resource.TestCheckResourceAttr(testPermissionGroupsDataSourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_ACCESSTYPE, "custom"),
 					resource.TestCheckResourceAttr(testPermissionGroupsDataSourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_NEW_ENVIRONMENT_ACCESSTYPE, "readOnly"),
-					resource.TestCheckResourceAttr(testPermissionGroupsDataSourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESS+".#", "3"),
-					resource.TestCheckResourceAttr(testPermissionGroupsDataSourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESS+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID, "08d8becf-d4d9-4c66-8b48-6ac74cd95fba"),
-					resource.TestCheckResourceAttr(testPermissionGroupsDataSourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESS+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESSTYPE, "none"),
-					resource.TestCheckResourceAttr(testPermissionGroupsDataSourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESS+".1."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID, "08d86d63-272c-4355-8027-4b52787bc1bd"),
-					resource.TestCheckResourceAttr(testPermissionGroupsDataSourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESS+".1."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESSTYPE, "none"),
-					resource.TestCheckResourceAttr(testPermissionGroupsDataSourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESS+".2."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID, "08d86d63-2726-47cd-8bfc-59608ecb91e2"),
-					resource.TestCheckResourceAttr(testPermissionGroupsDataSourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESS+".2."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESSTYPE, "full"),
+					resource.TestCheckResourceAttr(testPermissionGroupsDataSourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED+".#", "3"),
+					resource.TestCheckResourceAttr(testPermissionGroupsDataSourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID_DEPRECATED, "08d8becf-d4d9-4c66-8b48-6ac74cd95fba"),
+					resource.TestCheckResourceAttr(testPermissionGroupsDataSourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESSTYPE_DEPRECATED, "none"),
+					resource.TestCheckResourceAttr(testPermissionGroupsDataSourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED+".1."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID_DEPRECATED, "08d86d63-272c-4355-8027-4b52787bc1bd"),
+					resource.TestCheckResourceAttr(testPermissionGroupsDataSourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED+".1."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESSTYPE_DEPRECATED, "none"),
+					resource.TestCheckResourceAttr(testPermissionGroupsDataSourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED+".2."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID_DEPRECATED, "08d86d63-2726-47cd-8bfc-59608ecb91e2"),
+					resource.TestCheckResourceAttr(testPermissionGroupsDataSourceName, PERMISSION_GROUPS+".0."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED+".2."+PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESSTYPE_DEPRECATED, "full"),
 				),
 			},
 		},

@@ -130,16 +130,16 @@ func dataSourceConfigCatPermissionGroups() *schema.Resource {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						PERMISSION_GROUP_ENVIRONMENT_ACCESS: {
+						PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED: {
 							Type:     schema.TypeList,
 							Computed: true,
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
-									PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID: {
+									PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID_DEPRECATED: {
 										Type:     schema.TypeString,
 										Computed: true,
 									},
-									PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESSTYPE: {
+									PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESSTYPE_DEPRECATED: {
 										Type:     schema.TypeString,
 										Computed: true,
 									},
@@ -214,7 +214,7 @@ func flattenPermissionGroupsData(permissionGroups *[]sw.PermissionGroupModel) []
 			element[PERMISSION_GROUP_CAN_VIEW_PRODUCT_STATISTICS] = permissionGroup.CanViewProductStatistics
 			element[PERMISSION_GROUP_ACCESSTYPE] = *permissionGroup.AccessType
 			element[PERMISSION_GROUP_NEW_ENVIRONMENT_ACCESSTYPE] = *permissionGroup.NewEnvironmentAccessType
-			element[PERMISSION_GROUP_ENVIRONMENT_ACCESS] = flattenPermissionGroupEnvironmentAccessData(permissionGroup.EnvironmentAccesses, *permissionGroup.AccessType)
+			element[PERMISSION_GROUP_ENVIRONMENT_ACCESS_DEPRECATED] = flattenPermissionGroupEnvironmentAccessData(permissionGroup.EnvironmentAccesses, *permissionGroup.AccessType)
 
 			elements[i] = element
 		}
@@ -234,8 +234,8 @@ func flattenPermissionGroupEnvironmentAccessData(environmentAccesses []sw.Enviro
 	for _, environmentAccess := range environmentAccesses {
 		element := make(map[string]interface{})
 
-		element[PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID] = environmentAccess.EnvironmentId
-		element[PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESSTYPE] = *environmentAccess.EnvironmentAccessType
+		element[PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID_DEPRECATED] = environmentAccess.EnvironmentId
+		element[PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESSTYPE_DEPRECATED] = *environmentAccess.EnvironmentAccessType
 
 		elements = append(elements, element)
 	}
