@@ -1,3 +1,7 @@
+---
+page_title: "Simple usage of Data Sources"
+---
+
 # Simple usage of Data Sources
 
 ## Prerequisites

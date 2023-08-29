@@ -122,22 +122,11 @@ func resourceConfigCatPermissionGroup() *schema.Resource {
 				Optional: true,
 				Default:  sw.ENVIRONMENTACCESSTYPE_NONE,
 			},
-			PERMISSION_GROUP_ENVIRONMENT_ACCESS: {
-				Type:     schema.TypeList,
+			PERMISSION_GROUP_ENVIRONMENT_ACCESSES: {
+				Type:     schema.TypeMap,
 				Optional: true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID: {
-							Type:         schema.TypeString,
-							Required:     true,
-							ValidateFunc: validateGUIDFunc,
-						},
-						PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESSTYPE: {
-							Type:     schema.TypeString,
-							Optional: true,
-							Default:  sw.ENVIRONMENTACCESSTYPE_NONE,
-						},
-					},
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
 				},
 			},
 		},
@@ -163,7 +152,7 @@ func resourcePermissionGroupCreate(ctx context.Context, d *schema.ResourceData, 
 		return diag.FromErr(newEnvironmentAccessTypeParseErr)
 	}
 
-	environmentAccesses, environmentAccessParseError := getEnvironmentAccesses(d.Get(PERMISSION_GROUP_ENVIRONMENT_ACCESS).([]interface{}), *accessType)
+	environmentAccesses, environmentAccessParseError := getEnvironmentAccesses(d.Get(PERMISSION_GROUP_ENVIRONMENT_ACCESSES).(map[string]any), nil, *accessType)
 	if environmentAccessParseError != nil {
 		return diag.FromErr(environmentAccessParseError)
 	}
@@ -269,7 +258,7 @@ func resourcePermissionGroupRead(ctx context.Context, d *schema.ResourceData, m 
 	d.Set(PERMISSION_GROUP_CAN_VIEW_PRODUCT_STATISTICS, permissionGroup.CanViewProductStatistics)
 	d.Set(PERMISSION_GROUP_ACCESSTYPE, permissionGroup.AccessType)
 	d.Set(PERMISSION_GROUP_NEW_ENVIRONMENT_ACCESSTYPE, permissionGroup.NewEnvironmentAccessType)
-	d.Set(PERMISSION_GROUP_ENVIRONMENT_ACCESS, flattenPermissionGroupEnvironmentAccessData(permissionGroup.EnvironmentAccesses, *permissionGroup.AccessType))
+	d.Set(PERMISSION_GROUP_ENVIRONMENT_ACCESSES, flattenPermissionGroupEnvironmentAccessData(permissionGroup.EnvironmentAccesses, *permissionGroup.AccessType))
 
 	return diags
 }
@@ -300,7 +289,7 @@ func resourcePermissionGroupUpdate(ctx context.Context, d *schema.ResourceData, 
 		PERMISSION_GROUP_CAN_VIEW_PRODUCT_STATISTICS,
 		PERMISSION_GROUP_ACCESSTYPE,
 		PERMISSION_GROUP_NEW_ENVIRONMENT_ACCESSTYPE,
-		PERMISSION_GROUP_ENVIRONMENT_ACCESS) {
+		PERMISSION_GROUP_ENVIRONMENT_ACCESSES) {
 
 		permimssionGroupName := d.Get(PERMISSION_GROUP_NAME).(string)
 
@@ -316,9 +305,21 @@ func resourcePermissionGroupUpdate(ctx context.Context, d *schema.ResourceData, 
 			return diag.FromErr(newEnvironmentAccessTypeParseErr)
 		}
 
-		environmentAccesses, environmentAccessParseError := getEnvironmentAccesses(d.Get(PERMISSION_GROUP_ENVIRONMENT_ACCESS).([]interface{}), *accessType)
-		if environmentAccessParseError != nil {
-			return diag.FromErr(environmentAccessParseError)
+		var environmentAccesses *[]sw.CreateOrUpdateEnvironmentAccessModel
+
+		if d.HasChange(PERMISSION_GROUP_ENVIRONMENT_ACCESSES) {
+			oldEnvironmentAccesses, newEnvironmentAccesses := d.GetChange(PERMISSION_GROUP_ENVIRONMENT_ACCESSES)
+			parsedEnvironmentAccesses, environmentAccessParseError := getEnvironmentAccesses(newEnvironmentAccesses.(map[string]any), oldEnvironmentAccesses.(map[string]any), *accessType)
+			if environmentAccessParseError != nil {
+				return diag.FromErr(environmentAccessParseError)
+			}
+			environmentAccesses = parsedEnvironmentAccesses
+		} else {
+			parsedEnvironmentAccesses, environmentAccessParseError := getEnvironmentAccesses(d.Get(PERMISSION_GROUP_ENVIRONMENT_ACCESSES).(map[string]any), nil, *accessType)
+			if environmentAccessParseError != nil {
+				return diag.FromErr(environmentAccessParseError)
+			}
+			environmentAccesses = parsedEnvironmentAccesses
 		}
 
 		canManageMembers := d.Get(PERMISSION_GROUP_CAN_MANAGE_MEMBERS).(bool)
@@ -389,29 +390,43 @@ func resourcePermissionGroupUpdate(ctx context.Context, d *schema.ResourceData, 
 	return resourcePermissionGroupRead(ctx, d, m)
 }
 
-func getEnvironmentAccesses(environmentAccesses []interface{}, accessType sw.AccessType) (*[]sw.CreateOrUpdateEnvironmentAccessModel, error) {
+func getEnvironmentAccesses(newEnvironmentAccesses map[string]any, oldEnvironmentAccesses map[string]any, accessType sw.AccessType) (*[]sw.CreateOrUpdateEnvironmentAccessModel, error) {
 	elements := make([]sw.CreateOrUpdateEnvironmentAccessModel, 0)
 
-	if accessType != sw.ACCESSTYPE_CUSTOM && environmentAccesses != nil && len(environmentAccesses) > 0 {
-		return nil, fmt.Errorf("Error: environment_access can only be set if the accesstype is custom")
+	if accessType != sw.ACCESSTYPE_CUSTOM && len(newEnvironmentAccesses) > 0 {
+		return nil, fmt.Errorf("Error: environment_accesses can only be set if the accesstype is custom")
 	}
 
-	for _, environmentAccess := range environmentAccesses {
-		item := environmentAccess.(map[string]interface{})
+	if accessType != sw.ACCESSTYPE_CUSTOM {
+		return &elements, nil
+	}
 
-		environmentAccessTypeString := item[PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESSTYPE].(string)
+	for environmentIdKey, environmentAccessType := range newEnvironmentAccesses {
+		environmentAccessTypeString := environmentAccessType.(string)
+		environmentId := environmentIdKey
 		environmentAccessType, environmentAccessTypeParseError := sw.NewEnvironmentAccessTypeFromValue(environmentAccessTypeString)
-		if environmentAccessTypeParseError != nil {
-			return nil, environmentAccessTypeParseError
+		if environmentAccessTypeParseError != nil || *environmentAccessType == sw.ENVIRONMENTACCESSTYPE_NONE {
+			return nil, fmt.Errorf("Error: invalid value '" + environmentAccessTypeString + "' for EnvironmentAccessType: valid values are [full readOnly]")
 		}
-
-		environmentID := item[PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID].(string)
 		element := sw.CreateOrUpdateEnvironmentAccessModel{
-			EnvironmentId:         &environmentID,
+			EnvironmentId:         &environmentId,
 			EnvironmentAccessType: environmentAccessType,
 		}
 
 		elements = append(elements, element)
+	}
+
+	// We should set none to those environment accesses that were deleted
+	for environmentIdKey := range oldEnvironmentAccesses {
+		environmentId := environmentIdKey
+		_, ok := newEnvironmentAccesses[environmentId]
+		if !ok {
+			element := sw.CreateOrUpdateEnvironmentAccessModel{
+				EnvironmentId:         &environmentId,
+				EnvironmentAccessType: sw.ENVIRONMENTACCESSTYPE_NONE.Ptr(),
+			}
+			elements = append(elements, element)
+		}
 	}
 
 	return &elements, nil

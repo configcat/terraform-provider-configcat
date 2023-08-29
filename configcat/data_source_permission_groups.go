@@ -130,20 +130,11 @@ func dataSourceConfigCatPermissionGroups() *schema.Resource {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						PERMISSION_GROUP_ENVIRONMENT_ACCESS: {
-							Type:     schema.TypeList,
-							Computed: true,
-							Elem: &schema.Resource{
-								Schema: map[string]*schema.Schema{
-									PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID: {
-										Type:     schema.TypeString,
-										Computed: true,
-									},
-									PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESSTYPE: {
-										Type:     schema.TypeString,
-										Computed: true,
-									},
-								},
+						PERMISSION_GROUP_ENVIRONMENT_ACCESSES: {
+							Type:     schema.TypeMap,
+							Optional: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
 							},
 						},
 					},
@@ -214,7 +205,7 @@ func flattenPermissionGroupsData(permissionGroups *[]sw.PermissionGroupModel) []
 			element[PERMISSION_GROUP_CAN_VIEW_PRODUCT_STATISTICS] = permissionGroup.CanViewProductStatistics
 			element[PERMISSION_GROUP_ACCESSTYPE] = *permissionGroup.AccessType
 			element[PERMISSION_GROUP_NEW_ENVIRONMENT_ACCESSTYPE] = *permissionGroup.NewEnvironmentAccessType
-			element[PERMISSION_GROUP_ENVIRONMENT_ACCESS] = flattenPermissionGroupEnvironmentAccessData(permissionGroup.EnvironmentAccesses, *permissionGroup.AccessType)
+			element[PERMISSION_GROUP_ENVIRONMENT_ACCESSES] = flattenPermissionGroupEnvironmentAccessData(permissionGroup.EnvironmentAccesses, *permissionGroup.AccessType)
 
 			elements[i] = element
 		}
@@ -225,19 +216,18 @@ func flattenPermissionGroupsData(permissionGroups *[]sw.PermissionGroupModel) []
 	return make([]interface{}, 0)
 }
 
-func flattenPermissionGroupEnvironmentAccessData(environmentAccesses []sw.EnvironmentAccessModel, accessType sw.AccessType) []interface{} {
-	elements := make([]interface{}, 0)
+func flattenPermissionGroupEnvironmentAccessData(environmentAccesses []sw.EnvironmentAccessModel, accessType sw.AccessType) map[string]any {
+	elements := make(map[string]any)
 	if accessType != sw.ACCESSTYPE_CUSTOM {
 		return elements
 	}
 
 	for _, environmentAccess := range environmentAccesses {
-		element := make(map[string]interface{})
+		if *environmentAccess.EnvironmentAccessType == sw.ENVIRONMENTACCESSTYPE_NONE {
+			continue
+		}
 
-		element[PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ID] = environmentAccess.EnvironmentId
-		element[PERMISSION_GROUP_ENVIRONMENT_ACCESS_ENVIRONMENT_ACCESSTYPE] = *environmentAccess.EnvironmentAccessType
-
-		elements = append(elements, element)
+		elements[*environmentAccess.EnvironmentId] = *environmentAccess.EnvironmentAccessType
 	}
 
 	return elements

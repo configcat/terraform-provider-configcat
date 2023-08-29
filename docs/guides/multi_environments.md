@@ -1,3 +1,7 @@
+---
+page_title: "Advanced usage of Resources in multiple environments"
+---
+
 # Advanced usage of Resources in multiple environments
 
 ## Prerequisites
