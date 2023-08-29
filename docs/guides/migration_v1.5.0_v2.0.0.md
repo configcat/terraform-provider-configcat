@@ -8,6 +8,8 @@ page_title: "Migration guide from v1.5.0 to v2.0.0"
 
 Permission Group handling was introduced in v1.5.0 and it had a problem with handling custom Environment accesses. We had to refactor it and introduce a breaking change in v2.0.0.
 
+### configcat_permission_group resource
+
 You could define the custom Environment accesses in v1.5.0 with a list property:
 
 ```hcl
@@ -44,3 +46,7 @@ resource "configcat_permission_group" "my_permission_group" {
   }
 }
 ```
+
+### configcat_permission_groups data source
+
+The custom Environment access property changed from a list to a map.
