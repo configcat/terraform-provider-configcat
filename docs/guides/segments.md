@@ -1,3 +1,7 @@
+---
+page_title: "Advanced usage of Resources with Segments"
+---
+
 # Advanced usage of Resources with Segments
 Read more about [segmentation and segments](https://configcat.com/docs/advanced/segments) in ConfigCat.
 ## Prerequisites

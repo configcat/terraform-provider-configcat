@@ -1,3 +1,7 @@
+---
+page_title: "Simple usage of Resources"
+---
+
 # Simple usage of Resources
 
 ## Prerequisites
