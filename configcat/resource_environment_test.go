@@ -89,6 +89,7 @@ func TestResourceEnvironmentWrongColor(t *testing.T) {
 						name = "TestResourceEnvironmentWrongColor"
 						description = "testDescription"
 						color = "yellow"
+						order = 20
 					}
 				`,
 				Check: resource.ComposeTestCheckFunc(
