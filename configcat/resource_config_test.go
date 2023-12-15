@@ -19,12 +19,14 @@ func TestResourceConfigFlow(t *testing.T) {
 						product_id = data.configcat_products.products.products.0.product_id
 						name = "TestResourceConfigFlow"
 						description = "testDescription"
+						order = 10
 					}
 				`,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrSet("configcat_config.test", "id"),
 					resource.TestCheckResourceAttr("configcat_config.test", CONFIG_NAME, "TestResourceConfigFlow"),
 					resource.TestCheckResourceAttr("configcat_config.test", CONFIG_DESCRIPTION, "testDescription"),
+					resource.TestCheckResourceAttr("configcat_config.test", CONFIG_ORDER, "10"),
 				),
 			},
 			{
@@ -35,12 +37,14 @@ func TestResourceConfigFlow(t *testing.T) {
 						product_id = data.configcat_products.products.products.0.product_id
 						name = "testName2"
 						description = "testDescription2"
+						order = 11
 					}
 				`,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrSet("configcat_config.test", "id"),
 					resource.TestCheckResourceAttr("configcat_config.test", CONFIG_NAME, "testName2"),
 					resource.TestCheckResourceAttr("configcat_config.test", CONFIG_DESCRIPTION, "testDescription2"),
+					resource.TestCheckResourceAttr("configcat_config.test", CONFIG_ORDER, "11"),
 				),
 			},
 			{

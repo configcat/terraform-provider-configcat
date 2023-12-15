@@ -40,6 +40,10 @@ func dataSourceConfigCatProducts() *schema.Resource {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
+						PRODUCT_ORDER: {
+							Type:     schema.TypeInt,
+							Computed: true,
+						},
 					},
 				},
 			},
@@ -86,6 +90,7 @@ func flattenProductsData(products *[]sw.ProductModel) []interface{} {
 			element[PRODUCT_ID] = product.ProductId
 			element[PRODUCT_NAME] = product.Name.Get()
 			element[PRODUCT_DESCRIPTION] = product.Description.Get()
+			element[PRODUCT_ORDER] = product.Order
 
 			elements[i] = element
 		}

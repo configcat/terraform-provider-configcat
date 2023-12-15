@@ -54,6 +54,7 @@ func TestSettingValidFilter(t *testing.T) {
 					resource.TestCheckResourceAttr(testSettingsDataSourceName, SETTINGS+".0."+SETTING_NAME, "My awesome feature flag"),
 					resource.TestCheckResourceAttr(testSettingsDataSourceName, SETTINGS+".0."+SETTING_HINT, "This is the hint for my awesome feature flag"),
 					resource.TestCheckResourceAttr(testSettingsDataSourceName, SETTINGS+".0."+SETTING_TYPE, "boolean"),
+					resource.TestCheckResourceAttr(testSettingsDataSourceName, SETTINGS+".0."+SETTING_ORDER, "0"),
 				),
 			},
 		},

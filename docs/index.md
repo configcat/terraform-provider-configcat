@@ -20,13 +20,13 @@ terraform {
   required_providers {
     configcat = {
       source = "configcat/configcat"
-      version = "~> 1.0"
+      version = "~> 3.0"
     }
   }
 }
 
 provider "configcat" {
-  version     = "~> 1.0"
+  version     = "~> 3.0"
 
   // Get your ConfigCat Public API credentials at https://app.configcat.com/my-account/public-api-credentials
   basic_auth_username = var.configcat_basic_auth_username
@@ -61,6 +61,7 @@ resource "configcat_setting" "setting" {
   name = "My awesome feature flag"
   hint = "This is the hint for my awesome feature flag"
   setting_type = "boolean"
+  order = 0
 }
 
 // Set a value to the Feature Flag/Setting created above

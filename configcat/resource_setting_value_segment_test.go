@@ -16,6 +16,7 @@ func TestResourceSettingValueBoolSegmentRules(t *testing.T) {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
 			key = "TestResourceSettingValueBoolSegmentRules"
 			name = "testBoolWithSegment"
+			order = 30
 		}
 		
 		resource "configcat_setting_value" "test" {
@@ -30,6 +31,7 @@ func TestResourceSettingValueBoolSegmentRules(t *testing.T) {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
 			key = "TestResourceSettingValueBoolSegmentRules"
 			name = "testBoolWithSegment"
+			order = 30
 		}
 		resource "configcat_setting_value" "test" {
 			environment_id = "` + environmentID + `"
@@ -49,6 +51,7 @@ func TestResourceSettingValueBoolSegmentRules(t *testing.T) {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
 			key = "TestResourceSettingValueBoolSegmentRules"
 			name = "testBoolWithSegment"
+			order = 30
 		}
 		resource "configcat_setting_value" "test" {
 			environment_id = "` + environmentID + `"

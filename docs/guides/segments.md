@@ -17,7 +17,7 @@ terraform {
   required_providers {
     configcat = {
       source = "configcat/configcat"
-      version = "~> 1.0"
+      version = "~> 3.0"
     }
   }
 }
@@ -34,12 +34,14 @@ resource "configcat_product" "my_product" {
   organization_id = data.configcat_organizations.my_organizations.organizations.0.organization_id
   name = "My product"
   description = "My product description"
+  order = 0
 }
 
 resource "configcat_config" "my_config" {
   product_id = configcat_product.my_product.id
   name = "My config"
   description = "My config description"
+  order = 0
 }
 
 resource "configcat_environment" "my_environment" {
@@ -47,6 +49,7 @@ resource "configcat_environment" "my_environment" {
   name = "Production"
   description = "Production description"
   color = "blue"
+  order = 0
 }
 
 resource "configcat_segment" "sensitive_users" {
@@ -73,6 +76,7 @@ resource "configcat_setting" "is_awesome" {
   name = "My awesome feature flag"
   hint = "This is the hint for my awesome feature flag"
   setting_type = "boolean"
+  order = 0
 }
 
 resource "configcat_setting_value" "is_awesome_value" {

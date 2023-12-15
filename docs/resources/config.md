@@ -13,6 +13,7 @@ resource "configcat_config" "my_config" {
   product_id = data.configcat_products.my_products.products.0.product_id
   name = "My config"
   description = "My config description"
+  order = 0
 }
 
 
@@ -25,6 +26,7 @@ output "config_id" {
 
 * `product_id` - (Required) The ID of the Product.
 * `name` - (Required) The name of the Config.
+* `order` - (Required) The order of the Config within a Product (zero-based). If multiple Configs has the same order, they are displayed in alphabetical order.
 * `description` - (Optional) The description of the Config.
 
 ## Attribute Reference

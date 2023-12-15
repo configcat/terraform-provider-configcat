@@ -46,6 +46,10 @@ func dataSourceConfigCatConfigs() *schema.Resource {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
+						CONFIG_ORDER: {
+							Type:     schema.TypeInt,
+							Computed: true,
+						},
 					},
 				},
 			},
@@ -93,6 +97,7 @@ func flattenConfigsData(configs *[]sw.ConfigModel) []interface{} {
 			element[CONFIG_ID] = config.ConfigId
 			element[CONFIG_NAME] = config.Name.Get()
 			element[CONFIG_DESCRIPTION] = config.Description.Get()
+			element[CONFIG_ORDER] = config.Order
 
 			elements[i] = element
 		}

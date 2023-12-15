@@ -59,6 +59,11 @@ func dataSourceConfigCatSettings() *schema.Resource {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
+
+						SETTING_ORDER: {
+							Type:     schema.TypeInt,
+							Computed: true,
+						},
 					},
 				},
 			},
@@ -108,6 +113,7 @@ func flattenSettingsData(settings *[]sw.SettingModel) []interface{} {
 			element[SETTING_NAME] = setting.Name.Get()
 			element[SETTING_HINT] = setting.Hint.Get()
 			element[SETTING_TYPE] = setting.SettingType
+			element[SETTING_ORDER] = setting.Order
 
 			elements[i] = element
 		}

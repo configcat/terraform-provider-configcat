@@ -35,6 +35,7 @@ output "environment_id" {
 * `name` - The name of the Environment.
 * `description` - The description of the Environment.
 * `color` - The color of the Environment.
+* `order` - The order of the Environment within a Product (zero-based).
 
 ## Endpoints used
 - [List Environments](https://api.configcat.com/docs/#tag/Environments/operation/get-environments)

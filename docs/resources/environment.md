@@ -14,6 +14,7 @@ resource "configcat_environment" "my_environment" {
   name = "Staging"
   description = "Staging description"
   color = "blue"
+  order = 0
 }
 
 
@@ -26,6 +27,7 @@ output "environment_id" {
 
 * `product_id` - (Required) The ID of the Product.
 * `name` - (Required) The name of the Environment.
+* `order` - (Required) The order of the Environment within a Product (zero-based). If multiple Environments has the same order, they are displayed in alphabetical order.
 * `description` - (Optional) The description of the Environment.
 * `color` - (Optional) The color (HTML color code) of the Environment.
 

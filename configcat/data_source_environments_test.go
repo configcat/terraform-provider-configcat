@@ -53,6 +53,7 @@ func TestEnvironmentValidFilter(t *testing.T) {
 					resource.TestCheckResourceAttr(testEnvironmentsDataSourceName, ENVIRONMENTS+".0."+ENVIRONMENT_NAME, "Test"),
 					resource.TestCheckResourceAttr(testEnvironmentsDataSourceName, ENVIRONMENTS+".0."+ENVIRONMENT_DESCRIPTION, "Test Env Description"),
 					resource.TestCheckResourceAttr(testEnvironmentsDataSourceName, ENVIRONMENTS+".0."+ENVIRONMENT_COLOR, "#5c6bc0"),
+					resource.TestCheckResourceAttr(testEnvironmentsDataSourceName, ENVIRONMENTS+".0."+ENVIRONMENT_ORDER, "2"),
 				),
 			},
 		},

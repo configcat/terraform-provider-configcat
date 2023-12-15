@@ -15,6 +15,7 @@ func TestResourceSettingValueFloatFreeze(t *testing.T) {
 			key = "TestResourceSettingValueFloatFreeze"
 			name = "testFloat"
 			setting_type = "double"
+			order = 30
 		}
 
 		resource "configcat_setting_value" "test" {
@@ -29,6 +30,7 @@ func TestResourceSettingValueFloatFreeze(t *testing.T) {
 			key = "TestResourceSettingValueFloatFreeze"
 			name = "testFloat"
 			setting_type = "double"
+			order = 30
 		}
 		
 		resource "configcat_setting_value" "test" {
@@ -73,6 +75,7 @@ func TestResourceSettingValueFloatNoFreeze(t *testing.T) {
 			key = "TestResourceSettingValueFloatNoFreeze"
 			name = "testFloat"
 			setting_type = "double"
+			order = 30
 		}
 
 		resource "configcat_setting_value" "test" {
@@ -88,6 +91,7 @@ func TestResourceSettingValueFloatNoFreeze(t *testing.T) {
 			key = "TestResourceSettingValueFloatNoFreeze"
 			name = "testFloat"
 			setting_type = "double"
+			order = 30
 		}
 
 		resource "configcat_setting_value" "test" {
@@ -138,6 +142,7 @@ func TestResourceSettingValueFloatRules(t *testing.T) {
 			key = "TestResourceSettingValueFloatRules"
 			name = "testFloat"
 			setting_type = "double"
+			order = 30
 		}
 		resource "configcat_setting_value" "test" {
 			environment_id = "` + environmentID + `"
@@ -152,6 +157,7 @@ func TestResourceSettingValueFloatRules(t *testing.T) {
 			key = "TestResourceSettingValueFloatRules"
 			name = "testFloat"
 			setting_type = "double"
+			order = 30
 		}	
 		resource "configcat_setting_value" "test" {
 			environment_id = "` + environmentID + `"
@@ -173,6 +179,7 @@ func TestResourceSettingValueFloatRules(t *testing.T) {
 			key = "TestResourceSettingValueFloatRules"
 			name = "testFloat"
 			setting_type = "double"
+			order = 30
 		}	
 		resource "configcat_setting_value" "test" {
 			environment_id = "` + environmentID + `"
@@ -240,6 +247,7 @@ func TestResourceSettingValueFloatPercentageItems(t *testing.T) {
 			key = "TestResourceSettingValueFloatPercentageItems"
 			name = "testFloat"
 			setting_type = "double"
+			order = 30
 		} 
 		resource "configcat_setting_value" "test" {
 			environment_id = "` + environmentID + `"
@@ -254,6 +262,7 @@ func TestResourceSettingValueFloatPercentageItems(t *testing.T) {
 			key = "TestResourceSettingValueFloatPercentageItems"
 			name = "testFloat"
 			setting_type = "double"
+			order = 30
 		}
 		resource "configcat_setting_value" "test" {
 			environment_id = "` + environmentID + `"
@@ -277,6 +286,7 @@ func TestResourceSettingValueFloatPercentageItems(t *testing.T) {
 			key = "TestResourceSettingValueFloatPercentageItems"
 			name = "testFloat"
 			setting_type = "double"
+			order = 30
 		}
 		resource "configcat_setting_value" "test" {
 			environment_id = "` + environmentID + `"
