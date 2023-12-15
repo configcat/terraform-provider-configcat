@@ -8,7 +8,7 @@ on:
 
 concurrency:
   group: IntegrationTests
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
 
