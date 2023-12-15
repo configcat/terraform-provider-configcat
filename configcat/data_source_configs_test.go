@@ -52,6 +52,7 @@ func TestConfigValidFilter(t *testing.T) {
 					resource.TestCheckResourceAttr(testConfigsDataSourceName, CONFIGS+".0."+CONFIG_ID, configID),
 					resource.TestCheckResourceAttr(testConfigsDataSourceName, CONFIGS+".0."+CONFIG_NAME, "Main Config"),
 					resource.TestCheckResourceAttr(testConfigsDataSourceName, CONFIGS+".0."+CONFIG_DESCRIPTION, "Main Config Description"),
+					resource.TestCheckResourceAttr(testConfigsDataSourceName, CONFIGS+".0."+CONFIG_ORDER, "0"),
 				),
 			},
 		},

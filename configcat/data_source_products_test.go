@@ -49,6 +49,7 @@ func TestProductValidFilter(t *testing.T) {
 					resource.TestCheckResourceAttr(testProductsDataSourceName, PRODUCTS+".0."+PRODUCT_ID, productID),
 					resource.TestCheckResourceAttr(testProductsDataSourceName, PRODUCTS+".0."+PRODUCT_NAME, "ConfigCat's product"),
 					resource.TestCheckResourceAttr(testProductsDataSourceName, PRODUCTS+".0."+PRODUCT_DESCRIPTION, "ConfigCat's product description"),
+					resource.TestCheckResourceAttr(testProductsDataSourceName, PRODUCTS+".0."+PRODUCT_ORDER, "0"),
 				),
 			},
 		},
