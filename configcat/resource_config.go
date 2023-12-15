@@ -34,6 +34,10 @@ func resourceConfigCatConfig() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			CONFIG_ORDER: {
+				Type:     schema.TypeInt,
+				Required: true,
+			},
 		},
 	}
 }
@@ -42,11 +46,13 @@ func resourceConfigCreate(ctx context.Context, d *schema.ResourceData, m interfa
 	c := m.(*Client)
 
 	productID := d.Get(PRODUCT_ID).(string)
-
 	configDescription := d.Get(CONFIG_DESCRIPTION).(string)
+	order := int32(d.Get(CONFIG_ORDER).(int))
+
 	body := sw.CreateConfigRequest{
 		Name:        d.Get(CONFIG_NAME).(string),
 		Description: *sw.NewNullableString(&configDescription),
+		Order:       *sw.NewNullableInt32(&order),
 	}
 
 	config, err := c.CreateConfig(productID, body)
@@ -76,6 +82,7 @@ func resourceConfigRead(ctx context.Context, d *schema.ResourceData, m interface
 	d.Set(PRODUCT_ID, config.Product.ProductId)
 	d.Set(CONFIG_NAME, config.Name.Get())
 	d.Set(CONFIG_DESCRIPTION, config.Description.Get())
+	d.Set(CONFIG_ORDER, config.Order)
 
 	return diags
 }
@@ -86,9 +93,11 @@ func resourceConfigUpdate(ctx context.Context, d *schema.ResourceData, m interfa
 	if d.HasChanges(CONFIG_NAME, CONFIG_DESCRIPTION) {
 		configName := d.Get(CONFIG_NAME).(string)
 		configDescription := d.Get(CONFIG_DESCRIPTION).(string)
+		order := int32(d.Get(CONFIG_ORDER).(int))
 		body := sw.UpdateConfigRequest{
 			Name:        *sw.NewNullableString(&configName),
 			Description: *sw.NewNullableString(&configDescription),
+			Order:       *sw.NewNullableInt32(&order),
 		}
 
 		_, err := c.UpdateConfig(d.Id(), body)
