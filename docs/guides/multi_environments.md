@@ -26,7 +26,7 @@ terraform {
   required_providers {
     configcat = {
       source = "configcat/configcat"
-      version = "~> 1.0"
+      version = "~> 3.0"
     }
   }
 }
@@ -42,11 +42,13 @@ data "configcat_organizations" "my_organizations" {
 resource "configcat_product" "my_product" {
   organization_id = data.configcat_organizations.my_organizations.organizations.0.organization_id
   name = "My product"
+  order = 0
 }
 
 resource "configcat_config" "my_config" {
   product_id = configcat_product.my_product.id
   name = "My config"
+  order = 0
 }
 
 resource "configcat_setting" "is_awesome" {
@@ -55,6 +57,7 @@ resource "configcat_setting" "is_awesome" {
   name = "My awesome feature flag"
   hint = "This is the hint for my awesome feature flag"
   setting_type = "boolean"
+  order = 0
 }
 
 resource "configcat_setting" "welcome_text" {
@@ -63,6 +66,7 @@ resource "configcat_setting" "welcome_text" {
   name = "Welcome text"
   hint = "Welcome text message shown on homepage"
   setting_type = "string"
+  order = 1
 }
 
 resource "configcat_tag" "created_by_terraform_tag" {
@@ -106,7 +110,7 @@ terraform {
   required_providers {
     configcat = {
       source = "configcat/configcat"
-      version = "~> 1.0"
+      version = "~> 3.0"
     }
   }
 }
@@ -118,6 +122,7 @@ variable "setting_welcome_text_id" { default = "" }
 resource "configcat_environment" "test_environment" {
   product_id = var.product_id
   name = "Test"
+  order = 0
 }
 
 resource "configcat_setting_value" "is_awesome_value" {
@@ -141,7 +146,7 @@ terraform {
   required_providers {
     configcat = {
       source = "configcat/configcat"
-      version = "~> 1.0"
+      version = "~> 3.0"
     }
   }
 }
@@ -153,6 +158,7 @@ variable "setting_welcome_text_id" { default = "" }
 resource "configcat_environment" "production_environment" {
   product_id = var.product_id
   name = "Production"
+  order = 1
 }
 
 resource "configcat_setting_value" "is_awesome_value" {

@@ -13,6 +13,7 @@ resource "configcat_product" "my_product" {
   organization_id = data.configcat_organizations.my_organizations.organizations.0.organization_id
   name = "My product"
   description = "My product description"
+  order = 0
 }
 
 
@@ -25,6 +26,7 @@ output "product_id" {
 
 * `organization_id` - (Required) The ID of the Organization.
 * `name` - (Required) The name of the Product.
+* `order` - (Required) The order of the Product within an Organization (zero-based). If multiple Products has the same order, they are displayed in alphabetical order.
 * `description` - (Optional) The description of the Product.
 
 ## Attribute Reference

@@ -28,6 +28,7 @@ output "product_id" {
 * `product_id` - The unique Product ID.
 * `name` - The name of the Product.
 * `description` - The description of the Product.
+* `order` - The order of the Product within an Organization (zero-based).
 
 ## Endpoints used
 - [List Products](https://api.configcat.com/docs/#tag/Products/operation/get-products)

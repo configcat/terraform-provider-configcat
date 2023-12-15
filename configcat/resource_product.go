@@ -25,15 +25,17 @@ func resourceConfigCatProduct() *schema.Resource {
 				ValidateFunc: validateGUIDFunc,
 				ForceNew:     true,
 			},
-
 			PRODUCT_NAME: {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-
 			PRODUCT_DESCRIPTION: {
 				Type:     schema.TypeString,
 				Optional: true,
+			},
+			PRODUCT_ORDER: {
+				Type:     schema.TypeInt,
+				Required: true,
 			},
 		},
 	}
@@ -44,9 +46,12 @@ func resourceProductCreate(ctx context.Context, d *schema.ResourceData, m interf
 
 	organizationID := d.Get(ORGANIZATION_ID).(string)
 	productDescription := d.Get(PRODUCT_DESCRIPTION).(string)
+	order := int32(d.Get(PRODUCT_ORDER).(int))
+
 	body := sw.CreateProductRequest{
 		Name:        d.Get(PRODUCT_NAME).(string),
 		Description: *sw.NewNullableString(&productDescription),
+		Order:       *sw.NewNullableInt32(&order),
 	}
 
 	product, err := c.CreateProduct(organizationID, body)
@@ -76,6 +81,7 @@ func resourceProductRead(ctx context.Context, d *schema.ResourceData, m interfac
 	d.Set(ORGANIZATION_ID, product.Organization.OrganizationId)
 	d.Set(PRODUCT_NAME, product.Name.Get())
 	d.Set(PRODUCT_DESCRIPTION, product.Description.Get())
+	d.Set(PRODUCT_ORDER, product.Order)
 
 	return diags
 }
@@ -87,10 +93,12 @@ func resourceProductUpdate(ctx context.Context, d *schema.ResourceData, m interf
 
 		productName := d.Get(PRODUCT_NAME).(string)
 		productDescription := d.Get(PRODUCT_DESCRIPTION).(string)
+		order := int32(d.Get(PRODUCT_ORDER).(int))
 
 		body := sw.UpdateProductRequest{
 			Name:        *sw.NewNullableString(&productName),
 			Description: *sw.NewNullableString(&productDescription),
+			Order:       *sw.NewNullableInt32(&order),
 		}
 
 		_, err := c.UpdateProduct(d.Id(), body)

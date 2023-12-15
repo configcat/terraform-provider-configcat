@@ -38,6 +38,10 @@ func resourceConfigCatEnvironment() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			ENVIRONMENT_ORDER: {
+				Type:     schema.TypeInt,
+				Required: true,
+			},
 		},
 	}
 }
@@ -49,10 +53,13 @@ func resourceEnvironmentCreate(ctx context.Context, d *schema.ResourceData, m in
 
 	environmentDescription := d.Get(ENVIRONMENT_DESCRIPTION).(string)
 	environmentColor := d.Get(ENVIRONMENT_COLOR).(string)
+	order := int32(d.Get(ENVIRONMENT_ORDER).(int))
+
 	body := sw.CreateEnvironmentModel{
 		Name:        d.Get(ENVIRONMENT_NAME).(string),
 		Description: *sw.NewNullableString(&environmentDescription),
 		Color:       *sw.NewNullableString(&environmentColor),
+		Order:       *sw.NewNullableInt32(&order),
 	}
 
 	environment, err := c.CreateEnvironment(productID, body)
@@ -83,6 +90,7 @@ func resourceEnvironmentRead(ctx context.Context, d *schema.ResourceData, m inte
 	d.Set(ENVIRONMENT_NAME, environment.Name.Get())
 	d.Set(ENVIRONMENT_DESCRIPTION, environment.Description.Get())
 	d.Set(ENVIRONMENT_COLOR, environment.Color.Get())
+	d.Set(ENVIRONMENT_ORDER, environment.Order)
 
 	return diags
 }
@@ -94,11 +102,13 @@ func resourceEnvironmentUpdate(ctx context.Context, d *schema.ResourceData, m in
 		environmentName := d.Get(ENVIRONMENT_NAME).(string)
 		environmentDescription := d.Get(ENVIRONMENT_DESCRIPTION).(string)
 		environmentColor := d.Get(ENVIRONMENT_COLOR).(string)
+		order := int32(d.Get(ENVIRONMENT_ORDER).(int))
 
 		body := sw.UpdateEnvironmentModel{
 			Name:        *sw.NewNullableString(&environmentName),
 			Description: *sw.NewNullableString(&environmentDescription),
 			Color:       *sw.NewNullableString(&environmentColor),
+			Order:       *sw.NewNullableInt32(&order),
 		}
 
 		_, err := c.UpdateEnvironment(d.Id(), body)

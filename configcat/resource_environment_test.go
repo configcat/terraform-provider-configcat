@@ -21,6 +21,7 @@ func TestResourceEnvironmentFlow(t *testing.T) {
 						name = "TestResourceEnvironmentFlow"
 						description = "testDescription"
 						color = "blue"
+						order = 10
 					}
 				`,
 				Check: resource.ComposeTestCheckFunc(
@@ -28,6 +29,7 @@ func TestResourceEnvironmentFlow(t *testing.T) {
 					resource.TestCheckResourceAttr("configcat_environment.test", ENVIRONMENT_NAME, "TestResourceEnvironmentFlow"),
 					resource.TestCheckResourceAttr("configcat_environment.test", ENVIRONMENT_DESCRIPTION, "testDescription"),
 					resource.TestCheckResourceAttr("configcat_environment.test", ENVIRONMENT_COLOR, "blue"),
+					resource.TestCheckResourceAttr("configcat_environment.test", ENVIRONMENT_ORDER, "10"),
 				),
 			},
 			{
@@ -39,6 +41,7 @@ func TestResourceEnvironmentFlow(t *testing.T) {
 						name = "TestResourceEnvironmentFlow2"
 						description = "testDescription2"
 						color = "yellow"
+						order = 11
 					}
 				`,
 				Check: resource.ComposeTestCheckFunc(
@@ -46,6 +49,7 @@ func TestResourceEnvironmentFlow(t *testing.T) {
 					resource.TestCheckResourceAttr("configcat_environment.test", ENVIRONMENT_NAME, "TestResourceEnvironmentFlow2"),
 					resource.TestCheckResourceAttr("configcat_environment.test", ENVIRONMENT_DESCRIPTION, "testDescription2"),
 					resource.TestCheckResourceAttr("configcat_environment.test", ENVIRONMENT_COLOR, "yellow"),
+					resource.TestCheckResourceAttr("configcat_environment.test", ENVIRONMENT_ORDER, "11"),
 				),
 			},
 			{
@@ -71,6 +75,7 @@ func TestResourceEnvironmentWrongColor(t *testing.T) {
 						name = "TestResourceEnvironmentWrongColor"
 						description = "testDescription"
 						color = "notvalid"
+						order = 20
 					}
 				`,
 				ExpectError: regexp.MustCompile(`Invalid color.`),

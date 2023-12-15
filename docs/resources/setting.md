@@ -20,6 +20,7 @@ resource "configcat_setting" "my_setting" {
   name = "My awesome feature flag"
   hint = "This is the hint for my awesome feature flag"
   setting_type = "boolean"
+  order = 0
 }
 
 
@@ -33,6 +34,7 @@ output "setting_id" {
 * `config_id` - (Required) The ID of the Config.
 * `key` - (Required) The key of the Feature Flag/Setting.
 * `name` - (Required) The name of the Setting.
+* `order` - (Required) The order of the Setting within a Config (zero-based). If multiple Settings has the same order, they are displayed in alphabetical order.
 * `hint` - (Optional) The hint of the Setting.
 * `setting_type` - (Optional) Default: `boolean`. The Setting's type.  
 Available values: `boolean`|`string`|`int`|`double`.

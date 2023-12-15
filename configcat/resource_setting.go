@@ -27,28 +27,28 @@ func resourceConfigCatSetting() *schema.Resource {
 				ValidateFunc: validateGUIDFunc,
 				ForceNew:     true,
 			},
-
 			SETTING_KEY: {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
 			},
-
 			SETTING_TYPE: {
 				Type:     schema.TypeString,
 				Default:  "boolean",
 				Optional: true,
 				ForceNew: true,
 			},
-
 			SETTING_NAME: {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-
 			SETTING_HINT: {
 				Type:     schema.TypeString,
 				Optional: true,
+			},
+			SETTING_ORDER: {
+				Type:     schema.TypeInt,
+				Required: true,
 			},
 		},
 	}
@@ -67,11 +67,13 @@ func resourceSettingCreate(ctx context.Context, d *schema.ResourceData, m interf
 	}
 
 	hint := d.Get(SETTING_HINT).(string)
+	order := int32(d.Get(SETTING_ORDER).(int))
 	body := sw.CreateSettingInitialValues{
 		Key:         d.Get(SETTING_KEY).(string),
 		Name:        d.Get(SETTING_NAME).(string),
 		Hint:        *sw.NewNullableString(&hint),
 		SettingType: *settingType,
+		Order:       *sw.NewNullableInt32(&order),
 	}
 
 	setting, err := c.CreateSetting(configID, body)
@@ -106,6 +108,7 @@ func resourceSettingRead(ctx context.Context, d *schema.ResourceData, m interfac
 	d.Set(SETTING_NAME, setting.Name.Get())
 	d.Set(SETTING_HINT, setting.Hint.Get())
 	d.Set(SETTING_TYPE, setting.SettingType)
+	d.Set(SETTING_ORDER, setting.Order)
 	d.Set(CONFIG_ID, setting.ConfigId)
 
 	return diags
@@ -135,6 +138,15 @@ func resourceSettingUpdate(ctx context.Context, d *schema.ResourceData, m interf
 				Op:    sw.OPERATIONTYPE_REPLACE,
 				Path:  "/hint",
 				Value: settingHint,
+			})
+		}
+
+		if d.HasChange(SETTING_ORDER) {
+			order := int32(d.Get(SETTING_ORDER).(int))
+			operations = append(operations, sw.JsonPatchOperation{
+				Op:    sw.OPERATIONTYPE_REPLACE,
+				Path:  "/order",
+				Value: order,
 			})
 		}
 

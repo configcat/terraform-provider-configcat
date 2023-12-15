@@ -15,6 +15,7 @@ func TestResourceSettingValueStringFreeze(t *testing.T) {
 			key = "TestResourceSettingValueStringFreeze"
 			name = "testString"
 			setting_type = "string"
+			order = 30
 		}
 
 		resource "configcat_setting_value" "test" {
@@ -29,6 +30,7 @@ func TestResourceSettingValueStringFreeze(t *testing.T) {
 			key = "TestResourceSettingValueStringFreeze"
 			name = "testString"
 			setting_type = "string"
+			order = 30
 		}
 		
 		resource "configcat_setting_value" "test" {
@@ -73,6 +75,7 @@ func TestResourceSettingValueStringNoFreeze(t *testing.T) {
 			key = "TestResourceSettingValueStringNoFreeze"
 			name = "testString"
 			setting_type = "string"
+			order = 30
 		}
 
 		resource "configcat_setting_value" "test" {
@@ -88,6 +91,7 @@ func TestResourceSettingValueStringNoFreeze(t *testing.T) {
 			key = "TestResourceSettingValueStringNoFreeze"
 			name = "testString"
 			setting_type = "string"
+			order = 30
 		}
 
 		resource "configcat_setting_value" "test" {
@@ -138,6 +142,7 @@ func TestResourceSettingValueStringRules(t *testing.T) {
 			key = "TestResourceSettingValueStringRules"
 			name = "testString"
 			setting_type = "string"
+			order = 30
 		}
 		resource "configcat_setting_value" "test" {
 			environment_id = "` + environmentID + `"
@@ -152,6 +157,7 @@ func TestResourceSettingValueStringRules(t *testing.T) {
 			key = "TestResourceSettingValueStringRules"
 			name = "testString"
 			setting_type = "string"
+			order = 30
 		}	
 		resource "configcat_setting_value" "test" {
 			environment_id = "` + environmentID + `"
@@ -173,6 +179,7 @@ func TestResourceSettingValueStringRules(t *testing.T) {
 			key = "TestResourceSettingValueStringRules"
 			name = "testString"
 			setting_type = "string"
+			order = 30
 		}	
 		resource "configcat_setting_value" "test" {
 			environment_id = "` + environmentID + `"
@@ -240,6 +247,7 @@ func TestResourceSettingValueStringPercentageItems(t *testing.T) {
 			key = "TestResourceSettingValueStringPercentageItems"
 			name = "testString"
 			setting_type = "string"
+			order = 30
 		} 
 		resource "configcat_setting_value" "test" {
 			environment_id = "` + environmentID + `"
@@ -254,6 +262,7 @@ func TestResourceSettingValueStringPercentageItems(t *testing.T) {
 			key = "TestResourceSettingValueStringPercentageItems"
 			name = "testString"
 			setting_type = "string"
+			order = 30
 		}
 		resource "configcat_setting_value" "test" {
 			environment_id = "` + environmentID + `"
@@ -277,6 +286,7 @@ func TestResourceSettingValueStringPercentageItems(t *testing.T) {
 			key = "TestResourceSettingValueStringPercentageItems"
 			name = "testString"
 			setting_type = "string"
+			order = 30
 		}
 		resource "configcat_setting_value" "test" {
 			environment_id = "` + environmentID + `"

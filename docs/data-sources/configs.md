@@ -34,6 +34,7 @@ output "config_id" {
 * `config_id` - The unique Config ID.
 * `name` - The name of the Config.
 * `description` - The description of the Config.
+* `order` - The order of the Config within a Product (zero-based).
 
 ## Endpoints used
 [List Configs](https://api.configcat.com/docs/#tag/Configs/operation/get-configs)

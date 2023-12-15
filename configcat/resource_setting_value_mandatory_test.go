@@ -15,6 +15,7 @@ func TestResourceSettingValueMandatory(t *testing.T) {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
 			key = "TestResourceSettingValueMandatory"
 			name = "testMandatory"
+			order = 30
 		}
 	`
 	const settingValueResourceUpdatedWithoutMandatory = `
@@ -22,6 +23,7 @@ func TestResourceSettingValueMandatory(t *testing.T) {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
 			key = "TestResourceSettingValueMandatory"
 			name = "testMandatory"
+			order = 30
 		}
 
 		resource "configcat_setting_value" "test" {
@@ -36,6 +38,7 @@ func TestResourceSettingValueMandatory(t *testing.T) {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
 			key = "testBool"
 			name = "testBool"
+			order = 30
 		}
 		
 		resource "configcat_setting_value" "test" {

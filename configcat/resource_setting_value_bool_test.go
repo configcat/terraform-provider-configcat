@@ -14,6 +14,7 @@ func TestResourceSettingValueBoolFreeze(t *testing.T) {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
 			key = "testBool"
 			name = "testBool"
+			order = 30
 		}
 
 		resource "configcat_setting_value" "test" {
@@ -27,6 +28,7 @@ func TestResourceSettingValueBoolFreeze(t *testing.T) {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
 			key = "testBool"
 			name = "testBool"
+			order = 30
 		}
 		
 		resource "configcat_setting_value" "test" {
@@ -70,6 +72,7 @@ func TestResourceSettingValueBoolNoFreeze(t *testing.T) {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
 			key = "testBool"
 			name = "testBool"
+			order = 30
 		}
 
 		resource "configcat_setting_value" "test" {
@@ -84,6 +87,7 @@ func TestResourceSettingValueBoolNoFreeze(t *testing.T) {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
 			key = "testBool"
 			name = "testBool"
+			order = 30
 		}
 		resource "configcat_setting_value" "test" {
 			environment_id = "` + environmentID + `"
@@ -132,6 +136,7 @@ func TestResourceSettingValueBoolRules(t *testing.T) {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
 			key = "testBool"
 			name = "testBool"
+			order = 30
 		}
 		
 		resource "configcat_setting_value" "test" {
@@ -146,6 +151,7 @@ func TestResourceSettingValueBoolRules(t *testing.T) {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
 			key = "testBool"
 			name = "testBool"
+			order = 30
 		}
 		resource "configcat_setting_value" "test" {
 			environment_id = "` + environmentID + `"
@@ -166,6 +172,7 @@ func TestResourceSettingValueBoolRules(t *testing.T) {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
 			key = "testBool"
 			name = "testBool"
+			order = 30
 		}
 		resource "configcat_setting_value" "test" {
 			environment_id = "` + environmentID + `"
@@ -232,6 +239,7 @@ func TestResourceSettingValueBoolPercentageItems(t *testing.T) {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
 			key = "testBool"
 			name = "testBool"
+			order = 30
 		}
 		resource "configcat_setting_value" "test" {
 			environment_id = "` + environmentID + `"
@@ -245,6 +253,7 @@ func TestResourceSettingValueBoolPercentageItems(t *testing.T) {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
 			key = "testBool"
 			name = "testBool"
+			order = 30
 		}
 		resource "configcat_setting_value" "test" {
 			environment_id = "` + environmentID + `"
@@ -267,6 +276,7 @@ func TestResourceSettingValueBoolPercentageItems(t *testing.T) {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
 			key = "testBool"
 			name = "testBool"
+			order = 30
 		}
 		resource "configcat_setting_value" "test" {
 			environment_id = "` + environmentID + `"

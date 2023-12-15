@@ -41,6 +41,7 @@ output "setting_id" {
 * `name` - The name of the Setting.
 * `hint` - The hint of the Setting.
 * `setting_type` - The Setting's type. Available values: `boolean`|`string`|`int`|`double`.
+* `order` - The order of the Setting within a Config (zero-based).
 
 ## Endpoints used
 - [List Flags](https://api.configcat.com/docs/#tag/Feature-Flags-and-Settings/operation/get-settings)

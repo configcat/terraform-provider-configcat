@@ -13,6 +13,7 @@ func TestResourceSettingValid(t *testing.T) {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
 			key = "TestResourceSettingValid"
 			name = "testName"
+			order = 10
 		}
 	`
 	const settingResourceUpdated = `
@@ -21,6 +22,7 @@ func TestResourceSettingValid(t *testing.T) {
 			key = "TestResourceSettingValid"
 			name = "testNameUpdated"
 			hint = "testHintUpdated"
+			order = 11
 		}
 	`
 	const configID = "08d86d63-2731-4b8b-823a-56ddda9da038"
@@ -38,6 +40,7 @@ func TestResourceSettingValid(t *testing.T) {
 					resource.TestCheckResourceAttr("configcat_setting.test", SETTING_NAME, "testName"),
 					resource.TestCheckResourceAttr("configcat_setting.test", SETTING_HINT, ""),
 					resource.TestCheckResourceAttr("configcat_setting.test", SETTING_TYPE, "boolean"),
+					resource.TestCheckResourceAttr("configcat_setting.test", SETTING_ORDER, "10"),
 				),
 			},
 			{
@@ -49,6 +52,7 @@ func TestResourceSettingValid(t *testing.T) {
 					resource.TestCheckResourceAttr("configcat_setting.test", SETTING_NAME, "testNameUpdated"),
 					resource.TestCheckResourceAttr("configcat_setting.test", SETTING_HINT, "testHintUpdated"),
 					resource.TestCheckResourceAttr("configcat_setting.test", SETTING_TYPE, "boolean"),
+					resource.TestCheckResourceAttr("configcat_setting.test", SETTING_ORDER, "11"),
 				),
 			},
 		},
@@ -78,6 +82,7 @@ func testResourceSettingForSettingType(t *testing.T, settingType string) {
 		key = "testResourceSettingForSettingType` + settingType + `"
 		name = "test"
 		setting_type = "` + settingType + `"
+		order = 20
 	}
 	`
 	const configID = "08d86d63-2731-4b8b-823a-56ddda9da038"
@@ -95,6 +100,7 @@ func testResourceSettingForSettingType(t *testing.T, settingType string) {
 					resource.TestCheckResourceAttr("configcat_setting.testBoolean", SETTING_NAME, "test"),
 					resource.TestCheckResourceAttr("configcat_setting.testBoolean", SETTING_HINT, ""),
 					resource.TestCheckResourceAttr("configcat_setting.testBoolean", SETTING_TYPE, settingType),
+					resource.TestCheckResourceAttr("configcat_setting.testBoolean", SETTING_ORDER, "20"),
 				),
 			},
 			{
@@ -113,6 +119,7 @@ func TestResourceSettingInvalidSettingType(t *testing.T) {
 			key = "TestResourceSettingInvalidSettingType"
 			name = "testName"
 			setting_type = "invalid"
+			order = 20
 		}
 	`
 	resource.Test(t, resource.TestCase{
@@ -133,6 +140,7 @@ func TestResourceSettingDuplicatedKey(t *testing.T) {
 			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
 			key = "isAwesomeFeatureEnabled"
 			name = "testName"
+			order = 20
 		}
 	`
 
