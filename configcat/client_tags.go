@@ -5,14 +5,18 @@ import sw "github.com/configcat/configcat-publicapi-go-client"
 func (client *Client) GetTags(productID string) ([]sw.TagModel, error) {
 	model, response, err := client.apiClient.TagsApi.GetTags(client.GetAuthContext(), productID).Execute()
 	error := handleAPIError(err)
-	defer response.Body.Close()
+	if response != nil && response.Body != nil {
+		defer response.Body.Close()
+	}
 	return model, error
 }
 
 func (client *Client) GetTag(tagID int64) (*sw.TagModel, error) {
 	model, response, err := client.apiClient.TagsApi.GetTag(client.GetAuthContext(), tagID).Execute()
 	error := handleAPIError(err)
-	defer response.Body.Close()
+	if response != nil && response.Body != nil {
+		defer response.Body.Close()
+	}
 	return model, error
 }
 
@@ -21,7 +25,9 @@ func (client *Client) CreateTag(productID string, body sw.CreateTagModel) (*sw.T
 		client.GetAuthContext(),
 		productID).CreateTagModel(body).Execute()
 	error := handleAPIError(err)
-	defer response.Body.Close()
+	if response != nil && response.Body != nil {
+		defer response.Body.Close()
+	}
 	return model, error
 }
 
@@ -30,7 +36,9 @@ func (client *Client) UpdateTag(tagID int64, body sw.UpdateTagModel) (*sw.TagMod
 		client.GetAuthContext(),
 		tagID).UpdateTagModel(body).Execute()
 	error := handleAPIError(err)
-	defer response.Body.Close()
+	if response != nil && response.Body != nil {
+		defer response.Body.Close()
+	}
 	return model, error
 }
 
@@ -39,6 +47,8 @@ func (client *Client) DeleteTag(tagID int64) error {
 		client.GetAuthContext(),
 		tagID).Execute()
 	error := handleAPIError(err)
-	defer response.Body.Close()
+	if response != nil && response.Body != nil {
+		defer response.Body.Close()
+	}
 	return error
 }

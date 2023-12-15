@@ -26,14 +26,18 @@ func (client *Client) GetAuthContext() context.Context {
 func (client *Client) GetMe() (*configcatpublicapi.MeModel, error) {
 	model, response, err := client.apiClient.MeApi.GetMe(client.GetAuthContext()).Execute()
 	error := handleAPIError(err)
-	defer response.Body.Close()
+	if response != nil && response.Body != nil {
+		defer response.Body.Close()
+	}
 	return model, error
 }
 
 func (client *Client) GetOrganizations() ([]configcatpublicapi.OrganizationModel, error) {
 	model, response, err := client.apiClient.OrganizationsApi.GetOrganizations(client.GetAuthContext()).Execute()
 	error := handleAPIError(err)
-	defer response.Body.Close()
+	if response != nil && response.Body != nil {
+		defer response.Body.Close()
+	}
 	return model, error
 }
 
