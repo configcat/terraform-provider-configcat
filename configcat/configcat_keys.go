@@ -10,12 +10,14 @@ const (
 	PRODUCT_ID                = "product_id"
 	PRODUCT_NAME              = "name"
 	PRODUCT_DESCRIPTION       = "description"
+	PRODUCT_ORDER             = "order"
 	PRODUCT_NAME_FILTER_REGEX = "name_filter_regex"
 
 	CONFIGS                  = "configs"
 	CONFIG_ID                = "config_id"
 	CONFIG_NAME              = "name"
 	CONFIG_DESCRIPTION       = "description"
+	CONFIG_ORDER             = "order"
 	CONFIG_NAME_FILTER_REGEX = "name_filter_regex"
 
 	ENVIRONMENTS                  = "environments"
@@ -23,6 +25,7 @@ const (
 	ENVIRONMENT_NAME              = "name"
 	ENVIRONMENT_DESCRIPTION       = "description"
 	ENVIRONMENT_COLOR             = "color"
+	ENVIRONMENT_ORDER             = "order"
 	ENVIRONMENT_NAME_FILTER_REGEX = "name_filter_regex"
 
 	PERMISSION_GROUPS                               = "permission_groups"
@@ -75,6 +78,7 @@ const (
 	SETTING_NAME             = "name"
 	SETTING_HINT             = "hint"
 	SETTING_TYPE             = "setting_type"
+	SETTING_ORDER            = "order"
 
 	SETTING_VALUE   = "value"
 	INIT_ONLY       = "init_only"
