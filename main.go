@@ -8,7 +8,7 @@ import (
 	"flag"
 	"log"
 
-	"github.com/configcat/terraform-provider-configcat/internal/provider"
+	provider "github.com/configcat/terraform-provider-configcat/internal/configcat"
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 )
 
