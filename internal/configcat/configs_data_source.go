@@ -14,6 +14,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/path"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	sw "github.com/configcat/configcat-publicapi-go-client"
@@ -62,6 +63,7 @@ func (d *configDataSource) Schema(ctx context.Context, req datasource.SchemaRequ
 			PRODUCT_ID: schema.StringAttribute{
 				MarkdownDescription: "Example configurable attribute",
 				Required:            true,
+				Validators:          []validator.String{IsGuid()},
 			},
 			CONFIG_NAME_FILTER_REGEX: schema.StringAttribute{
 				MarkdownDescription: "Example configurable attribute",
