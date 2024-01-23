@@ -98,7 +98,7 @@ func resourceEnvironmentRead(ctx context.Context, d *schema.ResourceData, m inte
 func resourceEnvironmentUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*Client)
 
-	if d.HasChanges(ENVIRONMENT_NAME, ENVIRONMENT_DESCRIPTION, ENVIRONMENT_COLOR) {
+	if d.HasChanges(ENVIRONMENT_NAME, ENVIRONMENT_DESCRIPTION, ENVIRONMENT_COLOR, ENVIRONMENT_ORDER) {
 		environmentName := d.Get(ENVIRONMENT_NAME).(string)
 		environmentDescription := d.Get(ENVIRONMENT_DESCRIPTION).(string)
 		environmentColor := d.Get(ENVIRONMENT_COLOR).(string)

@@ -25,6 +25,15 @@ func TestResourceSettingValid(t *testing.T) {
 			order = 11
 		}
 	`
+	const settingResourceOnlyOrderUpdated = `
+		resource "configcat_setting" "test" {
+			config_id = "08d86d63-2731-4b8b-823a-56ddda9da038"
+			key = "TestResourceSettingValid"
+			name = "testNameUpdated"
+			hint = "testHintUpdated"
+			order = 13
+		}
+	`
 	const configID = "08d86d63-2731-4b8b-823a-56ddda9da038"
 
 	resource.Test(t, resource.TestCase{
@@ -53,6 +62,18 @@ func TestResourceSettingValid(t *testing.T) {
 					resource.TestCheckResourceAttr("configcat_setting.test", SETTING_HINT, "testHintUpdated"),
 					resource.TestCheckResourceAttr("configcat_setting.test", SETTING_TYPE, "boolean"),
 					resource.TestCheckResourceAttr("configcat_setting.test", SETTING_ORDER, "11"),
+				),
+			},
+			{
+				Config: settingResourceOnlyOrderUpdated,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttrSet("configcat_setting.test", "id"),
+					resource.TestCheckResourceAttr("configcat_setting.test", CONFIG_ID, configID),
+					resource.TestCheckResourceAttr("configcat_setting.test", SETTING_KEY, "TestResourceSettingValid"),
+					resource.TestCheckResourceAttr("configcat_setting.test", SETTING_NAME, "testNameUpdated"),
+					resource.TestCheckResourceAttr("configcat_setting.test", SETTING_HINT, "testHintUpdated"),
+					resource.TestCheckResourceAttr("configcat_setting.test", SETTING_TYPE, "boolean"),
+					resource.TestCheckResourceAttr("configcat_setting.test", SETTING_ORDER, "13"),
 				),
 			},
 		},

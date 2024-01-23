@@ -121,7 +121,7 @@ func resourceSettingUpdate(ctx context.Context, d *schema.ResourceData, m interf
 		return diag.FromErr(err)
 	}
 
-	if d.HasChanges(SETTING_NAME, SETTING_HINT) {
+	if d.HasChanges(SETTING_NAME, SETTING_HINT, SETTING_ORDER) {
 		operations := []sw.JsonPatchOperation{}
 		if d.HasChange(SETTING_NAME) {
 			settingName := d.Get(SETTING_NAME)

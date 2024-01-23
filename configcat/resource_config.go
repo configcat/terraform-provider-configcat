@@ -90,7 +90,7 @@ func resourceConfigRead(ctx context.Context, d *schema.ResourceData, m interface
 func resourceConfigUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*Client)
 
-	if d.HasChanges(CONFIG_NAME, CONFIG_DESCRIPTION) {
+	if d.HasChanges(CONFIG_NAME, CONFIG_DESCRIPTION, CONFIG_ORDER) {
 		configName := d.Get(CONFIG_NAME).(string)
 		configDescription := d.Get(CONFIG_DESCRIPTION).(string)
 		order := int32(d.Get(CONFIG_ORDER).(int))
