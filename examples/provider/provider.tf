@@ -1,3 +1,3 @@
-provider "scaffolding" {
+provider "configcat" {
   # example configuration here
 }

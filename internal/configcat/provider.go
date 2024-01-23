@@ -187,7 +187,7 @@ func (p *ConfigCatProvider) Resources(ctx context.Context) []func() resource.Res
 
 func (p *ConfigCatProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
-		NewExampleDataSource,
+		NewConfigDataSource,
 	}
 }
 
