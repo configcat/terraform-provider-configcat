@@ -20,37 +20,37 @@ import (
 )
 
 var (
-	_ datasource.DataSource              = &ConfigDataSource{}
-	_ datasource.DataSourceWithConfigure = &ConfigDataSource{}
+	_ datasource.DataSource              = &configDataSource{}
+	_ datasource.DataSourceWithConfigure = &configDataSource{}
 )
 
 func NewConfigDataSource() datasource.DataSource {
-	return &ConfigDataSource{}
+	return &configDataSource{}
 }
 
-type ConfigDataSource struct {
+type configDataSource struct {
 	client *client.Client
 }
 
-type ConfigModel struct {
+type configModel struct {
 	ConfigId    types.String `tfsdk:"config_id"`
 	Name        types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
 	Order       types.Int64  `tfsdk:"order"`
 }
 
-type ConfigDataSourceModel struct {
+type configDataSourceModel struct {
 	ID              types.String  `tfsdk:"id"`
 	ProductId       types.String  `tfsdk:"product_id"`
 	NameFilterRegex types.String  `tfsdk:"name_filter_regex"`
-	Configs         []ConfigModel `tfsdk:"configs"`
+	Configs         []configModel `tfsdk:"configs"`
 }
 
-func (d *ConfigDataSource) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+func (d *configDataSource) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_configs"
 }
 
-func (d *ConfigDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+func (d *configDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
 		MarkdownDescription: "Example data source",
@@ -90,7 +90,7 @@ func (d *ConfigDataSource) Schema(ctx context.Context, req datasource.SchemaRequ
 	}
 }
 
-func (d *ConfigDataSource) Configure(ctx context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
+func (d *configDataSource) Configure(ctx context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
 	// Prevent panic if the provider has not been configured.
 	if req.ProviderData == nil {
 		return
@@ -110,8 +110,8 @@ func (d *ConfigDataSource) Configure(ctx context.Context, req datasource.Configu
 	d.client = client
 }
 
-func (d *ConfigDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var data ConfigDataSourceModel
+func (d *configDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+	var data configDataSourceModel
 
 	// Read Terraform configuration data into the model
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
@@ -147,9 +147,9 @@ func (d *ConfigDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 		filteredConfigs = configs
 	}
 
-	data.Configs = make([]ConfigModel, len(filteredConfigs))
+	data.Configs = make([]configModel, len(filteredConfigs))
 	for i, config := range filteredConfigs {
-		configModel := &ConfigModel{
+		configModel := &configModel{
 			ConfigId:    types.StringValue(*config.ConfigId),
 			Name:        types.StringValue(*config.Name.Get()),
 			Description: types.StringValue(*config.Description.Get()),

@@ -30,29 +30,29 @@ const (
 )
 
 // Ensure ScaffoldingProvider satisfies various provider interfaces.
-var _ provider.Provider = &ConfigCatProvider{}
+var _ provider.Provider = &configCatProvider{}
 
-// ConfigCatProvider defines the provider implementation.
-type ConfigCatProvider struct {
+// configCatProvider defines the provider implementation.
+type configCatProvider struct {
 	// version is set to the provider version on release, "dev" when the
 	// provider is built and ran locally, and "test" when running acceptance
 	// testing.
 	version string
 }
 
-// ConfigCatProviderModel describes the provider data model.
-type ConfigCatProviderModel struct {
-	basicAuthUsername types.String `tfsdk:"basic_auth_username"`
-	basicAuthPassword types.String `tfsdk:"basic_auth_password"`
-	basePath          types.String `tfsdk:"base_path"`
+// configCatProviderModel describes the provider data model.
+type configCatProviderModel struct {
+	BasicAuthUsername types.String `tfsdk:"basic_auth_username"`
+	BasicAuthPassword types.String `tfsdk:"basic_auth_password"`
+	BasePath          types.String `tfsdk:"base_path"`
 }
 
-func (p *ConfigCatProvider) Metadata(ctx context.Context, req provider.MetadataRequest, resp *provider.MetadataResponse) {
+func (p *configCatProvider) Metadata(ctx context.Context, req provider.MetadataRequest, resp *provider.MetadataResponse) {
 	resp.TypeName = "configcat"
 	resp.Version = p.version
 }
 
-func (p *ConfigCatProvider) Schema(ctx context.Context, req provider.SchemaRequest, resp *provider.SchemaResponse) {
+func (p *configCatProvider) Schema(ctx context.Context, req provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
 			KEY_BASIC_AUTH_USERNAME: schema.StringAttribute{
@@ -72,16 +72,15 @@ func (p *ConfigCatProvider) Schema(ctx context.Context, req provider.SchemaReque
 	}
 }
 
-func (p *ConfigCatProvider) Configure(ctx context.Context, req provider.ConfigureRequest, resp *provider.ConfigureResponse) {
-	var providerConfig ConfigCatProviderModel
-
+func (p *configCatProvider) Configure(ctx context.Context, req provider.ConfigureRequest, resp *provider.ConfigureResponse) {
+	var providerConfig configCatProviderModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &providerConfig)...)
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	if providerConfig.basePath.IsUnknown() {
+	if providerConfig.BasePath.IsUnknown() {
 		resp.Diagnostics.AddAttributeError(
 			path.Root(KEY_BASE_PATH),
 			"Unknown ConfigCat Public Management API "+KEY_BASE_PATH,
@@ -89,7 +88,7 @@ func (p *ConfigCatProvider) Configure(ctx context.Context, req provider.Configur
 		)
 	}
 
-	if providerConfig.basicAuthUsername.IsUnknown() {
+	if providerConfig.BasicAuthUsername.IsUnknown() {
 		resp.Diagnostics.AddAttributeError(
 			path.Root(KEY_BASIC_AUTH_USERNAME),
 			"Unknown ConfigCat Public Management API "+KEY_BASIC_AUTH_USERNAME,
@@ -97,7 +96,7 @@ func (p *ConfigCatProvider) Configure(ctx context.Context, req provider.Configur
 		)
 	}
 
-	if providerConfig.basicAuthPassword.IsUnknown() {
+	if providerConfig.BasicAuthPassword.IsUnknown() {
 		resp.Diagnostics.AddAttributeError(
 			path.Root(KEY_BASIC_AUTH_PASSWORD),
 			"Unknown ConfigCat Public Management API "+KEY_BASIC_AUTH_PASSWORD,
@@ -113,16 +112,16 @@ func (p *ConfigCatProvider) Configure(ctx context.Context, req provider.Configur
 	basicAuthUsername := os.Getenv(ENV_BASIC_AUTH_USERNAME)
 	basicAuthPassword := os.Getenv(ENV_BASIC_AUTH_PASSWORD)
 
-	if !providerConfig.basePath.IsNull() {
-		basePath = providerConfig.basePath.ValueString()
+	if !providerConfig.BasePath.IsNull() {
+		basePath = providerConfig.BasePath.ValueString()
 	}
 
-	if !providerConfig.basicAuthUsername.IsNull() {
-		basicAuthUsername = providerConfig.basicAuthUsername.ValueString()
+	if !providerConfig.BasicAuthUsername.IsNull() {
+		basicAuthUsername = providerConfig.BasicAuthUsername.ValueString()
 	}
 
-	if !providerConfig.basicAuthPassword.IsNull() {
-		basicAuthPassword = providerConfig.basicAuthPassword.ValueString()
+	if !providerConfig.BasicAuthPassword.IsNull() {
+		basicAuthPassword = providerConfig.BasicAuthPassword.ValueString()
 	}
 
 	if basePath == "" {
@@ -174,13 +173,13 @@ func (p *ConfigCatProvider) Configure(ctx context.Context, req provider.Configur
 	resp.ResourceData = client
 }
 
-func (p *ConfigCatProvider) Resources(ctx context.Context) []func() resource.Resource {
+func (p *configCatProvider) Resources(ctx context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		// NewExampleResource,
 	}
 }
 
-func (p *ConfigCatProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
+func (p *configCatProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
 		NewConfigDataSource,
 	}
@@ -188,7 +187,7 @@ func (p *ConfigCatProvider) DataSources(ctx context.Context) []func() datasource
 
 func New(version string) func() provider.Provider {
 	return func() provider.Provider {
-		return &ConfigCatProvider{
+		return &configCatProvider{
 			version: version,
 		}
 	}

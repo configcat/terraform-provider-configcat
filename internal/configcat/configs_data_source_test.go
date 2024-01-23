@@ -18,7 +18,6 @@ func TestAccConfigsDataSource(t *testing.T) {
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
-			// Read testing
 			{
 				ConfigFile: config.TestNameFile("main.tf"),
 				ConfigVariables: config.Variables{
