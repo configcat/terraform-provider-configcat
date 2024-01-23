@@ -56,17 +56,16 @@ func (p *ConfigCatProvider) Schema(ctx context.Context, req provider.SchemaReque
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
 			KEY_BASIC_AUTH_USERNAME: schema.StringAttribute{
-				MarkdownDescription: "Example provider attribute",
+				MarkdownDescription: "Get your `basic_auth_username` at [ConfigCat Public API credentials](https://app.configcat.com/my-account/public-api-credentials).  This can also be sourced from the `CONFIGCAT_BASIC_AUTH_USERNAME` Environment Variable.",
 				Optional:            true,
-				Sensitive:           true,
 			},
 			KEY_BASIC_AUTH_PASSWORD: schema.StringAttribute{
-				MarkdownDescription: "Example provider attribute",
+				MarkdownDescription: "Get your `basic_auth_password` at [ConfigCat Public API credentials](https://app.configcat.com/my-account/public-api-credentials).  This can also be sourced from the `CONFIGCAT_BASIC_AUTH_PASSWORD` Environment Variable.",
 				Optional:            true,
 				Sensitive:           true,
 			},
 			KEY_BASE_PATH: schema.StringAttribute{
-				MarkdownDescription: "Example provider attribute",
+				MarkdownDescription: "ConfigCat Public Management API's `base_path`. Defaults to https://api.configcat.com.  This can also be sourced from the `CONFIGCAT_BASE_PATH` Environment Variable.",
 				Optional:            true,
 			},
 		},
@@ -110,10 +109,6 @@ func (p *ConfigCatProvider) Configure(ctx context.Context, req provider.Configur
 		return
 	}
 
-	// Configuration values are now available.
-	// if data.Endpoint.IsNull() { /* ... */ }
-
-	// Example client configuration for data sources and resources
 	basePath := os.Getenv(ENV_BASE_PATH)
 	basicAuthUsername := os.Getenv(ENV_BASIC_AUTH_USERNAME)
 	basicAuthPassword := os.Getenv(ENV_BASIC_AUTH_PASSWORD)
@@ -181,7 +176,7 @@ func (p *ConfigCatProvider) Configure(ctx context.Context, req provider.Configur
 
 func (p *ConfigCatProvider) Resources(ctx context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
-		NewExampleResource,
+		// NewExampleResource,
 	}
 }
 
