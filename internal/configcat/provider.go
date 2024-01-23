@@ -27,7 +27,9 @@ type ConfigCatProvider struct {
 
 // ConfigCatProviderModel describes the provider data model.
 type ConfigCatProviderModel struct {
-	Endpoint types.String `tfsdk:"endpoint"`
+	basicAuthUsername types.String `tfsdk:"basic_auth_username"`
+	basicAuthPassword types.String `tfsdk:"basic_auth_password"`
+	basePath          types.String `tfsdk:"base_path"`
 }
 
 func (p *ConfigCatProvider) Metadata(ctx context.Context, req provider.MetadataRequest, resp *provider.MetadataResponse) {
@@ -38,7 +40,15 @@ func (p *ConfigCatProvider) Metadata(ctx context.Context, req provider.MetadataR
 func (p *ConfigCatProvider) Schema(ctx context.Context, req provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
-			"endpoint": schema.StringAttribute{
+			"basic_auth_username": schema.StringAttribute{
+				MarkdownDescription: "Example provider attribute",
+				Optional:            true,
+			},
+			"basic_auth_password": schema.StringAttribute{
+				MarkdownDescription: "Example provider attribute",
+				Optional:            true,
+			},
+			"base_path": schema.StringAttribute{
 				MarkdownDescription: "Example provider attribute",
 				Optional:            true,
 			},
