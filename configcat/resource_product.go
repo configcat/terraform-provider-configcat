@@ -89,7 +89,7 @@ func resourceProductRead(ctx context.Context, d *schema.ResourceData, m interfac
 func resourceProductUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*Client)
 
-	if d.HasChanges(PRODUCT_NAME, PRODUCT_DESCRIPTION) {
+	if d.HasChanges(PRODUCT_NAME, PRODUCT_DESCRIPTION, PRODUCT_ORDER) {
 
 		productName := d.Get(PRODUCT_NAME).(string)
 		productDescription := d.Get(PRODUCT_DESCRIPTION).(string)

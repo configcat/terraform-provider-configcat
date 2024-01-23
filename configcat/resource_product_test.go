@@ -48,6 +48,24 @@ func TestResourceProductFlow(t *testing.T) {
 				),
 			},
 			{
+				Config: `
+					data "configcat_organizations" "organizations" {
+					}
+					resource "configcat_product" "test" {
+						organization_id = data.configcat_organizations.organizations.organizations.0.organization_id
+						name = "TestResourceProductFlow2"
+						description = "testDescription2"
+						order = 13
+					}
+				`,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttrSet("configcat_product.test", "id"),
+					resource.TestCheckResourceAttr("configcat_product.test", PRODUCT_NAME, "TestResourceProductFlow2"),
+					resource.TestCheckResourceAttr("configcat_product.test", PRODUCT_DESCRIPTION, "testDescription2"),
+					resource.TestCheckResourceAttr("configcat_product.test", PRODUCT_ORDER, "13"),
+				),
+			},
+			{
 				ResourceName:      "configcat_product.test",
 				ImportState:       true,
 				ImportStateVerify: true,

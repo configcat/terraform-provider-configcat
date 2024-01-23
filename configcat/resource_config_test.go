@@ -48,6 +48,24 @@ func TestResourceConfigFlow(t *testing.T) {
 				),
 			},
 			{
+				Config: `
+					data "configcat_products" "products" {
+					}
+					resource "configcat_config" "test" {
+						product_id = data.configcat_products.products.products.0.product_id
+						name = "testName2"
+						description = "testDescription2"
+						order = 13
+					}
+				`,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttrSet("configcat_config.test", "id"),
+					resource.TestCheckResourceAttr("configcat_config.test", CONFIG_NAME, "testName2"),
+					resource.TestCheckResourceAttr("configcat_config.test", CONFIG_DESCRIPTION, "testDescription2"),
+					resource.TestCheckResourceAttr("configcat_config.test", CONFIG_ORDER, "13"),
+				),
+			},
+			{
 				ResourceName:      "configcat_config.test",
 				ImportState:       true,
 				ImportStateVerify: true,
