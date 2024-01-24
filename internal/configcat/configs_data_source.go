@@ -68,6 +68,7 @@ func (d *configDataSource) Schema(ctx context.Context, req datasource.SchemaRequ
 			CONFIG_NAME_FILTER_REGEX: schema.StringAttribute{
 				MarkdownDescription: "Example configurable attribute",
 				Optional:            true,
+				Validators:          []validator.String{IsRegex()},
 			},
 			CONFIGS: schema.ListNestedAttribute{
 				NestedObject: schema.NestedAttributeObject{
