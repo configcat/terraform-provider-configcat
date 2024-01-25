@@ -2,8 +2,8 @@ package configcat
 
 import (
 	"context"
+	"regexp"
 
-	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
@@ -27,7 +27,7 @@ func (v regexValidator) ValidateString(ctx context.Context, request validator.St
 
 	value := request.ConfigValue.ValueString()
 
-	if _, err := uuid.Parse(value); err != nil {
+	if _, err := regexp.Compile(value); err != nil {
 		response.Diagnostics.Append(validatordiag.InvalidAttributeValueMatchDiagnostic(
 			request.Path,
 			v.Description(ctx),
