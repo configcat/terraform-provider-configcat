@@ -17,72 +17,66 @@ import (
 )
 
 var (
-	_ datasource.DataSource              = &configDataSource{}
-	_ datasource.DataSourceWithConfigure = &configDataSource{}
+	_ datasource.DataSource              = &productDataSource{}
+	_ datasource.DataSourceWithConfigure = &productDataSource{}
 )
 
-func NewConfigDataSource() datasource.DataSource {
-	return &configDataSource{}
+func NewProductDataSource() datasource.DataSource {
+	return &productDataSource{}
 }
 
-type configDataSource struct {
+type productDataSource struct {
 	client *client.Client
 }
 
-type configDataModel struct {
-	ID          types.String `tfsdk:"config_id"`
+type productDataModel struct {
+	ID          types.String `tfsdk:"product_id"`
 	Name        types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
 	Order       types.Int64  `tfsdk:"order"`
 }
 
-type configDataSourceModel struct {
-	ID              types.String      `tfsdk:"id"`
-	ProductId       types.String      `tfsdk:"product_id"`
-	NameFilterRegex types.String      `tfsdk:"name_filter_regex"`
-	Data            []configDataModel `tfsdk:"configs"`
+type productDataSourceModel struct {
+	ID              types.String       `tfsdk:"id"`
+	NameFilterRegex types.String       `tfsdk:"name_filter_regex"`
+	Data            []productDataModel `tfsdk:"products"`
 }
 
-func (d *configDataSource) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_configs"
+func (d *productDataSource) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_products"
 }
 
-func (d *configDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+func (d *productDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "Use this data source to access information about existing **" + ConfigResourceName + "s**. [What is a " + ConfigResourceName + " in ConfigCat?](https://configcat.com/docs/main-concepts)",
+		MarkdownDescription: "Use this data source to access information about existing **" + ProductResourceName + "s**. [What is a " + ProductResourceName + " in ConfigCat?](https://configcat.com/docs/main-concepts)",
 
 		Attributes: map[string]schema.Attribute{
 			ID: schema.StringAttribute{
 				Description: "Internal ID of the data source. Do not use.",
 				Computed:    true,
 			},
-			ProductId: schema.StringAttribute{
-				Description: "The ID of the Product.",
-				Required:    true,
-				Validators:  []validator.String{IsGuid()},
-			},
 			NameFilterRegex: schema.StringAttribute{
-				Description: "Filter the " + ConfigResourceName + "s by name.",
+				Description: "Filter the " + ProductResourceName + "s by name.",
 				Optional:    true,
 				Validators:  []validator.String{IsRegex()},
 			},
-			Configs: schema.ListNestedAttribute{
+			Products: schema.ListNestedAttribute{
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
-						ConfigId: schema.StringAttribute{
-							Description: "The unique " + ConfigResourceName + " ID.",
+						ProductId: schema.StringAttribute{
+							Description: "The unique " + ProductResourceName + " ID.",
 							Computed:    true,
 						},
 						Name: schema.StringAttribute{
-							Description: "The name of the " + ConfigResourceName + ".",
+							Description: "The name of the " + ProductResourceName + ".",
 							Computed:    true,
 						},
 						Description: schema.StringAttribute{
-							Description: "The description of the " + ConfigResourceName + ".",
+							Description: "The description of the " + ProductResourceName + ".",
 							Computed:    true,
 						},
 						Order: schema.Int64Attribute{
-							Description: "The order of the " + ConfigResourceName + " within a Product (zero-based).",
+							Description: "The order of the " + ProductResourceName + " within a Product (zero-based).",
 							Computed:    true,
 						},
 					},
@@ -93,7 +87,7 @@ func (d *configDataSource) Schema(ctx context.Context, req datasource.SchemaRequ
 	}
 }
 
-func (d *configDataSource) Configure(ctx context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
+func (d *productDataSource) Configure(ctx context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
 	}
@@ -112,23 +106,23 @@ func (d *configDataSource) Configure(ctx context.Context, req datasource.Configu
 	d.client = client
 }
 
-func (d *configDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var state configDataSourceModel
+func (d *productDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+	var state productDataSourceModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	resources, err := d.client.GetConfigs(state.ProductId.ValueString())
+	resources, err := d.client.GetProducts()
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read "+ConfigResourceName+" data, got error: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read "+ProductResourceName+" data, got error: %s", err))
 		return
 	}
 
-	state.ID = types.StringValue(state.ProductId.ValueString() + strconv.FormatInt(time.Now().Unix(), 10))
+	state.ID = types.StringValue(strconv.FormatInt(time.Now().Unix(), 10))
 
-	filteredResources := []sw.ConfigModel{}
+	filteredResources := []sw.ProductModel{}
 	if !state.NameFilterRegex.IsUnknown() && !state.NameFilterRegex.IsNull() && state.NameFilterRegex.ValueString() != "" {
 		regex := regexp.MustCompile(state.NameFilterRegex.ValueString())
 		for i := range resources {
@@ -140,10 +134,10 @@ func (d *configDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 		filteredResources = resources
 	}
 
-	state.Data = make([]configDataModel, len(filteredResources))
+	state.Data = make([]productDataModel, len(filteredResources))
 	for i, resource := range filteredResources {
-		dataModel := &configDataModel{
-			ID:          types.StringPointerValue(resource.ConfigId),
+		dataModel := &productDataModel{
+			ID:          types.StringPointerValue(resource.ProductId),
 			Name:        types.StringPointerValue(resource.Name.Get()),
 			Description: types.StringPointerValue(resource.Description.Get()),
 			Order:       types.Int64Value(int64(*resource.Order)),

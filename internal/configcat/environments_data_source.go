@@ -50,7 +50,6 @@ func (d *environmentDataSource) Metadata(ctx context.Context, req datasource.Met
 
 func (d *environmentDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		// This description is used by the documentation generator and the language server.
 		MarkdownDescription: "Use this data source to access information about existing **" + EnvironmentResourceName + "s**. [What is an " + EnvironmentResourceName + " in ConfigCat?](https://configcat.com/docs/main-concepts)",
 
 		Attributes: map[string]schema.Attribute{
