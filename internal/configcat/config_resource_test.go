@@ -27,7 +27,6 @@ func TestAccConfigResource(t *testing.T) {
 					resource.TestCheckResourceAttr(testResourceName, Name, "Resource name"),
 					resource.TestCheckResourceAttr(testResourceName, Order, "1"),
 					resource.TestCheckNoResourceAttr(testResourceName, Description),
-					resource.TestCheckNoResourceAttr(testResourceName, Color),
 				),
 			},
 			{
@@ -43,7 +42,6 @@ func TestAccConfigResource(t *testing.T) {
 					resource.TestCheckResourceAttr(testResourceName, Name, "Resource name updated"),
 					resource.TestCheckResourceAttr(testResourceName, Order, "10"),
 					resource.TestCheckResourceAttr(testResourceName, Description, "Resource description"),
-					resource.TestCheckResourceAttr(testResourceName, Color, "#5c6bc0"),
 				),
 			},
 			{

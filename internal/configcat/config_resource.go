@@ -186,7 +186,7 @@ func (r *configResource) Delete(ctx context.Context, req resource.DeleteRequest,
 		return
 	}
 
-	err := r.client.DeleteEnvironment(state.ID.ValueString())
+	err := r.client.DeleteConfig(state.ID.ValueString())
 
 	if err != nil {
 		if _, ok := err.(client.NotFoundError); ok {
