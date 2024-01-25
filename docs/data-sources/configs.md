@@ -41,8 +41,8 @@ output "config_id" {
 
 ### Read-Only
 
-- `configs` (Attributes List) A config [list](https://www.terraform.io/docs/configuration/types.html#list-) block defined as below. (see [below for nested schema](#nestedatt--configs))
-- `id` (String) The ID of this resource.
+- `configs` (Attributes List) (see [below for nested schema](#nestedatt--configs))
+- `id` (String) Internal ID of the data source. Do not use.
 
 <a id="nestedatt--configs"></a>
 ### Nested Schema for `configs`

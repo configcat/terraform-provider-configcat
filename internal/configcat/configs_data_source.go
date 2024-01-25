@@ -19,45 +19,53 @@ import (
 	sw "github.com/configcat/configcat-publicapi-go-client"
 )
 
+const (
+	_idAttribute   = ConfigId
+	_listAttribute = Configs
+	_resourceName  = "Config"
+	_typeName      = "_configs"
+)
+
 var (
-	_ datasource.DataSource              = &configDataSource{}
-	_ datasource.DataSourceWithConfigure = &configDataSource{}
+	_ datasource.DataSource              = &_dataSource{}
+	_ datasource.DataSourceWithConfigure = &_dataSource{}
 )
 
 func NewConfigDataSource() datasource.DataSource {
-	return &configDataSource{}
+	return &_dataSource{}
 }
 
-type configDataSource struct {
+type _dataSource struct {
 	client *client.Client
 }
 
-type configDataModel struct {
+type _dataModel struct {
 	ID          types.String `tfsdk:"config_id"`
 	Name        types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
 	Order       types.Int64  `tfsdk:"order"`
 }
 
-type configDataSourceModel struct {
-	ID              types.String      `tfsdk:"id"`
-	ProductId       types.String      `tfsdk:"product_id"`
-	NameFilterRegex types.String      `tfsdk:"name_filter_regex"`
-	Data            []configDataModel `tfsdk:"configs"`
+type _dataSourceModel struct {
+	ID              types.String `tfsdk:"id"`
+	ProductId       types.String `tfsdk:"product_id"`
+	NameFilterRegex types.String `tfsdk:"name_filter_regex"`
+	Data            []_dataModel `tfsdk:"configs"`
 }
 
-func (d *configDataSource) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_configs"
+func (d *_dataSource) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + _typeName
 }
 
-func (d *configDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+func (d *_dataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
-		MarkdownDescription: "Use this data source to access information about existing **Configs**. [What is a Config in ConfigCat?](https://configcat.com/docs/main-concepts)",
+		MarkdownDescription: "Use this data source to access information about existing **" + _resourceName + "**. [What is a " + _resourceName + " in ConfigCat?](https://configcat.com/docs/main-concepts)",
 
 		Attributes: map[string]schema.Attribute{
 			ID: schema.StringAttribute{
-				Computed: true,
+				Description: "Internal ID of the data source. Do not use.",
+				Computed:    true,
 			},
 			ProductId: schema.StringAttribute{
 				Description: "The ID of the Product.",
@@ -65,28 +73,27 @@ func (d *configDataSource) Schema(ctx context.Context, req datasource.SchemaRequ
 				Validators:  []validator.String{IsGuid()},
 			},
 			NameFilterRegex: schema.StringAttribute{
-				Description: "Filter the Configs by name.",
+				Description: "Filter the resources by name.",
 				Optional:    true,
 				Validators:  []validator.String{IsRegex()},
 			},
-			Configs: schema.ListNestedAttribute{
-				MarkdownDescription: "A config [list](https://www.terraform.io/docs/configuration/types.html#list-) block defined as below.",
+			_listAttribute: schema.ListNestedAttribute{
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
-						ConfigId: schema.StringAttribute{
-							Description: "The unique Config ID.",
+						_idAttribute: schema.StringAttribute{
+							Description: "The unique " + _resourceName + " ID.",
 							Computed:    true,
 						},
 						Name: schema.StringAttribute{
-							Description: "The name of the Config.",
+							Description: "The name of the " + _resourceName + ".",
 							Computed:    true,
 						},
 						Description: schema.StringAttribute{
-							Description: "The description of the Config.",
+							Description: "The description of the " + _resourceName + ".",
 							Computed:    true,
 						},
 						Order: schema.Int64Attribute{
-							Description: "The order of the Config within a Product (zero-based).",
+							Description: "The order of the " + _resourceName + " within a Product (zero-based).",
 							Computed:    true,
 						},
 					},
@@ -97,7 +104,7 @@ func (d *configDataSource) Schema(ctx context.Context, req datasource.SchemaRequ
 	}
 }
 
-func (d *configDataSource) Configure(ctx context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
+func (d *_dataSource) Configure(ctx context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
 	}
@@ -116,8 +123,8 @@ func (d *configDataSource) Configure(ctx context.Context, req datasource.Configu
 	d.client = client
 }
 
-func (d *configDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var data configDataSourceModel
+func (d *_dataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+	var data _dataSourceModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 
 	if resp.Diagnostics.HasError() {
@@ -126,7 +133,7 @@ func (d *configDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 
 	resources, err := d.client.GetConfigs(data.ProductId.ValueString())
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read configs, got error: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read "+_resourceName+" data, got error: %s", err))
 		return
 	}
 
@@ -144,9 +151,9 @@ func (d *configDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 		filteredResources = resources
 	}
 
-	data.Data = make([]configDataModel, len(filteredResources))
+	data.Data = make([]_dataModel, len(filteredResources))
 	for i, resource := range filteredResources {
-		dataModel := &configDataModel{
+		dataModel := &_dataModel{
 			ID:          types.StringValue(*resource.ConfigId),
 			Name:        types.StringValue(*resource.Name.Get()),
 			Description: types.StringValue(*resource.Description.Get()),
