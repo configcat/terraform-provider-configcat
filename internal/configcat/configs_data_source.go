@@ -136,7 +136,7 @@ func (d *dataSource) Read(ctx context.Context, req datasource.ReadRequest, resp 
 		regex, err := regexp.Compile(data.NameFilterRegex.ValueString())
 		if err != nil {
 			if err != nil {
-				resp.Diagnostics.AddAttributeError(path.Root(CONFIG_NAME_FILTER_REGEX), "invalid regex", "invalid regex")
+				resp.Diagnostics.AddAttributeError(path.Root(NameFilterRegex), "invalid regex", "invalid regex")
 				return
 			}
 		}
