@@ -28,7 +28,7 @@ const (
 	PermissionGroups                            = "permission_groups"
 	PermissionGroupId                           = "permission_group_id"
 	PermissionGroupCanManageMembers             = "can_manage_members"
-	PermissionGroupCanCreateOrUpdatConfig       = "can_createorupdate_config"
+	PermissionGroupCanCreateOrUpdateConfig      = "can_createorupdate_config"
 	PermissionGroupCanDeleteConfig              = "can_delete_config"
 	PermissionGroupCanCreateOrUpdateEnvironment = "can_createorupdate_environment"
 	PermissionGroupCanDeleteEnvironment         = "can_delete_environment"

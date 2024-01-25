@@ -188,6 +188,7 @@ func (p *configCatProvider) DataSources(ctx context.Context) []func() datasource
 		NewSegmentDataSource,
 		NewSettingDataSource,
 		NewTagDataSource,
+		NewPermissionGroupDataSource,
 	}
 }
 
