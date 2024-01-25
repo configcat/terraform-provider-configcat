@@ -8,19 +8,23 @@ const (
 	Color           = "color"
 	NameFilterRegex = "name_filter_regex"
 
-	Organizations  = "organizations"
-	OrganizationId = "organization_id"
+	OrganizationResourceName = "Organization"
+	Organizations            = "organizations"
+	OrganizationId           = "organization_id"
 
-	Products  = "products"
-	ProductId = "product_id"
+	ProductResourceName = "Product"
+	Products            = "products"
+	ProductId           = "product_id"
 
 	ConfigResourceName = "Config"
 	Configs            = "configs"
 	ConfigId           = "config_id"
 
-	Environments  = "environments"
-	EnvironmentId = "environment_id"
+	EnvironmentResourceName = "Environment"
+	Environments            = "environments"
+	EnvironmentId           = "environment_id"
 
+	PermissionGroupResourceName                 = "Permission group"
 	PermissionGroups                            = "permission_groups"
 	PermissionGroupId                           = "permission_group_id"
 	PermissionGroupCanManageMembers             = "can_manage_members"
@@ -47,15 +51,18 @@ const (
 	PermissionGroupNewEnvironmentAccessType     = "new_environment_accesstype"
 	PermissionGroupEnvironmentAccess            = "environment_accesses"
 
+	SegmentResourceName        = "Segment"
 	Segments                   = "segments"
 	SegmentId                  = "segment_id"
 	SegmentComparisonAttribute = "comparison_attribute"
 	SegmentComparator          = "comparator"
 	SegmentComparisonValue     = "comparison_value"
 
-	Tags  = "tags"
-	TagId = "tag_id"
+	TagResourceName = "Tag"
+	Tags            = "tags"
+	TagId           = "tag_id"
 
+	SettingResourceName   = "Feature Flags or Settings"
 	Settings              = "settings"
 	SettingId             = "setting_id"
 	SettingKey            = "key"
