@@ -14,8 +14,9 @@ const (
 	Products  = "products"
 	ProductId = "product_id"
 
-	Configs  = "configs"
-	ConfigId = "config_id"
+	ConfigResourceName = "Config"
+	Configs            = "configs"
+	ConfigId           = "config_id"
 
 	Environments  = "environments"
 	EnvironmentId = "environment_id"

@@ -19,48 +19,41 @@ import (
 	sw "github.com/configcat/configcat-publicapi-go-client"
 )
 
-const (
-	_idAttribute   = ConfigId
-	_listAttribute = Configs
-	_resourceName  = "Config"
-	_typeName      = "_configs"
-)
-
 var (
-	_ datasource.DataSource              = &_dataSource{}
-	_ datasource.DataSourceWithConfigure = &_dataSource{}
+	_ datasource.DataSource              = &configDataSource{}
+	_ datasource.DataSourceWithConfigure = &configDataSource{}
 )
 
 func NewConfigDataSource() datasource.DataSource {
-	return &_dataSource{}
+	return &configDataSource{}
 }
 
-type _dataSource struct {
+type configDataSource struct {
 	client *client.Client
 }
 
-type _dataModel struct {
+type configDataModel struct {
 	ID          types.String `tfsdk:"config_id"`
 	Name        types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
 	Order       types.Int64  `tfsdk:"order"`
 }
 
-type _dataSourceModel struct {
-	ID              types.String `tfsdk:"id"`
-	ProductId       types.String `tfsdk:"product_id"`
-	NameFilterRegex types.String `tfsdk:"name_filter_regex"`
-	Data            []_dataModel `tfsdk:"configs"`
+type configDataSourceModel struct {
+	ID              types.String      `tfsdk:"id"`
+	ProductId       types.String      `tfsdk:"product_id"`
+	NameFilterRegex types.String      `tfsdk:"name_filter_regex"`
+	Data            []configDataModel `tfsdk:"configs"`
 }
 
-func (d *_dataSource) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + _typeName
+func (d *configDataSource) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_configs"
 }
 
-func (d *_dataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+func (d *configDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
-		MarkdownDescription: "Use this data source to access information about existing **" + _resourceName + "**. [What is a " + _resourceName + " in ConfigCat?](https://configcat.com/docs/main-concepts)",
+		MarkdownDescription: "Use this data source to access information about existing **" + ConfigResourceName + "**. [What is a " + ConfigResourceName + " in ConfigCat?](https://configcat.com/docs/main-concepts)",
 
 		Attributes: map[string]schema.Attribute{
 			ID: schema.StringAttribute{
@@ -77,23 +70,23 @@ func (d *_dataSource) Schema(ctx context.Context, req datasource.SchemaRequest, 
 				Optional:    true,
 				Validators:  []validator.String{IsRegex()},
 			},
-			_listAttribute: schema.ListNestedAttribute{
+			Configs: schema.ListNestedAttribute{
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
-						_idAttribute: schema.StringAttribute{
-							Description: "The unique " + _resourceName + " ID.",
+						ConfigId: schema.StringAttribute{
+							Description: "The unique " + ConfigResourceName + " ID.",
 							Computed:    true,
 						},
 						Name: schema.StringAttribute{
-							Description: "The name of the " + _resourceName + ".",
+							Description: "The name of the " + ConfigResourceName + ".",
 							Computed:    true,
 						},
 						Description: schema.StringAttribute{
-							Description: "The description of the " + _resourceName + ".",
+							Description: "The description of the " + ConfigResourceName + ".",
 							Computed:    true,
 						},
 						Order: schema.Int64Attribute{
-							Description: "The order of the " + _resourceName + " within a Product (zero-based).",
+							Description: "The order of the " + ConfigResourceName + " within a Product (zero-based).",
 							Computed:    true,
 						},
 					},
@@ -104,7 +97,7 @@ func (d *_dataSource) Schema(ctx context.Context, req datasource.SchemaRequest, 
 	}
 }
 
-func (d *_dataSource) Configure(ctx context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
+func (d *configDataSource) Configure(ctx context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
 	}
@@ -123,8 +116,8 @@ func (d *_dataSource) Configure(ctx context.Context, req datasource.ConfigureReq
 	d.client = client
 }
 
-func (d *_dataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var data _dataSourceModel
+func (d *configDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+	var data configDataSourceModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 
 	if resp.Diagnostics.HasError() {
@@ -133,7 +126,7 @@ func (d *_dataSource) Read(ctx context.Context, req datasource.ReadRequest, resp
 
 	resources, err := d.client.GetConfigs(data.ProductId.ValueString())
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read "+_resourceName+" data, got error: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read "+ConfigResourceName+" data, got error: %s", err))
 		return
 	}
 
@@ -151,9 +144,9 @@ func (d *_dataSource) Read(ctx context.Context, req datasource.ReadRequest, resp
 		filteredResources = resources
 	}
 
-	data.Data = make([]_dataModel, len(filteredResources))
+	data.Data = make([]configDataModel, len(filteredResources))
 	for i, resource := range filteredResources {
-		dataModel := &_dataModel{
+		dataModel := &configDataModel{
 			ID:          types.StringValue(*resource.ConfigId),
 			Name:        types.StringValue(*resource.Name.Get()),
 			Description: types.StringValue(*resource.Description.Get()),
