@@ -21,37 +21,37 @@ import (
 )
 
 var (
-	_ datasource.DataSource              = &configDataSource{}
-	_ datasource.DataSourceWithConfigure = &configDataSource{}
+	_ datasource.DataSource              = &dataSource{}
+	_ datasource.DataSourceWithConfigure = &dataSource{}
 )
 
 func NewConfigDataSource() datasource.DataSource {
-	return &configDataSource{}
+	return &dataSource{}
 }
 
-type configDataSource struct {
+type dataSource struct {
 	client *client.Client
 }
 
-type configModel struct {
-	ConfigId    types.String `tfsdk:"config_id"`
+type dataModel struct {
+	ID          types.String `tfsdk:"config_id"`
 	Name        types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
 	Order       types.Int64  `tfsdk:"order"`
 }
 
-type configDataSourceModel struct {
-	ID              types.String  `tfsdk:"id"`
-	ProductId       types.String  `tfsdk:"product_id"`
-	NameFilterRegex types.String  `tfsdk:"name_filter_regex"`
-	Configs         []configModel `tfsdk:"configs"`
+type dataSourceModel struct {
+	ID              types.String `tfsdk:"id"`
+	ProductId       types.String `tfsdk:"product_id"`
+	NameFilterRegex types.String `tfsdk:"name_filter_regex"`
+	Data            []dataModel  `tfsdk:"configs"`
 }
 
-func (d *configDataSource) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+func (d *dataSource) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_configs"
 }
 
-func (d *configDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+func (d *dataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
 		MarkdownDescription: "Example data source",
@@ -60,7 +60,7 @@ func (d *configDataSource) Schema(ctx context.Context, req datasource.SchemaRequ
 			ID: schema.StringAttribute{
 				Computed: true,
 			},
-			PRODUCT_ID: schema.StringAttribute{
+			ProductId: schema.StringAttribute{
 				MarkdownDescription: "Example configurable attribute",
 				Required:            true,
 				Validators:          []validator.String{IsGuid()},
@@ -70,10 +70,10 @@ func (d *configDataSource) Schema(ctx context.Context, req datasource.SchemaRequ
 				Optional:            true,
 				Validators:          []validator.String{IsRegex()},
 			},
-			CONFIGS: schema.ListNestedAttribute{
+			Configs: schema.ListNestedAttribute{
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
-						CONFIG_ID: schema.StringAttribute{
+						ConfigId: schema.StringAttribute{
 							Computed: true,
 						},
 						CONFIG_NAME: schema.StringAttribute{
@@ -93,7 +93,7 @@ func (d *configDataSource) Schema(ctx context.Context, req datasource.SchemaRequ
 	}
 }
 
-func (d *configDataSource) Configure(ctx context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
+func (d *dataSource) Configure(ctx context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
 	// Prevent panic if the provider has not been configured.
 	if req.ProviderData == nil {
 		return
@@ -113,8 +113,8 @@ func (d *configDataSource) Configure(ctx context.Context, req datasource.Configu
 	d.client = client
 }
 
-func (d *configDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var data configDataSourceModel
+func (d *dataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+	var data dataSourceModel
 
 	// Read Terraform configuration data into the model
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
@@ -150,16 +150,16 @@ func (d *configDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 		filteredConfigs = configs
 	}
 
-	data.Configs = make([]configModel, len(filteredConfigs))
+	data.Data = make([]dataModel, len(filteredConfigs))
 	for i, config := range filteredConfigs {
-		configModel := &configModel{
-			ConfigId:    types.StringValue(*config.ConfigId),
+		configModel := &dataModel{
+			ID:          types.StringValue(*config.ConfigId),
 			Name:        types.StringValue(*config.Name.Get()),
 			Description: types.StringValue(*config.Description.Get()),
 			Order:       types.Int64Value(int64(*config.Order)),
 		}
 
-		data.Configs[i] = *configModel
+		data.Data[i] = *configModel
 	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
