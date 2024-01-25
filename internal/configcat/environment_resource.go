@@ -43,7 +43,7 @@ func (r *environmentResource) Metadata(ctx context.Context, req resource.Metadat
 
 func (r *environmentResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "Example resource",
+		MarkdownDescription: "Creates and manages an **" + EnvironmentResourceName + "**. [What is an " + EnvironmentResourceName + " in ConfigCat?](https://configcat.com/docs/main-concepts)",
 
 		Attributes: map[string]schema.Attribute{
 			ID: schema.StringAttribute{
