@@ -119,24 +119,24 @@ func (d *environmentDataSource) Configure(ctx context.Context, req datasource.Co
 }
 
 func (d *environmentDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var data environmentDataSourceModel
-	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
+	var state environmentDataSourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	resources, err := d.client.GetEnvironments(data.ProductId.ValueString())
+	resources, err := d.client.GetEnvironments(state.ProductId.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read "+EnvironmentResourceName+" data, got error: %s", err))
 		return
 	}
 
-	data.ID = types.StringValue(data.ProductId.ValueString() + strconv.FormatInt(time.Now().Unix(), 10))
+	state.ID = types.StringValue(state.ProductId.ValueString() + strconv.FormatInt(time.Now().Unix(), 10))
 
 	filteredResources := []sw.EnvironmentModel{}
-	if !data.NameFilterRegex.IsUnknown() && !data.NameFilterRegex.IsNull() && data.NameFilterRegex.ValueString() != "" {
-		regex := regexp.MustCompile(data.NameFilterRegex.ValueString())
+	if !state.NameFilterRegex.IsUnknown() && !state.NameFilterRegex.IsNull() && state.NameFilterRegex.ValueString() != "" {
+		regex := regexp.MustCompile(state.NameFilterRegex.ValueString())
 		for i := range resources {
 			if regex.MatchString(*resources[i].Name.Get()) {
 				filteredResources = append(filteredResources, resources[i])
@@ -146,7 +146,7 @@ func (d *environmentDataSource) Read(ctx context.Context, req datasource.ReadReq
 		filteredResources = resources
 	}
 
-	data.Data = make([]environmentDataModel, len(filteredResources))
+	state.Data = make([]environmentDataModel, len(filteredResources))
 	for i, resource := range filteredResources {
 		dataModel := &environmentDataModel{
 			ID:          types.StringPointerValue(resource.EnvironmentId),
@@ -156,8 +156,8 @@ func (d *environmentDataSource) Read(ctx context.Context, req datasource.ReadReq
 			Order:       types.Int64Value(int64(*resource.Order)),
 		}
 
-		data.Data[i] = *dataModel
+		state.Data[i] = *dataModel
 	}
 
-	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }

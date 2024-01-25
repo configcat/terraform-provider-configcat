@@ -130,64 +130,64 @@ func (r *environmentResource) Create(ctx context.Context, req resource.CreateReq
 }
 
 func (r *environmentResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var data environmentResourceModel
+	var state environmentResourceModel
 
 	// Read Terraform prior state data into the model
-	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	model, err := r.client.GetEnvironment(data.ID.ValueString())
+	model, err := r.client.GetEnvironment(state.ID.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read "+EnvironmentResourceName+", got error: %s", err))
 		return
 	}
 
-	data.UpdateFromApiModel(*model)
-	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+	state.UpdateFromApiModel(*model)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
 func (r *environmentResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var data environmentResourceModel
+	var state environmentResourceModel
 
 	// Read Terraform plan data into the model
-	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &state)...)
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	order := int32(data.Order.ValueInt64())
+	order := int32(state.Order.ValueInt64())
 	body := sw.UpdateEnvironmentModel{
-		Name:        *sw.NewNullableString(data.Name.ValueStringPointer()),
-		Description: *sw.NewNullableString(data.Description.ValueStringPointer()),
-		Color:       *sw.NewNullableString(data.Color.ValueStringPointer()),
+		Name:        *sw.NewNullableString(state.Name.ValueStringPointer()),
+		Description: *sw.NewNullableString(state.Description.ValueStringPointer()),
+		Color:       *sw.NewNullableString(state.Color.ValueStringPointer()),
 		Order:       *sw.NewNullableInt32(&order),
 	}
 
-	model, err := r.client.UpdateEnvironment(data.ID.ValueString(), body)
+	model, err := r.client.UpdateEnvironment(state.ID.ValueString(), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Unable to Update Resource", fmt.Sprintf("Unable to update "+EnvironmentResourceName+", got error: %s", err))
 		return
 	}
 
-	data.UpdateFromApiModel(*model)
-	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+	state.UpdateFromApiModel(*model)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
 func (r *environmentResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var data environmentResourceModel
+	var state environmentResourceModel
 
 	// Read Terraform prior state data into the model
-	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	err := r.client.DeleteEnvironment(data.ID.ValueString())
+	err := r.client.DeleteEnvironment(state.ID.ValueString())
 
 	if err != nil {
 		resp.Diagnostics.AddError("Unable to Delete Resource", fmt.Sprintf("Unable to delete "+EnvironmentResourceName+", got error: %s", err))

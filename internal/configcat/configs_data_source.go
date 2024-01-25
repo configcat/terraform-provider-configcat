@@ -114,24 +114,24 @@ func (d *configDataSource) Configure(ctx context.Context, req datasource.Configu
 }
 
 func (d *configDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var data configDataSourceModel
-	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
+	var state configDataSourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	resources, err := d.client.GetConfigs(data.ProductId.ValueString())
+	resources, err := d.client.GetConfigs(state.ProductId.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read "+ConfigResourceName+" data, got error: %s", err))
 		return
 	}
 
-	data.ID = types.StringValue(data.ProductId.ValueString() + strconv.FormatInt(time.Now().Unix(), 10))
+	state.ID = types.StringValue(state.ProductId.ValueString() + strconv.FormatInt(time.Now().Unix(), 10))
 
 	filteredResources := []sw.ConfigModel{}
-	if !data.NameFilterRegex.IsUnknown() && !data.NameFilterRegex.IsNull() && data.NameFilterRegex.ValueString() != "" {
-		regex := regexp.MustCompile(data.NameFilterRegex.ValueString())
+	if !state.NameFilterRegex.IsUnknown() && !state.NameFilterRegex.IsNull() && state.NameFilterRegex.ValueString() != "" {
+		regex := regexp.MustCompile(state.NameFilterRegex.ValueString())
 		for i := range resources {
 			if regex.MatchString(*resources[i].Name.Get()) {
 				filteredResources = append(filteredResources, resources[i])
@@ -141,7 +141,7 @@ func (d *configDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 		filteredResources = resources
 	}
 
-	data.Data = make([]configDataModel, len(filteredResources))
+	state.Data = make([]configDataModel, len(filteredResources))
 	for i, resource := range filteredResources {
 		dataModel := &configDataModel{
 			ID:          types.StringPointerValue(resource.ConfigId),
@@ -150,8 +150,8 @@ func (d *configDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 			Order:       types.Int64Value(int64(*resource.Order)),
 		}
 
-		data.Data[i] = *dataModel
+		state.Data[i] = *dataModel
 	}
 
-	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
