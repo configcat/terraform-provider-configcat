@@ -17,38 +17,37 @@ import (
 	sw "github.com/configcat/configcat-publicapi-go-client"
 )
 
-var _ resource.Resource = &environmentResource{}
-var _ resource.ResourceWithImportState = &environmentResource{}
+var _ resource.Resource = &configResource{}
+var _ resource.ResourceWithImportState = &configResource{}
 
-func NewEnvironmentResource() resource.Resource {
-	return &environmentResource{}
+func NewConfigResource() resource.Resource {
+	return &configResource{}
 }
 
-type environmentResource struct {
+type configResource struct {
 	client *client.Client
 }
 
-type environmentResourceModel struct {
+type configResourceModel struct {
 	ProductId types.String `tfsdk:"product_id"`
 
 	ID          types.String `tfsdk:"id"`
 	Name        types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
-	Color       types.String `tfsdk:"color"`
 	Order       types.Int64  `tfsdk:"order"`
 }
 
-func (r *environmentResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_environment"
+func (r *configResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_config"
 }
 
-func (r *environmentResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (r *configResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "Creates and manages an **" + EnvironmentResourceName + "**. [What is an " + EnvironmentResourceName + " in ConfigCat?](https://configcat.com/docs/main-concepts)",
+		MarkdownDescription: "Creates and manages a **" + ConfigResourceName + "**. [What is a " + ConfigResourceName + " in ConfigCat?](https://configcat.com/docs/main-concepts)",
 
 		Attributes: map[string]schema.Attribute{
 			ID: schema.StringAttribute{
-				Description: "The unique ID of the " + EnvironmentResourceName + ".",
+				Description: "The unique ID of the " + ConfigResourceName + ".",
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
@@ -63,26 +62,22 @@ func (r *environmentResource) Schema(ctx context.Context, req resource.SchemaReq
 				},
 			},
 			Name: schema.StringAttribute{
-				Description: "The name of the " + EnvironmentResourceName + ".",
+				Description: "The name of the " + ConfigResourceName + ".",
 				Required:    true,
 			},
 			Description: schema.StringAttribute{
-				Description: "The description of the " + EnvironmentResourceName + ".",
-				Optional:    true,
-			},
-			Color: schema.StringAttribute{
-				Description: "The color of the " + EnvironmentResourceName + ".",
+				Description: "The description of the " + ConfigResourceName + ".",
 				Optional:    true,
 			},
 			Order: schema.Int64Attribute{
-				Description: "The order of the " + EnvironmentResourceName + " within a Product (zero-based).",
+				Description: "The order of the " + ConfigResourceName + " within a Product (zero-based).",
 				Required:    true,
 			},
 		},
 	}
 }
 
-func (r *environmentResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+func (r *configResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
 	}
@@ -101,8 +96,8 @@ func (r *environmentResource) Configure(ctx context.Context, req resource.Config
 	r.client = client
 }
 
-func (r *environmentResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var plan environmentResourceModel
+func (r *configResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var plan configResourceModel
 
 	// Read Terraform plan data into the model
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
@@ -112,16 +107,15 @@ func (r *environmentResource) Create(ctx context.Context, req resource.CreateReq
 	}
 
 	order := int32(plan.Order.ValueInt64())
-	body := sw.CreateEnvironmentModel{
+	body := sw.CreateConfigRequest{
 		Name:        plan.Name.ValueString(),
 		Description: *sw.NewNullableString(plan.Description.ValueStringPointer()),
-		Color:       *sw.NewNullableString(plan.Color.ValueStringPointer()),
 		Order:       *sw.NewNullableInt32(&order),
 	}
 
-	model, err := r.client.CreateEnvironment(plan.ProductId.ValueString(), body)
+	model, err := r.client.CreateConfig(plan.ProductId.ValueString(), body)
 	if err != nil {
-		resp.Diagnostics.AddError("Unable to Create Resource", fmt.Sprintf("Unable to create "+EnvironmentResourceName+", got error: %s", err))
+		resp.Diagnostics.AddError("Unable to Create Resource", fmt.Sprintf("Unable to create "+ConfigResourceName+", got error: %s", err))
 		return
 	}
 
@@ -130,8 +124,8 @@ func (r *environmentResource) Create(ctx context.Context, req resource.CreateReq
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
 
-func (r *environmentResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var state environmentResourceModel
+func (r *configResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var state configResourceModel
 
 	// Read Terraform prior state data into the model
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -140,9 +134,9 @@ func (r *environmentResource) Read(ctx context.Context, req resource.ReadRequest
 		return
 	}
 
-	model, err := r.client.GetEnvironment(state.ID.ValueString())
+	model, err := r.client.GetConfig(state.ID.ValueString())
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read "+EnvironmentResourceName+", got error: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read "+ConfigResourceName+", got error: %s", err))
 		return
 	}
 
@@ -150,9 +144,10 @@ func (r *environmentResource) Read(ctx context.Context, req resource.ReadRequest
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
-func (r *environmentResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var state, plan environmentResourceModel
+func (r *configResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var state, plan configResourceModel
 
+	// Read Terraform plan data into the model
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 
@@ -160,21 +155,20 @@ func (r *environmentResource) Update(ctx context.Context, req resource.UpdateReq
 		return
 	}
 
-	if plan.Name.Equal(state.Name) && plan.Description.Equal(state.Description) && plan.Color.Equal(state.Color) && plan.Order.Equal(state.Order) {
+	if plan.Name.Equal(state.Name) && plan.Description.Equal(state.Description) && plan.Order.Equal(state.Order) {
 		return
 	}
 
 	order := int32(plan.Order.ValueInt64())
-	body := sw.UpdateEnvironmentModel{
+	body := sw.UpdateConfigRequest{
 		Name:        *sw.NewNullableString(plan.Name.ValueStringPointer()),
 		Description: *sw.NewNullableString(plan.Description.ValueStringPointer()),
-		Color:       *sw.NewNullableString(plan.Color.ValueStringPointer()),
 		Order:       *sw.NewNullableInt32(&order),
 	}
 
-	model, err := r.client.UpdateEnvironment(plan.ID.ValueString(), body)
+	model, err := r.client.UpdateConfig(plan.ID.ValueString(), body)
 	if err != nil {
-		resp.Diagnostics.AddError("Unable to Update Resource", fmt.Sprintf("Unable to update "+EnvironmentResourceName+", got error: %s", err))
+		resp.Diagnostics.AddError("Unable to Update Resource", fmt.Sprintf("Unable to update "+ConfigResourceName+", got error: %s", err))
 		return
 	}
 
@@ -182,8 +176,8 @@ func (r *environmentResource) Update(ctx context.Context, req resource.UpdateReq
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
 
-func (r *environmentResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var state environmentResourceModel
+func (r *configResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var state configResourceModel
 
 	// Read Terraform prior state data into the model
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -197,24 +191,23 @@ func (r *environmentResource) Delete(ctx context.Context, req resource.DeleteReq
 	if err != nil {
 		if _, ok := err.(client.NotFoundError); ok {
 			// If the resource is already deleted, we can safely remove it from the state.
-			tflog.Trace(ctx, EnvironmentResourceName+" is already deleted in ConfigCat, removing from state.")
+			tflog.Trace(ctx, ConfigResourceName+" is already deleted in ConfigCat, removing from state.")
 			return
 		}
-		resp.Diagnostics.AddError("Unable to Delete Resource", fmt.Sprintf("Unable to delete "+EnvironmentResourceName+", got error: %s", err))
+		resp.Diagnostics.AddError("Unable to Delete Resource", fmt.Sprintf("Unable to delete "+ConfigResourceName+", got error: %s", err))
 		return
 	}
 }
 
-func (r *environmentResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (r *configResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root(ID), req, resp)
 }
 
-func (resourceModel *environmentResourceModel) UpdateFromApiModel(model sw.EnvironmentModel) {
+func (resourceModel *configResourceModel) UpdateFromApiModel(model sw.ConfigModel) {
 	modelOrder := int64(*model.Order)
-	resourceModel.ID = types.StringPointerValue(model.EnvironmentId)
+	resourceModel.ID = types.StringPointerValue(model.ConfigId)
 	resourceModel.ProductId = types.StringPointerValue(model.Product.ProductId)
 	resourceModel.Name = types.StringPointerValue(model.Name.Get())
 	resourceModel.Description = types.StringPointerValue(model.Description.Get())
-	resourceModel.Color = types.StringPointerValue(model.Color.Get())
 	resourceModel.Order = types.Int64Value(modelOrder)
 }
