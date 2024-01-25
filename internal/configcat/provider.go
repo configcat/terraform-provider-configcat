@@ -1,6 +1,3 @@
-// Copyright (c) HashiCorp, Inc.
-// SPDX-License-Identifier: MPL-2.0
-
 package configcat
 
 import (
@@ -176,7 +173,7 @@ func (p *configCatProvider) Configure(ctx context.Context, req provider.Configur
 
 func (p *configCatProvider) Resources(ctx context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
-		// NewExampleResource,
+		NewEnvironmentResource,
 	}
 }
 

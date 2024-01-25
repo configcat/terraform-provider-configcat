@@ -1,6 +1,3 @@
-// Copyright (c) HashiCorp, Inc.
-// SPDX-License-Identifier: MPL-2.0
-
 package configcat
 
 import (
@@ -18,6 +15,7 @@ func TestAccEnvironmentsDataSource(t *testing.T) {
 	const environment1ID = "08d8becf-d4d9-4c66-8b48-6ac74cd95fba"
 	const environment2ID = "08d86d63-272c-4355-8027-4b52787bc1bd"
 	const environment3ID = "08d86d63-2726-47cd-8bfc-59608ecb91e2"
+	const listAttribute = Environments
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -30,22 +28,22 @@ func TestAccEnvironmentsDataSource(t *testing.T) {
 				},
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet(testResourceName, "id"),
-					resource.TestCheckResourceAttr(testResourceName, Environments+".#", "3"),
-					resource.TestCheckResourceAttr(testResourceName, Environments+".0."+EnvironmentId, environment1ID),
-					resource.TestCheckResourceAttr(testResourceName, Environments+".0."+Name, "Mandatory"),
-					resource.TestCheckNoResourceAttr(testResourceName, Environments+".0."+Description),
-					resource.TestCheckNoResourceAttr(testResourceName, Environments+".0."+Color),
-					resource.TestCheckResourceAttr(testResourceName, Environments+".0."+Order, "0"),
-					resource.TestCheckResourceAttr(testResourceName, Environments+".1."+EnvironmentId, environment2ID),
-					resource.TestCheckResourceAttr(testResourceName, Environments+".1."+Name, "Production"),
-					resource.TestCheckNoResourceAttr(testResourceName, Environments+".1."+Description),
-					resource.TestCheckNoResourceAttr(testResourceName, Environments+".1."+Color),
-					resource.TestCheckResourceAttr(testResourceName, Environments+".1."+Order, "1"),
-					resource.TestCheckResourceAttr(testResourceName, Environments+".2."+EnvironmentId, environment3ID),
-					resource.TestCheckResourceAttr(testResourceName, Environments+".2."+Name, "Test"),
-					resource.TestCheckResourceAttr(testResourceName, Environments+".2."+Description, "Test Env Description"),
-					resource.TestCheckResourceAttr(testResourceName, Environments+".2."+Color, "#5c6bc0"),
-					resource.TestCheckResourceAttr(testResourceName, Environments+".2."+Order, "2"),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+".#", "3"),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+EnvironmentId, environment1ID),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+Name, "Mandatory"),
+					resource.TestCheckNoResourceAttr(testResourceName, listAttribute+".0."+Description),
+					resource.TestCheckNoResourceAttr(testResourceName, listAttribute+".0."+Color),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+Order, "0"),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+".1."+EnvironmentId, environment2ID),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+".1."+Name, "Production"),
+					resource.TestCheckNoResourceAttr(testResourceName, listAttribute+".1."+Description),
+					resource.TestCheckNoResourceAttr(testResourceName, listAttribute+".1."+Color),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+".1."+Order, "1"),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+".2."+EnvironmentId, environment3ID),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+".2."+Name, "Test"),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+".2."+Description, "Test Env Description"),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+".2."+Color, "#5c6bc0"),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+".2."+Order, "2"),
 				),
 			},
 			{
@@ -56,12 +54,12 @@ func TestAccEnvironmentsDataSource(t *testing.T) {
 				},
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet(testResourceName, "id"),
-					resource.TestCheckResourceAttr(testResourceName, Environments+".#", "1"),
-					resource.TestCheckResourceAttr(testResourceName, Environments+".0."+EnvironmentId, environment3ID),
-					resource.TestCheckResourceAttr(testResourceName, Environments+".0."+Name, "Test"),
-					resource.TestCheckResourceAttr(testResourceName, Environments+".0."+Description, "Test Env Description"),
-					resource.TestCheckResourceAttr(testResourceName, Environments+".0."+Color, "#5c6bc0"),
-					resource.TestCheckResourceAttr(testResourceName, Environments+".0."+Order, "2"),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+".#", "1"),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+EnvironmentId, environment3ID),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+Name, "Test"),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+Description, "Test Env Description"),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+Color, "#5c6bc0"),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+Order, "2"),
 				),
 			},
 			{
@@ -72,7 +70,7 @@ func TestAccEnvironmentsDataSource(t *testing.T) {
 				},
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet(testResourceName, "id"),
-					resource.TestCheckResourceAttr(testResourceName, Environments+".#", "0"),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+".#", "0"),
 				),
 			},
 			{
