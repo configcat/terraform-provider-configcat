@@ -12,6 +12,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 
 	sw "github.com/configcat/configcat-publicapi-go-client"
 )
@@ -190,6 +191,11 @@ func (r *environmentResource) Delete(ctx context.Context, req resource.DeleteReq
 	err := r.client.DeleteEnvironment(state.ID.ValueString())
 
 	if err != nil {
+		if _, ok := err.(client.NotFoundError); ok {
+			// If the resource is already deleted, we can safely remove it from the state.
+			tflog.Trace(ctx, EnvironmentResourceName+" is already deleted in ConfigCat, removing from state.")
+			return
+		}
 		resp.Diagnostics.AddError("Unable to Delete Resource", fmt.Sprintf("Unable to delete "+EnvironmentResourceName+", got error: %s", err))
 		return
 	}
