@@ -53,7 +53,7 @@ func (d *configDataSource) Metadata(ctx context.Context, req datasource.Metadata
 func (d *configDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
-		MarkdownDescription: "Use this data source to access information about existing **" + ConfigResourceName + "**. [What is a " + ConfigResourceName + " in ConfigCat?](https://configcat.com/docs/main-concepts)",
+		MarkdownDescription: "Use this data source to access information about existing **" + ConfigResourceName + "s**. [What is a " + ConfigResourceName + " in ConfigCat?](https://configcat.com/docs/main-concepts)",
 
 		Attributes: map[string]schema.Attribute{
 			ID: schema.StringAttribute{
@@ -66,7 +66,7 @@ func (d *configDataSource) Schema(ctx context.Context, req datasource.SchemaRequ
 				Validators:  []validator.String{IsGuid()},
 			},
 			NameFilterRegex: schema.StringAttribute{
-				Description: "Filter the resources by name.",
+				Description: "Filter the " + ConfigResourceName + "s by name.",
 				Optional:    true,
 				Validators:  []validator.String{IsRegex()},
 			},
