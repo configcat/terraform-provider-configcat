@@ -137,9 +137,8 @@ func (d *tagDataSource) Read(ctx context.Context, req datasource.ReadRequest, re
 
 	state.Data = make([]tagDataModel, len(filteredResources))
 	for i, resource := range filteredResources {
-		tagIdString := fmt.Sprintf("%d", *resource.TagId)
 		dataModel := &tagDataModel{
-			ID:    types.StringValue(tagIdString),
+			ID:    types.StringValue(strconv.FormatInt(*resource.TagId, 10)),
 			Name:  types.StringPointerValue(resource.Name.Get()),
 			Color: types.StringPointerValue(resource.Color.Get()),
 		}

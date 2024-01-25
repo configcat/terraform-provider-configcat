@@ -152,9 +152,8 @@ func (d *settingDataSource) Read(ctx context.Context, req datasource.ReadRequest
 
 	state.Data = make([]settingDataModel, len(filteredResources))
 	for i, resource := range filteredResources {
-		settingIdString := fmt.Sprintf("%d", *resource.SettingId)
 		dataModel := &settingDataModel{
-			ID:          types.StringValue(settingIdString),
+			ID:          types.StringValue(strconv.FormatInt(int64(*resource.SettingId), 10)),
 			Name:        types.StringPointerValue(resource.Name.Get()),
 			Key:         types.StringPointerValue(resource.Key.Get()),
 			Hint:        types.StringPointerValue(resource.Hint.Get()),

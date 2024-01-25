@@ -249,8 +249,6 @@ func (d *permissionGroupDataSource) Read(ctx context.Context, req datasource.Rea
 
 	state.Data = make([]permissionGroupDataModel, len(filteredResources))
 	for i, resource := range filteredResources {
-		permissionGroupIdString := fmt.Sprintf("%d", *resource.PermissionGroupId)
-
 		environmentAccesses := make(map[string]string, len(resource.EnvironmentAccesses))
 		for _, environmentAccess := range resource.EnvironmentAccesses {
 			if *environmentAccess.EnvironmentAccessType == sw.ENVIRONMENTACCESSTYPE_NONE {
@@ -268,7 +266,7 @@ func (d *permissionGroupDataSource) Read(ctx context.Context, req datasource.Rea
 		}
 
 		dataModel := &permissionGroupDataModel{
-			ID:                           types.StringValue(permissionGroupIdString),
+			ID:                           types.StringValue(strconv.FormatInt(*resource.PermissionGroupId, 10)),
 			Name:                         types.StringPointerValue(resource.Name.Get()),
 			CanManageMembers:             types.BoolPointerValue(resource.CanManageMembers),
 			CanCreateOrUpdateConfig:      types.BoolPointerValue(resource.CanCreateOrUpdateConfig),
