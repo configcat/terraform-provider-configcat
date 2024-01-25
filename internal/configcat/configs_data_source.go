@@ -13,7 +13,6 @@ import (
 	"github.com/configcat/terraform-provider-configcat/internal/configcat/client"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
@@ -54,36 +53,41 @@ func (d *configDataSource) Metadata(ctx context.Context, req datasource.Metadata
 func (d *configDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
-		MarkdownDescription: "Example data source",
+		MarkdownDescription: "Use this data source to access information about existing **Configs**. [What is a Config in ConfigCat?](https://configcat.com/docs/main-concepts)",
 
 		Attributes: map[string]schema.Attribute{
 			ID: schema.StringAttribute{
 				Computed: true,
 			},
 			ProductId: schema.StringAttribute{
-				MarkdownDescription: "Example configurable attribute",
+				MarkdownDescription: "The ID of the Product.",
 				Required:            true,
 				Validators:          []validator.String{IsGuid()},
 			},
 			NameFilterRegex: schema.StringAttribute{
-				MarkdownDescription: "Example configurable attribute",
+				MarkdownDescription: "Filter the Configs by name.",
 				Optional:            true,
 				Validators:          []validator.String{IsRegex()},
 			},
 			Configs: schema.ListNestedAttribute{
+				MarkdownDescription: "A config [list](https://www.terraform.io/docs/configuration/types.html#list-) block defined as below.",
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						ConfigId: schema.StringAttribute{
-							Computed: true,
+							MarkdownDescription: "The unique Config ID.",
+							Computed:            true,
 						},
 						Name: schema.StringAttribute{
-							Computed: true,
+							MarkdownDescription: "The name of the Config.",
+							Computed:            true,
 						},
 						Description: schema.StringAttribute{
-							Computed: true,
+							MarkdownDescription: "The description of the Config.",
+							Computed:            true,
 						},
 						Order: schema.Int64Attribute{
-							Computed: true,
+							MarkdownDescription: "The order of the Config within a Product (zero-based).",
+							Computed:            true,
 						},
 					},
 				},
@@ -94,7 +98,6 @@ func (d *configDataSource) Schema(ctx context.Context, req datasource.SchemaRequ
 }
 
 func (d *configDataSource) Configure(ctx context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
-	// Prevent panic if the provider has not been configured.
 	if req.ProviderData == nil {
 		return
 	}
@@ -115,15 +118,13 @@ func (d *configDataSource) Configure(ctx context.Context, req datasource.Configu
 
 func (d *configDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 	var data configDataSourceModel
-
-	// Read Terraform configuration data into the model
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	configs, err := d.client.GetConfigs(data.ProductId.ValueString())
+	resources, err := d.client.GetConfigs(data.ProductId.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read configs, got error: %s", err))
 		return
@@ -131,35 +132,28 @@ func (d *configDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 
 	data.ID = types.StringValue(data.ProductId.ValueString() + strconv.FormatInt(time.Now().Unix(), 10))
 
-	filteredConfigs := []sw.ConfigModel{}
+	filteredResources := []sw.ConfigModel{}
 	if !data.NameFilterRegex.IsUnknown() && !data.NameFilterRegex.IsNull() && data.NameFilterRegex.ValueString() != "" {
-		regex, err := regexp.Compile(data.NameFilterRegex.ValueString())
-		if err != nil {
-			if err != nil {
-				resp.Diagnostics.AddAttributeError(path.Root(NameFilterRegex), "invalid regex", "invalid regex")
-				return
-			}
-		}
-
-		for i := range configs {
-			if regex.MatchString(*configs[i].Name.Get()) {
-				filteredConfigs = append(filteredConfigs, configs[i])
+		regex := regexp.MustCompile(data.NameFilterRegex.ValueString())
+		for i := range resources {
+			if regex.MatchString(*resources[i].Name.Get()) {
+				filteredResources = append(filteredResources, resources[i])
 			}
 		}
 	} else {
-		filteredConfigs = configs
+		filteredResources = resources
 	}
 
-	data.Data = make([]configDataModel, len(filteredConfigs))
-	for i, config := range filteredConfigs {
-		configModel := &configDataModel{
-			ID:          types.StringValue(*config.ConfigId),
-			Name:        types.StringValue(*config.Name.Get()),
-			Description: types.StringValue(*config.Description.Get()),
-			Order:       types.Int64Value(int64(*config.Order)),
+	data.Data = make([]configDataModel, len(filteredResources))
+	for i, resource := range filteredResources {
+		dataModel := &configDataModel{
+			ID:          types.StringValue(*resource.ConfigId),
+			Name:        types.StringValue(*resource.Name.Get()),
+			Description: types.StringValue(*resource.Description.Get()),
+			Order:       types.Int64Value(int64(*resource.Order)),
 		}
 
-		data.Data[i] = *configModel
+		data.Data[i] = *dataModel
 	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
