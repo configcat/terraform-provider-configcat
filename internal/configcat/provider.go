@@ -182,6 +182,7 @@ func (p *configCatProvider) DataSources(ctx context.Context) []func() datasource
 	return []func() datasource.DataSource{
 		NewConfigDataSource,
 		NewEnvironmentDataSource,
+		NewOrganizationDataSource,
 	}
 }
 
