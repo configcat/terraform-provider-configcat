@@ -1,0 +1,31 @@
+---
+page_title: "ConfigCat Feature Flags Provider"
+description: |-
+ConfigCat Feature Flags Provider for Terraform allows you to manage ConfigCat resources from a Terraform script. The Provider uses the standard [ConfigCat Public Management API](https://api.configcat.com/).
+---
+
+# ConfigCat Feature Flags Provider
+
+ConfigCat Feature Flags Provider for Terraform allows you to manage ConfigCat resources from a Terraform script. The Provider uses the standard [ConfigCat Public Management API](https://api.configcat.com/).
+
+## About ConfigCat
+
+Manage features and change your software configuration using [ConfigCat feature flags](https://configcat.com), without the need to re-deploy code. A 10 minute trainable dashboard allows even non-technical team members to manage application features.
+Supports A/B testing, soft launching or targeting a specific group of users first with new ideas. Deploy any time, release when confident. Open-source SDKs enable easy integration with any web, mobile or backend application.
+
+## Authentication
+
+ConfigCat Feature Flags Provider requires authentication. [Create ConfigCat Public API credentials](https://app.configcat.com/my-account/public-api-credentials).
+
+## Provider registration
+
+{{ tffile "examples/provider/provider.tf" }}
+
+## Example usage
+
+{{ tffile "examples/provider/example-usage.tf" }}
+
+What is a Feature Flag, Setting, Config, Environment or Product?  
+[See Main Concepts in ConfigCat Docs](https://configcat.com/docs/main-concepts)
+
+{{ .SchemaMarkdown | trimspace }}
