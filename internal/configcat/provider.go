@@ -54,6 +54,7 @@ func (p *configCatProvider) Metadata(ctx context.Context, req provider.MetadataR
 
 func (p *configCatProvider) Schema(ctx context.Context, req provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = schema.Schema{
+		MarkdownDescription: "ConfigCat Feature Flags Provider for Terraform allows you to manage ConfigCat resources from a Terraform script. The Provider uses the standard [ConfigCat Public Management API](https://api.configcat.com/)."
 		Attributes: map[string]schema.Attribute{
 			KEY_BASIC_AUTH_USERNAME: schema.StringAttribute{
 				MarkdownDescription: "Get your `basic_auth_username` at [ConfigCat Public API credentials](https://app.configcat.com/my-account/public-api-credentials).  This can also be sourced from the `CONFIGCAT_BASIC_AUTH_USERNAME` Environment Variable.",

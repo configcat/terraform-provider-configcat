@@ -60,34 +60,34 @@ func (d *configDataSource) Schema(ctx context.Context, req datasource.SchemaRequ
 				Computed: true,
 			},
 			ProductId: schema.StringAttribute{
-				MarkdownDescription: "The ID of the Product.",
-				Required:            true,
-				Validators:          []validator.String{IsGuid()},
+				Description: "The ID of the Product.",
+				Required:    true,
+				Validators:  []validator.String{IsGuid()},
 			},
 			NameFilterRegex: schema.StringAttribute{
-				MarkdownDescription: "Filter the Configs by name.",
-				Optional:            true,
-				Validators:          []validator.String{IsRegex()},
+				Description: "Filter the Configs by name.",
+				Optional:    true,
+				Validators:  []validator.String{IsRegex()},
 			},
 			Configs: schema.ListNestedAttribute{
 				MarkdownDescription: "A config [list](https://www.terraform.io/docs/configuration/types.html#list-) block defined as below.",
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						ConfigId: schema.StringAttribute{
-							MarkdownDescription: "The unique Config ID.",
-							Computed:            true,
+							Description: "The unique Config ID.",
+							Computed:    true,
 						},
 						Name: schema.StringAttribute{
-							MarkdownDescription: "The name of the Config.",
-							Computed:            true,
+							Description: "The name of the Config.",
+							Computed:    true,
 						},
 						Description: schema.StringAttribute{
-							MarkdownDescription: "The description of the Config.",
-							Computed:            true,
+							Description: "The description of the Config.",
+							Computed:    true,
 						},
 						Order: schema.Int64Attribute{
-							MarkdownDescription: "The order of the Config within a Product (zero-based).",
-							Computed:            true,
+							Description: "The order of the Config within a Product (zero-based).",
+							Computed:    true,
 						},
 					},
 				},
