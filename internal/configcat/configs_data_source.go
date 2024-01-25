@@ -65,7 +65,7 @@ func (d *dataSource) Schema(ctx context.Context, req datasource.SchemaRequest, r
 				Required:            true,
 				Validators:          []validator.String{IsGuid()},
 			},
-			CONFIG_NAME_FILTER_REGEX: schema.StringAttribute{
+			NameFilterRegex: schema.StringAttribute{
 				MarkdownDescription: "Example configurable attribute",
 				Optional:            true,
 				Validators:          []validator.String{IsRegex()},
@@ -76,13 +76,13 @@ func (d *dataSource) Schema(ctx context.Context, req datasource.SchemaRequest, r
 						ConfigId: schema.StringAttribute{
 							Computed: true,
 						},
-						CONFIG_NAME: schema.StringAttribute{
+						Name: schema.StringAttribute{
 							Computed: true,
 						},
-						CONFIG_DESCRIPTION: schema.StringAttribute{
+						Description: schema.StringAttribute{
 							Computed: true,
 						},
-						CONFIG_ORDER: schema.Int64Attribute{
+						Order: schema.Int64Attribute{
 							Computed: true,
 						},
 					},
