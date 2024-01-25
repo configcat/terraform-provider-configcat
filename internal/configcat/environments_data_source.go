@@ -20,40 +20,41 @@ import (
 )
 
 var (
-	_ datasource.DataSource              = &configDataSource{}
-	_ datasource.DataSourceWithConfigure = &configDataSource{}
+	_ datasource.DataSource              = &environmentDataSource{}
+	_ datasource.DataSourceWithConfigure = &environmentDataSource{}
 )
 
-func NewConfigDataSource() datasource.DataSource {
-	return &configDataSource{}
+func NewEnvironmentDataSource() datasource.DataSource {
+	return &environmentDataSource{}
 }
 
-type configDataSource struct {
+type environmentDataSource struct {
 	client *client.Client
 }
 
-type configDataModel struct {
-	ID          types.String `tfsdk:"config_id"`
+type environmentDataModel struct {
+	ID          types.String `tfsdk:"environment_id"`
 	Name        types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
+	Color       types.String `tfsdk:"color"`
 	Order       types.Int64  `tfsdk:"order"`
 }
 
-type configDataSourceModel struct {
-	ID              types.String      `tfsdk:"id"`
-	ProductId       types.String      `tfsdk:"product_id"`
-	NameFilterRegex types.String      `tfsdk:"name_filter_regex"`
-	Data            []configDataModel `tfsdk:"configs"`
+type environmentDataSourceModel struct {
+	ID              types.String           `tfsdk:"id"`
+	ProductId       types.String           `tfsdk:"product_id"`
+	NameFilterRegex types.String           `tfsdk:"name_filter_regex"`
+	Data            []environmentDataModel `tfsdk:"environments"`
 }
 
-func (d *configDataSource) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_configs"
+func (d *environmentDataSource) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_environments"
 }
 
-func (d *configDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+func (d *environmentDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
-		MarkdownDescription: "Use this data source to access information about existing **" + ConfigResourceName + "**. [What is a " + ConfigResourceName + " in ConfigCat?](https://configcat.com/docs/main-concepts)",
+		MarkdownDescription: "Use this data source to access information about existing **" + EnvironmentResourceName + "**. [What is a " + EnvironmentResourceName + " in ConfigCat?](https://configcat.com/docs/main-concepts)",
 
 		Attributes: map[string]schema.Attribute{
 			ID: schema.StringAttribute{
@@ -70,23 +71,27 @@ func (d *configDataSource) Schema(ctx context.Context, req datasource.SchemaRequ
 				Optional:    true,
 				Validators:  []validator.String{IsRegex()},
 			},
-			Configs: schema.ListNestedAttribute{
+			Environments: schema.ListNestedAttribute{
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
-						ConfigId: schema.StringAttribute{
-							Description: "The unique " + ConfigResourceName + " ID.",
+						EnvironmentId: schema.StringAttribute{
+							Description: "The unique " + EnvironmentResourceName + " ID.",
 							Computed:    true,
 						},
 						Name: schema.StringAttribute{
-							Description: "The name of the " + ConfigResourceName + ".",
+							Description: "The name of the " + EnvironmentResourceName + ".",
 							Computed:    true,
 						},
 						Description: schema.StringAttribute{
-							Description: "The description of the " + ConfigResourceName + ".",
+							Description: "The description of the " + EnvironmentResourceName + ".",
+							Computed:    true,
+						},
+						Color: schema.StringAttribute{
+							Description: "The color of the " + EnvironmentResourceName + ".",
 							Computed:    true,
 						},
 						Order: schema.Int64Attribute{
-							Description: "The order of the " + ConfigResourceName + " within a Product (zero-based).",
+							Description: "The order of the " + EnvironmentResourceName + " within a Product (zero-based).",
 							Computed:    true,
 						},
 					},
@@ -97,7 +102,7 @@ func (d *configDataSource) Schema(ctx context.Context, req datasource.SchemaRequ
 	}
 }
 
-func (d *configDataSource) Configure(ctx context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
+func (d *environmentDataSource) Configure(ctx context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
 	}
@@ -116,23 +121,23 @@ func (d *configDataSource) Configure(ctx context.Context, req datasource.Configu
 	d.client = client
 }
 
-func (d *configDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var data configDataSourceModel
+func (d *environmentDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+	var data environmentDataSourceModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	resources, err := d.client.GetConfigs(data.ProductId.ValueString())
+	resources, err := d.client.GetEnvironments(data.ProductId.ValueString())
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read "+ConfigResourceName+" data, got error: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read "+EnvironmentResourceName+" data, got error: %s", err))
 		return
 	}
 
 	data.ID = types.StringValue(data.ProductId.ValueString() + strconv.FormatInt(time.Now().Unix(), 10))
 
-	filteredResources := []sw.ConfigModel{}
+	filteredResources := []sw.EnvironmentModel{}
 	if !data.NameFilterRegex.IsUnknown() && !data.NameFilterRegex.IsNull() && data.NameFilterRegex.ValueString() != "" {
 		regex := regexp.MustCompile(data.NameFilterRegex.ValueString())
 		for i := range resources {
@@ -144,12 +149,13 @@ func (d *configDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 		filteredResources = resources
 	}
 
-	data.Data = make([]configDataModel, len(filteredResources))
+	data.Data = make([]environmentDataModel, len(filteredResources))
 	for i, resource := range filteredResources {
-		dataModel := &configDataModel{
-			ID:          types.StringPointerValue(resource.ConfigId),
+		dataModel := &environmentDataModel{
+			ID:          types.StringPointerValue(resource.EnvironmentId),
 			Name:        types.StringPointerValue(resource.Name.Get()),
 			Description: types.StringPointerValue(resource.Description.Get()),
+			Color:       types.StringPointerValue(resource.Color.Get()),
 			Order:       types.Int64Value(int64(*resource.Order)),
 		}
 
