@@ -70,7 +70,7 @@ func (r *configResource) Schema(ctx context.Context, req resource.SchemaRequest,
 				Optional:    true,
 			},
 			Order: schema.Int64Attribute{
-				Description: "The order of the " + ConfigResourceName + " within a Product (zero-based).",
+				Description: "The order of the " + ConfigResourceName + " within a " + ProductResourceName + " (zero-based).",
 				Required:    true,
 			},
 		},

@@ -76,7 +76,7 @@ func (d *productDataSource) Schema(ctx context.Context, req datasource.SchemaReq
 							Computed:    true,
 						},
 						Order: schema.Int64Attribute{
-							Description: "The order of the " + ProductResourceName + " within a Product (zero-based).",
+							Description: "The order of the " + ProductResourceName + " within a " + ProductResourceName + " (zero-based).",
 							Computed:    true,
 						},
 					},

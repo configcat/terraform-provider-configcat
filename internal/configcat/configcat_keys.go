@@ -62,7 +62,8 @@ const (
 	Tags            = "tags"
 	TagId           = "tag_id"
 
-	SettingResourceName   = "Feature Flags or Settings"
+	SettingsResourceName  = "Feature Flags or Settings"
+	SettingResourceName   = "Feature Flag or Setting"
 	Settings              = "settings"
 	SettingId             = "setting_id"
 	SettingKey            = "key"
