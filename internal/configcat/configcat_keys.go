@@ -86,6 +86,7 @@ const (
 	RolloutPercentageItemPercentage = "percentage"
 	RolloutPercentageItemValue      = "value"
 
-	PrimarySdkKey   = "primary"
-	SecondarySdkKey = "secondary"
+	SdkKeyResourceName = "SDK Key"
+	PrimarySdkKey      = "primary"
+	SecondarySdkKey    = "secondary"
 )

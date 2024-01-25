@@ -58,7 +58,7 @@ func (d *environmentDataSource) Schema(ctx context.Context, req datasource.Schem
 				Computed:    true,
 			},
 			ProductId: schema.StringAttribute{
-				Description: "The ID of the Product.",
+				Description: "The ID of the " + ProductResourceName + ".",
 				Required:    true,
 				Validators:  []validator.String{IsGuid()},
 			},

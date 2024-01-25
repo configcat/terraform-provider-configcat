@@ -54,7 +54,7 @@ func (r *configResource) Schema(ctx context.Context, req resource.SchemaRequest,
 				},
 			},
 			ProductId: schema.StringAttribute{
-				Description: "The ID of the Product.",
+				Description: "The ID of the " + ProductResourceName + ".",
 				Required:    true,
 				Validators:  []validator.String{IsGuid()},
 				PlanModifiers: []planmodifier.String{

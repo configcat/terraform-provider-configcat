@@ -184,6 +184,7 @@ func (p *configCatProvider) DataSources(ctx context.Context) []func() datasource
 		NewProductDataSource,
 		NewConfigDataSource,
 		NewEnvironmentDataSource,
+		NewSdkKeyDataSource,
 	}
 }
 
