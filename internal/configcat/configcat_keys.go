@@ -71,6 +71,8 @@ const (
 	SettingHint           = "hint"
 	SettingType           = "setting_type"
 
+	SettingValueResourceName = "Feature Flag or Setting value"
+
 	SettingValue   = "value"
 	InitOnly       = "init_only"
 	MandatoryNotes = "mandatory_notes"
