@@ -81,8 +81,9 @@ func (r *settingResource) Schema(ctx context.Context, req resource.SchemaRequest
 				Optional:    true,
 			},
 			SettingType: schema.StringAttribute{
-				Description: "The type of the " + SettingResourceName + ". Available values: `boolean`|`string`|`int`|`double`.",
+				Description: "The type of the " + SettingResourceName + ". Available values: `boolean`|`string`|`int`|`double`. Default: `boolean`.",
 				Optional:    true,
+				Computed:    true,
 				Default:     stringdefault.StaticString("boolean"),
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
@@ -209,7 +210,7 @@ func (r *settingResource) Update(ctx context.Context, req resource.UpdateRequest
 		operations = append(operations, sw.JsonPatchOperation{
 			Op:    sw.OPERATIONTYPE_REPLACE,
 			Path:  "/hint",
-			Value: plan.Hint.ValueStringPointer(),
+			Value: plan.Hint.ValueString(),
 		})
 	}
 

@@ -75,7 +75,7 @@ func (r *environmentResource) Schema(ctx context.Context, req resource.SchemaReq
 				Optional:    true,
 			},
 			Order: schema.Int64Attribute{
-				Description: "The order of the " + EnvironmentResourceName + " within a " + ProductResourceName + " (zero-based).",
+				Description: "The order of the " + EnvironmentResourceName + " within a " + ProductResourceName + " (zero-based). If multiple " + EnvironmentResourceName + "s has the same order, they are displayed in alphabetical order.",
 				Required:    true,
 			},
 		},

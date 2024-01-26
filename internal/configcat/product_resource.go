@@ -70,7 +70,7 @@ func (r *productResource) Schema(ctx context.Context, req resource.SchemaRequest
 				Optional:    true,
 			},
 			Order: schema.Int64Attribute{
-				Description: "The order of the " + ProductResourceName + " within a " + OrganizationResourceName + " (zero-based).",
+				Description: "The order of the " + ProductResourceName + " within a " + OrganizationResourceName + " (zero-based). If multiple " + ProductResourceName + "s has the same order, they are displayed in alphabetical order.",
 				Required:    true,
 			},
 		},

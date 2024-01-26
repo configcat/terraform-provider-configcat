@@ -36,7 +36,7 @@ output "product_id" {
 ### Required
 
 - `name` (String) The name of the Product.
-- `order` (Number) The order of the Product within a Organization (zero-based).
+- `order` (Number) The order of the Product within a Organization (zero-based). If multiple Products has the same order, they are displayed in alphabetical order.
 - `organization_id` (String) The ID of the Organization.
 
 ### Optional

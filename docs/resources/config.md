@@ -36,7 +36,7 @@ output "config_id" {
 ### Required
 
 - `name` (String) The name of the Config.
-- `order` (Number) The order of the Config within a Product (zero-based).
+- `order` (Number) The order of the Config within a Product (zero-based). If multiple Configs has the same order, they are displayed in alphabetical order.
 - `product_id` (String) The ID of the Product.
 
 ### Optional
