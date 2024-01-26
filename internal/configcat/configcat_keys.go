@@ -24,7 +24,7 @@ const (
 	Environments            = "environments"
 	EnvironmentId           = "environment_id"
 
-	PermissionGroupResourceName                 = "Permission group"
+	PermissionGroupResourceName                 = "Permission Group"
 	PermissionGroups                            = "permission_groups"
 	PermissionGroupId                           = "permission_group_id"
 	PermissionGroupCanManageMembers             = "can_manage_members"

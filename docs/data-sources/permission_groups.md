@@ -3,12 +3,12 @@
 page_title: "configcat_permission_groups Data Source - terraform-provider-configcat"
 subcategory: ""
 description: |-
-  Use this data source to access information about existing Permission groups. What is a Permission group in ConfigCat? https://configcat.com/docs/advanced/team-management/team-management-basics/#permissions--permission-groups-product-level
+  Use this data source to access information about existing Permission Groups. What is a Permission Group in ConfigCat? https://configcat.com/docs/advanced/team-management/team-management-basics/#permissions--permission-groups-product-level
 ---
 
 # configcat_permission_groups (Data Source)
 
-Use this data source to access information about existing **Permission groups**. [What is a Permission group in ConfigCat?](https://configcat.com/docs/advanced/team-management/team-management-basics/#permissions--permission-groups-product-level)
+Use this data source to access information about existing **Permission Groups**. [What is a Permission Group in ConfigCat?](https://configcat.com/docs/advanced/team-management/team-management-basics/#permissions--permission-groups-product-level)
 
 ## Example Usage
 
@@ -37,7 +37,7 @@ output "permission_group_id" {
 
 ### Optional
 
-- `name_filter_regex` (String) Filter the Permission groups by name.
+- `name_filter_regex` (String) Filter the Permission Groups by name.
 
 ### Read-Only
 
@@ -71,6 +71,6 @@ Read-Only:
 - `can_view_product_statistics` (Boolean) Group members has access to product statistics.
 - `can_view_sdkkey` (Boolean) Group members has access to SDK keys.
 - `environment_accesses` (Map of String) The environment specific permissions map block. Keys are the Environment IDs and the values represent the environment specific Feature Management permission. Possible values: full, readOnly
-- `name` (String) The name of the Permission group.
+- `name` (String) The name of the Permission Group.
 - `new_environment_accesstype` (String) Represent the environment specific Feature Management permission for new Environments. Possible values: full, readOnly, none
-- `permission_group_id` (String) The unique Permission group ID.
+- `permission_group_id` (String) The unique Permission Group ID.

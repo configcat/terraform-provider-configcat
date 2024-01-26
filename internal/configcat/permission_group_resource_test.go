@@ -1,6 +1,7 @@
 package configcat
 
 import (
+	"regexp"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/config"
@@ -69,20 +70,18 @@ func TestAccPermissionGroupResource(t *testing.T) {
 				ConfigFile: config.TestNameFile("main.tf"),
 				ConfigVariables: config.Variables{
 					"product_id": config.StringVariable(productId),
-					"name":       config.StringVariable("Resource name"),
+					"name":       config.StringVariable("Resource name updated"),
 					"accesstype": config.StringVariable("full"),
 				},
-				ConfigPlanChecks: resource.ConfigPlanChecks{
-					PreApply: []plancheck.PlanCheck{
-						plancheck.ExpectResourceAction(testResourceName, plancheck.ResourceActionNoop),
-					},
-				},
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr(testResourceName, Name, "Resource name updated"),
+				),
 			},
 			{
 				ConfigFile: config.TestNameFile("main.tf"),
 				ConfigVariables: config.Variables{
 					"product_id":                config.StringVariable(productId),
-					"name":                      config.StringVariable("Resource name"),
+					"name":                      config.StringVariable("Resource name updated"),
 					"accesstype":                config.StringVariable("full"),
 					"can_createorupdate_config": config.BoolVariable(false),
 				},
@@ -431,6 +430,67 @@ func TestAccPermissionGroupResource(t *testing.T) {
 				ResourceName:      testResourceName,
 				ImportState:       true,
 				ImportStateVerify: true,
+			},
+			{
+				ConfigFile: config.TestNameFile("main.tf"),
+				ConfigVariables: config.Variables{
+					"product_id": config.StringVariable(productId),
+					"name":       config.StringVariable("Resource name"),
+					"accesstype": config.StringVariable("readOnly"),
+					"environment_accesses": config.MapVariable(map[string]config.Variable{
+						environment1Id: config.StringVariable("readOnly"),
+					}),
+				},
+				ExpectError: regexp.MustCompile(`environment_accesses can only be set if the accesstype is custom`),
+			},
+			{
+				ConfigFile: config.TestNameFile("main.tf"),
+				ConfigVariables: config.Variables{
+					"product_id":        config.StringVariable(productId),
+					"name":              config.StringVariable("Resource name"),
+					"can_delete_config": config.BoolVariable(true),
+				},
+				ExpectError: regexp.MustCompile(`CanDeleteConfig is not allowed without`),
+			},
+			{
+				ConfigFile: config.TestNameFile("main.tf"),
+				ConfigVariables: config.Variables{
+					"product_id": config.StringVariable(productId),
+					"name":       config.StringVariable("Resource name"),
+					"accesstype": config.StringVariable("invalid"),
+				},
+				ExpectError: regexp.MustCompile(`invalid value 'invalid' for AccessType`),
+			},
+			{
+				ConfigFile: config.TestNameFile("main.tf"),
+				ConfigVariables: config.Variables{
+					"product_id":                 config.StringVariable(productId),
+					"name":                       config.StringVariable("Resource name"),
+					"new_environment_accesstype": config.StringVariable("invalid"),
+				},
+				ExpectError: regexp.MustCompile(`invalid value 'invalid' for EnvironmentAccessType`),
+			},
+			{
+				ConfigFile: config.TestNameFile("main.tf"),
+				ConfigVariables: config.Variables{
+					"product_id": config.StringVariable(productId),
+					"name":       config.StringVariable("Resource name"),
+					"environment_accesses": config.MapVariable(map[string]config.Variable{
+						environment1Id: config.StringVariable("invalid"),
+					}),
+				},
+				ExpectError: regexp.MustCompile(`invalid value 'invalid' for EnvironmentAccessType`),
+			},
+			{
+				ConfigFile: config.TestNameFile("main.tf"),
+				ConfigVariables: config.Variables{
+					"product_id": config.StringVariable(productId),
+					"name":       config.StringVariable("Resource name"),
+					"environment_accesses": config.MapVariable(map[string]config.Variable{
+						environment1Id: config.StringVariable("none"),
+					}),
+				},
+				ExpectError: regexp.MustCompile(`invalid value 'none' for EnvironmentAccessType`),
 			},
 		},
 	})
