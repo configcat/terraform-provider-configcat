@@ -35,7 +35,7 @@ type permissionGroupResource struct {
 type permissionGroupResourceModel struct {
 	ProductId types.String `tfsdk:"product_id"`
 
-	ID                           types.String `tfsdk:"permission_group_id"`
+	ID                           types.String `tfsdk:"id"`
 	Name                         types.String `tfsdk:"name"`
 	CanManageMembers             types.Bool   `tfsdk:"can_manage_members"`
 	CanCreateOrUpdateConfig      types.Bool   `tfsdk:"can_createorupdate_config"`
@@ -276,14 +276,7 @@ func (r *permissionGroupResource) Create(ctx context.Context, req resource.Creat
 		return
 	}
 
-	environmentAccessMap := make(map[string]types.String, len(plan.EnvironmentAccess.Elements()))
-	resp.Diagnostics.Append(plan.EnvironmentAccess.ElementsAs(ctx, &environmentAccessMap, false)...)
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	environmentAccesses, environmentAccessParseError := getEnvironmentAccesses(environmentAccessMap, nil, *accessType)
+	environmentAccesses, environmentAccessParseError := getEnvironmentAccesses(&plan.EnvironmentAccess, nil, *accessType)
 	if environmentAccessParseError != nil {
 		resp.Diagnostics.AddAttributeError(path.Root(PermissionGroupEnvironmentAccess), "invalid environment_accesses", environmentAccessParseError.Error())
 		return
@@ -416,14 +409,7 @@ func (r *permissionGroupResource) Update(ctx context.Context, req resource.Updat
 		return
 	}
 
-	environmentAccessMap := make(map[string]types.String, len(plan.EnvironmentAccess.Elements()))
-	resp.Diagnostics.Append(plan.EnvironmentAccess.ElementsAs(ctx, &environmentAccessMap, false)...)
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	environmentAccesses, environmentAccessParseError := getEnvironmentAccesses(environmentAccessMap, nil, *accessType)
+	environmentAccesses, environmentAccessParseError := getEnvironmentAccesses(&plan.EnvironmentAccess, &state.EnvironmentAccess, *accessType)
 	if environmentAccessParseError != nil {
 		resp.Diagnostics.AddAttributeError(path.Root(PermissionGroupEnvironmentAccess), "invalid environment_accesses", environmentAccessParseError.Error())
 		return
@@ -516,6 +502,7 @@ func (resourceModel *permissionGroupResourceModel) UpdateFromApiModel(ctx contex
 	}
 
 	resourceModel.ID = types.StringValue(strconv.FormatInt(*model.PermissionGroupId, 10))
+	resourceModel.ProductId = types.StringPointerValue(model.Product.ProductId)
 	resourceModel.Name = types.StringPointerValue(model.Name.Get())
 	resourceModel.CanManageMembers = types.BoolPointerValue(model.CanManageMembers)
 	resourceModel.CanCreateOrUpdateConfig = types.BoolPointerValue(model.CanCreateOrUpdateConfig)
@@ -544,20 +531,26 @@ func (resourceModel *permissionGroupResourceModel) UpdateFromApiModel(ctx contex
 	return diags
 }
 
-func getEnvironmentAccesses(newEnvironmentAccesses map[string]types.String, oldEnvironmentAccesses map[string]types.String, accessType sw.AccessType) (*[]sw.CreateOrUpdateEnvironmentAccessModel, error) {
+func getEnvironmentAccesses(newEnvironmentAccesses *types.Map, oldEnvironmentAccesses *types.Map, accessType sw.AccessType) (*[]sw.CreateOrUpdateEnvironmentAccessModel, error) {
 	elements := make([]sw.CreateOrUpdateEnvironmentAccessModel, 0)
 
-	if accessType != sw.ACCESSTYPE_CUSTOM && len(newEnvironmentAccesses) > 0 {
-		return nil, fmt.Errorf("Error: environment_accesses can only be set if the accesstype is custom")
+	if newEnvironmentAccesses == nil {
+		return &elements, nil
+	}
+
+	newEnvironmentAccessesElements := newEnvironmentAccesses.Elements()
+
+	if accessType != sw.ACCESSTYPE_CUSTOM && len(newEnvironmentAccessesElements) > 0 {
+		return nil, fmt.Errorf("environment_accesses can only be set if the accesstype is custom")
 	}
 
 	if accessType != sw.ACCESSTYPE_CUSTOM {
 		return &elements, nil
 	}
 
-	for environmentIdKey, environmentAccessType := range newEnvironmentAccesses {
+	for environmentIdKey, environmentAccessType := range newEnvironmentAccessesElements {
 		environmentId := environmentIdKey
-		environmentAccessType, environmentAccessTypeParseError := sw.NewEnvironmentAccessTypeFromValue(environmentAccessType.ValueString())
+		environmentAccessType, environmentAccessTypeParseError := sw.NewEnvironmentAccessTypeFromValue(environmentAccessType.String())
 		if environmentAccessTypeParseError != nil || *environmentAccessType == sw.ENVIRONMENTACCESSTYPE_NONE {
 			return nil, fmt.Errorf("Error: invalid value '" + (string)(*environmentAccessType) + "' for EnvironmentAccessType: valid values are [full readOnly]")
 		}
@@ -569,16 +562,18 @@ func getEnvironmentAccesses(newEnvironmentAccesses map[string]types.String, oldE
 		elements = append(elements, element)
 	}
 
-	// We should set none to those environment accesses that were deleted
-	for environmentIdKey := range oldEnvironmentAccesses {
-		environmentId := environmentIdKey
-		_, ok := newEnvironmentAccesses[environmentId]
-		if !ok {
-			element := sw.CreateOrUpdateEnvironmentAccessModel{
-				EnvironmentId:         &environmentId,
-				EnvironmentAccessType: sw.ENVIRONMENTACCESSTYPE_NONE.Ptr(),
+	if oldEnvironmentAccesses != nil {
+		// We should set none to those environment accesses that were deleted
+		for environmentIdKey := range oldEnvironmentAccesses.Elements() {
+			environmentId := environmentIdKey
+			_, ok := newEnvironmentAccessesElements[environmentId]
+			if !ok {
+				element := sw.CreateOrUpdateEnvironmentAccessModel{
+					EnvironmentId:         &environmentId,
+					EnvironmentAccessType: sw.ENVIRONMENTACCESSTYPE_NONE.Ptr(),
+				}
+				elements = append(elements, element)
 			}
-			elements = append(elements, element)
 		}
 	}
 
