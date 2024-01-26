@@ -5,6 +5,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/config"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/plancheck"
 )
 
 func TestAccPermissionGroupResource(t *testing.T) {
@@ -61,6 +62,72 @@ func TestAccPermissionGroupResource(t *testing.T) {
 				ResourceName:      testResourceName,
 				ImportState:       true,
 				ImportStateVerify: true,
+			},
+			{
+				ConfigFile: config.TestNameFile("main.tf"),
+				ConfigVariables: config.Variables{
+					"product_id": config.StringVariable(productId),
+					"name":       config.StringVariable("Resource name"),
+					"accesstype": config.StringVariable("full"),
+				},
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{
+						plancheck.ExpectResourceAction(testResourceName, plancheck.ResourceActionNoop),
+					},
+				},
+			},
+			{
+				ConfigFile: config.TestNameFile("main.tf"),
+				ConfigVariables: config.Variables{
+					"product_id":                config.StringVariable(productId),
+					"name":                      config.StringVariable("Resource name"),
+					"accesstype":                config.StringVariable("full"),
+					"can_createorupdate_config": config.BoolVariable(false),
+				},
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{
+						plancheck.ExpectResourceAction(testResourceName, plancheck.ResourceActionNoop),
+					},
+				},
+			},
+			{
+				ConfigFile: config.TestNameFile("main.tf"),
+				ConfigVariables: config.Variables{
+					"product_id":                     config.StringVariable(productId),
+					"name":                           config.StringVariable("Resource name"),
+					"accesstype":                     config.StringVariable("full"),
+					"can_createorupdate_config":      config.BoolVariable(true),
+					"can_createorupdate_environment": config.BoolVariable(true),
+					"can_delete_environment":         config.BoolVariable(true),
+				},
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttrSet(testResourceName, ID),
+					resource.TestCheckResourceAttr(testResourceName, Name, "Resource name"),
+					resource.TestCheckResourceAttr(testResourceName, PermissionGroupAccessType, "full"),
+					resource.TestCheckResourceAttr(testResourceName, PermissionGroupNewEnvironmentAccessType, "none"),
+					resource.TestCheckResourceAttr(testResourceName, PermissionGroupEnvironmentAccess+".%", "0"),
+					resource.TestCheckResourceAttr(testResourceName, PermissionGroupCanManageMembers, "false"),
+					resource.TestCheckResourceAttr(testResourceName, PermissionGroupCanManageMembers, "false"),
+					resource.TestCheckResourceAttr(testResourceName, PermissionGroupCanCreateOrUpdateConfig, "true"),
+					resource.TestCheckResourceAttr(testResourceName, PermissionGroupCanDeleteConfig, "false"),
+					resource.TestCheckResourceAttr(testResourceName, PermissionGroupCanCreateOrUpdateEnvironment, "true"),
+					resource.TestCheckResourceAttr(testResourceName, PermissionGroupCanDeleteEnvironment, "true"),
+					resource.TestCheckResourceAttr(testResourceName, PermissionGroupCanCreateOrUpdateSetting, "false"),
+					resource.TestCheckResourceAttr(testResourceName, PermissionGroupCanTagSetting, "false"),
+					resource.TestCheckResourceAttr(testResourceName, PermissionGroupCanDeleteSetting, "false"),
+					resource.TestCheckResourceAttr(testResourceName, PermissionGroupCanCreateOrUpdateTag, "false"),
+					resource.TestCheckResourceAttr(testResourceName, PermissionGroupCanDeleteTag, "false"),
+					resource.TestCheckResourceAttr(testResourceName, PermissionGroupCanManageWebhook, "false"),
+					resource.TestCheckResourceAttr(testResourceName, PermissionGroupCanUseExportImport, "false"),
+					resource.TestCheckResourceAttr(testResourceName, PermissionGroupCanManageProductPreferences, "false"),
+					resource.TestCheckResourceAttr(testResourceName, PermissionGroupCanManageIntegrations, "false"),
+					resource.TestCheckResourceAttr(testResourceName, PermissionGroupCanViewSdkKey, "false"),
+					resource.TestCheckResourceAttr(testResourceName, PermissionGroupCanRotateSdkKey, "false"),
+					resource.TestCheckResourceAttr(testResourceName, PermissionGroupCanCreateOrUpdateSegment, "false"),
+					resource.TestCheckResourceAttr(testResourceName, PermissionGroupCanDeleteSegment, "false"),
+					resource.TestCheckResourceAttr(testResourceName, PermissionGroupCanViewProductAuditLogs, "false"),
+					resource.TestCheckResourceAttr(testResourceName, PermissionGroupCanViewProductStatistics, "false"),
+				),
 			},
 		},
 	})
