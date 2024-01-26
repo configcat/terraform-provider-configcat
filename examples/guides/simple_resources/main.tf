@@ -1,19 +1,3 @@
----
-page_title: "Simple usage of Resources"
----
-
-# Simple usage of Resources
-
-## Prerequisites
-
-[Get your Public Management API credentials](https://app.configcat.com/my-account/public-api-credentials) and set the following environment variables:
-
-- CONFIGCAT_BASIC_AUTH_USERNAME
-- CONFIGCAT_BASIC_AUTH_PASSWORD
-
-## main.tf
-
-```terraform
 terraform {
   required_providers {
     configcat = {
@@ -105,4 +89,3 @@ resource "configcat_setting_tag" "is_awesome_tag" {
   setting_id = configcat_setting.is_awesome.id
   tag_id     = configcat_tag.my_tag.id
 }
-```

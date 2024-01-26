@@ -1,19 +1,3 @@
----
-page_title: "Simple usage of Data Sources"
----
-
-# Simple usage of Data Sources
-
-## Prerequisites
-
-[Get your Public Management API credentials](https://app.configcat.com/my-account/public-api-credentials) and set the following environment variables:
-
-- CONFIGCAT_BASIC_AUTH_USERNAME
-- CONFIGCAT_BASIC_AUTH_PASSWORD
-
-## main.tf
-
-```terraform
 terraform {
   required_providers {
     configcat = {
@@ -63,4 +47,3 @@ data "configcat_tags" "my_tags" {
   product_id        = data.configcat_products.my_products.products.0.product_id
   name_filter_regex = "Test"
 }
-```

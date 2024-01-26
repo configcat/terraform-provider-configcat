@@ -27,7 +27,7 @@ terraform {
   required_providers {
     configcat = {
       source  = "configcat/configcat"
-      version = "~> 3.0"
+      version = "~> 4.0"
     }
   }
 }
@@ -111,7 +111,7 @@ terraform {
   required_providers {
     configcat = {
       source  = "configcat/configcat"
-      version = "~> 3.0"
+      version = "~> 4.0"
     }
   }
 }
@@ -146,7 +146,7 @@ terraform {
   required_providers {
     configcat = {
       source  = "configcat/configcat"
-      version = "~> 3.0"
+      version = "~> 4.0"
     }
   }
 }
@@ -206,8 +206,4 @@ resource "configcat_setting_value" "welcome_text_value" {
     value      = "Welcome to ConfigCat. Unlimited team size, awesome support and no surprises."
   }
 }
-```
-
-```terraform
-
 ```

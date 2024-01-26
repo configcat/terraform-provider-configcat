@@ -15,17 +15,17 @@ You could define the custom Environment accesses in v1.5.0 with a list property:
 ```terraform
 resource "configcat_permission_group" "my_permission_group" {
   product_id = data.configcat_products.my_products.products.0.product_id
-  name = "Read only except Test environment"
+  name       = "Read only except Test environment"
 
   accesstype = "custom"
 
   environment_access {
-    environment_id = data.configcat_environments.my_test_environments.environments.0.environment_id
+    environment_id         = data.configcat_environments.my_test_environments.environments.0.environment_id
     environment_accesstype = "full"
   }
 
   environment_access {
-    environment_id = data.configcat_environments.my_production_environments.environments.0.environment_id
+    environment_id         = data.configcat_environments.my_production_environments.environments.0.environment_id
     environment_accesstype = "none"
   }
 }
@@ -36,7 +36,7 @@ The new way of defining custom Environment accesses is using a map property:
 ```terraform
 resource "configcat_permission_group" "my_permission_group" {
   product_id = data.configcat_products.my_products.products.0.product_id
-  name = "Read only except Test environment"
+  name       = "Read only except Test environment"
 
   accesstype = "custom"
 

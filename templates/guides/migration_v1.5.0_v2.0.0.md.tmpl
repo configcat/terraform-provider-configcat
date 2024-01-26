@@ -1,0 +1,23 @@
+---
+page_title: "Migration guide from v1.5.0 to v2.0.0"
+---
+
+# Migration guide from v1.5.0 to v2.0.0
+
+## Breaking change in v2.0.0
+
+Permission Group handling was introduced in v1.5.0 and it had a problem with handling custom Environment accesses. We had to refactor it and introduce a breaking change in v2.0.0.
+
+### configcat_permission_group resource
+
+You could define the custom Environment accesses in v1.5.0 with a list property:
+
+{{ tffile "examples/guides/migration_v1.5.0_v2.0.0/v1.5.0.tf" }}
+
+The new way of defining custom Environment accesses is using a map property:
+
+{{ tffile "examples/guides/migration_v1.5.0_v2.0.0/v2.0.0.tf" }}
+
+### configcat_permission_groups data source
+
+The custom Environment access property changed from a list to a map.
