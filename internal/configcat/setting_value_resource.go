@@ -97,7 +97,7 @@ func (r *settingValueResource) Schema(ctx context.Context, req resource.SchemaRe
 			InitOnly: schema.BoolAttribute{
 				MarkdownDescription: "The main purpose of this resource to provide an initial value for the Feature Flag/Setting.  \n\n" +
 					"The `init_only` argument's default value is `true`. Meaning that the Feature Flag or Setting's **value will be only be applied once** during resource creation. If someone modifies the value on the [ConfigCat Dashboard](https://app.configcat.com) those modifications will **not be overwritten** by the Terraform script.\n\n" +
-					"If you want to fully manage the Feature Flag/Setting's value from Terraform, set `init_only` argument to `false`. After setting the`init_only` argument to `false` each terraform run will update the Feature Flag/Setting's value to the state provided in Terraform.",
+					"If you want to fully manage the Feature Flag/Setting's value from Terraform, set `init_only` argument to `false`. After setting the`init_only` argument to `false` each terraform run will update the Feature Flag/Setting's value to the state provided in Terraform.  \n\n",
 				Optional: true,
 				Computed: true,
 				Default:  booldefault.StaticBool(true),
@@ -120,28 +120,28 @@ func (r *settingValueResource) Schema(ctx context.Context, req resource.SchemaRe
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						RolloutRuleComparisonAttribute: schema.StringAttribute{
-							Description: "",
-							Optional:    true,
+							MarkdownDescription: "The [comparison attribute](https://configcat.com/docs/advanced/targeting/#comparison-attribute).",
+							Optional:            true,
 						},
 						RolloutRuleComparator: schema.StringAttribute{
-							Description: "",
-							Optional:    true,
+							MarkdownDescription: "The [comparator](https://configcat.com/docs/advanced/targeting/#comparator).",
+							Optional:            true,
 						},
 						RolloutRuleComparisonValue: schema.StringAttribute{
-							Description: "",
-							Optional:    true,
+							MarkdownDescription: "The [comparison value](https://configcat.com/docs/advanced/targeting/#comparison-value).",
+							Optional:            true,
 						},
 						RolloutRuleSegmentComparator: schema.StringAttribute{
-							Description: "",
+							Description: "The segment_comparator. Possible values: isIn, isNotIn.",
 							Optional:    true,
 						},
 						RolloutRuleSegmentId: schema.StringAttribute{
-							Description: "",
-							Optional:    true,
+							MarkdownDescription: "The [Segment's](https://configcat.com/docs/advanced/segments) unique identifier.",
+							Optional:            true,
 						},
 						RolloutRuleValue: schema.StringAttribute{
-							Description: "",
-							Required:    true,
+							MarkdownDescription: "The exact [value](https://configcat.com/docs/advanced/targeting/#served-value) that will be served to the users who match the targeting rule. Type: `string`. It must be compatible with the `setting_type`.",
+							Required:            true,
 						},
 					},
 				},
@@ -150,12 +150,12 @@ func (r *settingValueResource) Schema(ctx context.Context, req resource.SchemaRe
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						RolloutPercentageItemPercentage: schema.StringAttribute{
-							Description: "",
-							Required:    true,
+							MarkdownDescription: "Any [number](https://configcat.com/docs/advanced/targeting/#-value) between 0 and 100 that represents a randomly allocated fraction of your users.",
+							Required:            true,
 						},
 						RolloutPercentageItemValue: schema.StringAttribute{
-							Description: "",
-							Required:    true,
+							MarkdownDescription: "The exact [value](https://configcat.com/docs/advanced/targeting/#served-value-1) that will be served to the users that fall into that fraction. Type: `string`. It must be compatible with the `setting_type`.",
+							Required:            true,
 						},
 					},
 				},
