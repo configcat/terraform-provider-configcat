@@ -422,7 +422,7 @@ func getRolloutRulesData(rolloutRules *[]rolloutRuleModel, settingType sw.Settin
 				return nil, fmt.Errorf("the %s field is required", RolloutRuleSegmentId)
 			}
 
-			segmentComparator, compErr := sw.NewSegmentComparatorFromValue(rolloutRule.SegmentId.ValueString())
+			segmentComparator, compErr := sw.NewSegmentComparatorFromValue(rolloutRule.SegmentComparator.ValueString())
 			if compErr != nil {
 				return nil, compErr
 			}
