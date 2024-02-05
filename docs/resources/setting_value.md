@@ -69,7 +69,6 @@ resource "configcat_setting_value" "my_setting_value" {
 The `init_only` argument's default value is `true`. Meaning that the Feature Flag or Setting's **value will be only be applied once** during resource creation. If someone modifies the value on the [ConfigCat Dashboard](https://app.configcat.com) those modifications will **not be overwritten** by the Terraform script.
 
 If you want to fully manage the Feature Flag/Setting's value from Terraform, set `init_only` argument to `false`. After setting the`init_only` argument to `false` each terraform run will update the Feature Flag/Setting's value to the state provided in Terraform.
-
 - `mandatory_notes` (String) If the Product's "Mandatory notes" preference is turned on for the Environment the Mandatory note must be passed.
 - `percentage_items` (Block List) (see [below for nested schema](#nestedblock--percentage_items))
 - `rollout_rules` (Block List) (see [below for nested schema](#nestedblock--rollout_rules))
