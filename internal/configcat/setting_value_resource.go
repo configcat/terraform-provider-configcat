@@ -13,7 +13,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
@@ -125,31 +124,41 @@ func (r *settingValueResource) Schema(ctx context.Context, req resource.SchemaRe
 							MarkdownDescription: "The [comparison attribute](https://configcat.com/docs/advanced/targeting/#comparison-attribute).",
 							Optional:            true,
 							Computed:            true,
-							Default:             stringdefault.StaticString(""),
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifier.UseStateForUnknown(),
+							},
 						},
 						RolloutRuleComparator: schema.StringAttribute{
 							MarkdownDescription: "The [comparator](https://configcat.com/docs/advanced/targeting/#comparator).",
 							Optional:            true,
 							Computed:            true,
-							Default:             stringdefault.StaticString(""),
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifier.UseStateForUnknown(),
+							},
 						},
 						RolloutRuleComparisonValue: schema.StringAttribute{
 							MarkdownDescription: "The [comparison value](https://configcat.com/docs/advanced/targeting/#comparison-value).",
 							Optional:            true,
 							Computed:            true,
-							Default:             stringdefault.StaticString(""),
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifier.UseStateForUnknown(),
+							},
 						},
 						RolloutRuleSegmentComparator: schema.StringAttribute{
 							Description: "The segment_comparator. Possible values: isIn, isNotIn.",
 							Optional:    true,
 							Computed:    true,
-							Default:     stringdefault.StaticString(""),
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifier.UseStateForUnknown(),
+							},
 						},
 						RolloutRuleSegmentId: schema.StringAttribute{
 							MarkdownDescription: "The [Segment's](https://configcat.com/docs/advanced/segments) unique identifier.",
 							Optional:            true,
 							Computed:            true,
-							Default:             stringdefault.StaticString(""),
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifier.UseStateForUnknown(),
+							},
 						},
 						RolloutRuleValue: schema.StringAttribute{
 							MarkdownDescription: "The exact [value](https://configcat.com/docs/advanced/targeting/#served-value) that will be served to the users who match the targeting rule. Type: `string`. It must be compatible with the `setting_type`.",
@@ -341,15 +350,20 @@ func (resourceModel *settingValueResourceModel) UpdateFromApiModel(model sw.Sett
 				ComparisonAttribute: types.StringPointerValue(rolloutRule.ComparisonAttribute.Get()),
 				Comparator:          types.StringPointerValue((*string)(rolloutRule.Comparator)),
 				ComparisonValue:     types.StringPointerValue(rolloutRule.ComparisonValue.Get()),
+				SegmentId:           types.StringValue(""),
+				SegmentComparator:   types.StringValue(""),
 				Value:               types.StringValue(fmt.Sprintf("%v", rolloutRule.Value)),
 			}
 			resourceModel.RolloutRules[i] = rolloutRuleModel
 		} else if rolloutRule.SegmentComparator != nil {
 			{
 				rolloutRuleModel := rolloutRuleModel{
-					SegmentId:         types.StringPointerValue(rolloutRule.SegmentId.Get()),
-					SegmentComparator: types.StringPointerValue((*string)(rolloutRule.SegmentComparator)),
-					Value:             types.StringValue(fmt.Sprintf("%v", rolloutRule.Value)),
+					ComparisonAttribute: types.StringValue(""),
+					Comparator:          types.StringValue(""),
+					ComparisonValue:     types.StringValue(""),
+					SegmentId:           types.StringPointerValue(rolloutRule.SegmentId.Get()),
+					SegmentComparator:   types.StringPointerValue((*string)(rolloutRule.SegmentComparator)),
+					Value:               types.StringValue(fmt.Sprintf("%v", rolloutRule.Value)),
 				}
 				resourceModel.RolloutRules[i] = rolloutRuleModel
 			}
