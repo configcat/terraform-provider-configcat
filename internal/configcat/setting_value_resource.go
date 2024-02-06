@@ -242,6 +242,7 @@ func (r *settingValueResource) Update(ctx context.Context, req resource.UpdateRe
 }
 
 func (r *settingValueResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	// Delete operation should not do anything with the Feature flag's values.
 }
 
 func (r *settingValueResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
