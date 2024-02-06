@@ -12,14 +12,14 @@ const (
 	testBasicAuthPassword = "XeWNy2BOaeRBfaZaZOp/6/t1ck9CQzxr5g6xrVhnKyE="
 )
 
-func TestClient_Fails(t *testing.T) {
+func TestClientFails(t *testing.T) {
 	_, err := NewClient(basePath, invalid, invalid)
 	if !strings.HasPrefix(err.Error(), "401 Unauthorized") {
 		t.Errorf("Expected 401 Unauthorized. Received %s", err)
 	}
 }
 
-func TestClient_Works(t *testing.T) {
+func TestClientWorks(t *testing.T) {
 	_, err := NewClient(basePath, testBasicAuthUsername, testBasicAuthPassword)
 	if err != nil {
 		t.Error(err)
