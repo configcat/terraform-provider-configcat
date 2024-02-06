@@ -224,8 +224,6 @@ func (r *settingValueResource) Delete(ctx context.Context, req resource.DeleteRe
 }
 
 func (r *settingValueResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	var state settingValueResourceModel
-
 	environmentID, settingID, err := resourceConfigCatSettingValueParseID(req.ID)
 
 	if err != nil {
@@ -233,16 +231,9 @@ func (r *settingValueResource) ImportState(ctx context.Context, req resource.Imp
 		return
 	}
 
-	state.EnvironmentId = types.StringValue(environmentID)
-	state.SettingId = types.StringValue(settingID)
-	state.InitOnly = types.BoolValue(false)
-
-	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	resource.ImportStatePassthroughID(ctx, path.Root(ID), req, resp)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root(EnvironmentId), types.StringValue(environmentID))...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root(SettingId), types.StringValue(settingID))...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root(InitOnly), types.BoolValue(true))...)
 }
 
 func (r *settingValueResource) createOrUpdate(ctx context.Context, requestPlan *tfsdk.Plan, requestState *tfsdk.State, responseState *tfsdk.State, diag *diag.Diagnostics) {

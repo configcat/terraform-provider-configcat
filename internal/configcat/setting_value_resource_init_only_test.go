@@ -17,7 +17,6 @@ func TestAccSettingValueInitOnlyResource(t *testing.T) {
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
-				// prepare
 				ConfigFile: config.TestNameFile("main.tf"),
 				ConfigVariables: config.Variables{
 					"config_id":      config.StringVariable(configId),
@@ -30,7 +29,6 @@ func TestAccSettingValueInitOnlyResource(t *testing.T) {
 				),
 			},
 			{
-				// prepare
 				ConfigFile: config.TestNameFile("main.tf"),
 				ConfigVariables: config.Variables{
 					"config_id":      config.StringVariable(configId),
@@ -43,7 +41,6 @@ func TestAccSettingValueInitOnlyResource(t *testing.T) {
 				),
 			},
 			{
-				// prepare
 				ConfigFile: config.TestNameFile("main.tf"),
 				ConfigVariables: config.Variables{
 					"config_id":      config.StringVariable(configId),
@@ -54,6 +51,42 @@ func TestAccSettingValueInitOnlyResource(t *testing.T) {
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr(testResourceName, SettingValue, "false"),
 				),
+			},
+			{
+				ConfigFile: config.TestNameFile("main.tf"),
+				ConfigVariables: config.Variables{
+					"config_id":      config.StringVariable(configId),
+					"environment_id": config.StringVariable(environmentId),
+					"value":          config.StringVariable("true"),
+					"init_only":      config.BoolVariable(true),
+				},
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr(testResourceName, SettingValue, "true"),
+				),
+			},
+			{
+				ConfigFile: config.TestNameFile("main.tf"),
+				ConfigVariables: config.Variables{
+					"config_id":      config.StringVariable(configId),
+					"environment_id": config.StringVariable(environmentId),
+					"value":          config.StringVariable("true"),
+					"init_only":      config.BoolVariable(true),
+				},
+				ResourceName:      testResourceName,
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+			{
+				ConfigFile: config.TestNameFile("main.tf"),
+				ConfigVariables: config.Variables{
+					"config_id":      config.StringVariable(configId),
+					"environment_id": config.StringVariable(environmentId),
+					"value":          config.StringVariable("true"),
+					"init_only":      config.BoolVariable(false),
+				},
+				ResourceName:      testResourceName,
+				ImportState:       true,
+				ImportStateVerify: true,
 			},
 		},
 	})
