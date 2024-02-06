@@ -22,8 +22,8 @@ func TestAccOrganizationsDataSource(t *testing.T) {
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet(testResourceName, "id"),
 					resource.TestCheckResourceAttr(testResourceName, listAttribute+".#", "1"),
-					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+OrganizationId, organizationId),
-					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+Name, "ConfigCat"),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+"[0]."+OrganizationId, organizationId),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+"[0]."+Name, "ConfigCat"),
 				),
 			},
 			{
@@ -34,8 +34,8 @@ func TestAccOrganizationsDataSource(t *testing.T) {
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet(testResourceName, "id"),
 					resource.TestCheckResourceAttr(testResourceName, listAttribute+".#", "1"),
-					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+OrganizationId, organizationId),
-					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+Name, "ConfigCat"),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+"[0]."+OrganizationId, organizationId),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+"[0]."+Name, "ConfigCat"),
 				),
 			},
 			{

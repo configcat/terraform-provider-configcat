@@ -24,7 +24,7 @@ data "configcat_configs" "my_configs" {
 
 
 output "config_id" {
-  value = data.configcat_configs.my_configs.configs.0.config_id
+  value = data.configcat_configs.my_configs.configs[0].config_id
 }
 ```
 

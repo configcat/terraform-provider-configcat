@@ -11,3 +11,7 @@ data "configcat_settings" "test" {
   config_id        = var.config_id
   key_filter_regex = var.key_filter_regex
 }
+
+output "setting_id" {
+  value = data.configcat_settings.test.settings[0].setting_id
+}

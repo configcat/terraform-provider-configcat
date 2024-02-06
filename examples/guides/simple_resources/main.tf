@@ -10,13 +10,13 @@ terraform {
 provider "configcat" {
 }
 
-// Organization Resource is ReadOnly.
+# Organization Resource is ReadOnly.
 data "configcat_organizations" "my_organizations" {
   name_filter_regex = "ConfigCat"
 }
 
 resource "configcat_product" "my_product" {
-  organization_id = data.configcat_organizations.my_organizations.organizations.0.organization_id
+  organization_id = data.configcat_organizations.my_organizations.organizations[0].organization_id
   name            = "My product"
   description     = "My product description"
   order           = 0

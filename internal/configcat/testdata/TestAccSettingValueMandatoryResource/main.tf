@@ -6,11 +6,6 @@ variable "environment_id" {
   type = string
 }
 
-variable "init_only" {
-  type    = bool
-  default = false
-}
-
 variable "value" {
   type = string
 }

@@ -9,5 +9,5 @@ data "configcat_tags" "my_tags" {
 
 
 output "tag_id" {
-  value = data.configcat_tags.my_tags.tags.0.tag_id
+  value = data.configcat_tags.my_tags.tags[0].tag_id
 }

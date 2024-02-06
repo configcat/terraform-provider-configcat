@@ -10,13 +10,13 @@ terraform {
 provider "configcat" {
 }
 
-//  Organization Resource is ReadOnly.
+#  Organization Resource is ReadOnly.
 data "configcat_organizations" "my_organizations" {
   name_filter_regex = "ConfigCat"
 }
 
 resource "configcat_product" "my_product" {
-  organization_id = data.configcat_organizations.my_organizations.organizations.0.organization_id
+  organization_id = data.configcat_organizations.my_organizations.organizations[0].organization_id
   name            = "My product"
   order           = 0
 }
@@ -60,7 +60,7 @@ resource "configcat_setting_tag" "welcome_text_setting_tag" {
   tag_id     = configcat_tag.created_by_terraform_tag.id
 }
 
-// Test module
+# Test module
 module "test" {
   source = "./test"
 
@@ -69,7 +69,7 @@ module "test" {
   welcome_text_setting_id = configcat_setting.welcome_text.id
 }
 
-// Production module
+# Production module
 module "production" {
   source = "./production"
 

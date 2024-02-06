@@ -24,7 +24,7 @@ data "configcat_permission_groups" "my_permission_groups" {
 
 
 output "permission_group_id" {
-  value = data.configcat_permission_groups.my_permission_groups.permission_groups.0.permission_group_id
+  value = data.configcat_permission_groups.my_permission_groups.permission_groups[0].permission_group_id
 }
 ```
 

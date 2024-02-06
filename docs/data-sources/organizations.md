@@ -19,7 +19,7 @@ data "configcat_organizations" "my_organizations" {
 
 
 output "organization_id" {
-  value = data.configcat_organizations.my_organizations.organizations.0.organization_id
+  value = data.configcat_organizations.my_organizations.organizations[0].organization_id
 }
 ```
 

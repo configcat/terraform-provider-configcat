@@ -24,7 +24,7 @@ data "configcat_segments" "my_segments" {
 
 
 output "segment_id" {
-  value = data.configcat_segments.my_segments.segments.0.segment_id
+  value = data.configcat_segments.my_segments.segments[0].segment_id
 }
 ```
 

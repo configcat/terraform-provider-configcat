@@ -24,7 +24,7 @@ data "configcat_settings" "settings" {
 
 
 output "setting_id" {
-  value = data.configcat_settings.settings.settings.0.setting_id
+  value = data.configcat_settings.settings.settings[0].setting_id
 }
 ```
 

@@ -10,3 +10,12 @@ data "configcat_sdkkeys" "test" {
   config_id      = var.config_id
   environment_id = var.environment_id
 }
+
+
+output "primary_sdkkey" {
+  value = data.configcat_sdkkeys.test.primary
+}
+
+output "secondary_sdkkey" {
+  value = data.configcat_sdkkeys.test.secondary
+}

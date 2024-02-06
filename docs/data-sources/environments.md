@@ -24,7 +24,7 @@ data "configcat_environments" "my_environments" {
 
 
 output "environment_id" {
-  value = data.configcat_environments.my_environments.environments.0.environment_id
+  value = data.configcat_environments.my_environments.environments[0].environment_id
 }
 ```
 

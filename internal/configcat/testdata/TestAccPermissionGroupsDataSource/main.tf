@@ -11,3 +11,7 @@ data "configcat_permission_groups" "test" {
   product_id        = var.product_id
   name_filter_regex = var.name_filter_regex
 }
+
+output "permission_group_id" {
+  value = data.configcat_permission_groups.test.permission_groups[0].permission_group_id
+}

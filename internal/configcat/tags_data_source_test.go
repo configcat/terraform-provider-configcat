@@ -27,9 +27,9 @@ func TestAccTagsDataSource(t *testing.T) {
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet(testResourceName, "id"),
 					resource.TestCheckResourceAttr(testResourceName, listAttribute+".#", "1"),
-					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+TagId, tagID),
-					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+Name, "Test"),
-					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+Color, "panther"),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+"[0]."+TagId, tagID),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+"[0]."+Name, "Test"),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+"[0]."+Color, "panther"),
 				),
 			},
 			{
@@ -41,9 +41,9 @@ func TestAccTagsDataSource(t *testing.T) {
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet(testResourceName, "id"),
 					resource.TestCheckResourceAttr(testResourceName, listAttribute+".#", "1"),
-					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+TagId, tagID),
-					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+Name, "Test"),
-					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+Color, "panther"),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+"[0]."+TagId, tagID),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+"[0]."+Name, "Test"),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+"[0]."+Color, "panther"),
 				),
 			},
 			{

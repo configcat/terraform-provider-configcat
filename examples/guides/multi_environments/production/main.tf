@@ -7,9 +7,18 @@ terraform {
   }
 }
 
-variable "product_id" { default = "" }
-variable "is_awesome_setting_id" { default = "" }
-variable "welcome_text_setting_id" { default = "" }
+variable "product_id" {
+  type    = string
+  default = ""
+}
+variable "is_awesome_setting_id" {
+  type    = string
+  default = ""
+}
+variable "welcome_text_setting_id" {
+  type    = string
+  default = ""
+}
 
 resource "configcat_environment" "production_environment" {
   product_id = var.product_id

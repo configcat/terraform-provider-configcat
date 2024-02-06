@@ -22,10 +22,10 @@ func TestAccProductsDataSource(t *testing.T) {
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet(testResourceName, "id"),
 					resource.TestCheckResourceAttr(testResourceName, listAttribute+".#", "1"),
-					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+ProductId, productId),
-					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+Name, "ConfigCat's product"),
-					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+Description, "ConfigCat's product description"),
-					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+Order, "0"),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+"[0]."+ProductId, productId),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+"[0]."+Name, "ConfigCat's product"),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+"[0]."+Description, "ConfigCat's product description"),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+"[0]."+Order, "0"),
 				),
 			},
 			{
@@ -36,10 +36,10 @@ func TestAccProductsDataSource(t *testing.T) {
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet(testResourceName, "id"),
 					resource.TestCheckResourceAttr(testResourceName, listAttribute+".#", "1"),
-					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+ProductId, productId),
-					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+Name, "ConfigCat's product"),
-					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+Description, "ConfigCat's product description"),
-					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+Order, "0"),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+"[0]."+ProductId, productId),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+"[0]."+Name, "ConfigCat's product"),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+"[0]."+Description, "ConfigCat's product description"),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+"[0]."+Order, "0"),
 				),
 			},
 			{

@@ -6,3 +6,7 @@ variable "name_filter_regex" {
 data "configcat_organizations" "test" {
   name_filter_regex = var.name_filter_regex
 }
+
+output "organization_id" {
+  value = data.configcat_organizations.test.organizations[0].organization_id
+}

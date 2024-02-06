@@ -19,7 +19,7 @@ data "configcat_products" "my_products" {
 
 
 output "product_id" {
-  value = data.configcat_products.my_products.products.0.product_id
+  value = data.configcat_products.my_products.products[0].product_id
 }
 ```
 

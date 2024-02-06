@@ -11,3 +11,7 @@ data "configcat_segments" "test" {
   product_id        = var.product_id
   name_filter_regex = var.name_filter_regex
 }
+
+output "segment_id" {
+  value = data.configcat_segments.test.segments[0].segment_id
+}

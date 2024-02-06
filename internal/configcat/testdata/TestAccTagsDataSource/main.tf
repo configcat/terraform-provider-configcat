@@ -11,3 +11,7 @@ data "configcat_tags" "test" {
   product_id        = var.product_id
   name_filter_regex = var.name_filter_regex
 }
+
+output "tag_id" {
+  value = data.configcat_tags.test.tags[0].tag_id
+}
