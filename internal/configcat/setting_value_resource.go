@@ -184,7 +184,7 @@ func (r *settingValueResource) Configure(ctx context.Context, req resource.Confi
 }
 
 func (r *settingValueResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	r.createOrUpdate(ctx, &req.Plan, &resp.State, &resp.Diagnostics)
+	r.createOrUpdate(ctx, &req.Plan, nil, &resp.State, &resp.Diagnostics)
 }
 
 func (r *settingValueResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -193,6 +193,10 @@ func (r *settingValueResource) Read(ctx context.Context, req resource.ReadReques
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if state.InitOnly.ValueBool() && !state.ID.IsNull() && !state.ID.IsUnknown() {
 		return
 	}
 
@@ -213,7 +217,7 @@ func (r *settingValueResource) Read(ctx context.Context, req resource.ReadReques
 }
 
 func (r *settingValueResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	r.createOrUpdate(ctx, &req.Plan, &resp.State, &resp.Diagnostics)
+	r.createOrUpdate(ctx, &req.Plan, &req.State, &resp.State, &resp.Diagnostics)
 }
 
 func (r *settingValueResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -241,12 +245,30 @@ func (r *settingValueResource) ImportState(ctx context.Context, req resource.Imp
 	resource.ImportStatePassthroughID(ctx, path.Root(ID), req, resp)
 }
 
-func (r *settingValueResource) createOrUpdate(ctx context.Context, requestPlan *tfsdk.Plan, responseState *tfsdk.State, diag *diag.Diagnostics) {
+func (r *settingValueResource) createOrUpdate(ctx context.Context, requestPlan *tfsdk.Plan, requestState *tfsdk.State, responseState *tfsdk.State, diag *diag.Diagnostics) {
 	var plan settingValueResourceModel
 
 	diag.Append(requestPlan.Get(ctx, &plan)...)
 
 	if diag.HasError() {
+		return
+	}
+
+	if plan.InitOnly.ValueBool() && !plan.ID.IsNull() && !plan.ID.IsUnknown() {
+		diag.AddWarning("Changes will be only applied to the state.", "The init_only parameter is set to true so the changes won't be applied in ConfigCat. This mode is only for initializing a feature flag in ConfigCat.")
+
+		if requestState != nil {
+			// SettingType is a computed field, we have to set it.
+			var state settingValueResourceModel
+			diag.Append(requestState.Get(ctx, &state)...)
+			if diag.HasError() {
+				return
+			}
+
+			plan.SettingType = state.SettingType
+		}
+
+		diag.Append(responseState.Set(ctx, &plan)...)
 		return
 	}
 
