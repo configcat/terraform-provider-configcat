@@ -28,12 +28,12 @@ func TestAccSegmentsDataSource(t *testing.T) {
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet(testResourceName, "id"),
 					resource.TestCheckResourceAttr(testResourceName, listAttribute+".#", "2"),
-					resource.TestCheckResourceAttr(testResourceName, listAttribute+"[0]."+SegmentId, segment1ID),
-					resource.TestCheckResourceAttr(testResourceName, listAttribute+"[0]."+Name, "Beta users"),
-					resource.TestCheckResourceAttr(testResourceName, listAttribute+"[0]."+Description, "Beta users segment's description"),
-					resource.TestCheckResourceAttr(testResourceName, listAttribute+"[0]."+SegmentId, segment2ID),
-					resource.TestCheckResourceAttr(testResourceName, listAttribute+"[0]."+Name, "Beta users"),
-					resource.TestCheckResourceAttr(testResourceName, listAttribute+"[0]."+Description, "Beta users segment's description"),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+SegmentId, segment1ID),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+Name, "Beta users"),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+Description, "Beta users segment's description"),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+SegmentId, segment2ID),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+Name, "Beta users"),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+Description, "Beta users segment's description"),
 				),
 			},
 			{
@@ -45,9 +45,9 @@ func TestAccSegmentsDataSource(t *testing.T) {
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet(testResourceName, "id"),
 					resource.TestCheckResourceAttr(testResourceName, listAttribute+".#", "1"),
-					resource.TestCheckResourceAttr(testResourceName, listAttribute+"[0]."+SegmentId, segment1ID),
-					resource.TestCheckResourceAttr(testResourceName, listAttribute+"[0]."+Name, "Beta users"),
-					resource.TestCheckResourceAttr(testResourceName, listAttribute+"[0]."+Description, "Beta users segment's description"),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+SegmentId, segment1ID),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+Name, "Beta users"),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+Description, "Beta users segment's description"),
 				),
 			},
 			{
