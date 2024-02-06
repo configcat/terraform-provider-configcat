@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
@@ -123,22 +124,32 @@ func (r *settingValueResource) Schema(ctx context.Context, req resource.SchemaRe
 						RolloutRuleComparisonAttribute: schema.StringAttribute{
 							MarkdownDescription: "The [comparison attribute](https://configcat.com/docs/advanced/targeting/#comparison-attribute).",
 							Optional:            true,
+							Computed:            true,
+							Default:             stringdefault.StaticString(""),
 						},
 						RolloutRuleComparator: schema.StringAttribute{
 							MarkdownDescription: "The [comparator](https://configcat.com/docs/advanced/targeting/#comparator).",
 							Optional:            true,
+							Computed:            true,
+							Default:             stringdefault.StaticString(""),
 						},
 						RolloutRuleComparisonValue: schema.StringAttribute{
 							MarkdownDescription: "The [comparison value](https://configcat.com/docs/advanced/targeting/#comparison-value).",
 							Optional:            true,
+							Computed:            true,
+							Default:             stringdefault.StaticString(""),
 						},
 						RolloutRuleSegmentComparator: schema.StringAttribute{
 							Description: "The segment_comparator. Possible values: isIn, isNotIn.",
 							Optional:    true,
+							Computed:    true,
+							Default:     stringdefault.StaticString(""),
 						},
 						RolloutRuleSegmentId: schema.StringAttribute{
 							MarkdownDescription: "The [Segment's](https://configcat.com/docs/advanced/segments) unique identifier.",
 							Optional:            true,
+							Computed:            true,
+							Default:             stringdefault.StaticString(""),
 						},
 						RolloutRuleValue: schema.StringAttribute{
 							MarkdownDescription: "The exact [value](https://configcat.com/docs/advanced/targeting/#served-value) that will be served to the users who match the targeting rule. Type: `string`. It must be compatible with the `setting_type`.",
@@ -405,7 +416,7 @@ func getRolloutRulesData(rolloutRules *[]rolloutRuleModel, settingType sw.Settin
 			return nil, err
 		}
 
-		if !rolloutRule.Comparator.IsUnknown() && !rolloutRule.Comparator.IsNull() {
+		if !rolloutRule.Comparator.IsUnknown() && !rolloutRule.Comparator.IsNull() && len(rolloutRule.Comparator.ValueString()) > 0 {
 			if rolloutRule.ComparisonAttribute.IsUnknown() || rolloutRule.ComparisonAttribute.IsNull() {
 				return nil, fmt.Errorf("the %s field is required", RolloutRuleComparisonAttribute)
 			}
@@ -426,7 +437,7 @@ func getRolloutRulesData(rolloutRules *[]rolloutRuleModel, settingType sw.Settin
 			}
 
 			elements[i] = element
-		} else if len(rolloutRule.SegmentComparator.ValueString()) > 0 {
+		} else if !rolloutRule.SegmentComparator.IsNull() && !rolloutRule.SegmentComparator.IsUnknown() && len(rolloutRule.SegmentComparator.ValueString()) > 0 {
 			if rolloutRule.SegmentId.IsUnknown() || rolloutRule.SegmentId.IsNull() {
 				return nil, fmt.Errorf("the %s field is required", RolloutRuleSegmentId)
 			}
