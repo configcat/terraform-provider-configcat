@@ -109,6 +109,7 @@ func (r *settingValueResource) Schema(ctx context.Context, req resource.SchemaRe
 			SettingType: schema.StringAttribute{
 				Description: "The type of the " + SettingResourceName + ". Available values: `boolean`|`string`|`int`|`double`.",
 				Computed:    true,
+				Optional:    true,
 			},
 			SettingValue: schema.StringAttribute{
 				Description: "The " + SettingResourceName + "'s value. Type: `string`. It must be compatible with the `setting_type`.",
