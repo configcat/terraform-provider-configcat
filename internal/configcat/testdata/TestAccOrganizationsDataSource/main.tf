@@ -8,5 +8,5 @@ data "configcat_organizations" "test" {
 }
 
 output "organization_id" {
-  value = data.configcat_organizations.test.organizations[0].organization_id
+  value = length(data.configcat_organizations.test.organizations) > 0 ? data.configcat_organizations.test.organizations[0].organization_id : null
 }

@@ -13,5 +13,5 @@ data "configcat_segments" "test" {
 }
 
 output "segment_id" {
-  value = data.configcat_segments.test.segments[0].segment_id
+  value = length(data.configcat_segments.test.segments) > 0 ? data.configcat_segments.test.segments[0].segment_id : null
 }

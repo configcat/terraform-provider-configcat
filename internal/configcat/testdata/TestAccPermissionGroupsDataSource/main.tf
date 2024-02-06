@@ -13,5 +13,5 @@ data "configcat_permission_groups" "test" {
 }
 
 output "permission_group_id" {
-  value = data.configcat_permission_groups.test.permission_groups[0].permission_group_id
+  value = length(data.configcat_permission_groups.test.permission_groups) > 0 ? data.configcat_permission_groups.test.permission_groups[0].permission_group_id : null
 }

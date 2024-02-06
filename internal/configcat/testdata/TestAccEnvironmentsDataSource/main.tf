@@ -13,5 +13,5 @@ data "configcat_environments" "test" {
 }
 
 output "environment_id" {
-  value = data.configcat_environments.test.environments[0].environment_id
+  value = length(data.configcat_environments.test.environments) > 0 ? data.configcat_environments.test.environments[0].environment_id : null
 }

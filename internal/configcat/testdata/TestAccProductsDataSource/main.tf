@@ -8,5 +8,5 @@ data "configcat_products" "test" {
 }
 
 output "product_id" {
-  value = data.configcat_products.test.products[0].product_id
+  value = length(data.configcat_products.test.products) > 0 ? data.configcat_products.test.products[0].product_id : null
 }

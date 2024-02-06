@@ -13,5 +13,5 @@ data "configcat_tags" "test" {
 }
 
 output "tag_id" {
-  value = data.configcat_tags.test.tags[0].tag_id
+  value = length(data.configcat_tags.test.tags) > 0 ? data.configcat_tags.test.tags[0].tag_id : null
 }

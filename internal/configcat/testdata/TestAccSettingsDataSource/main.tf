@@ -13,5 +13,5 @@ data "configcat_settings" "test" {
 }
 
 output "setting_id" {
-  value = data.configcat_settings.test.settings[0].setting_id
+  value = length(data.configcat_settings.test.settings) > 0 ? data.configcat_settings.test.settings[0].setting_id : null
 }
