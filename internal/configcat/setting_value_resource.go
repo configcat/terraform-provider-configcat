@@ -107,9 +107,9 @@ func (r *settingValueResource) Schema(ctx context.Context, req resource.SchemaRe
 				Optional:    true,
 			},
 			SettingType: schema.StringAttribute{
-				Description: "The type of the " + SettingResourceName + ". Available values: `boolean`|`string`|`int`|`double`.",
-				Computed:    true,
-				Optional:    true,
+				Description:   "The type of the " + SettingResourceName + ". Available values: `boolean`|`string`|`int`|`double`.",
+				Computed:      true,
+				PlanModifiers: []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 			},
 			SettingValue: schema.StringAttribute{
 				Description: "The " + SettingResourceName + "'s value. Type: `string`. It must be compatible with the `setting_type`.",
@@ -239,27 +239,22 @@ func (r *settingValueResource) ImportState(ctx context.Context, req resource.Imp
 
 func (r *settingValueResource) createOrUpdate(ctx context.Context, requestPlan *tfsdk.Plan, requestState *tfsdk.State, responseState *tfsdk.State, diag *diag.Diagnostics) {
 	var plan settingValueResourceModel
-
 	diag.Append(requestPlan.Get(ctx, &plan)...)
 
 	if diag.HasError() {
 		return
 	}
 
+	if requestState != nil {
+		var state settingValueResourceModel
+		diag.Append(requestState.Get(ctx, &state)...)
+		if !hasChanges(&plan, &state) {
+			return
+		}
+	}
+
 	if plan.InitOnly.ValueBool() && !plan.ID.IsNull() && !plan.ID.IsUnknown() {
 		diag.AddWarning("Changes will be only applied to the state.", "The init_only parameter is set to true so the changes won't be applied in ConfigCat. This mode is only for initializing a feature flag in ConfigCat.")
-
-		if requestState != nil {
-			// SettingType is a computed field, we have to set it.
-			var state settingValueResourceModel
-			diag.Append(requestState.Get(ctx, &state)...)
-			if diag.HasError() {
-				return
-			}
-
-			plan.SettingType = state.SettingType
-		}
-
 		diag.Append(responseState.Set(ctx, &plan)...)
 		return
 	}
@@ -480,4 +475,38 @@ func getRolloutPercentageItemsData(rolloutPercentageItems *[]rolloutPercentageIt
 		elements[i] = element
 	}
 	return &elements, nil
+}
+
+func hasChanges(plan *settingValueResourceModel, state *settingValueResourceModel) bool {
+	if !plan.EnvironmentId.Equal(state.EnvironmentId) ||
+		!plan.SettingId.Equal(state.SettingId) ||
+		!plan.InitOnly.Equal(state.InitOnly) ||
+		!plan.MandatoryNotes.Equal(state.MandatoryNotes) ||
+		!plan.Value.Equal(state.Value) ||
+		len(plan.RolloutRules) != len(state.RolloutRules) ||
+		len(plan.PercentageItems) != len(state.PercentageItems) {
+		return true
+	}
+
+	for i, planItem := range plan.RolloutRules {
+		stateItem := state.RolloutRules[i]
+		if !planItem.ComparisonAttribute.Equal(stateItem.ComparisonAttribute) ||
+			!planItem.Comparator.Equal(stateItem.Comparator) ||
+			!planItem.ComparisonValue.Equal(stateItem.ComparisonValue) ||
+			!planItem.SegmentComparator.Equal(stateItem.SegmentComparator) ||
+			!planItem.SegmentId.Equal(stateItem.SegmentId) ||
+			!planItem.Value.Equal(stateItem.Value) {
+			return true
+		}
+	}
+
+	for i, planItem := range plan.PercentageItems {
+		stateItem := state.PercentageItems[i]
+		if !planItem.Percentage.Equal(stateItem.Percentage) ||
+			!planItem.Value.Equal(stateItem.Value) {
+			return true
+		}
+	}
+
+	return false
 }
