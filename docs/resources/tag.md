@@ -39,7 +39,7 @@ output "tag_id" {
 
 ### Optional
 
-- `color` (String) The color of the Tag. Valid values: `panther`|`whale`|`salmon`|`lizard`|`canary`|`koala`.
+- `color` (String) The color of the Tag. Default value. `panther`. Valid values: `panther`|`whale`|`salmon`|`lizard`|`canary`|`koala`.
 
 ### Read-Only
 

@@ -67,7 +67,7 @@ func (r *tagResource) Schema(ctx context.Context, req resource.SchemaRequest, re
 				Required:    true,
 			},
 			Color: schema.StringAttribute{
-				MarkdownDescription: "The color of the " + TagResourceName + ". Valid values: `panther`|`whale`|`salmon`|`lizard`|`canary`|`koala`.",
+				MarkdownDescription: "The color of the " + TagResourceName + ". Default value. `panther`. Valid values: `panther`|`whale`|`salmon`|`lizard`|`canary`|`koala`.",
 				Optional:            true,
 				Computed:            true,
 				Default:             stringdefault.StaticString("panther"),
