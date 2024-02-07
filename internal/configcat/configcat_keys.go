@@ -19,6 +19,7 @@ const (
 	ConfigResourceName = "Config"
 	Configs            = "configs"
 	ConfigId           = "config_id"
+	EvaluationVersion  = "evaluation_version"
 
 	EnvironmentResourceName = "Environment"
 	Environments            = "environments"

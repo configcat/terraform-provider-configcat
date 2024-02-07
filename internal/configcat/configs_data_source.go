@@ -30,10 +30,11 @@ type configDataSource struct {
 }
 
 type configDataModel struct {
-	ID          types.String `tfsdk:"config_id"`
-	Name        types.String `tfsdk:"name"`
-	Description types.String `tfsdk:"description"`
-	Order       types.Int64  `tfsdk:"order"`
+	ID                types.String `tfsdk:"config_id"`
+	Name              types.String `tfsdk:"name"`
+	Description       types.String `tfsdk:"description"`
+	Order             types.Int64  `tfsdk:"order"`
+	EvaluationVersion types.String `tfsdk:"evaluation_version"`
 }
 
 type configDataSourceModel struct {
@@ -84,6 +85,10 @@ func (d *configDataSource) Schema(ctx context.Context, req datasource.SchemaRequ
 						Order: schema.Int64Attribute{
 							Description: "The order of the " + ConfigResourceName + " within a " + ProductResourceName + " (zero-based).",
 							Computed:    true,
+						},
+						EvaluationVersion: schema.StringAttribute{
+							MarkdownDescription: "The evaluation version of the " + ConfigResourceName + ". Possible values: `v1`|`v2`",
+							Computed:            true,
 						},
 					},
 				},
@@ -143,10 +148,11 @@ func (d *configDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 	state.Data = make([]configDataModel, len(filteredResources))
 	for i, resource := range filteredResources {
 		dataModel := &configDataModel{
-			ID:          types.StringPointerValue(resource.ConfigId),
-			Name:        types.StringPointerValue(resource.Name.Get()),
-			Description: types.StringPointerValue(resource.Description.Get()),
-			Order:       types.Int64Value(int64(*resource.Order)),
+			ID:                types.StringPointerValue(resource.ConfigId),
+			Name:              types.StringPointerValue(resource.Name.Get()),
+			Description:       types.StringPointerValue(resource.Description.Get()),
+			Order:             types.Int64Value(int64(*resource.Order)),
+			EvaluationVersion: types.StringPointerValue((*string)(resource.EvaluationVersion)),
 		}
 
 		state.Data[i] = *dataModel

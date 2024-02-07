@@ -51,5 +51,6 @@ Read-Only:
 
 - `config_id` (String) The unique Config ID.
 - `description` (String) The description of the Config.
+- `evaluation_version` (String) The evaluation version of the Config. Possible values: `v1`|`v2`
 - `name` (String) The name of the Config.
 - `order` (Number) The order of the Config within a Product (zero-based).

@@ -32,10 +32,12 @@ func TestAccConfigsDataSource(t *testing.T) {
 					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+Name, "Main Config"),
 					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+Description, "Main Config Description"),
 					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+Order, "0"),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+EvaluationVersion, "v1"),
 					resource.TestCheckResourceAttr(testResourceName, listAttribute+".1."+ConfigId, configV2ID),
 					resource.TestCheckResourceAttr(testResourceName, listAttribute+".1."+Name, "Main Config V2"),
 					resource.TestCheckResourceAttr(testResourceName, listAttribute+".1."+Description, "Main Config V2 Description"),
 					resource.TestCheckResourceAttr(testResourceName, listAttribute+".1."+Order, "1"),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+".1."+EvaluationVersion, "v2"),
 				),
 			},
 			{
@@ -51,6 +53,7 @@ func TestAccConfigsDataSource(t *testing.T) {
 					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+Name, "Main Config V2"),
 					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+Description, "Main Config V2 Description"),
 					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+Order, "1"),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+EvaluationVersion, "v2"),
 				),
 			},
 			{

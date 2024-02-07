@@ -20,12 +20,16 @@ import (
 var _ resource.Resource = &configResource{}
 var _ resource.ResourceWithImportState = &configResource{}
 
-func NewConfigResource() resource.Resource {
-	return &configResource{}
+func NewConfigResource(evaluationVersion sw.EvaluationVersion) func() resource.Resource {
+	factory := func() resource.Resource {
+		return &configResource{evaluationVersion: evaluationVersion}
+	}
+	return factory
 }
 
 type configResource struct {
-	client *client.Client
+	client            *client.Client
+	evaluationVersion sw.EvaluationVersion
 }
 
 type configResourceModel struct {
@@ -38,7 +42,11 @@ type configResourceModel struct {
 }
 
 func (r *configResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_config"
+	if r.evaluationVersion == sw.EVALUATIONVERSION_V1 {
+		resp.TypeName = req.ProviderTypeName + "_config"
+	} else {
+		resp.TypeName = req.ProviderTypeName + "_config_v2"
+	}
 }
 
 func (r *configResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
@@ -77,6 +85,10 @@ func (r *configResource) Schema(ctx context.Context, req resource.SchemaRequest,
 				Description: "The order of the " + ConfigResourceName + " within a " + ProductResourceName + " (zero-based). If multiple " + ConfigResourceName + "s has the same order, they are displayed in alphabetical order.",
 				Required:    true,
 			},
+			EvaluationVersion: schema.StringAttribute{
+				MarkdownDescription: "The evaluation version of the " + ConfigResourceName + ". Possible values: `v1`|`v2`",
+				Computed:            true,
+			},
 		},
 	}
 }
@@ -111,9 +123,10 @@ func (r *configResource) Create(ctx context.Context, req resource.CreateRequest,
 
 	order := int32(plan.Order.ValueInt64())
 	body := sw.CreateConfigRequest{
-		Name:        plan.Name.ValueString(),
-		Description: *sw.NewNullableString(plan.Description.ValueStringPointer()),
-		Order:       *sw.NewNullableInt32(&order),
+		Name:              plan.Name.ValueString(),
+		Description:       *sw.NewNullableString(plan.Description.ValueStringPointer()),
+		Order:             *sw.NewNullableInt32(&order),
+		EvaluationVersion: &r.evaluationVersion,
 	}
 
 	model, err := r.client.CreateConfig(plan.ProductId.ValueString(), body)
