@@ -12,20 +12,20 @@ Permission Group handling was introduced in v1.5.0 and it had a problem with han
 
 You could define the custom Environment accesses in v1.5.0 with a list property:
 
-```hcl
+```terraform
 resource "configcat_permission_group" "my_permission_group" {
-  product_id = data.configcat_products.my_products.products.0.product_id
-  name = "Read only except Test environment"
+  product_id = data.configcat_products.my_products.products[0].product_id
+  name       = "Read only except Test environment"
 
   accesstype = "custom"
 
   environment_access {
-    environment_id = data.configcat_environments.my_test_environments.environments.0.environment_id
+    environment_id         = data.configcat_environments.my_test_environments.environments[0].environment_id
     environment_accesstype = "full"
   }
 
   environment_access {
-    environment_id = data.configcat_environments.my_production_environments.environments.0.environment_id
+    environment_id         = data.configcat_environments.my_production_environments.environments[0].environment_id
     environment_accesstype = "none"
   }
 }
@@ -33,16 +33,16 @@ resource "configcat_permission_group" "my_permission_group" {
 
 The new way of defining custom Environment accesses is using a map property:
 
-```hcl
+```terraform
 resource "configcat_permission_group" "my_permission_group" {
-  product_id = data.configcat_products.my_products.products.0.product_id
-  name = "Read only except Test environment"
+  product_id = data.configcat_products.my_products.products[0].product_id
+  name       = "Read only except Test environment"
 
   accesstype = "custom"
 
   environment_accesses = {
-    "${data.configcat_environments.my_test_environments.environments.0.environment_id}" = "full"
-    "${data.configcat_environments.my_test_environments.environments.1.environment_id}" = "readOnly"
+    data.configcat_environments.my_test_environments.environments[0].environment_id = "full"
+    data.configcat_environments.my_test_environments.environments[1].environment_id = "readOnly"
   }
 }
 ```

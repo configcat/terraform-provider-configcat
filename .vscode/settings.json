@@ -4,5 +4,8 @@
     "sonarlint.connectedMode.project": {
         "connectionId": "ConfigCat SonarCloud",
         "projectKey": "configcat_terraform-provider-configcat"
+    },
+    "files.associations": {
+        "*.md.tmpl": "markdown",
     }
 }
