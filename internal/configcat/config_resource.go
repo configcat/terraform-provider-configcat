@@ -138,6 +138,12 @@ func (r *configResource) Read(ctx context.Context, req resource.ReadRequest, res
 
 	model, err := r.client.GetConfig(state.ID.ValueString())
 	if err != nil {
+		if _, ok := err.(client.NotFoundError); ok {
+			// If the resource is already deleted, we have to remove it from the state.
+			resp.State.RemoveResource(ctx)
+			return
+		}
+
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read "+ConfigResourceName+", got error: %s", err))
 		return
 	}

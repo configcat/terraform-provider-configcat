@@ -155,6 +155,12 @@ func (r *segmentResource) Read(ctx context.Context, req resource.ReadRequest, re
 
 	model, err := r.client.GetSegment(state.ID.ValueString())
 	if err != nil {
+		if _, ok := err.(client.NotFoundError); ok {
+			// If the resource is already deleted, we have to remove it from the state.
+			resp.State.RemoveResource(ctx)
+			return
+		}
+
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read "+SegmentResourceName+", got error: %s", err))
 		return
 	}

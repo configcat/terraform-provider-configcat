@@ -144,6 +144,11 @@ func (r *settingTagResource) Read(ctx context.Context, req resource.ReadRequest,
 
 	model, err := r.client.GetSetting(int32(settingID))
 	if err != nil {
+		if _, ok := err.(client.NotFoundError); ok {
+			// If the resource is already deleted, we have to remove it from the state.
+			resp.State.RemoveResource(ctx)
+			return
+		}
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read "+SettingResourceName+", got error: %s", err))
 		return
 	}
@@ -157,7 +162,8 @@ func (r *settingTagResource) Read(ctx context.Context, req resource.ReadRequest,
 	}
 
 	if !found {
-		resp.Diagnostics.AddAttributeError(path.Root(ID), TagResourceName+" is not added for "+SettingResourceName, TagResourceName+" is not added for "+SettingResourceName)
+		// If the tag is not applied to the setting, we should remove it from the state
+		resp.State.RemoveResource(ctx)
 		return
 	}
 
