@@ -30,7 +30,7 @@ type permissionGroupDataSource struct {
 }
 
 type permissionGroupDataModel struct {
-	ID                           types.String `tfsdk:"permission_group_id"`
+	ID                           types.Int64  `tfsdk:"permission_group_id"`
 	Name                         types.String `tfsdk:"name"`
 	CanManageMembers             types.Bool   `tfsdk:"can_manage_members"`
 	CanCreateOrUpdateConfig      types.Bool   `tfsdk:"can_createorupdate_config"`
@@ -90,7 +90,7 @@ func (d *permissionGroupDataSource) Schema(ctx context.Context, req datasource.S
 			PermissionGroups: schema.ListNestedAttribute{
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
-						PermissionGroupId: schema.StringAttribute{
+						PermissionGroupId: schema.Int64Attribute{
 							Description: "The unique " + PermissionGroupResourceName + " ID.",
 							Computed:    true,
 						},
@@ -266,7 +266,7 @@ func (d *permissionGroupDataSource) Read(ctx context.Context, req datasource.Rea
 		}
 
 		dataModel := &permissionGroupDataModel{
-			ID:                           types.StringValue(strconv.FormatInt(*resource.PermissionGroupId, 10)),
+			ID:                           types.Int64PointerValue(resource.PermissionGroupId),
 			Name:                         types.StringPointerValue(resource.Name.Get()),
 			CanManageMembers:             types.BoolPointerValue(resource.CanManageMembers),
 			CanCreateOrUpdateConfig:      types.BoolPointerValue(resource.CanCreateOrUpdateConfig),
