@@ -49,7 +49,7 @@ func testAccSettingResource(t *testing.T, settingType string) {
 					resource.TestCheckResourceAttr(testResourceName, Name, "Resource name"),
 					resource.TestCheckResourceAttr(testResourceName, SettingType, settingType),
 					resource.TestCheckResourceAttr(testResourceName, Order, "1"),
-					resource.TestCheckNoResourceAttr(testResourceName, SettingHint),
+					resource.TestCheckResourceAttr(testResourceName, SettingHint, ""),
 				),
 			},
 			{

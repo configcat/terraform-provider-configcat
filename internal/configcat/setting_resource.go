@@ -79,6 +79,10 @@ func (r *settingResource) Schema(ctx context.Context, req resource.SchemaRequest
 			SettingHint: schema.StringAttribute{
 				Description: "The hint of the " + SettingResourceName + ".",
 				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			SettingType: schema.StringAttribute{
 				Description: "The type of the " + SettingResourceName + ". Available values: `boolean`|`string`|`int`|`double`. Default: `boolean`.",

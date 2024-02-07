@@ -69,10 +69,18 @@ func (r *environmentResource) Schema(ctx context.Context, req resource.SchemaReq
 			Description: schema.StringAttribute{
 				Description: "The description of the " + EnvironmentResourceName + ".",
 				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			Color: schema.StringAttribute{
 				Description: "The color of the " + EnvironmentResourceName + ".",
 				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			Order: schema.Int64Attribute{
 				Description: "The order of the " + EnvironmentResourceName + " within a " + ProductResourceName + " (zero-based). If multiple " + EnvironmentResourceName + "s has the same order, they are displayed in alphabetical order.",

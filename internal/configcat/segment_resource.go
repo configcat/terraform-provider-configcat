@@ -70,6 +70,10 @@ func (r *segmentResource) Schema(ctx context.Context, req resource.SchemaRequest
 			Description: schema.StringAttribute{
 				Description: "The description of the " + SegmentResourceName + ".",
 				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			SegmentComparisonAttribute: schema.StringAttribute{
 				MarkdownDescription: "The [comparison attribute](https://configcat.com/docs/advanced/targeting/#attribute) of the " + SegmentResourceName + ".",

@@ -24,7 +24,7 @@ func TestAccTagResource(t *testing.T) {
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet(testResourceName, ID),
 					resource.TestCheckResourceAttr(testResourceName, Name, "Resource name"),
-					resource.TestCheckNoResourceAttr(testResourceName, Color),
+					resource.TestCheckResourceAttr(testResourceName, Color, "panther"),
 				),
 			},
 			{
@@ -45,7 +45,20 @@ func TestAccTagResource(t *testing.T) {
 				ConfigVariables: config.Variables{
 					"product_id": config.StringVariable(productId),
 					"name":       config.StringVariable("Resource name updated"),
-					"color":      config.StringVariable("panther"),
+					"color":      config.StringVariable("whale"),
+				},
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttrSet(testResourceName, ID),
+					resource.TestCheckResourceAttr(testResourceName, Name, "Resource name updated"),
+					resource.TestCheckResourceAttr(testResourceName, Color, "whale"),
+				),
+			},
+			{
+				ConfigFile: config.TestNameFile("main.tf"),
+				ConfigVariables: config.Variables{
+					"product_id": config.StringVariable(productId),
+					"name":       config.StringVariable("Resource name updated"),
+					"color":      config.StringVariable("whale"),
 				},
 				ResourceName:      testResourceName,
 				ImportState:       true,

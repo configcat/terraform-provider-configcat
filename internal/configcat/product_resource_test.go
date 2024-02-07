@@ -26,7 +26,7 @@ func TestAccProductResource(t *testing.T) {
 					resource.TestCheckResourceAttrSet(testResourceName, ID),
 					resource.TestCheckResourceAttr(testResourceName, Name, "Resource name"),
 					resource.TestCheckResourceAttr(testResourceName, Order, "1"),
-					resource.TestCheckNoResourceAttr(testResourceName, Description),
+					resource.TestCheckResourceAttr(testResourceName, Description, ""),
 				),
 			},
 			{

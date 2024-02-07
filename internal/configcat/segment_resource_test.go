@@ -28,7 +28,7 @@ func TestAccSegmentResource(t *testing.T) {
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet(testResourceName, ID),
 					resource.TestCheckResourceAttr(testResourceName, Name, "Resource name"),
-					resource.TestCheckNoResourceAttr(testResourceName, Description),
+					resource.TestCheckResourceAttr(testResourceName, Description, ""),
 					resource.TestCheckResourceAttr(testResourceName, SegmentComparisonAttribute, "email"),
 					resource.TestCheckResourceAttr(testResourceName, SegmentComparator, "sensitiveIsOneOf"),
 					resource.TestCheckResourceAttr(testResourceName, SegmentComparisonValue, "a@b.com,c@d.com"),

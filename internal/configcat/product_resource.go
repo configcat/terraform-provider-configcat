@@ -68,6 +68,10 @@ func (r *productResource) Schema(ctx context.Context, req resource.SchemaRequest
 			Description: schema.StringAttribute{
 				Description: "The description of the " + ProductResourceName + ".",
 				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			Order: schema.Int64Attribute{
 				Description: "The order of the " + ProductResourceName + " within a " + OrganizationResourceName + " (zero-based). If multiple " + ProductResourceName + "s has the same order, they are displayed in alphabetical order.",
