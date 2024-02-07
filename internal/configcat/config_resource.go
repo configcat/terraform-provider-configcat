@@ -50,8 +50,15 @@ func (r *configResource) Metadata(ctx context.Context, req resource.MetadataRequ
 }
 
 func (r *configResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+	description := "Creates and manages a **" + ConfigResourceName + "**. [What is a " + ConfigResourceName + " in ConfigCat?](https://configcat.com/docs/main-concepts)"
+	if r.evaluationVersion == sw.EVALUATIONVERSION_V1 {
+		description += "\n\nThis resource applies to the V1 version of the Config. To manage V2 version Configs, please use the configcat_config_v2 resource. [Read more about Config V2](https://configcat.com/docs/V2/advanced/config-v2/)"
+	} else {
+		description += "\n\nThis resource applies to the V2 version of the Config. To manage V1 version Configs, please use the configcat_config resource. [Read more about Config V2](https://configcat.com/docs/V2/advanced/config-v2/)"
+	}
+
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "Creates and manages a **" + ConfigResourceName + "**. [What is a " + ConfigResourceName + " in ConfigCat?](https://configcat.com/docs/main-concepts)",
+		MarkdownDescription: description,
 
 		Attributes: map[string]schema.Attribute{
 			ID: schema.StringAttribute{
@@ -84,10 +91,6 @@ func (r *configResource) Schema(ctx context.Context, req resource.SchemaRequest,
 			Order: schema.Int64Attribute{
 				Description: "The order of the " + ConfigResourceName + " within a " + ProductResourceName + " (zero-based). If multiple " + ConfigResourceName + "s has the same order, they are displayed in alphabetical order.",
 				Required:    true,
-			},
-			EvaluationVersion: schema.StringAttribute{
-				MarkdownDescription: "The evaluation version of the " + ConfigResourceName + ". Possible values: `v1`|`v2`",
-				Computed:            true,
 			},
 		},
 	}

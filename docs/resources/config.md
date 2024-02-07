@@ -4,11 +4,14 @@ page_title: "configcat_config Resource - terraform-provider-configcat"
 subcategory: ""
 description: |-
   Creates and manages a Config. What is a Config in ConfigCat? https://configcat.com/docs/main-concepts
+  This resource applies to the V1 version of the Config. To manage V2 version Configs, please use the configcatconfigv2 resource. Read more about Config V2 https://configcat.com/docs/V2/advanced/config-v2/
 ---
 
 # configcat_config (Resource)
 
 Creates and manages a **Config**. [What is a Config in ConfigCat?](https://configcat.com/docs/main-concepts)
+
+This resource applies to the V1 version of the Config. To manage V2 version Configs, please use the configcat_config_v2 resource. [Read more about Config V2](https://configcat.com/docs/V2/advanced/config-v2/)
 
 ## Example Usage
 
@@ -45,7 +48,6 @@ output "config_id" {
 
 ### Read-Only
 
-- `evaluation_version` (String) The evaluation version of the Config. Possible values: `v1`|`v2`
 - `id` (String) The unique ID of the Config.
 
 ## Import
@@ -53,7 +55,7 @@ output "config_id" {
 Import is supported using the following syntax:
 
 ```shell
-# Configs can be imported using the ConfigId. Get the ConfigId using the [List Configs API](https://api.configcat.com/docs/#tag/Configs/operation/get-configs) for example.
+# Configs (V1) can be imported using the ConfigId. Get the ConfigId using the [List Configs API](https://api.configcat.com/docs/#tag/Configs/operation/get-configs) for example.
 
 terraform import configcat_config.example 08d86d63-2726-47cd-8bfc-59608ecb91e2
 ```
