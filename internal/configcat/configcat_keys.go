@@ -102,7 +102,7 @@ const (
 	IntValue    = "int_value"
 	DoubleValue = "double_value"
 
-	ListValue      = "list_values"
+	ListValues     = "list_values"
 	ListValueValue = "value"
 	ListValueHint  = "hint"
 
@@ -110,15 +110,15 @@ const (
 
 	DefaultValue = "value"
 
-	TargetingRule = "targeting_rules"
+	TargetingRules = "targeting_rules"
 
 	TargetingRuleValue = "value"
 
-	TargetingRulePercentageOption           = "percentage_options"
+	TargetingRulePercentageOptions          = "percentage_options"
 	TargetingRulePercentageOptionPercentage = "percentage"
 	TargetingRulePercentageOptionValue      = "value"
 
-	TargetingRuleCondition = "conditions"
+	TargetingRuleConditions = "conditions"
 
 	TargetingRuleUserCondition                    = "user_condition"
 	TargetingRuleUserConditionComparisonAttribute = "comparison_attribute"

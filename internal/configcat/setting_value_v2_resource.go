@@ -13,7 +13,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
@@ -52,9 +51,9 @@ type settingValueModel struct {
 }
 
 type userConditionModel struct {
-	ComparisonAttribute types.String         `tfsdk:"comparison_attribute"`
-	Comparator          types.String         `tfsdk:"comparator"`
-	ComparisonValue     comparisonValueModel `tfsdk:"comparison_value"`
+	ComparisonAttribute types.String          `tfsdk:"comparison_attribute"`
+	Comparator          types.String          `tfsdk:"comparator"`
+	ComparisonValue     *comparisonValueModel `tfsdk:"comparison_value"`
 }
 
 type segmentConditionModel struct {
@@ -63,9 +62,9 @@ type segmentConditionModel struct {
 }
 
 type prerequisiteFlagConditionModel struct {
-	PrerequisiteSettingId types.String      `tfsdk:"comparison_attribute"`
-	Comparator            types.String      `tfsdk:"comparator"`
-	ComparisonValue       settingValueModel `tfsdk:"comparison_value"`
+	PrerequisiteSettingId types.String       `tfsdk:"comparison_attribute"`
+	Comparator            types.String       `tfsdk:"comparator"`
+	ComparisonValue       *settingValueModel `tfsdk:"comparison_value"`
 }
 
 type conditionModel struct {
@@ -75,15 +74,15 @@ type conditionModel struct {
 }
 
 type percentageOptionModel struct {
-	Percentage types.Int64       `tfsdk:"percentage"`
-	Value      settingValueModel `tfsdk:"value"`
+	Percentage types.Int64        `tfsdk:"percentage"`
+	Value      *settingValueModel `tfsdk:"value"`
 }
 
 type targetingRuleModel struct {
 	Conditions []conditionModel `tfsdk:"conditions"`
 
 	PercentageOptions []percentageOptionModel `tfsdk:"percentage_options"`
-	Value             settingValueModel       `tfsdk:"value"`
+	Value             *settingValueModel      `tfsdk:"value"`
 }
 
 type settingValueV2ResourceModel struct {
@@ -97,12 +96,12 @@ type settingValueV2ResourceModel struct {
 	MandatoryNotes                types.String `tfsdk:"mandatory_notes"`
 	PercentageEvaluationAttribute types.String `tfsdk:"percentage_evaluation_attribute"`
 
-	DefaultValue   settingValueModel    `tfsdk:"value"`
+	DefaultValue   *settingValueModel   `tfsdk:"value"`
 	TargetingRules []targetingRuleModel `tfsdk:"targeting_rules"`
 }
 
 func (r *settingValueV2Resource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_setting_value"
+	resp.TypeName = req.ProviderTypeName + "_setting_value_v2"
 }
 
 func createSettingValueSchema(required bool) *schema.SingleNestedAttribute {
@@ -137,7 +136,7 @@ func (r *settingValueV2Resource) Schema(ctx context.Context, req resource.Schema
 			DoubleValue: schema.Float64Attribute{
 				Optional: true,
 			},
-			ListValue: schema.ListNestedAttribute{
+			ListValues: schema.ListNestedAttribute{
 				Optional: true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
@@ -239,15 +238,14 @@ func (r *settingValueV2Resource) Schema(ctx context.Context, req resource.Schema
 			PercentageEvaluationAttribute: schema.StringAttribute{
 				Description: "The user attribute used for percentage evaluation. If not set, it defaults to the Identifier user object attribute.",
 				Optional:    true,
-				Default:     stringdefault.StaticString("Identifier"),
 			},
 			DefaultValue: createSettingValueSchema(true),
 
-			TargetingRule: schema.ListNestedAttribute{
+			TargetingRules: schema.ListNestedAttribute{
 				Optional: true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
-						TargetingRuleCondition: schema.ListNestedAttribute{
+						TargetingRuleConditions: schema.ListNestedAttribute{
 							Optional: true,
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
@@ -259,7 +257,7 @@ func (r *settingValueV2Resource) Schema(ctx context.Context, req resource.Schema
 						},
 
 						TargetingRuleValue: createSettingValueSchema(false),
-						TargetingRulePercentageOption: schema.ListNestedAttribute{
+						TargetingRulePercentageOptions: schema.ListNestedAttribute{
 							Optional: true,
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
@@ -478,7 +476,7 @@ func getTargetingRulesData(targetingRules []targetingRuleModel, settingType sw.S
 					if convErr != nil {
 						return nil, convErr
 					}
-					prerequisiteComparisonValue, prerequisiteComparisonValueErr := getSettingValueV2WithoutSettingType(condition.PrerequisiteFlagCondition.ComparisonValue)
+					prerequisiteComparisonValue, prerequisiteComparisonValueErr := getSettingValueV2WithoutSettingType(*condition.PrerequisiteFlagCondition.ComparisonValue)
 					if prerequisiteComparisonValueErr != nil {
 						return nil, prerequisiteComparisonValueErr
 					}
@@ -497,13 +495,38 @@ func getTargetingRulesData(targetingRules []targetingRuleModel, settingType sw.S
 			targetingRuleModel.Conditions = conditions
 		}
 
+		if len(targetingRule.PercentageOptions) > 0 {
+			percentageOptions := make([]sw.PercentageOptionModel, len(targetingRule.PercentageOptions))
+			for percentageOptionIndex, percentageOption := range targetingRule.PercentageOptions {
+				percentageOptionValue, percentageOptionValueErr := getSettingValueV2(&settingType, percentageOption.Value)
+				if percentageOptionValueErr != nil {
+					return nil, percentageOptionValueErr
+				}
+
+				percentageOptions[percentageOptionIndex] = sw.PercentageOptionModel{
+					Percentage: int32(percentageOption.Percentage.ValueInt64()),
+					Value:      *percentageOptionValue,
+				}
+			}
+
+			targetingRuleModel.PercentageOptions = percentageOptions
+		}
+
+		if targetingRule.Value != nil {
+			targetingRuleValue, targetingRuleValueErr := getSettingValueV2(&settingType, targetingRule.Value)
+			if targetingRuleValueErr != nil {
+				return nil, targetingRuleValueErr
+			}
+			targetingRuleModel.Value = targetingRuleValue
+		}
+
 		result[targetingRuleIndex] = *targetingRuleModel
 	}
 
 	return result, nil
 }
 
-func getUserConditionComparisonValueData(comparisonValue comparisonValueModel) (*sw.ComparisonValueModel, error) {
+func getUserConditionComparisonValueData(comparisonValue *comparisonValueModel) (*sw.ComparisonValueModel, error) {
 	if !comparisonValue.StringValue.IsUnknown() && !comparisonValue.StringValue.IsNull() {
 		return &sw.ComparisonValueModel{
 			StringValue: *sw.NewNullableString(comparisonValue.StringValue.ValueStringPointer()),
@@ -526,7 +549,7 @@ func getUserConditionComparisonValueData(comparisonValue comparisonValueModel) (
 			ListValue: listValueItems,
 		}, nil
 	} else {
-		return nil, fmt.Errorf("exactly one of the %s, %s or %s attributes is required", StringValue, DoubleValue, ListValue)
+		return nil, fmt.Errorf("exactly one of the %s, %s or %s attributes is required", StringValue, DoubleValue, ListValues)
 	}
 }
 
@@ -538,7 +561,7 @@ func (resourceModel *settingValueV2ResourceModel) UpdateFromApiModel(model sw.Se
 		return defaultValueErr
 	}
 
-	resourceModel.DefaultValue = *defaultValue
+	resourceModel.DefaultValue = defaultValue
 	resourceModel.SettingType = types.StringPointerValue((*string)(model.Setting.SettingType))
 	resourceModel.PercentageEvaluationAttribute = types.StringPointerValue(model.PercentageEvaluationAttribute.Get())
 
@@ -576,7 +599,7 @@ func (resourceModel *settingValueV2ResourceModel) UpdateFromApiModel(model sw.Se
 							UserCondition: &userConditionModel{
 								ComparisonAttribute: types.StringValue(condition.UserCondition.ComparisonAttribute),
 								Comparator:          types.StringValue(string(condition.UserCondition.Comparator)),
-								ComparisonValue:     comparisonValue,
+								ComparisonValue:     &comparisonValue,
 							},
 						}
 					} else if condition.SegmentCondition != nil {
@@ -595,7 +618,7 @@ func (resourceModel *settingValueV2ResourceModel) UpdateFromApiModel(model sw.Se
 							PrerequisiteFlagCondition: &prerequisiteFlagConditionModel{
 								PrerequisiteSettingId: types.StringValue(string(condition.PrerequisiteFlagCondition.PrerequisiteSettingId)),
 								Comparator:            types.StringValue(string(condition.PrerequisiteFlagCondition.Comparator)),
-								ComparisonValue:       *prerequisiteFlagSettingValueModel,
+								ComparisonValue:       prerequisiteFlagSettingValueModel,
 							},
 						}
 					} else {
@@ -617,7 +640,7 @@ func (resourceModel *settingValueV2ResourceModel) UpdateFromApiModel(model sw.Se
 
 					percentageOptions[percentageOptionIndex] = percentageOptionModel{
 						Percentage: types.Int64Value(int64(percentageOption.Percentage)),
-						Value:      *percentageValue,
+						Value:      percentageValue,
 					}
 				}
 
@@ -629,7 +652,7 @@ func (resourceModel *settingValueV2ResourceModel) UpdateFromApiModel(model sw.Se
 				if targetingRuleValueErr != nil {
 					return targetingRuleValueErr
 				}
-				targetingRuleModel.Value = *targetingRuleValue
+				targetingRuleModel.Value = targetingRuleValue
 			}
 
 			targetingRules[targetingRuleIndex] = targetingRuleModel
@@ -659,7 +682,7 @@ func getSettingValueModelV2(settingType *sw.SettingType, value sw.ValueModel) (*
 		result.DoubleValue = types.Float64PointerValue(value.DoubleValue.Get())
 		return &result, nil
 	default:
-		return nil, fmt.Errorf("could not parse SettingType and Value: %s, %s", *settingType, value)
+		return nil, fmt.Errorf("could not parse SettingType: %s", *settingType)
 	}
 }
 
@@ -696,7 +719,7 @@ func getSettingValueV2WithoutSettingType(value settingValueModel) (*sw.ValueMode
 	}
 }
 
-func getSettingValueV2(settingType *sw.SettingType, value settingValueModel) (*sw.ValueModel, error) {
+func getSettingValueV2(settingType *sw.SettingType, value *settingValueModel) (*sw.ValueModel, error) {
 
 	result := sw.ValueModel{}
 	switch *settingType {
@@ -739,7 +762,7 @@ func hasChangesV2(plan *settingValueV2ResourceModel, state *settingValueV2Resour
 		!plan.InitOnly.Equal(state.InitOnly) ||
 		!plan.MandatoryNotes.Equal(state.MandatoryNotes) ||
 		!plan.PercentageEvaluationAttribute.Equal(state.PercentageEvaluationAttribute) ||
-		hasSettingValueChanges(&plan.DefaultValue, &state.DefaultValue) ||
+		hasSettingValueChanges(plan.DefaultValue, state.DefaultValue) ||
 
 		len(plan.TargetingRules) != len(state.TargetingRules) {
 		return true
@@ -749,7 +772,7 @@ func hasChangesV2(plan *settingValueV2ResourceModel, state *settingValueV2Resour
 		stateTargetingRule := (state.TargetingRules)[targetingRuleIndex]
 		if len(planTargetingRule.Conditions) != len(stateTargetingRule.Conditions) ||
 			len(planTargetingRule.PercentageOptions) != len(stateTargetingRule.PercentageOptions) ||
-			hasSettingValueChanges(&planTargetingRule.Value, &stateTargetingRule.Value) {
+			hasSettingValueChanges(planTargetingRule.Value, stateTargetingRule.Value) {
 			return true
 		}
 
@@ -789,7 +812,7 @@ func hasChangesV2(plan *settingValueV2ResourceModel, state *settingValueV2Resour
 			if planCondition.PrerequisiteFlagCondition != nil {
 				if !planCondition.PrerequisiteFlagCondition.PrerequisiteSettingId.Equal(stateCondition.PrerequisiteFlagCondition.PrerequisiteSettingId) ||
 					!planCondition.PrerequisiteFlagCondition.Comparator.Equal(stateCondition.PrerequisiteFlagCondition.Comparator) ||
-					hasSettingValueChanges(&planCondition.PrerequisiteFlagCondition.ComparisonValue, &stateCondition.PrerequisiteFlagCondition.ComparisonValue) {
+					hasSettingValueChanges(planCondition.PrerequisiteFlagCondition.ComparisonValue, stateCondition.PrerequisiteFlagCondition.ComparisonValue) {
 					return true
 				}
 			}
@@ -798,7 +821,7 @@ func hasChangesV2(plan *settingValueV2ResourceModel, state *settingValueV2Resour
 		for percentageOptionIndex, planPercentageOption := range planTargetingRule.PercentageOptions {
 			statePercentageOption := (stateTargetingRule.PercentageOptions)[percentageOptionIndex]
 			if !planPercentageOption.Percentage.Equal(statePercentageOption.Percentage) ||
-				hasSettingValueChanges(&planPercentageOption.Value, &statePercentageOption.Value) {
+				hasSettingValueChanges(planPercentageOption.Value, statePercentageOption.Value) {
 				return true
 			}
 		}
