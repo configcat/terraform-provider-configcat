@@ -31,7 +31,7 @@ resource "configcat_setting_value_v2" "test" {
           user_condition = {
             comparison_attribute = "email"
             comparator           = "sensitiveTextEquals"
-            comparison_value     = { string_value = "@configcat.com" }
+            comparison_value     = { string_value = "jane@configcat.com" }
           }
         }
       ],
@@ -41,7 +41,7 @@ resource "configcat_setting_value_v2" "test" {
       conditions = [
         {
           user_condition = {
-            comparison_attribute = "color"
+            comparison_attribute = "email"
             comparator           = "containsAnyOf"
             comparison_value = {
               list_values = [

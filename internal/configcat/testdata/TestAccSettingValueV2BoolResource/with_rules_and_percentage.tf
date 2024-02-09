@@ -11,6 +11,11 @@ variable "init_only" {
   default = false
 }
 
+variable "percentage" {
+  type    = number
+  default = null
+}
+
 resource "configcat_setting" "test" {
   config_id = var.config_id
   key       = "BoolSettingV2Key"
@@ -31,7 +36,7 @@ resource "configcat_setting_value_v2" "test" {
           user_condition = {
             comparison_attribute = "email"
             comparator           = "sensitiveTextEquals"
-            comparison_value     = "@configcat.com"
+            comparison_value     = { string_value = "@configcat.com" }
           }
         }
       ],
@@ -43,7 +48,12 @@ resource "configcat_setting_value_v2" "test" {
           user_condition = {
             comparison_attribute = "color"
             comparator           = "isOneOf"
-            comparison_value     = "red"
+            comparison_value = {
+              list_values = [
+                { value = "#000000", hint = "black" },
+                { value = "red" },
+              ]
+            }
           }
         }
       ],
