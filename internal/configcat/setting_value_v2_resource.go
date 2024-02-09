@@ -578,10 +578,10 @@ func (resourceModel *settingValueV2ResourceModel) UpdateFromApiModel(model sw.Se
 					if condition.UserCondition != nil {
 
 						comparisonValue := comparisonValueModel{}
-						if condition.UserCondition.ComparisonValue.StringValue.IsSet() {
-							comparisonValue.StringValue = types.StringValue(*condition.UserCondition.ComparisonValue.StringValue.Get())
-						} else if condition.UserCondition.ComparisonValue.DoubleValue.IsSet() {
-							comparisonValue.DoubleValue = types.Float64Value(*condition.UserCondition.ComparisonValue.DoubleValue.Get())
+						if condition.UserCondition.ComparisonValue.StringValue.IsSet() && condition.UserCondition.ComparisonValue.StringValue.Get() != nil {
+							comparisonValue.StringValue = types.StringPointerValue(condition.UserCondition.ComparisonValue.StringValue.Get())
+						} else if condition.UserCondition.ComparisonValue.DoubleValue.IsSet() && condition.UserCondition.ComparisonValue.DoubleValue.Get() != nil {
+							comparisonValue.DoubleValue = types.Float64PointerValue(condition.UserCondition.ComparisonValue.DoubleValue.Get())
 						} else if len(condition.UserCondition.ComparisonValue.ListValue) > 0 {
 							listValues := make([]comparisonValueListItemModel, len(condition.UserCondition.ComparisonValue.ListValue))
 							for listValueIndex, listValue := range condition.UserCondition.ComparisonValue.ListValue {
@@ -688,14 +688,14 @@ func getSettingValueModelV2(settingType *sw.SettingType, value sw.ValueModel) (*
 
 func getSettingValueModelV2WithoutSettingType(value sw.ValueModel) (*settingValueModel, error) {
 
-	if value.BoolValue.IsSet() {
+	if value.BoolValue.IsSet() && value.BoolValue.Get() != nil {
 		return &settingValueModel{BoolValue: types.BoolPointerValue(value.BoolValue.Get())}, nil
-	} else if value.StringValue.IsSet() {
+	} else if value.StringValue.IsSet() && value.StringValue.Get() != nil {
 		return &settingValueModel{StringValue: types.StringPointerValue(value.StringValue.Get())}, nil
-	} else if value.IntValue.IsSet() {
+	} else if value.IntValue.IsSet() && value.IntValue.Get() != nil {
 		int64Value := int64(*value.IntValue.Get())
 		return &settingValueModel{IntValue: types.Int64Value(int64Value)}, nil
-	} else if value.DoubleValue.IsSet() {
+	} else if value.DoubleValue.IsSet() && value.DoubleValue.Get() != nil {
 		return &settingValueModel{DoubleValue: types.Float64PointerValue(value.DoubleValue.Get())}, nil
 	} else {
 		return nil, fmt.Errorf("invalid model")

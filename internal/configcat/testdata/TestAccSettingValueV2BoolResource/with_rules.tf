@@ -42,9 +42,9 @@ resource "configcat_setting_value_v2" "test" {
         {
           user_condition = {
             comparison_attribute = "color"
-            comparator           = "containsOneOf"
+            comparator           = "containsAnyOf"
             comparison_value = {
-              list_value = [
+              list_values = [
                 { value = "@configcat.com", hint = "the greatest company of the world" },
                 { value = "@example.com" }
               ]
