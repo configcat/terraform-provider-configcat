@@ -193,7 +193,7 @@ func TestAccSettingValueV2BoolResource(t *testing.T) {
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".1."+TargetingRuleConditions+".0."+TargetingRuleUserCondition+"."+TargetingRuleUserConditionComparisonValue+"."+ListValues+".0."+ListValueValue, "@configcat.com"),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".1."+TargetingRuleConditions+".0."+TargetingRuleUserCondition+"."+TargetingRuleUserConditionComparisonValue+"."+ListValues+".0."+ListValueHint, "the greatest company of the world"),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".1."+TargetingRuleConditions+".0."+TargetingRuleUserCondition+"."+TargetingRuleUserConditionComparisonValue+"."+ListValues+".1."+ListValueValue, "@example.com"),
-					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".1."+TargetingRuleConditions+".0."+TargetingRuleUserCondition+"."+TargetingRuleUserConditionComparisonValue+"."+ListValues+".1."+ListValueHint, ""),
+					resource.TestCheckNoResourceAttr(testResourceName, TargetingRules+".1."+TargetingRuleConditions+".0."+TargetingRuleUserCondition+"."+TargetingRuleUserConditionComparisonValue+"."+ListValues+".1."+ListValueHint),
 				),
 			},
 			{
