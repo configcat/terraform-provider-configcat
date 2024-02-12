@@ -107,7 +107,7 @@ Optional:
 Import is supported using the following syntax:
 
 ```shell
-# Feature Flag/Setting values can be imported using a combined EnvironmentID:SettingId ID.  
+# Feature Flag/Setting values (V1) can be imported using a combined EnvironmentID:SettingId ID.  
 # Get the EnvironmentId using e.g. the [List Environments API](https://api.configcat.com/docs/#tag/Environments/operation/get-environments).  
 # Get the SettingId using e.g. the [List Flags API](https://api.configcat.com/docs/#tag/Feature-Flags-and-Settings/operation/get-settings).  
 
