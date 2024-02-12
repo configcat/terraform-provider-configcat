@@ -7,6 +7,12 @@ import (
 	"strings"
 
 	"github.com/configcat/terraform-provider-configcat/internal/configcat/client"
+	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/float64validator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -15,6 +21,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
@@ -104,22 +111,51 @@ func (r *settingValueV2Resource) Metadata(ctx context.Context, req resource.Meta
 	resp.TypeName = req.ProviderTypeName + "_setting_value_v2"
 }
 
-func createSettingValueSchema(required bool) *schema.SingleNestedAttribute {
+func createSettingValueSchema(required bool, validators []validator.Object) *schema.SingleNestedAttribute {
 	return &schema.SingleNestedAttribute{
-		Required: required,
-		Optional: !required,
+		Required:   required,
+		Optional:   !required,
+		Validators: validators,
 		Attributes: map[string]schema.Attribute{
 			BoolValue: schema.BoolAttribute{
 				Optional: true,
+				Validators: []validator.Bool{
+					boolvalidator.ExactlyOneOf(
+						path.MatchRelative().AtParent().AtName(StringValue),
+						path.MatchRelative().AtParent().AtName(IntValue),
+						path.MatchRelative().AtParent().AtName(DoubleValue),
+					),
+				},
 			},
 			StringValue: schema.StringAttribute{
 				Optional: true,
+				Validators: []validator.String{
+					stringvalidator.ExactlyOneOf(
+						path.MatchRelative().AtParent().AtName(BoolValue),
+						path.MatchRelative().AtParent().AtName(IntValue),
+						path.MatchRelative().AtParent().AtName(DoubleValue),
+					),
+				},
 			},
 			IntValue: schema.Int64Attribute{
 				Optional: true,
+				Validators: []validator.Int64{
+					int64validator.ExactlyOneOf(
+						path.MatchRelative().AtParent().AtName(BoolValue),
+						path.MatchRelative().AtParent().AtName(StringValue),
+						path.MatchRelative().AtParent().AtName(DoubleValue),
+					),
+				},
 			},
 			DoubleValue: schema.Float64Attribute{
 				Optional: true,
+				Validators: []validator.Float64{
+					float64validator.ExactlyOneOf(
+						path.MatchRelative().AtParent().AtName(BoolValue),
+						path.MatchRelative().AtParent().AtName(StringValue),
+						path.MatchRelative().AtParent().AtName(IntValue),
+					),
+				},
 			},
 		},
 	}
@@ -132,12 +168,30 @@ func (r *settingValueV2Resource) Schema(ctx context.Context, req resource.Schema
 		Attributes: map[string]schema.Attribute{
 			StringValue: schema.StringAttribute{
 				Optional: true,
+				Validators: []validator.String{
+					stringvalidator.ExactlyOneOf(
+						path.MatchRelative().AtParent().AtName(DoubleValue),
+						path.MatchRelative().AtParent().AtName(ListValues),
+					),
+				},
 			},
 			DoubleValue: schema.Float64Attribute{
 				Optional: true,
+				Validators: []validator.Float64{
+					float64validator.ExactlyOneOf(
+						path.MatchRelative().AtParent().AtName(StringValue),
+						path.MatchRelative().AtParent().AtName(ListValues),
+					),
+				},
 			},
 			ListValues: schema.ListNestedAttribute{
 				Optional: true,
+				Validators: []validator.List{
+					listvalidator.ExactlyOneOf(
+						path.MatchRelative().AtParent().AtName(StringValue),
+						path.MatchRelative().AtParent().AtName(DoubleValue),
+					),
+				},
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						ListValueValue: schema.StringAttribute{
@@ -154,6 +208,12 @@ func (r *settingValueV2Resource) Schema(ctx context.Context, req resource.Schema
 
 	userConditionSchema := schema.SingleNestedAttribute{
 		Optional: true,
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(
+				path.MatchRelative().AtParent().AtName(TargetingRuleSegmentCondition),
+				path.MatchRelative().AtParent().AtName(TargetingRulePrerequisiteFlagCondition),
+			),
+		},
 		Attributes: map[string]schema.Attribute{
 			TargetingRuleUserConditionComparisonAttribute: schema.StringAttribute{
 				Required: true,
@@ -167,6 +227,12 @@ func (r *settingValueV2Resource) Schema(ctx context.Context, req resource.Schema
 
 	segmentConditionSchema := schema.SingleNestedAttribute{
 		Optional: true,
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(
+				path.MatchRelative().AtParent().AtName(TargetingRuleUserCondition),
+				path.MatchRelative().AtParent().AtName(TargetingRulePrerequisiteFlagCondition),
+			),
+		},
 		Attributes: map[string]schema.Attribute{
 			TargetingRuleSegmentConditionSegmentId: schema.StringAttribute{
 				Required:   true,
@@ -180,6 +246,12 @@ func (r *settingValueV2Resource) Schema(ctx context.Context, req resource.Schema
 
 	prerequisiteFlagConditionSchema := schema.SingleNestedAttribute{
 		Optional: true,
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(
+				path.MatchRelative().AtParent().AtName(TargetingRuleUserCondition),
+				path.MatchRelative().AtParent().AtName(TargetingRuleSegmentCondition),
+			),
+		},
 		Attributes: map[string]schema.Attribute{
 			TargetingRulePrerequisiteFlagConditionSettingId: schema.StringAttribute{
 				Required: true,
@@ -187,7 +259,7 @@ func (r *settingValueV2Resource) Schema(ctx context.Context, req resource.Schema
 			TargetingRulePrerequisiteFlagConditionComparator: schema.StringAttribute{
 				Required: true,
 			},
-			TargetingRulePrerequisiteFlagConditionComparisonValue: createSettingValueSchema(true),
+			TargetingRulePrerequisiteFlagConditionComparisonValue: createSettingValueSchema(true, nil),
 		},
 	}
 
@@ -239,7 +311,7 @@ func (r *settingValueV2Resource) Schema(ctx context.Context, req resource.Schema
 				Description: "The user attribute used for percentage evaluation. If not set, it defaults to the Identifier user object attribute.",
 				Optional:    true,
 			},
-			DefaultValue: createSettingValueSchema(true),
+			DefaultValue: createSettingValueSchema(true, nil),
 
 			TargetingRules: schema.ListNestedAttribute{
 				Optional: true,
@@ -256,15 +328,24 @@ func (r *settingValueV2Resource) Schema(ctx context.Context, req resource.Schema
 							},
 						},
 
-						TargetingRuleValue: createSettingValueSchema(false),
+						TargetingRuleValue: createSettingValueSchema(false, []validator.Object{
+							objectvalidator.ExactlyOneOf(
+								path.MatchRelative().AtParent().AtName(TargetingRulePercentageOptions),
+							),
+						}),
 						TargetingRulePercentageOptions: schema.ListNestedAttribute{
 							Optional: true,
+							Validators: []validator.List{
+								listvalidator.ExactlyOneOf(
+									path.MatchRelative().AtParent().AtName(TargetingRuleValue),
+								),
+							},
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
 									TargetingRulePercentageOptionPercentage: schema.Int64Attribute{
 										Required: true,
 									},
-									TargetingRulePercentageOptionValue: createSettingValueSchema(true),
+									TargetingRulePercentageOptionValue: createSettingValueSchema(true, nil),
 								},
 							},
 						},

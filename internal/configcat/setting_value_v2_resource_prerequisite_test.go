@@ -110,7 +110,7 @@ func TestAccSettingValueV2PrerequisiteResource(t *testing.T) {
 					"config_id":      config.StringVariable(configId),
 					"environment_id": config.StringVariable(environmentId),
 				},
-				ExpectError: regexp.MustCompile("exactly one of the bool_value, string_value, int_value or double_value"),
+				ExpectError: regexp.MustCompile("Invalid Attribute Combination"),
 			},
 
 			{

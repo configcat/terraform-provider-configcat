@@ -73,7 +73,7 @@ func TestAccSettingValueV2TargetingResource(t *testing.T) {
 					"config_id":      config.StringVariable(configId),
 					"environment_id": config.StringVariable(environmentId),
 				},
-				ExpectError: regexp.MustCompile("exactly one of the string_value, double_value or list_values attributes"),
+				ExpectError: regexp.MustCompile("Invalid Attribute Combination"),
 			},
 			{
 				ConfigFile: config.TestNameFile("invalid_comparator.tf"),
@@ -89,7 +89,7 @@ func TestAccSettingValueV2TargetingResource(t *testing.T) {
 					"config_id":      config.StringVariable(configId),
 					"environment_id": config.StringVariable(environmentId),
 				},
-				ExpectError: regexp.MustCompile("exactly one of the user_condition, segment_condition or"),
+				ExpectError: regexp.MustCompile("Invalid Attribute Combination"),
 			},
 			{
 				ConfigFile: config.TestNameFile("missing_targeting_rule_value_or_percentage.tf"),
@@ -97,7 +97,7 @@ func TestAccSettingValueV2TargetingResource(t *testing.T) {
 					"config_id":      config.StringVariable(configId),
 					"environment_id": config.StringVariable(environmentId),
 				},
-				ExpectError: regexp.MustCompile("the value or the percentage_options attributes must be provided"),
+				ExpectError: regexp.MustCompile("Invalid Attribute Combination"),
 			},
 			{
 				ConfigFile: config.TestNameFile("invalid_targeting_rule_value.tf"),
