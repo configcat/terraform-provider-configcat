@@ -232,8 +232,8 @@ func (r *settingValueV2Resource) Schema(ctx context.Context, req resource.Schema
 				Description: "The User Object attribute that the condition is based on.",
 			},
 			TargetingRuleUserConditionComparator: schema.StringAttribute{
-				Required:    true,
-				Description: "The comparison operator which defines the relation between the comparison attribute and the comparison value. For possible values check the [documentation](https://api.configcat.com/docs/index.html#tag/Feature-Flag-and-Setting-values-V2/operation/replace-setting-value-v2).",
+				Required:            true,
+				MarkdownDescription: "The comparison operator which defines the relation between the comparison attribute and the comparison value. For possible values check the [documentation](https://api.configcat.com/docs/index.html#tag/Feature-Flag-and-Setting-values-V2/operation/replace-setting-value-v2).",
 			},
 			TargetingRuleUserConditionComparisonValue: &comparisonValueSchema,
 		},
@@ -255,8 +255,8 @@ func (r *settingValueV2Resource) Schema(ctx context.Context, req resource.Schema
 				Description: "The segment's identifier.",
 			},
 			TargetingRuleSegmentConditionComparator: schema.StringAttribute{
-				Required:    true,
-				Description: "The segment comparison operator used during the evaluation process. Possible values: `isIn`,`isNotIn`",
+				Required:            true,
+				MarkdownDescription: "The segment comparison operator used during the evaluation process. Possible values: `isIn`,`isNotIn`",
 			},
 		},
 	}
@@ -276,8 +276,8 @@ func (r *settingValueV2Resource) Schema(ctx context.Context, req resource.Schema
 				Required:    true,
 			},
 			TargetingRulePrerequisiteFlagConditionComparator: schema.StringAttribute{
-				Required:    true,
-				Description: "Prerequisite flag comparison operator used during the evaluation process. Possible values: `equals`,`doesNotEqual`",
+				Required:            true,
+				MarkdownDescription: "Prerequisite flag comparison operator used during the evaluation process. Possible values: `equals`,`doesNotEqual`",
 			},
 			TargetingRulePrerequisiteFlagConditionComparisonValue: createSettingValueSchema(true, nil),
 		},
