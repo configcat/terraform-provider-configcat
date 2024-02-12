@@ -7,7 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
-func TestAccSettingValueV2BoolResource(t *testing.T) {
+func TestAccSettingValueV2IntResource(t *testing.T) {
 	const configId = "08dc1bfa-b8b0-45f0-8127-fac0de7a37ac"
 	const environmentId = "08d86d63-2726-47cd-8bfc-59608ecb91e2"
 	const testResourceName = "configcat_setting_value_v2.test"
@@ -21,11 +21,11 @@ func TestAccSettingValueV2BoolResource(t *testing.T) {
 				ConfigVariables: config.Variables{
 					"config_id":      config.StringVariable(configId),
 					"environment_id": config.StringVariable(environmentId),
-					"value":          config.BoolVariable(false),
+					"value":          config.IntegerVariable(1),
 				},
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet(testResourceName, ID),
-					resource.TestCheckResourceAttr(testResourceName, DefaultValue+"."+BoolValue, "false"),
+					resource.TestCheckResourceAttr(testResourceName, DefaultValue+"."+IntValue, "1"),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".#", "0"),
 				),
 			},
@@ -34,7 +34,7 @@ func TestAccSettingValueV2BoolResource(t *testing.T) {
 				ConfigVariables: config.Variables{
 					"config_id":      config.StringVariable(configId),
 					"environment_id": config.StringVariable(environmentId),
-					"value":          config.BoolVariable(false),
+					"value":          config.IntegerVariable(1),
 				},
 				ResourceName:            testResourceName,
 				ImportState:             true,
@@ -46,11 +46,11 @@ func TestAccSettingValueV2BoolResource(t *testing.T) {
 				ConfigVariables: config.Variables{
 					"config_id":      config.StringVariable(configId),
 					"environment_id": config.StringVariable(environmentId),
-					"value":          config.BoolVariable(true),
+					"value":          config.IntegerVariable(2),
 				},
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet(testResourceName, ID),
-					resource.TestCheckResourceAttr(testResourceName, DefaultValue+"."+BoolValue, "true"),
+					resource.TestCheckResourceAttr(testResourceName, DefaultValue+"."+IntValue, "2"),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".#", "0"),
 				),
 			},
@@ -59,7 +59,7 @@ func TestAccSettingValueV2BoolResource(t *testing.T) {
 				ConfigVariables: config.Variables{
 					"config_id":      config.StringVariable(configId),
 					"environment_id": config.StringVariable(environmentId),
-					"value":          config.BoolVariable(true),
+					"value":          config.IntegerVariable(2),
 				},
 				ResourceName:            testResourceName,
 				ImportState:             true,
@@ -71,18 +71,18 @@ func TestAccSettingValueV2BoolResource(t *testing.T) {
 				ConfigVariables: config.Variables{
 					"config_id":      config.StringVariable(configId),
 					"environment_id": config.StringVariable(environmentId),
-					"value":          config.BoolVariable(true),
+					"value":          config.IntegerVariable(3),
 					"percentage":     config.IntegerVariable(10),
 				},
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet(testResourceName, ID),
-					resource.TestCheckResourceAttr(testResourceName, DefaultValue+"."+BoolValue, "true"),
+					resource.TestCheckResourceAttr(testResourceName, DefaultValue+"."+IntValue, "3"),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".#", "1"),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".0."+TargetingRulePercentageOptions+".#", "2"),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".0."+TargetingRulePercentageOptions+".0."+TargetingRulePercentageOptionPercentage, "10"),
-					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".0."+TargetingRulePercentageOptions+".0."+TargetingRulePercentageOptionValue+"."+BoolValue, "true"),
+					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".0."+TargetingRulePercentageOptions+".0."+TargetingRulePercentageOptionValue+"."+IntValue, "10"),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".0."+TargetingRulePercentageOptions+".1."+TargetingRulePercentageOptionPercentage, "90"),
-					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".0."+TargetingRulePercentageOptions+".1."+TargetingRulePercentageOptionValue+"."+BoolValue, "false"),
+					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".0."+TargetingRulePercentageOptions+".1."+TargetingRulePercentageOptionValue+"."+IntValue, "11"),
 				),
 			},
 			{
@@ -90,7 +90,7 @@ func TestAccSettingValueV2BoolResource(t *testing.T) {
 				ConfigVariables: config.Variables{
 					"config_id":      config.StringVariable(configId),
 					"environment_id": config.StringVariable(environmentId),
-					"value":          config.BoolVariable(true),
+					"value":          config.IntegerVariable(3),
 					"percentage":     config.IntegerVariable(10),
 				},
 				ResourceName:            testResourceName,
@@ -103,18 +103,18 @@ func TestAccSettingValueV2BoolResource(t *testing.T) {
 				ConfigVariables: config.Variables{
 					"config_id":      config.StringVariable(configId),
 					"environment_id": config.StringVariable(environmentId),
-					"value":          config.BoolVariable(true),
+					"value":          config.IntegerVariable(4),
 					"percentage":     config.IntegerVariable(20),
 				},
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet(testResourceName, ID),
-					resource.TestCheckResourceAttr(testResourceName, DefaultValue+"."+BoolValue, "true"),
+					resource.TestCheckResourceAttr(testResourceName, DefaultValue+"."+IntValue, "4"),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".#", "1"),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".0."+TargetingRulePercentageOptions+".#", "2"),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".0."+TargetingRulePercentageOptions+".0."+TargetingRulePercentageOptionPercentage, "20"),
-					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".0."+TargetingRulePercentageOptions+".0."+TargetingRulePercentageOptionValue+"."+BoolValue, "true"),
+					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".0."+TargetingRulePercentageOptions+".0."+TargetingRulePercentageOptionValue+"."+IntValue, "10"),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".0."+TargetingRulePercentageOptions+".1."+TargetingRulePercentageOptionPercentage, "80"),
-					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".0."+TargetingRulePercentageOptions+".1."+TargetingRulePercentageOptionValue+"."+BoolValue, "false"),
+					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".0."+TargetingRulePercentageOptions+".1."+TargetingRulePercentageOptionValue+"."+IntValue, "11"),
 				),
 			},
 			{
@@ -122,7 +122,7 @@ func TestAccSettingValueV2BoolResource(t *testing.T) {
 				ConfigVariables: config.Variables{
 					"config_id":      config.StringVariable(configId),
 					"environment_id": config.StringVariable(environmentId),
-					"value":          config.BoolVariable(true),
+					"value":          config.IntegerVariable(4),
 					"percentage":     config.IntegerVariable(20),
 				},
 				ResourceName:            testResourceName,
@@ -138,11 +138,11 @@ func TestAccSettingValueV2BoolResource(t *testing.T) {
 				},
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet(testResourceName, ID),
-					resource.TestCheckResourceAttr(testResourceName, DefaultValue+"."+BoolValue, "true"),
+					resource.TestCheckResourceAttr(testResourceName, DefaultValue+"."+IntValue, "20"),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".#", "1"),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".0."+TargetingRulePercentageOptions+".#", "0"),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".0."+TargetingRuleConditions+".#", "1"),
-					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".0."+TargetingRuleValue+"."+BoolValue, "true"),
+					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".0."+TargetingRuleValue+"."+IntValue, "21"),
 					resource.TestCheckNoResourceAttr(testResourceName, TargetingRules+".0."+TargetingRuleConditions+".0."+TargetingRuleSegmentCondition),
 					resource.TestCheckNoResourceAttr(testResourceName, TargetingRules+".0."+TargetingRuleConditions+".0."+TargetingRulePrerequisiteFlagCondition),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".0."+TargetingRuleConditions+".0."+TargetingRuleUserCondition+"."+TargetingRuleUserConditionComparisonAttribute, "email"),
@@ -169,11 +169,11 @@ func TestAccSettingValueV2BoolResource(t *testing.T) {
 				},
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet(testResourceName, ID),
-					resource.TestCheckResourceAttr(testResourceName, DefaultValue+"."+BoolValue, "true"),
+					resource.TestCheckResourceAttr(testResourceName, DefaultValue+"."+IntValue, "40"),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".#", "2"),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".0."+TargetingRulePercentageOptions+".#", "0"),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".0."+TargetingRuleConditions+".#", "1"),
-					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".0."+TargetingRuleValue+"."+BoolValue, "true"),
+					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".0."+TargetingRuleValue+"."+IntValue, "41"),
 					resource.TestCheckNoResourceAttr(testResourceName, TargetingRules+".0."+TargetingRuleConditions+".0."+TargetingRuleSegmentCondition),
 					resource.TestCheckNoResourceAttr(testResourceName, TargetingRules+".0."+TargetingRuleConditions+".0."+TargetingRulePrerequisiteFlagCondition),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".0."+TargetingRuleConditions+".0."+TargetingRuleUserCondition+"."+TargetingRuleUserConditionComparisonAttribute, "email"),
@@ -181,7 +181,7 @@ func TestAccSettingValueV2BoolResource(t *testing.T) {
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".0."+TargetingRuleConditions+".0."+TargetingRuleUserCondition+"."+TargetingRuleUserConditionComparisonValue+"."+StringValue, "jane@configcat.com"),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".1."+TargetingRulePercentageOptions+".#", "0"),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".1."+TargetingRuleConditions+".#", "1"),
-					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".1."+TargetingRuleValue+"."+BoolValue, "true"),
+					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".1."+TargetingRuleValue+"."+IntValue, "42"),
 					resource.TestCheckNoResourceAttr(testResourceName, TargetingRules+".1."+TargetingRuleConditions+".0."+TargetingRuleSegmentCondition),
 					resource.TestCheckNoResourceAttr(testResourceName, TargetingRules+".1."+TargetingRuleConditions+".0."+TargetingRulePrerequisiteFlagCondition),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".1."+TargetingRuleConditions+".0."+TargetingRuleUserCondition+"."+TargetingRuleUserConditionComparisonAttribute, "email"),
@@ -209,15 +209,16 @@ func TestAccSettingValueV2BoolResource(t *testing.T) {
 				ConfigVariables: config.Variables{
 					"config_id":      config.StringVariable(configId),
 					"environment_id": config.StringVariable(environmentId),
+					"value":          config.IntegerVariable(7),
 					"percentage":     config.IntegerVariable(27),
 				},
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet(testResourceName, ID),
-					resource.TestCheckResourceAttr(testResourceName, DefaultValue+"."+BoolValue, "true"),
+					resource.TestCheckResourceAttr(testResourceName, DefaultValue+"."+IntValue, "30"),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".#", "3"),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".0."+TargetingRulePercentageOptions+".#", "0"),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".0."+TargetingRuleConditions+".#", "1"),
-					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".0."+TargetingRuleValue+"."+BoolValue, "true"),
+					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".0."+TargetingRuleValue+"."+IntValue, "31"),
 					resource.TestCheckNoResourceAttr(testResourceName, TargetingRules+".0."+TargetingRuleConditions+".0."+TargetingRuleSegmentCondition),
 					resource.TestCheckNoResourceAttr(testResourceName, TargetingRules+".0."+TargetingRuleConditions+".0."+TargetingRulePrerequisiteFlagCondition),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".0."+TargetingRuleConditions+".0."+TargetingRuleUserCondition+"."+TargetingRuleUserConditionComparisonAttribute, "email"),
@@ -225,7 +226,7 @@ func TestAccSettingValueV2BoolResource(t *testing.T) {
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".0."+TargetingRuleConditions+".0."+TargetingRuleUserCondition+"."+TargetingRuleUserConditionComparisonValue+"."+StringValue, "@configcat.com"),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".1."+TargetingRulePercentageOptions+".#", "0"),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".1."+TargetingRuleConditions+".#", "1"),
-					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".1."+TargetingRuleValue+"."+BoolValue, "false"),
+					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".1."+TargetingRuleValue+"."+IntValue, "32"),
 					resource.TestCheckNoResourceAttr(testResourceName, TargetingRules+".1."+TargetingRuleConditions+".0."+TargetingRuleSegmentCondition),
 					resource.TestCheckNoResourceAttr(testResourceName, TargetingRules+".1."+TargetingRuleConditions+".0."+TargetingRulePrerequisiteFlagCondition),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".1."+TargetingRuleConditions+".0."+TargetingRuleUserCondition+"."+TargetingRuleUserConditionComparisonAttribute, "color"),
@@ -237,9 +238,9 @@ func TestAccSettingValueV2BoolResource(t *testing.T) {
 					resource.TestCheckNoResourceAttr(testResourceName, TargetingRules+".1."+TargetingRuleConditions+".0."+TargetingRuleUserCondition+"."+TargetingRuleUserConditionComparisonValue+"."+ListValues+".1."+ListValueHint),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".2."+TargetingRulePercentageOptions+".#", "2"),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".2."+TargetingRulePercentageOptions+".0."+TargetingRulePercentageOptionPercentage, "27"),
-					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".2."+TargetingRulePercentageOptions+".0."+TargetingRulePercentageOptionValue+"."+BoolValue, "true"),
+					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".2."+TargetingRulePercentageOptions+".0."+TargetingRulePercentageOptionValue+"."+IntValue, "33"),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".2."+TargetingRulePercentageOptions+".1."+TargetingRulePercentageOptionPercentage, "73"),
-					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".2."+TargetingRulePercentageOptions+".1."+TargetingRulePercentageOptionValue+"."+BoolValue, "false"),
+					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".2."+TargetingRulePercentageOptions+".1."+TargetingRulePercentageOptionValue+"."+IntValue, "34"),
 				),
 			},
 			{
@@ -247,6 +248,7 @@ func TestAccSettingValueV2BoolResource(t *testing.T) {
 				ConfigVariables: config.Variables{
 					"config_id":      config.StringVariable(configId),
 					"environment_id": config.StringVariable(environmentId),
+					"value":          config.IntegerVariable(7),
 					"percentage":     config.IntegerVariable(27),
 				},
 				ResourceName:            testResourceName,
@@ -263,11 +265,11 @@ func TestAccSettingValueV2BoolResource(t *testing.T) {
 				},
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet(testResourceName, ID),
-					resource.TestCheckResourceAttr(testResourceName, DefaultValue+"."+BoolValue, "true"),
+					resource.TestCheckResourceAttr(testResourceName, DefaultValue+"."+IntValue, "30"),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".#", "3"),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".0."+TargetingRulePercentageOptions+".#", "0"),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".0."+TargetingRuleConditions+".#", "1"),
-					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".0."+TargetingRuleValue+"."+BoolValue, "true"),
+					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".0."+TargetingRuleValue+"."+IntValue, "31"),
 					resource.TestCheckNoResourceAttr(testResourceName, TargetingRules+".0."+TargetingRuleConditions+".0."+TargetingRuleSegmentCondition),
 					resource.TestCheckNoResourceAttr(testResourceName, TargetingRules+".0."+TargetingRuleConditions+".0."+TargetingRulePrerequisiteFlagCondition),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".0."+TargetingRuleConditions+".0."+TargetingRuleUserCondition+"."+TargetingRuleUserConditionComparisonAttribute, "email"),
@@ -275,7 +277,7 @@ func TestAccSettingValueV2BoolResource(t *testing.T) {
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".0."+TargetingRuleConditions+".0."+TargetingRuleUserCondition+"."+TargetingRuleUserConditionComparisonValue+"."+StringValue, "@configcat.com"),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".1."+TargetingRulePercentageOptions+".#", "0"),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".1."+TargetingRuleConditions+".#", "1"),
-					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".1."+TargetingRuleValue+"."+BoolValue, "false"),
+					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".1."+TargetingRuleValue+"."+IntValue, "32"),
 					resource.TestCheckNoResourceAttr(testResourceName, TargetingRules+".1."+TargetingRuleConditions+".0."+TargetingRuleSegmentCondition),
 					resource.TestCheckNoResourceAttr(testResourceName, TargetingRules+".1."+TargetingRuleConditions+".0."+TargetingRulePrerequisiteFlagCondition),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".1."+TargetingRuleConditions+".0."+TargetingRuleUserCondition+"."+TargetingRuleUserConditionComparisonAttribute, "color"),
@@ -287,9 +289,9 @@ func TestAccSettingValueV2BoolResource(t *testing.T) {
 					resource.TestCheckNoResourceAttr(testResourceName, TargetingRules+".1."+TargetingRuleConditions+".0."+TargetingRuleUserCondition+"."+TargetingRuleUserConditionComparisonValue+"."+ListValues+".1."+ListValueHint),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".2."+TargetingRulePercentageOptions+".#", "2"),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".2."+TargetingRulePercentageOptions+".0."+TargetingRulePercentageOptionPercentage, "37"),
-					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".2."+TargetingRulePercentageOptions+".0."+TargetingRulePercentageOptionValue+"."+BoolValue, "true"),
+					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".2."+TargetingRulePercentageOptions+".0."+TargetingRulePercentageOptionValue+"."+IntValue, "33"),
 					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".2."+TargetingRulePercentageOptions+".1."+TargetingRulePercentageOptionPercentage, "63"),
-					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".2."+TargetingRulePercentageOptions+".1."+TargetingRulePercentageOptionValue+"."+BoolValue, "false"),
+					resource.TestCheckResourceAttr(testResourceName, TargetingRules+".2."+TargetingRulePercentageOptions+".1."+TargetingRulePercentageOptionValue+"."+IntValue, "34"),
 				),
 			},
 			{
@@ -297,6 +299,7 @@ func TestAccSettingValueV2BoolResource(t *testing.T) {
 				ConfigVariables: config.Variables{
 					"config_id":      config.StringVariable(configId),
 					"environment_id": config.StringVariable(environmentId),
+					"value":          config.IntegerVariable(8),
 					"percentage":     config.IntegerVariable(37),
 				},
 				ResourceName:            testResourceName,
