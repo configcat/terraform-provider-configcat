@@ -13,21 +13,17 @@ variable "beta_segment_id" {
 
 resource "configcat_setting" "bool" {
   config_id = var.config_id
-  key       = "BoolDependencySettingV2"
-  name      = "BoolDependencySettingV2"
+  key       = "BoolSettingKey"
+  name      = "Bool feature flag"
   order     = 1
 }
 
 resource "configcat_setting" "string" {
   config_id    = var.config_id
-  key          = "StringDependencySettingV2"
-  name         = "StringDependencySettingV2"
+  key          = "StringSettingKey"
+  name         = "String setting"
   order        = 2
   setting_type = "string"
-}
-
-variable "dependency_setting_id" {
-  type = string
 }
 
 resource "configcat_setting_value_v2" "bool_setting_value" {
