@@ -62,7 +62,7 @@ type segmentConditionModel struct {
 }
 
 type prerequisiteFlagConditionModel struct {
-	PrerequisiteSettingId types.String       `tfsdk:"comparison_attribute"`
+	PrerequisiteSettingId types.String       `tfsdk:"prerequisite_setting_id"`
 	Comparator            types.String       `tfsdk:"comparator"`
 	ComparisonValue       *settingValueModel `tfsdk:"comparison_value"`
 }
@@ -616,7 +616,7 @@ func (resourceModel *settingValueV2ResourceModel) UpdateFromApiModel(model sw.Se
 						}
 						conditions[conditionIndex] = conditionModel{
 							PrerequisiteFlagCondition: &prerequisiteFlagConditionModel{
-								PrerequisiteSettingId: types.StringValue(string(condition.PrerequisiteFlagCondition.PrerequisiteSettingId)),
+								PrerequisiteSettingId: types.StringValue(strconv.FormatInt(int64(condition.PrerequisiteFlagCondition.PrerequisiteSettingId), 10)),
 								Comparator:            types.StringValue(string(condition.PrerequisiteFlagCondition.Comparator)),
 								ComparisonValue:       prerequisiteFlagSettingValueModel,
 							},
