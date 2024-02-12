@@ -419,7 +419,7 @@ func (r *settingValueV2Resource) createOrUpdate(ctx context.Context, requestPlan
 
 	updateError := plan.UpdateFromApiModel(*model)
 	if updateError != nil {
-		diag.AddError("Unable to parse API response", fmt.Sprintf("Unable to parse API response for "+SettingValueResourceName+", got error: %s", err))
+		diag.AddError("Unable to parse API response", fmt.Sprintf("Unable to parse API response for "+SettingValueResourceName+", got error: %s", updateError))
 		return
 	}
 
@@ -493,6 +493,10 @@ func getTargetingRulesData(targetingRules []targetingRuleModel, settingType sw.S
 			}
 
 			targetingRuleModel.Conditions = conditions
+		}
+
+		if len(targetingRule.PercentageOptions) == 0 && targetingRule.Value == nil {
+			return nil, fmt.Errorf("the %s or the %s attributes must be provided", TargetingRuleValue, TargetingRulePercentageOptions)
 		}
 
 		if len(targetingRule.PercentageOptions) > 0 {
@@ -627,6 +631,10 @@ func (resourceModel *settingValueV2ResourceModel) UpdateFromApiModel(model sw.Se
 				}
 
 				targetingRuleModel.Conditions = conditions
+			}
+
+			if len(targetingRule.PercentageOptions) == 0 && targetingRule.Value == nil {
+				return fmt.Errorf("invalid model. At least PercentageOptions or Value must be provided")
 			}
 
 			if len(targetingRule.PercentageOptions) > 0 {

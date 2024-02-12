@@ -1,6 +1,7 @@
 package configcat
 
 import (
+	"regexp"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/config"
@@ -83,6 +84,16 @@ func TestAccSettingValueV2SegmentResource(t *testing.T) {
 				ImportState:             true,
 				ImportStateVerify:       true,
 				ImportStateVerifyIgnore: []string{InitOnly},
+			},
+			{
+				ConfigFile: config.TestNameFile("one_rule.tf"),
+				ConfigVariables: config.Variables{
+					"config_id":      config.StringVariable(configId),
+					"environment_id": config.StringVariable(environmentId),
+					"comparator":     config.StringVariable("invalid"),
+					"segment_id":     config.StringVariable(segmentOldApplicationVersionID),
+				},
+				ExpectError: regexp.MustCompile("invalid value 'invalid' for SegmentComparator"),
 			},
 			{
 				ConfigFile: config.TestNameFile("multiple_rules.tf"),
