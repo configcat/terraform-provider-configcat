@@ -149,7 +149,7 @@ resource "configcat_setting_value_v2" "string_setting_value" {
 
 - `environment_id` (String) The ID of the Environment.
 - `setting_id` (String) The ID of the Feature Flag or Setting.
-- `value` (Attributes) (see [below for nested schema](#nestedatt--value))
+- `value` (Attributes) Represents the value of a Feature Flag or Setting. (see [below for nested schema](#nestedatt--value))
 
 ### Optional
 
@@ -160,7 +160,7 @@ The `init_only` argument's default value is `true`. Meaning that the Feature Fla
 If you want to fully manage the Feature Flag/Setting's value from Terraform, set `init_only` argument to `false`. After setting the`init_only` argument to `false` each terraform run will update the Feature Flag/Setting's value to the state provided in Terraform.
 - `mandatory_notes` (String) If the Product's "Mandatory notes" preference is turned on for the Environment the Mandatory note must be passed.
 - `percentage_evaluation_attribute` (String) The user attribute used for percentage evaluation. If not set, it defaults to the Identifier user object attribute.
-- `targeting_rules` (Attributes List) (see [below for nested schema](#nestedatt--targeting_rules))
+- `targeting_rules` (Attributes List) The targeting rules of the Feature Flag or Setting (see [below for nested schema](#nestedatt--targeting_rules))
 
 ### Read-Only
 
@@ -172,10 +172,10 @@ If you want to fully manage the Feature Flag/Setting's value from Terraform, set
 
 Optional:
 
-- `bool_value` (Boolean)
-- `double_value` (Number)
-- `int_value` (Number)
-- `string_value` (String)
+- `bool_value` (Boolean) The boolean representation of the value.
+- `double_value` (Number) The decimal number representation of the value.
+- `int_value` (Number) The whole number representation of the value.
+- `string_value` (String) The string representation of the value.
 
 
 <a id="nestedatt--targeting_rules"></a>
@@ -183,37 +183,37 @@ Optional:
 
 Optional:
 
-- `conditions` (Attributes List) (see [below for nested schema](#nestedatt--targeting_rules--conditions))
-- `percentage_options` (Attributes List) (see [below for nested schema](#nestedatt--targeting_rules--percentage_options))
-- `value` (Attributes) (see [below for nested schema](#nestedatt--targeting_rules--value))
+- `conditions` (Attributes List) The conditions that are combined with the AND logical operator. (see [below for nested schema](#nestedatt--targeting_rules--conditions))
+- `percentage_options` (Attributes List) The percentage options from where the evaluation process will choose a value based on the flag's percentage evaluation attribute. (see [below for nested schema](#nestedatt--targeting_rules--percentage_options))
+- `value` (Attributes) Represents the value of a Feature Flag or Setting. (see [below for nested schema](#nestedatt--targeting_rules--value))
 
 <a id="nestedatt--targeting_rules--conditions"></a>
 ### Nested Schema for `targeting_rules.conditions`
 
 Optional:
 
-- `prerequisite_flag_condition` (Attributes) (see [below for nested schema](#nestedatt--targeting_rules--conditions--prerequisite_flag_condition))
-- `segment_condition` (Attributes) (see [below for nested schema](#nestedatt--targeting_rules--conditions--segment_condition))
-- `user_condition` (Attributes) (see [below for nested schema](#nestedatt--targeting_rules--conditions--user_condition))
+- `prerequisite_flag_condition` (Attributes) Describes a condition that is based on a prerequisite flag. (see [below for nested schema](#nestedatt--targeting_rules--conditions--prerequisite_flag_condition))
+- `segment_condition` (Attributes) Describes a condition that is based on a segment. (see [below for nested schema](#nestedatt--targeting_rules--conditions--segment_condition))
+- `user_condition` (Attributes) Describes a condition that is based on user attributes. (see [below for nested schema](#nestedatt--targeting_rules--conditions--user_condition))
 
 <a id="nestedatt--targeting_rules--conditions--prerequisite_flag_condition"></a>
 ### Nested Schema for `targeting_rules.conditions.prerequisite_flag_condition`
 
 Required:
 
-- `comparator` (String)
-- `comparison_value` (Attributes) (see [below for nested schema](#nestedatt--targeting_rules--conditions--prerequisite_flag_condition--comparison_value))
-- `prerequisite_setting_id` (String)
+- `comparator` (String) Prerequisite flag comparison operator used during the evaluation process. Possible values: `equals`,`doesNotEqual`
+- `comparison_value` (Attributes) Represents the value of a Feature Flag or Setting. (see [below for nested schema](#nestedatt--targeting_rules--conditions--prerequisite_flag_condition--comparison_value))
+- `prerequisite_setting_id` (String) The prerequisite flag's identifier.
 
 <a id="nestedatt--targeting_rules--conditions--prerequisite_flag_condition--comparison_value"></a>
 ### Nested Schema for `targeting_rules.conditions.prerequisite_flag_condition.prerequisite_setting_id`
 
 Optional:
 
-- `bool_value` (Boolean)
-- `double_value` (Number)
-- `int_value` (Number)
-- `string_value` (String)
+- `bool_value` (Boolean) The boolean representation of the value.
+- `double_value` (Number) The decimal number representation of the value.
+- `int_value` (Number) The whole number representation of the value.
+- `string_value` (String) The string representation of the value.
 
 
 
@@ -222,8 +222,8 @@ Optional:
 
 Required:
 
-- `comparator` (String)
-- `segment_id` (String)
+- `comparator` (String) The segment comparison operator used during the evaluation process. Possible values: `isIn`,`isNotIn`
+- `segment_id` (String) The segment's identifier.
 
 
 <a id="nestedatt--targeting_rules--conditions--user_condition"></a>
@@ -231,29 +231,29 @@ Required:
 
 Required:
 
-- `comparator` (String)
-- `comparison_attribute` (String)
-- `comparison_value` (Attributes) (see [below for nested schema](#nestedatt--targeting_rules--conditions--user_condition--comparison_value))
+- `comparator` (String) The comparison operator which defines the relation between the comparison attribute and the comparison value. For possible values check the [documentation](https://api.configcat.com/docs/index.html#tag/Feature-Flag-and-Setting-values-V2/operation/replace-setting-value-v2).
+- `comparison_attribute` (String) The User Object attribute that the condition is based on.
+- `comparison_value` (Attributes) The value that the user object's attribute is compared to. (see [below for nested schema](#nestedatt--targeting_rules--conditions--user_condition--comparison_value))
 
 <a id="nestedatt--targeting_rules--conditions--user_condition--comparison_value"></a>
 ### Nested Schema for `targeting_rules.conditions.user_condition.comparison_value`
 
 Optional:
 
-- `double_value` (Number)
-- `list_values` (Attributes List) (see [below for nested schema](#nestedatt--targeting_rules--conditions--user_condition--comparison_value--list_values))
-- `string_value` (String)
+- `double_value` (Number) The number representation of the comparison value.
+- `list_values` (Attributes List) The list representation of the comparison value. (see [below for nested schema](#nestedatt--targeting_rules--conditions--user_condition--comparison_value--list_values))
+- `string_value` (String) The string representation of the comparison value.
 
 <a id="nestedatt--targeting_rules--conditions--user_condition--comparison_value--list_values"></a>
 ### Nested Schema for `targeting_rules.conditions.user_condition.comparison_value.list_values`
 
 Required:
 
-- `value` (String)
+- `value` (String) The actual comparison value.
 
 Optional:
 
-- `hint` (String)
+- `hint` (String) An optional hint for the comparison value.
 
 
 
@@ -264,18 +264,18 @@ Optional:
 
 Required:
 
-- `percentage` (Number)
-- `value` (Attributes) (see [below for nested schema](#nestedatt--targeting_rules--percentage_options--value))
+- `percentage` (Number) A number between 0 and 100 that represents a randomly allocated fraction of the users.
+- `value` (Attributes) Represents the value of a Feature Flag or Setting. (see [below for nested schema](#nestedatt--targeting_rules--percentage_options--value))
 
 <a id="nestedatt--targeting_rules--percentage_options--value"></a>
 ### Nested Schema for `targeting_rules.percentage_options.value`
 
 Optional:
 
-- `bool_value` (Boolean)
-- `double_value` (Number)
-- `int_value` (Number)
-- `string_value` (String)
+- `bool_value` (Boolean) The boolean representation of the value.
+- `double_value` (Number) The decimal number representation of the value.
+- `int_value` (Number) The whole number representation of the value.
+- `string_value` (String) The string representation of the value.
 
 
 
@@ -284,10 +284,10 @@ Optional:
 
 Optional:
 
-- `bool_value` (Boolean)
-- `double_value` (Number)
-- `int_value` (Number)
-- `string_value` (String)
+- `bool_value` (Boolean) The boolean representation of the value.
+- `double_value` (Number) The decimal number representation of the value.
+- `int_value` (Number) The whole number representation of the value.
+- `string_value` (String) The string representation of the value.
 
 ## Import
 

@@ -113,12 +113,14 @@ func (r *settingValueV2Resource) Metadata(ctx context.Context, req resource.Meta
 
 func createSettingValueSchema(required bool, validators []validator.Object) *schema.SingleNestedAttribute {
 	return &schema.SingleNestedAttribute{
-		Required:   required,
-		Optional:   !required,
-		Validators: validators,
+		Required:    required,
+		Optional:    !required,
+		Validators:  validators,
+		Description: "Represents the value of a " + SettingResourceName + ".",
 		Attributes: map[string]schema.Attribute{
 			BoolValue: schema.BoolAttribute{
-				Optional: true,
+				Optional:    true,
+				Description: "The boolean representation of the value.",
 				Validators: []validator.Bool{
 					boolvalidator.ExactlyOneOf(
 						path.MatchRelative().AtParent().AtName(StringValue),
@@ -128,7 +130,8 @@ func createSettingValueSchema(required bool, validators []validator.Object) *sch
 				},
 			},
 			StringValue: schema.StringAttribute{
-				Optional: true,
+				Optional:    true,
+				Description: "The string representation of the value.",
 				Validators: []validator.String{
 					stringvalidator.ExactlyOneOf(
 						path.MatchRelative().AtParent().AtName(BoolValue),
@@ -138,7 +141,8 @@ func createSettingValueSchema(required bool, validators []validator.Object) *sch
 				},
 			},
 			IntValue: schema.Int64Attribute{
-				Optional: true,
+				Optional:    true,
+				Description: "The whole number representation of the value.",
 				Validators: []validator.Int64{
 					int64validator.ExactlyOneOf(
 						path.MatchRelative().AtParent().AtName(BoolValue),
@@ -148,7 +152,8 @@ func createSettingValueSchema(required bool, validators []validator.Object) *sch
 				},
 			},
 			DoubleValue: schema.Float64Attribute{
-				Optional: true,
+				Optional:    true,
+				Description: "The decimal number representation of the value.",
 				Validators: []validator.Float64{
 					float64validator.ExactlyOneOf(
 						path.MatchRelative().AtParent().AtName(BoolValue),
@@ -164,10 +169,12 @@ func createSettingValueSchema(required bool, validators []validator.Object) *sch
 func (r *settingValueV2Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 
 	comparisonValueSchema := schema.SingleNestedAttribute{
-		Required: true,
+		Required:    true,
+		Description: "The value that the user object's attribute is compared to.",
 		Attributes: map[string]schema.Attribute{
 			StringValue: schema.StringAttribute{
-				Optional: true,
+				Optional:    true,
+				Description: "The string representation of the comparison value.",
 				Validators: []validator.String{
 					stringvalidator.ExactlyOneOf(
 						path.MatchRelative().AtParent().AtName(DoubleValue),
@@ -176,7 +183,8 @@ func (r *settingValueV2Resource) Schema(ctx context.Context, req resource.Schema
 				},
 			},
 			DoubleValue: schema.Float64Attribute{
-				Optional: true,
+				Optional:    true,
+				Description: "The number representation of the comparison value.",
 				Validators: []validator.Float64{
 					float64validator.ExactlyOneOf(
 						path.MatchRelative().AtParent().AtName(StringValue),
@@ -185,7 +193,8 @@ func (r *settingValueV2Resource) Schema(ctx context.Context, req resource.Schema
 				},
 			},
 			ListValues: schema.ListNestedAttribute{
-				Optional: true,
+				Optional:    true,
+				Description: "The list representation of the comparison value.",
 				Validators: []validator.List{
 					listvalidator.ExactlyOneOf(
 						path.MatchRelative().AtParent().AtName(StringValue),
@@ -195,10 +204,12 @@ func (r *settingValueV2Resource) Schema(ctx context.Context, req resource.Schema
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						ListValueValue: schema.StringAttribute{
-							Required: true,
+							Required:    true,
+							Description: "The actual comparison value.",
 						},
 						ListValueHint: schema.StringAttribute{
-							Optional: true,
+							Optional:    true,
+							Description: "An optional hint for the comparison value.",
 						},
 					},
 				},
@@ -207,7 +218,8 @@ func (r *settingValueV2Resource) Schema(ctx context.Context, req resource.Schema
 	}
 
 	userConditionSchema := schema.SingleNestedAttribute{
-		Optional: true,
+		Optional:    true,
+		Description: "Describes a condition that is based on user attributes.",
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(
 				path.MatchRelative().AtParent().AtName(TargetingRuleSegmentCondition),
@@ -216,17 +228,20 @@ func (r *settingValueV2Resource) Schema(ctx context.Context, req resource.Schema
 		},
 		Attributes: map[string]schema.Attribute{
 			TargetingRuleUserConditionComparisonAttribute: schema.StringAttribute{
-				Required: true,
+				Required:    true,
+				Description: "The User Object attribute that the condition is based on.",
 			},
 			TargetingRuleUserConditionComparator: schema.StringAttribute{
-				Required: true,
+				Required:    true,
+				Description: "The comparison operator which defines the relation between the comparison attribute and the comparison value. For possible values check the [documentation](https://api.configcat.com/docs/index.html#tag/Feature-Flag-and-Setting-values-V2/operation/replace-setting-value-v2).",
 			},
 			TargetingRuleUserConditionComparisonValue: &comparisonValueSchema,
 		},
 	}
 
 	segmentConditionSchema := schema.SingleNestedAttribute{
-		Optional: true,
+		Optional:    true,
+		Description: "Describes a condition that is based on a segment.",
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(
 				path.MatchRelative().AtParent().AtName(TargetingRuleUserCondition),
@@ -235,17 +250,20 @@ func (r *settingValueV2Resource) Schema(ctx context.Context, req resource.Schema
 		},
 		Attributes: map[string]schema.Attribute{
 			TargetingRuleSegmentConditionSegmentId: schema.StringAttribute{
-				Required:   true,
-				Validators: []validator.String{IsGuid()},
+				Required:    true,
+				Validators:  []validator.String{IsGuid()},
+				Description: "The segment's identifier.",
 			},
 			TargetingRuleSegmentConditionComparator: schema.StringAttribute{
-				Required: true,
+				Required:    true,
+				Description: "The segment comparison operator used during the evaluation process. Possible values: `isIn`,`isNotIn`",
 			},
 		},
 	}
 
 	prerequisiteFlagConditionSchema := schema.SingleNestedAttribute{
-		Optional: true,
+		Optional:    true,
+		Description: "Describes a condition that is based on a prerequisite flag.",
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(
 				path.MatchRelative().AtParent().AtName(TargetingRuleUserCondition),
@@ -254,10 +272,12 @@ func (r *settingValueV2Resource) Schema(ctx context.Context, req resource.Schema
 		},
 		Attributes: map[string]schema.Attribute{
 			TargetingRulePrerequisiteFlagConditionSettingId: schema.StringAttribute{
-				Required: true,
+				Description: "The prerequisite flag's identifier.",
+				Required:    true,
 			},
 			TargetingRulePrerequisiteFlagConditionComparator: schema.StringAttribute{
-				Required: true,
+				Required:    true,
+				Description: "Prerequisite flag comparison operator used during the evaluation process. Possible values: `equals`,`doesNotEqual`",
 			},
 			TargetingRulePrerequisiteFlagConditionComparisonValue: createSettingValueSchema(true, nil),
 		},
@@ -314,11 +334,13 @@ func (r *settingValueV2Resource) Schema(ctx context.Context, req resource.Schema
 			DefaultValue: createSettingValueSchema(true, nil),
 
 			TargetingRules: schema.ListNestedAttribute{
-				Optional: true,
+				Optional:    true,
+				Description: "The targeting rules of the " + SettingResourceName,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						TargetingRuleConditions: schema.ListNestedAttribute{
-							Optional: true,
+							Description: "The conditions that are combined with the AND logical operator.",
+							Optional:    true,
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
 									TargetingRuleUserCondition:             userConditionSchema,
@@ -334,7 +356,8 @@ func (r *settingValueV2Resource) Schema(ctx context.Context, req resource.Schema
 							),
 						}),
 						TargetingRulePercentageOptions: schema.ListNestedAttribute{
-							Optional: true,
+							Optional:    true,
+							Description: "The percentage options from where the evaluation process will choose a value based on the flag's percentage evaluation attribute.",
 							Validators: []validator.List{
 								listvalidator.ExactlyOneOf(
 									path.MatchRelative().AtParent().AtName(TargetingRuleValue),
@@ -343,7 +366,8 @@ func (r *settingValueV2Resource) Schema(ctx context.Context, req resource.Schema
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
 									TargetingRulePercentageOptionPercentage: schema.Int64Attribute{
-										Required: true,
+										Description: "A number between 0 and 100 that represents a randomly allocated fraction of the users.",
+										Required:    true,
 									},
 									TargetingRulePercentageOptionValue: createSettingValueSchema(true, nil),
 								},
