@@ -43,7 +43,7 @@ output "config_id" {
 ### Optional
 
 - `description` (String) The description of the Config.
-- `evaluation_version` (String) Determines the evaluation version of a Config. Possible values: v1, v2. Default value: v1. Please note that v2 is currently in a Beta stage, and it is only available for organizations who participated in the Beta program. Using v2 enables the new features of [Config V2](https://configcat.com/docs/advanced/config-v2).
+- `evaluation_version` (String) The evaluation version of the Config. Possible values: `v1`, `v2`. Default value: `v1`. Please note that `v2` is currently in a Beta stage, and it is only available for organizations who participated in the Beta program. Using `v2` enables the new features of [Config V2](https://configcat.com/docs/advanced/config-v2).
 
 ### Read-Only
 
@@ -54,7 +54,7 @@ output "config_id" {
 Import is supported using the following syntax:
 
 ```shell
-# Configs (V1) can be imported using the ConfigId. Get the ConfigId using the [List Configs API](https://api.configcat.com/docs/#tag/Configs/operation/get-configs) for example.
+# Configs can be imported using the ConfigId. Get the ConfigId using the [List Configs API](https://api.configcat.com/docs/#tag/Configs/operation/get-configs) for example.
 
 terraform import configcat_config.example 08d86d63-2726-47cd-8bfc-59608ecb91e2
 ```

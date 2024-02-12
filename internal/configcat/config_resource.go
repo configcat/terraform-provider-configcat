@@ -44,10 +44,8 @@ func (r *configResource) Metadata(ctx context.Context, req resource.MetadataRequ
 }
 
 func (r *configResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
-	description := "Creates and manages a **" + ConfigResourceName + "**. [What is a " + ConfigResourceName + " in ConfigCat?](https://configcat.com/docs/main-concepts)"
-
 	resp.Schema = schema.Schema{
-		MarkdownDescription: description,
+		MarkdownDescription: "Creates and manages a **" + ConfigResourceName + "**. [What is a " + ConfigResourceName + " in ConfigCat?](https://configcat.com/docs/main-concepts)",
 
 		Attributes: map[string]schema.Attribute{
 			ID: schema.StringAttribute{
@@ -79,7 +77,7 @@ func (r *configResource) Schema(ctx context.Context, req resource.SchemaRequest,
 			},
 			EvaluationVersion: schema.StringAttribute{
 				// TODO remove comment after out of beta.
-				Description: "Determines the evaluation version of a Config. Possible values: v1, v2. Default value: v1. Please note that v2 is currently in a Beta stage, and it is only available for organizations who participated in the Beta program. Using v2 enables the new features of [Config V2](https://configcat.com/docs/advanced/config-v2).",
+				Description: "The evaluation version of the " + ConfigResourceName + ". Possible values: `v1`, `v2`. Default value: `v1`. Please note that `v2` is currently in a Beta stage, and it is only available for organizations who participated in the Beta program. Using `v2` enables the new features of [Config V2](https://configcat.com/docs/advanced/config-v2).",
 				Computed:    true,
 				Optional:    true,
 				Default:     stringdefault.StaticString(string(sw.EVALUATIONVERSION_V1)),
