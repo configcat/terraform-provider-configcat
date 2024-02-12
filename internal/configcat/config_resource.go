@@ -9,6 +9,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -20,42 +21,30 @@ import (
 var _ resource.Resource = &configResource{}
 var _ resource.ResourceWithImportState = &configResource{}
 
-func NewConfigResource(evaluationVersion sw.EvaluationVersion) func() resource.Resource {
-	factory := func() resource.Resource {
-		return &configResource{evaluationVersion: evaluationVersion}
-	}
-	return factory
+func NewConfigResource() resource.Resource {
+	return &configResource{}
 }
 
 type configResource struct {
-	client            *client.Client
-	evaluationVersion sw.EvaluationVersion
+	client *client.Client
 }
 
 type configResourceModel struct {
 	ProductId types.String `tfsdk:"product_id"`
 
-	ID          types.String `tfsdk:"id"`
-	Name        types.String `tfsdk:"name"`
-	Description types.String `tfsdk:"description"`
-	Order       types.Int64  `tfsdk:"order"`
+	ID                types.String `tfsdk:"id"`
+	Name              types.String `tfsdk:"name"`
+	Description       types.String `tfsdk:"description"`
+	Order             types.Int64  `tfsdk:"order"`
+	EvaluationVersion types.String `tfsdk:"evaluation_version"`
 }
 
 func (r *configResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	if r.evaluationVersion == sw.EVALUATIONVERSION_V1 {
-		resp.TypeName = req.ProviderTypeName + "_config"
-	} else {
-		resp.TypeName = req.ProviderTypeName + "_config_v2"
-	}
+	resp.TypeName = req.ProviderTypeName + "_config"
 }
 
 func (r *configResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	description := "Creates and manages a **" + ConfigResourceName + "**. [What is a " + ConfigResourceName + " in ConfigCat?](https://configcat.com/docs/main-concepts)"
-	if r.evaluationVersion == sw.EVALUATIONVERSION_V1 {
-		description += "\n\nThis resource applies to the V1 version of the Config. To manage V2 version Configs, please use the configcat_config_v2 resource. [Read more about Config V2](https://configcat.com/docs/V2/advanced/config-v2/)"
-	} else {
-		description += "\n\nThis resource applies to the V2 version of the Config. To manage V1 version Configs, please use the configcat_config resource. [Read more about Config V2](https://configcat.com/docs/V2/advanced/config-v2/)"
-	}
 
 	resp.Schema = schema.Schema{
 		MarkdownDescription: description,
@@ -87,6 +76,12 @@ func (r *configResource) Schema(ctx context.Context, req resource.SchemaRequest,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
+			},
+			EvaluationVersion: schema.StringAttribute{
+				Description: "Determines the evaluation version of a Config. Possible values: v1, v2. Default value: v2. Using v2 enables the new features of [Config V2](https://configcat.com/docs/advanced/config-v2).",
+				Computed:    true,
+				Optional:    true,
+				Default:     stringdefault.StaticString(string(sw.EVALUATIONVERSION_V1)),
 			},
 			Order: schema.Int64Attribute{
 				Description: "The order of the " + ConfigResourceName + " within a " + ProductResourceName + " (zero-based). If multiple " + ConfigResourceName + "s has the same order, they are displayed in alphabetical order.",
@@ -124,12 +119,18 @@ func (r *configResource) Create(ctx context.Context, req resource.CreateRequest,
 		return
 	}
 
+	evaluationVersion, evaluationVersionParseErr := sw.NewEvaluationVersionFromValue(plan.EvaluationVersion.ValueString())
+	if evaluationVersionParseErr != nil {
+		resp.Diagnostics.AddError("Unable to Create Resource", fmt.Sprintf("Could not parse %s: %s. Error: %s", EvaluationVersion, plan.EvaluationVersion.ValueString(), evaluationVersionParseErr))
+		return
+	}
+
 	order := int32(plan.Order.ValueInt64())
 	body := sw.CreateConfigRequest{
 		Name:              plan.Name.ValueString(),
 		Description:       *sw.NewNullableString(plan.Description.ValueStringPointer()),
 		Order:             *sw.NewNullableInt32(&order),
-		EvaluationVersion: &r.evaluationVersion,
+		EvaluationVersion: evaluationVersion,
 	}
 
 	model, err := r.client.CreateConfig(plan.ProductId.ValueString(), body)
@@ -175,6 +176,11 @@ func (r *configResource) Update(ctx context.Context, req resource.UpdateRequest,
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if !plan.EvaluationVersion.Equal(state.EvaluationVersion) {
+		resp.Diagnostics.AddError("Unable to Update Resource", fmt.Sprintf("%s cannot be changed. Please create a new configcat_config resource with the new %s.", EvaluationVersion, EvaluationVersion))
 		return
 	}
 
@@ -232,4 +238,5 @@ func (resourceModel *configResourceModel) UpdateFromApiModel(model sw.ConfigMode
 	resourceModel.Name = types.StringPointerValue(model.Name.Get())
 	resourceModel.Description = types.StringPointerValue(model.Description.Get())
 	resourceModel.Order = types.Int64Value(modelOrder)
+	resourceModel.EvaluationVersion = types.StringValue(string(*model.EvaluationVersion))
 }

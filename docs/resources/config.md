@@ -4,14 +4,11 @@ page_title: "configcat_config Resource - terraform-provider-configcat"
 subcategory: ""
 description: |-
   Creates and manages a Config. What is a Config in ConfigCat? https://configcat.com/docs/main-concepts
-  This resource applies to the V1 version of the Config. To manage V2 version Configs, please use the configcatconfigv2 resource. Read more about Config V2 https://configcat.com/docs/V2/advanced/config-v2/
 ---
 
 # configcat_config (Resource)
 
 Creates and manages a **Config**. [What is a Config in ConfigCat?](https://configcat.com/docs/main-concepts)
-
-This resource applies to the V1 version of the Config. To manage V2 version Configs, please use the configcat_config_v2 resource. [Read more about Config V2](https://configcat.com/docs/V2/advanced/config-v2/)
 
 ## Example Usage
 
@@ -45,6 +42,7 @@ output "config_id" {
 ### Optional
 
 - `description` (String) The description of the Config.
+- `evaluation_version` (String) Determines the evaluation version of a Config. Possible values: v1, v2. Default value: v2. Using v2 enables the new features of [Config V2](https://configcat.com/docs/advanced/config-v2).
 
 ### Read-Only
 

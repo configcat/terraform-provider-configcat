@@ -1,6 +1,7 @@
 package configcat
 
 import (
+	"regexp"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/config"
@@ -9,7 +10,7 @@ import (
 
 func TestAccConfigV2Resource(t *testing.T) {
 	const productId = "08d86d63-2721-4da6-8c06-584521d516bc"
-	const testResourceName = "configcat_config_v2.test"
+	const testResourceName = "configcat_config.test"
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -18,9 +19,10 @@ func TestAccConfigV2Resource(t *testing.T) {
 			{
 				ConfigFile: config.TestNameFile("main.tf"),
 				ConfigVariables: config.Variables{
-					"product_id": config.StringVariable(productId),
-					"name":       config.StringVariable("Resource name"),
-					"order":      config.IntegerVariable(1),
+					"product_id":         config.StringVariable(productId),
+					"name":               config.StringVariable("Resource name"),
+					"order":              config.IntegerVariable(1),
+					"evaluation_version": config.StringVariable("v2"),
 				},
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet(testResourceName, ID),
@@ -32,10 +34,11 @@ func TestAccConfigV2Resource(t *testing.T) {
 			{
 				ConfigFile: config.TestNameFile("main.tf"),
 				ConfigVariables: config.Variables{
-					"product_id":  config.StringVariable(productId),
-					"name":        config.StringVariable("Resource name updated"),
-					"description": config.StringVariable("Resource description"),
-					"order":       config.IntegerVariable(10),
+					"product_id":         config.StringVariable(productId),
+					"name":               config.StringVariable("Resource name updated"),
+					"description":        config.StringVariable("Resource description"),
+					"order":              config.IntegerVariable(10),
+					"evaluation_version": config.StringVariable("v2"),
 				},
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet(testResourceName, ID),
@@ -47,14 +50,26 @@ func TestAccConfigV2Resource(t *testing.T) {
 			{
 				ConfigFile: config.TestNameFile("main.tf"),
 				ConfigVariables: config.Variables{
-					"product_id":  config.StringVariable(productId),
-					"name":        config.StringVariable("Resource name updated"),
-					"description": config.StringVariable("Resource description"),
-					"order":       config.IntegerVariable(10),
+					"product_id":         config.StringVariable(productId),
+					"name":               config.StringVariable("Resource name updated"),
+					"description":        config.StringVariable("Resource description"),
+					"order":              config.IntegerVariable(10),
+					"evaluation_version": config.StringVariable("v2"),
 				},
 				ResourceName:      testResourceName,
 				ImportState:       true,
 				ImportStateVerify: true,
+			},
+			{
+				ConfigFile: config.TestNameFile("main.tf"),
+				ConfigVariables: config.Variables{
+					"product_id":         config.StringVariable(productId),
+					"name":               config.StringVariable("Resource name updated"),
+					"description":        config.StringVariable("Resource description"),
+					"order":              config.IntegerVariable(10),
+					"evaluation_version": config.StringVariable("v1"),
+				},
+				ExpectError: regexp.MustCompile("evaluation_version cannot be changed."),
 			},
 		},
 	})

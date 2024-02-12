@@ -14,9 +14,15 @@ variable "order" {
   default = 0
 }
 
-resource "configcat_config_v2" "test" {
-  product_id  = var.product_id
-  name        = var.name
-  description = var.description
-  order       = var.order
+variable "evaluation_version" {
+  type = string
+}
+
+
+resource "configcat_config" "test" {
+  product_id         = var.product_id
+  name               = var.name
+  description        = var.description
+  order              = var.order
+  evaluation_version = var.evaluation_version
 }

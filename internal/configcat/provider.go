@@ -11,7 +11,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
-	sw "github.com/configcat/configcat-publicapi-go-client"
 	"github.com/configcat/terraform-provider-configcat/internal/configcat/client"
 )
 
@@ -175,8 +174,7 @@ func (p *configCatProvider) Configure(ctx context.Context, req provider.Configur
 func (p *configCatProvider) Resources(ctx context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		NewProductResource,
-		NewConfigResource(sw.EVALUATIONVERSION_V1),
-		NewConfigResource(sw.EVALUATIONVERSION_V2),
+		NewConfigResource,
 		NewEnvironmentResource,
 		NewSettingResource,
 		NewSettingValueResource,
