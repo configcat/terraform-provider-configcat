@@ -105,6 +105,33 @@ func TestAccSettingValueV2PrerequisiteResource(t *testing.T) {
 			},
 
 			{
+				ConfigFile: config.TestNameFile("missing_value_error.tf"),
+				ConfigVariables: config.Variables{
+					"config_id":      config.StringVariable(configId),
+					"environment_id": config.StringVariable(environmentId),
+				},
+				ExpectError: regexp.MustCompile("exactly one of the bool_value, string_value, int_value or double_value"),
+			},
+
+			{
+				ConfigFile: config.TestNameFile("wrong_setting_id_error.tf"),
+				ConfigVariables: config.Variables{
+					"config_id":      config.StringVariable(configId),
+					"environment_id": config.StringVariable(environmentId),
+				},
+				ExpectError: regexp.MustCompile("strconv.ParseInt: parsing \"invalid\": invalid syntax"),
+			},
+
+			{
+				ConfigFile: config.TestNameFile("circular_error.tf"),
+				ConfigVariables: config.Variables{
+					"config_id":      config.StringVariable(configId),
+					"environment_id": config.StringVariable(environmentId),
+				},
+				ExpectError: regexp.MustCompile("Circular dependency detected. MainSettingV2 ➔ BoolDependencySettingV2"),
+			},
+
+			{
 				ConfigFile: config.TestNameFile("cleanup.tf"),
 				ConfigVariables: config.Variables{
 					"config_id":      config.StringVariable(configId),
