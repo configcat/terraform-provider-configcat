@@ -3,10 +3,11 @@ variable "product_id" {
 }
 
 resource "configcat_config" "my_config" {
-  product_id  = var.product_id
-  name        = "My config"
-  description = "My config description"
-  order       = 0
+  product_id         = var.product_id
+  name               = "My config"
+  description        = "My config description"
+  order              = 0
+  evaluation_version = "v1"
 }
 
 

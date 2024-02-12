@@ -3,12 +3,12 @@
 page_title: "configcat_setting_value Resource - terraform-provider-configcat"
 subcategory: ""
 description: |-
-  Initializes and updates Feature Flag or Setting values. Read more about the anatomy of a Feature Flag or Setting. https://configcat.com/docs/main-concepts
+  Initializes and updates Feature Flag or Setting values for V1 configs. Read more about the anatomy of a Feature Flag or Setting. https://configcat.com/docs/main-concepts
 ---
 
 # configcat_setting_value (Resource)
 
-Initializes and updates **Feature Flag or Setting** values. [Read more about the anatomy of a Feature Flag or Setting.](https://configcat.com/docs/main-concepts)
+Initializes and updates **Feature Flag or Setting** values for V1 configs. [Read more about the anatomy of a Feature Flag or Setting.](https://configcat.com/docs/main-concepts)
 
 ## Example Usage
 

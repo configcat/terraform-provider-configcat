@@ -78,7 +78,8 @@ func (r *configResource) Schema(ctx context.Context, req resource.SchemaRequest,
 				},
 			},
 			EvaluationVersion: schema.StringAttribute{
-				Description: "Determines the evaluation version of a Config. Possible values: v1, v2. Default value: v2. Using v2 enables the new features of [Config V2](https://configcat.com/docs/advanced/config-v2).",
+				// TODO remove comment after out of beta.
+				Description: "Determines the evaluation version of a Config. Possible values: v1, v2. Default value: v1. Please note that v2 is currently in a Beta stage, and it is only available for organizations who participated in the Beta program. Using v2 enables the new features of [Config V2](https://configcat.com/docs/advanced/config-v2).",
 				Computed:    true,
 				Optional:    true,
 				Default:     stringdefault.StaticString(string(sw.EVALUATIONVERSION_V1)),
