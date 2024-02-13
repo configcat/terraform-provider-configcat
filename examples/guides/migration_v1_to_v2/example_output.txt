@@ -7,16 +7,6 @@ resource "configcat_config" "my_config_CONFIG_ID" {
  order = 0
 }
 
-
-2. Then import the resources into the terraform state with these statements:
-
-terraform import configcat_config.my_config_CONFIG_ID CONFIG_ID
-
-
-Importing settings
-
-1. Insert these terraform resources to your terraform configuration files: 
-
 resource "configcat_setting" "my_setting_SETTING_ID_1" {
  config_id = "CONFIG_ID"
  key = "isAwesomeFeatureEnabled"
@@ -36,5 +26,6 @@ resource "configcat_setting" "my_setting_SETTING_ID_2" {
 
 2. Then import the resources into the terraform state with these statements:
 
+terraform import configcat_config.my_config_CONFIG_ID CONFIG_ID
 terraform import configcat_setting.my_setting_SETTING_ID_1 SETTING_ID_1
 terraform import configcat_setting.my_setting_SETTING_ID_2 SETTING_ID_2

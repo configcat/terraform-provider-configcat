@@ -11,7 +11,7 @@ config=$(curl -s -L -X GET "https://api.configcat.com/v1/configs/${config_id}" -
 
 echo "Importing config\n"
 
-echo "1. Insert this terraform resource to your terraform configuration file: \n" 
+echo "1. Insert these terraform resources to your terraform configuration file (.tf): \n" 
 config_resource="resource \"configcat_config\" \"my_config_$config_id\" {\n"
 config_resource="$config_resource    product_id = $(echo $config | jq -c '.product.productId')\n"
 config_resource="$config_resource    name = $(echo $config | jq -c '.name')\n"
@@ -26,15 +26,8 @@ fi
 config_resource="$config_resource}\n"
 echo $config_resource
 
-echo "\n2. Then import the resources into the terraform state with these statements: \n"
-echo "terraform import configcat_config.my_config_$config_id $config_id"
-
-
-echo "\n\nImporting settings\n"
-
 settings=$(curl -s -L -X GET "https://api.configcat.com/v1/configs/${config_id}/settings" -H "Accept: application/json" -H "Authorization: ${auth_header}")
 
-echo "3. Insert these terraform resources to your terraform configuration files: \n" 
 echo $settings | jq -c '.[]' | while read setting; do
     setting_resource="resource \"configcat_setting\" \"my_setting_$(echo $setting | jq -c '.settingId')\" {\n"
     setting_resource="$setting_resource    config_id = \"$config_id\"\n"
@@ -52,7 +45,9 @@ echo $settings | jq -c '.[]' | while read setting; do
     echo $setting_resource
 done
 
-echo "\n4. Then import the resources into the terraform state with these statements: \n"
+
+echo "\n2. Then import these resources into the terraform state with these statements: \n"
+echo "terraform import configcat_config.my_config_$config_id $config_id"
 echo $settings | jq -c '.[]' | while read setting; do
     setting_id=$(echo $setting | jq -c '.settingId')
     echo "terraform import configcat_setting.my_setting_$setting_id $setting_id"
