@@ -41,31 +41,29 @@ func TestAccSettingValueV2TargetingResource(t *testing.T) {
 				ImportStateVerify:       true,
 				ImportStateVerifyIgnore: []string{InitOnly},
 			},
-			/*{
-				TODO: This test case is valid, but the API should be fixed to fail for this. Uncomment when ready.
+			{
 				ConfigFile: config.TestNameFile("comparison_value_type_mismatch1.tf"),
 				ConfigVariables: config.Variables{
 					"config_id":      config.StringVariable(configId),
 					"environment_id": config.StringVariable(environmentId),
 				},
-				ExpectError: regexp.MustCompile("must be a list"),
-			},*/
-			/*{
-				TODO: This test case is valid, but the API should be fixed to fail for this. Uncomment when ready.
+				ExpectError: regexp.MustCompile("DoubleValue field must be set"),
+			},
+			{
 				ConfigFile: config.TestNameFile("comparison_value_type_mismatch2.tf"),
 				ConfigVariables: config.Variables{
 					"config_id":      config.StringVariable(configId),
 					"environment_id": config.StringVariable(environmentId),
 				},
-				ExpectError: regexp.MustCompile("must be a list"),
-			},*/
+				ExpectError: regexp.MustCompile("StringValue field must be set"),
+			},
 			{
 				ConfigFile: config.TestNameFile("comparison_value_type_mismatch3.tf"),
 				ConfigVariables: config.Variables{
 					"config_id":      config.StringVariable(configId),
 					"environment_id": config.StringVariable(environmentId),
 				},
-				ExpectError: regexp.MustCompile("must be a list"),
+				ExpectError: regexp.MustCompile("ListValue field must be set"),
 			},
 			{
 				ConfigFile: config.TestNameFile("comparison_value_missing.tf"),
