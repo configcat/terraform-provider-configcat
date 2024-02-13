@@ -86,31 +86,38 @@ resource "configcat_setting_value_v2" "bool_setting_value" {
       ]
       value = { bool_value = true }
     },
+
     {
       conditions = [
         {
-          prerequisite_flag_condition = {
-            prerequisite_setting_id = configcat_setting.int.id
-            comparator              = "equals"
-            comparison_value        = { int_value = 1 }
+          user_condition = {
+            comparison_attribute = "county"
+            comparator           = "sensitiveTextEquals"
+            comparison_value     = { string_value = "Hungary" }
           }
         },
-        {
-          prerequisite_flag_condition = {
-            prerequisite_setting_id = configcat_setting.double.id
-            comparator              = "doesNotEqual"
-            comparison_value        = { double_value = 1.1 }
-          }
-        }
       ],
 
       percentage_options = [
         {
-          percentage = var.percentage
+          percentage = 50
           value      = { bool_value = true }
         },
         {
-          percentage = 100 - var.percentage
+          percentage = 50
+          value      = { bool_value = false }
+        }
+      ]
+    },
+
+    {
+      percentage_options = [
+        {
+          percentage = 30
+          value      = { bool_value = true }
+        },
+        {
+          percentage = 70
           value      = { bool_value = false }
         }
       ]
