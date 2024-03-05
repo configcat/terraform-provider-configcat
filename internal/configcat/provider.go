@@ -123,13 +123,7 @@ func (p *configCatProvider) Configure(ctx context.Context, req provider.Configur
 	}
 
 	if basePath == "" {
-		resp.Diagnostics.AddAttributeError(
-			path.Root(KEY_BASE_PATH),
-			"Missing "+KEY_BASE_PATH,
-			"The provider cannot create the ConfigCat Public Management API client as there is a missing or empty value for the "+KEY_BASE_PATH+"."+
-				"Set the "+KEY_BASE_PATH+" value in the configuration or use the "+ENV_BASE_PATH+" environment variable. "+
-				"If either is already set, ensure the value is not empty.",
-		)
+		basePath = "https://api.configcat.com"
 	}
 
 	if basicAuthUsername == "" {
