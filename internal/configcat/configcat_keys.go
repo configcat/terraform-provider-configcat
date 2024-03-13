@@ -19,6 +19,7 @@ const (
 	ConfigResourceName = "Config"
 	Configs            = "configs"
 	ConfigId           = "config_id"
+	EvaluationVersion  = "evaluation_version"
 
 	EnvironmentResourceName = "Environment"
 	Environments            = "environments"
@@ -71,6 +72,7 @@ const (
 	SettingHint           = "hint"
 	SettingType           = "setting_type"
 
+	// V1
 	SettingValueResourceName = "Feature Flag or Setting value"
 
 	SettingValue   = "value"
@@ -89,7 +91,46 @@ const (
 	RolloutPercentageItemPercentage = "percentage"
 	RolloutPercentageItemValue      = "value"
 
+	// SDK KEY
 	SdkKeyResourceName = "SDK Key"
 	PrimarySdkKey      = "primary"
 	SecondarySdkKey    = "secondary"
+
+	// V2
+	BoolValue   = "bool_value"
+	StringValue = "string_value"
+	IntValue    = "int_value"
+	DoubleValue = "double_value"
+
+	ListValues     = "list_values"
+	ListValueValue = "value"
+	ListValueHint  = "hint"
+
+	PercentageEvaluationAttribute = "percentage_evaluation_attribute"
+
+	DefaultValue = "value"
+
+	TargetingRules = "targeting_rules"
+
+	TargetingRuleValue = "value"
+
+	TargetingRulePercentageOptions          = "percentage_options"
+	TargetingRulePercentageOptionPercentage = "percentage"
+	TargetingRulePercentageOptionValue      = "value"
+
+	TargetingRuleConditions = "conditions"
+
+	TargetingRuleUserCondition                    = "user_condition"
+	TargetingRuleUserConditionComparisonAttribute = "comparison_attribute"
+	TargetingRuleUserConditionComparator          = "comparator"
+	TargetingRuleUserConditionComparisonValue     = "comparison_value"
+
+	TargetingRuleSegmentCondition           = "segment_condition"
+	TargetingRuleSegmentConditionSegmentId  = "segment_id"
+	TargetingRuleSegmentConditionComparator = "comparator"
+
+	TargetingRulePrerequisiteFlagCondition                = "prerequisite_flag_condition"
+	TargetingRulePrerequisiteFlagConditionSettingId       = "prerequisite_setting_id"
+	TargetingRulePrerequisiteFlagConditionComparator      = "comparator"
+	TargetingRulePrerequisiteFlagConditionComparisonValue = "comparison_value"
 )

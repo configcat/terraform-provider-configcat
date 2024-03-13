@@ -68,7 +68,7 @@ func (r *settingValueResource) Metadata(ctx context.Context, req resource.Metada
 
 func (r *settingValueResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "Initializes and updates **" + SettingResourceName + "** values. [Read more about the anatomy of a " + SettingResourceName + ".](https://configcat.com/docs/main-concepts) ",
+		MarkdownDescription: "Initializes and updates **" + SettingResourceName + "** values for V1 configs. [Read more about the anatomy of a " + SettingResourceName + ".](https://configcat.com/docs/main-concepts) ",
 
 		Attributes: map[string]schema.Attribute{
 			ID: schema.StringAttribute{

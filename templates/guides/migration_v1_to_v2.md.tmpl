@@ -1,0 +1,19 @@
+---
+page_title: "Migration guide from Config V1 to V2"
+---
+
+# Migration guide from Config V1 to V2
+
+If you start the [migration process to Config V2](https://configcat.com/docs/advanced/config-v2-migration-guide/), the V2 Config and the Feature Flags or Settings in the V2 Config will be brand new resources in ConfigCat.
+If you manage your V1 Configs and Feature Flags with Terraform, and you would like to manage the new V2 resources with Terraform too, you'll have to import the new resources in your Terraform configuration file.
+
+To help this migration process we prepared a small bash script that outputs the terraform resources and the import statements required to complete this process.  
+There are 2 variables in the beginning of the script that you have to replace with your Public Api Access Token and the migrated, V2 Config's ConfigId.
+
+{{ codefile "bash" "examples/guides/migration_v1_to_v2/migrate.sh"  }}
+
+After executing this script, the output will contain the resource definitions that you have to insert into your terraform files and the terraform import statement that will import the resources into Terraform's state.
+Please note that this is just an example configuration, you may need to modify the resource names based on your preferences.
+
+Example output:
+{{ codefile "text" "examples/guides/migration_v1_to_v2/example_output.txt"  }}

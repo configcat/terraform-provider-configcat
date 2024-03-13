@@ -11,15 +11,6 @@ page_title: "Advanced usage of Resources in multiple environments"
 - CONFIGCAT_BASIC_AUTH_USERNAME
 - CONFIGCAT_BASIC_AUTH_PASSWORD
 
-## Folder/file structure
-
-.
-├── main.tf
-├── test
-    ├── main.tf
-├── production
-    ├── main.tf
-
 ### main.tf
 
 ```terraform

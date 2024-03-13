@@ -73,4 +73,4 @@ Read-Only:
 - `environment_accesses` (Map of String) The environment specific permissions map block. Keys are the Environment IDs and the values represent the environment specific Feature Management permission. Possible values: full, readOnly
 - `name` (String) The name of the Permission Group.
 - `new_environment_accesstype` (String) Represent the environment specific Feature Management permission for new Environments. Possible values: full, readOnly, none
-- `permission_group_id` (String) The unique Permission Group ID.
+- `permission_group_id` (Number) The unique Permission Group ID.

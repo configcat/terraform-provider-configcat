@@ -9,6 +9,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -31,10 +32,11 @@ type configResource struct {
 type configResourceModel struct {
 	ProductId types.String `tfsdk:"product_id"`
 
-	ID          types.String `tfsdk:"id"`
-	Name        types.String `tfsdk:"name"`
-	Description types.String `tfsdk:"description"`
-	Order       types.Int64  `tfsdk:"order"`
+	ID                types.String `tfsdk:"id"`
+	Name              types.String `tfsdk:"name"`
+	Description       types.String `tfsdk:"description"`
+	Order             types.Int64  `tfsdk:"order"`
+	EvaluationVersion types.String `tfsdk:"evaluation_version"`
 }
 
 func (r *configResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -73,6 +75,13 @@ func (r *configResource) Schema(ctx context.Context, req resource.SchemaRequest,
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
+			EvaluationVersion: schema.StringAttribute{
+				// TODO remove comment after out of beta.
+				Description: "The evaluation version of the " + ConfigResourceName + ". Possible values: `v1`, `v2`. Default value: `v1`. Please note that `v2` is currently in a Beta stage, and it is only available for organizations who participated in the Beta program. Using `v2` enables the new features of [Config V2](https://configcat.com/docs/advanced/config-v2).",
+				Computed:    true,
+				Optional:    true,
+				Default:     stringdefault.StaticString(string(sw.EVALUATIONVERSION_V1)),
+			},
 			Order: schema.Int64Attribute{
 				Description: "The order of the " + ConfigResourceName + " within a " + ProductResourceName + " (zero-based). If multiple " + ConfigResourceName + "s has the same order, they are displayed in alphabetical order.",
 				Required:    true,
@@ -109,11 +118,18 @@ func (r *configResource) Create(ctx context.Context, req resource.CreateRequest,
 		return
 	}
 
+	evaluationVersion, evaluationVersionParseErr := sw.NewEvaluationVersionFromValue(plan.EvaluationVersion.ValueString())
+	if evaluationVersionParseErr != nil {
+		resp.Diagnostics.AddError("Unable to Create Resource", fmt.Sprintf("Could not parse %s: %s. Error: %s", EvaluationVersion, plan.EvaluationVersion.ValueString(), evaluationVersionParseErr))
+		return
+	}
+
 	order := int32(plan.Order.ValueInt64())
 	body := sw.CreateConfigRequest{
-		Name:        plan.Name.ValueString(),
-		Description: *sw.NewNullableString(plan.Description.ValueStringPointer()),
-		Order:       *sw.NewNullableInt32(&order),
+		Name:              plan.Name.ValueString(),
+		Description:       *sw.NewNullableString(plan.Description.ValueStringPointer()),
+		Order:             *sw.NewNullableInt32(&order),
+		EvaluationVersion: evaluationVersion,
 	}
 
 	model, err := r.client.CreateConfig(plan.ProductId.ValueString(), body)
@@ -159,6 +175,11 @@ func (r *configResource) Update(ctx context.Context, req resource.UpdateRequest,
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if !plan.EvaluationVersion.Equal(state.EvaluationVersion) {
+		resp.Diagnostics.AddError("Unable to Update Resource", fmt.Sprintf("%s cannot be changed. Please create a new configcat_config resource with the new %s.", EvaluationVersion, EvaluationVersion))
 		return
 	}
 
@@ -216,4 +237,5 @@ func (resourceModel *configResourceModel) UpdateFromApiModel(model sw.ConfigMode
 	resourceModel.Name = types.StringPointerValue(model.Name.Get())
 	resourceModel.Description = types.StringPointerValue(model.Description.Get())
 	resourceModel.Order = types.Int64Value(modelOrder)
+	resourceModel.EvaluationVersion = types.StringValue(string(*model.EvaluationVersion))
 }

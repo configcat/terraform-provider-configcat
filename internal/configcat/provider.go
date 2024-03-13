@@ -172,6 +172,7 @@ func (p *configCatProvider) Resources(ctx context.Context) []func() resource.Res
 		NewEnvironmentResource,
 		NewSettingResource,
 		NewSettingValueResource,
+		NewSettingValueV2Resource,
 		NewPermissionGroupResource,
 		NewSegmentResource,
 		NewTagResource,
