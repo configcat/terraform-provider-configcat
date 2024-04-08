@@ -43,7 +43,7 @@ output "config_id" {
 ### Optional
 
 - `description` (String) The description of the Config.
-- `evaluation_version` (String) The evaluation version of the Config. Possible values: `v1`, `v2`. Default value: `v1`. Please note that `v2` is currently in a Beta stage, and it is only available for organizations who participated in the Beta program. Using `v2` enables the new features of [Config V2](https://configcat.com/docs/advanced/config-v2).
+- `evaluation_version` (String) The evaluation version of the Config. Possible values: `v1`, `v2`. Default value: `v1`. Using `v2` enables the new features of [Config V2](https://configcat.com/docs/advanced/config-v2).
 
 ### Read-Only
 
