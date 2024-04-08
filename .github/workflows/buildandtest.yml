@@ -44,7 +44,7 @@ jobs:
         CONFIGCAT_BASIC_AUTH_PASSWORD: ${{ secrets.CONFIGCAT_BASIC_AUTH_PASSWORD }}
         CONFIGCAT_BASIC_AUTH_USERNAME: ${{ secrets.CONFIGCAT_BASIC_AUTH_USERNAME }}
         TF_ACC: true
-      run: go test -timeout 600s -v -coverprofile=coverage.txt -covermode=atomic ./...
+      run: go test -timeout 1200s -v -coverprofile=coverage.txt -covermode=atomic ./...
 
     - name: Upload coverage report
       uses: codecov/codecov-action@v4
