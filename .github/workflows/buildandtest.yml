@@ -48,7 +48,7 @@ jobs:
         CONFIGCAT_BASIC_AUTH_PASSWORD: ${{ secrets.CONFIGCAT_BASIC_AUTH_PASSWORD }}
         CONFIGCAT_BASIC_AUTH_USERNAME: ${{ secrets.CONFIGCAT_BASIC_AUTH_USERNAME }}
         TF_ACC: true
-      run: go test -timeout 1200s -v -coverprofile=coverage.txt -covermode=atomic ./...
+      run: go test -timeout 1200s -v -coverprofile=coverage.out -covermode=atomic ./...
 
     - name: SonarCloud Scan
       uses: SonarSource/sonarcloud-github-action@master
