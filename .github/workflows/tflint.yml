@@ -11,6 +11,8 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       name: Checkout source code
+      with:
+        fetch-depth: 0
 
     - uses: actions/cache@v4
       name: Cache plugin dir
