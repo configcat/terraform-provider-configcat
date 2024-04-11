@@ -76,7 +76,6 @@ func (r *configResource) Schema(ctx context.Context, req resource.SchemaRequest,
 				},
 			},
 			EvaluationVersion: schema.StringAttribute{
-				// TODO remove comment after out of beta.
 				Description: "The evaluation version of the " + ConfigResourceName + ". Possible values: `v1`, `v2`. Default value: `v1`. Using `v2` enables the new features of [Config V2](https://configcat.com/docs/advanced/config-v2).",
 				Computed:    true,
 				Optional:    true,
