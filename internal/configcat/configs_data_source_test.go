@@ -77,3 +77,22 @@ func TestAccConfigsDataSource(t *testing.T) {
 		},
 	})
 }
+
+func TestAccLotsofConfigsDataSource(t *testing.T) {
+	const productId = "08d86d63-2721-4da6-8c06-584521d516bc"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		Steps: []resource.TestStep{
+			{
+				ConfigFile: config.TestNameFile("main.tf"),
+				ConfigVariables: config.Variables{
+					"product_id":        config.StringVariable(productId),
+					"name_filter_regex": config.StringVariable(""),
+					"data_sources":      config.IntegerVariable(30),
+				},
+			},
+		},
+	})
+}
