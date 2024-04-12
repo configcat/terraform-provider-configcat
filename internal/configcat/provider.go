@@ -150,7 +150,7 @@ func (p *configCatProvider) Configure(ctx context.Context, req provider.Configur
 		return
 	}
 
-	client, err := client.NewClient(basePath, basicAuthUsername, basicAuthPassword)
+	client, err := client.NewClient(basePath, basicAuthUsername, basicAuthPassword, p.version)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Create ConfigCat Public Management API client",

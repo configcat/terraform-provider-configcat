@@ -2,11 +2,12 @@
 `terraform-provider-configcat`
 
 ![Build status](https://github.com/configcat/terraform-provider-configcat/workflows/Go/badge.svg)
-[![codecov](https://codecov.io/gh/configcat/terraform-provider-configcat/branch/main/graph/badge.svg?token=XBY7QBU3NN)](https://codecov.io/gh/configcat/terraform-provider-configcat)
 [![Go Report Card](https://goreportcard.com/badge/github.com/configcat/terraform-provider-configcat)](https://goreportcard.com/report/github.com/configcat/terraform-provider-configcat)
-
+[![Sonar Coverage](https://img.shields.io/sonar/coverage/configcat_terraform-provider-configcat?logo=SonarCloud&server=https%3A%2F%2Fsonarcloud.io)](https://sonarcloud.io/project/overview?id=configcat_terraform-provider-configcat)
+[![Sonar Quality Gate](https://img.shields.io/sonar/quality_gate/configcat_terraform-provider-configcat?logo=sonarcloud&server=https%3A%2F%2Fsonarcloud.io)](https://sonarcloud.io/project/overview?id=configcat_terraform-provider-configcat)
 
 [![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/dashboard?id=configcat_terraform-provider-configcat)
+
 
 Manage features and change your software configuration using [ConfigCat feature flags](https://configcat.com), without the need to re-deploy code.  
 A 10 minute trainable dashboard allows even non-technical team members to manage application features.  

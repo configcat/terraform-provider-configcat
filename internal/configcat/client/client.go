@@ -41,10 +41,11 @@ func (client *Client) GetOrganizations() ([]configcatpublicapi.OrganizationModel
 	return model, error
 }
 
-func NewClient(basePath, basicAuthUsername, basicAuthPassword string) (*Client, error) {
+func NewClient(basePath, basicAuthUsername, basicAuthPassword, version string) (*Client, error) {
 	configuration := configcatpublicapi.NewConfiguration()
 	configuration.Servers[0].URL = basePath
-	configuration.UserAgent = "terraform-provider-configcat/1.0.3"
+	configuration.UserAgent = "terraform-provider-configcat/" + version
+	configuration.AddDefaultHeader("X-Caller-Id", "terraform-provider-configcat/"+version)
 	apiClient := configcatpublicapi.NewAPIClient(configuration)
 
 	client := &Client{
