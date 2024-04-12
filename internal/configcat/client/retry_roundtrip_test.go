@@ -8,6 +8,26 @@ import (
 	"testing"
 )
 
+func TestRetry_NoBody(t *testing.T) {
+	attempts := 0
+	ts := httptest.NewServer(
+		http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			attempts++
+			w.Header().Add("Retry-After", "1")
+			w.WriteHeader(http.StatusTooManyRequests)
+		}))
+	defer ts.Close()
+
+	client := &http.Client{
+		Transport: Retry(http.DefaultTransport, 2),
+	}
+
+	resp, err := client.Get(ts.URL)
+	assert.NoError(t, err)
+	assert.Equal(t, http.StatusTooManyRequests, resp.StatusCode)
+	assert.Equal(t, 3, attempts)
+}
+
 func TestRetry(t *testing.T) {
 	attempts := 0
 	ts := httptest.NewServer(
