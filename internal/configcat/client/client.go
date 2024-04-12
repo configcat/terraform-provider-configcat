@@ -3,6 +3,7 @@ package client
 import (
 	"context"
 	"fmt"
+	"net/http"
 
 	configcatpublicapi "github.com/configcat/configcat-publicapi-go-client"
 )
@@ -46,6 +47,9 @@ func NewClient(basePath, basicAuthUsername, basicAuthPassword, version string) (
 	configuration.Servers[0].URL = basePath
 	configuration.UserAgent = "terraform-provider-configcat/" + version
 	configuration.AddDefaultHeader("X-Caller-Id", "terraform-provider-configcat/"+version)
+	configuration.HTTPClient = &http.Client{
+		Transport: Retry(http.DefaultTransport, 5),
+	}
 	apiClient := configcatpublicapi.NewAPIClient(configuration)
 
 	client := &Client{
