@@ -191,6 +191,7 @@ func (p *configCatProvider) DataSources(ctx context.Context) []func() datasource
 		NewSettingDataSource,
 		NewTagDataSource,
 		NewPermissionGroupDataSource,
+		NewWebhookSigningKeysDataSource,
 	}
 }
 

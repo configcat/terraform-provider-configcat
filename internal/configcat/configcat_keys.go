@@ -25,6 +25,13 @@ const (
 	Environments            = "environments"
 	EnvironmentId           = "environment_id"
 
+	WebhookResourceName = "Webhook"
+	WebhookId           = "webhook_id"
+
+	WebhookSigningKeysResourceName = "Webhook Signing Keys"
+	WebhookSigningKeyKey1          = "key1"
+	WebhookSigningKeyKey2          = "key2"
+
 	PermissionGroupResourceName                 = "Permission Group"
 	PermissionGroups                            = "permission_groups"
 	PermissionGroupId                           = "permission_group_id"
