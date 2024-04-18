@@ -124,41 +124,26 @@ func (r *settingValueResource) Schema(ctx context.Context, req resource.SchemaRe
 							MarkdownDescription: "The [comparison attribute](https://configcat.com/docs/advanced/targeting/#comparison-attribute).",
 							Optional:            true,
 							Computed:            true,
-							PlanModifiers: []planmodifier.String{
-								stringplanmodifier.UseStateForUnknown(),
-							},
 						},
 						RolloutRuleComparator: schema.StringAttribute{
 							MarkdownDescription: "The [comparator](https://configcat.com/docs/advanced/targeting/#comparator).",
 							Optional:            true,
 							Computed:            true,
-							PlanModifiers: []planmodifier.String{
-								stringplanmodifier.UseStateForUnknown(),
-							},
 						},
 						RolloutRuleComparisonValue: schema.StringAttribute{
 							MarkdownDescription: "The [comparison value](https://configcat.com/docs/advanced/targeting/#comparison-value).",
 							Optional:            true,
 							Computed:            true,
-							PlanModifiers: []planmodifier.String{
-								stringplanmodifier.UseStateForUnknown(),
-							},
 						},
 						RolloutRuleSegmentComparator: schema.StringAttribute{
 							Description: "The segment_comparator. Possible values: isIn, isNotIn.",
 							Optional:    true,
 							Computed:    true,
-							PlanModifiers: []planmodifier.String{
-								stringplanmodifier.UseStateForUnknown(),
-							},
 						},
 						RolloutRuleSegmentId: schema.StringAttribute{
 							MarkdownDescription: "The [Segment's](https://configcat.com/docs/advanced/segments) unique identifier.",
 							Optional:            true,
 							Computed:            true,
-							PlanModifiers: []planmodifier.String{
-								stringplanmodifier.UseStateForUnknown(),
-							},
 						},
 						RolloutRuleValue: schema.StringAttribute{
 							MarkdownDescription: "The exact [value](https://configcat.com/docs/advanced/targeting/#served-value) that will be served to the users who match the targeting rule. Type: `string`. It must be compatible with the `setting_type`.",
