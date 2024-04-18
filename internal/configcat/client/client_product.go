@@ -54,3 +54,23 @@ func (client *Client) DeleteProduct(productID string) error {
 	}
 	return error
 }
+
+func (client *Client) GetProductPreferences(productID string) (*sw.PreferencesModel, error) {
+	model, response, err := client.apiClient.ProductsApi.GetProductPreferences(client.GetAuthContext(), productID).Execute()
+	error := handleAPIError(err)
+	if response != nil && response.Body != nil {
+		defer response.Body.Close()
+	}
+	return model, error
+}
+
+func (client *Client) UpdateProductPreferences(productID string, body sw.UpdatePreferencesRequest) (*sw.PreferencesModel, error) {
+	model, response, err := client.apiClient.ProductsApi.UpdateProductPreferences(
+		client.GetAuthContext(),
+		productID).UpdatePreferencesRequest(body).Execute()
+	error := handleAPIError(err)
+	if response != nil && response.Body != nil {
+		defer response.Body.Close()
+	}
+	return model, error
+}
