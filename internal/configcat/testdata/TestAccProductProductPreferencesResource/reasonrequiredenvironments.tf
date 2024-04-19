@@ -18,10 +18,32 @@ variable "reason_required" {
   default = null
 }
 
+variable "test_required" {
+  type    = bool
+  default = false
+}
+
+variable "prod_required" {
+  type    = bool
+  default = false
+}
+
 resource "configcat_product" "product" {
   organization_id = "08d86d63-26dc-4276-86d6-eae122660e51"
   name            = "Product preferences test"
   order           = 1
+}
+
+resource "configcat_environment" "test" {
+  product_id = configcat_product.product.id
+  name       = "Test"
+  order      = 0
+}
+
+resource "configcat_environment" "prod" {
+  product_id = configcat_product.product.id
+  name       = "Prod"
+  order      = 1
 }
 
 resource "configcat_product_preferences" "preferences" {
@@ -31,4 +53,8 @@ resource "configcat_product_preferences" "preferences" {
   mandatory_setting_hint = var.mandatory_setting_hint
   show_variation_id      = var.show_variation_id
   reason_required        = var.reason_required
+  reason_required_environments = {
+    "${configcat_environment.test.id}" = var.test_required,
+    "${configcat_environment.prod.id}" = var.prod_required
+  }
 }

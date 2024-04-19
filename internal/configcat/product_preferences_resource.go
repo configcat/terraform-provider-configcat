@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/configcat/terraform-provider-configcat/internal/configcat/client"
-	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/mapvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -17,7 +17,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 
 	sw "github.com/configcat/configcat-publicapi-go-client"
 )
@@ -38,11 +37,11 @@ type productPreferencesResourceModel struct {
 
 	ID types.String `tfsdk:"id"`
 
-	KeyGenerationMode          types.String   `tfsdk:"key_generation_mode"`
-	MandatorySettingHint       types.Bool     `tfsdk:"mandatory_setting_hint"`
-	ShowVariationId            types.Bool     `tfsdk:"show_variation_id"`
-	ReasonRequired             types.Bool     `tfsdk:"reason_required"`
-	ReasonRequiredEnvironments []types.String `tfsdk:"reason_required_environments"`
+	KeyGenerationMode          types.String `tfsdk:"key_generation_mode"`
+	MandatorySettingHint       types.Bool   `tfsdk:"mandatory_setting_hint"`
+	ShowVariationId            types.Bool   `tfsdk:"show_variation_id"`
+	ReasonRequired             types.Bool   `tfsdk:"reason_required"`
+	ReasonRequiredEnvironments types.Map    `tfsdk:"reason_required_environments"`
 }
 
 func (r *productPreferencesResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -93,13 +92,13 @@ func (r *productPreferencesResource) Schema(ctx context.Context, req resource.Sc
 				Computed:    true,
 				Default:     booldefault.StaticBool(false),
 			},
-			ProductPreferenceReasonRequiredEnvironmentments: schema.ListAttribute{
-				Description: "List of Environments where mandatory note must be set before saving and publishing.",
+			ProductPreferenceReasonRequiredEnvironmentments: schema.MapAttribute{
+				Description: "The environment specific mandatory note map block. Keys are the Environment IDs and the values indicate that a mandatory note is required for saving and publishing.",
+				Computed:    true,
 				Optional:    true,
-				ElementType: types.StringType,
-				Validators: []validator.List{
-					listvalidator.UniqueValues(),
-					listvalidator.ValueStringsAre(IsGuid()),
+				ElementType: types.BoolType,
+				Validators: []validator.Map{
+					mapvalidator.KeysAre(IsGuid()),
 				},
 			},
 		},
@@ -154,7 +153,11 @@ func (r *productPreferencesResource) Read(ctx context.Context, req resource.Read
 		return
 	}
 
-	state.UpdateFromApiModel(*model, state.ProductId.ValueString())
+	resp.Diagnostics.Append(state.UpdateFromApiModel(ctx, *model, state.ProductId.ValueString())...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -177,15 +180,41 @@ func (r *productPreferencesResource) createOrUpdateProductPreferences(ctx contex
 
 	keyGenerationMode, err := sw.NewKeyGenerationModeFromValue(plan.KeyGenerationMode.ValueString())
 	if err != nil {
-		diag.AddError("Unable to Create Resource", fmt.Sprintf("Invalid "+ProductPreferenceKeyGenerationMode+". Error: %s", err))
+		diag.AddError("Unable to update Product Preferences", fmt.Sprintf("Invalid "+ProductPreferenceKeyGenerationMode+". Error: %s", err))
 		return
 	}
 
+	if plan.ReasonRequired.ValueBool() && !plan.ReasonRequiredEnvironments.IsUnknown() && !plan.ReasonRequiredEnvironments.IsNull() {
+		diag.AddError("Unable to update Product Preferences", "Please set "+ProductPreferenceReasonRequired+" to true to require mandatory notes globally or specify "+ProductPreferenceReasonRequiredEnvironmentments+" to require mandatory notes for specific environments but don't specify both of them together.")
+	}
+
+	var reasonRequiredEnvironmentsMap map[string]types.Bool
+	if plan.ReasonRequiredEnvironments.IsUnknown() || plan.ReasonRequiredEnvironments.IsNull() {
+		reasonRequiredEnvironmentsMap = make(map[string]types.Bool, 0)
+	} else {
+		reasonRequiredEnvironmentsMap = make(map[string]types.Bool, len(plan.ReasonRequiredEnvironments.Elements()))
+		diag.Append(plan.ReasonRequiredEnvironments.ElementsAs(ctx, &reasonRequiredEnvironmentsMap, false)...)
+		if diag.HasError() {
+			return
+		}
+	}
+
+	reasonRequiredEnvironments := make([]sw.UpdateReasonRequiredEnvironmentModel, 0)
+	for environmentIdKey, reasonRequiredValue := range reasonRequiredEnvironmentsMap {
+		environmentId := environmentIdKey
+		reasonRequired := reasonRequiredValue
+		reasonRequiredEnvironments = append(reasonRequiredEnvironments, sw.UpdateReasonRequiredEnvironmentModel{
+			EnvironmentId:  &environmentId,
+			ReasonRequired: reasonRequired.ValueBoolPointer(),
+		})
+	}
+
 	body := sw.UpdatePreferencesRequest{
-		KeyGenerationMode:    keyGenerationMode,
-		ShowVariationId:      *sw.NewNullableBool(plan.ShowVariationId.ValueBoolPointer()),
-		MandatorySettingHint: *sw.NewNullableBool(plan.MandatorySettingHint.ValueBoolPointer()),
-		ReasonRequired:       *sw.NewNullableBool(plan.ReasonRequired.ValueBoolPointer()),
+		KeyGenerationMode:          keyGenerationMode,
+		ShowVariationId:            *sw.NewNullableBool(plan.ShowVariationId.ValueBoolPointer()),
+		MandatorySettingHint:       *sw.NewNullableBool(plan.MandatorySettingHint.ValueBoolPointer()),
+		ReasonRequired:             *sw.NewNullableBool(plan.ReasonRequired.ValueBoolPointer()),
+		ReasonRequiredEnvironments: reasonRequiredEnvironments,
 	}
 
 	model, err := r.client.UpdateProductPreferences(plan.ProductId.ValueString(), body)
@@ -194,7 +223,11 @@ func (r *productPreferencesResource) createOrUpdateProductPreferences(ctx contex
 		return
 	}
 
-	plan.UpdateFromApiModel(*model, plan.ProductId.ValueString())
+	diag.Append(plan.UpdateFromApiModel(ctx, *model, plan.ProductId.ValueString())...)
+
+	if diag.HasError() {
+		return
+	}
 
 	diag.Append(responseState.Set(ctx, &plan)...)
 }
@@ -207,25 +240,29 @@ func (r *productPreferencesResource) ImportState(ctx context.Context, req resour
 	resource.ImportStatePassthroughID(ctx, path.Root(ProductId), req, resp)
 }
 
-func (resourceModel *productPreferencesResourceModel) UpdateFromApiModel(model sw.PreferencesModel, productId string) {
+func (resourceModel *productPreferencesResourceModel) UpdateFromApiModel(ctx context.Context, model sw.PreferencesModel, productId string) diag.Diagnostics {
+	var diags diag.Diagnostics
+
 	resourceModel.ID = types.StringValue(productId)
 	resourceModel.ProductId = types.StringValue(productId)
 	resourceModel.MandatorySettingHint = types.BoolPointerValue(model.MandatorySettingHint)
 	resourceModel.ShowVariationId = types.BoolPointerValue(model.ShowVariationId)
 	resourceModel.KeyGenerationMode = types.StringPointerValue((*string)(model.KeyGenerationMode))
 	resourceModel.ReasonRequired = types.BoolPointerValue(model.ReasonRequired)
-	reasonRequiredEnvironments := make([]basetypes.StringValue, 0)
+
+	reasonRequiredEnvironments := make(map[string]bool, len(model.ReasonRequiredEnvironments))
 	for _, environment := range model.ReasonRequiredEnvironments {
-		if environment.EnvironmentId != nil && environment.ReasonRequired != nil && *environment.ReasonRequired {
-			resourceModel.ReasonRequiredEnvironments = append(resourceModel.ReasonRequiredEnvironments, types.StringValue(*environment.EnvironmentId))
-		}
+		reasonRequiredEnvironments[*environment.EnvironmentId] = *environment.ReasonRequired
 	}
 
-	if len(reasonRequiredEnvironments) > 0 {
-		resourceModel.ReasonRequiredEnvironments = reasonRequiredEnvironments
-	} else {
-		resourceModel.ReasonRequiredEnvironments = nil
+	reasonRequiredEnvironmentsMapValue, diags := types.MapValueFrom(ctx, types.BoolType, reasonRequiredEnvironments)
+	if diags.HasError() {
+		return diags
 	}
+
+	resourceModel.ReasonRequiredEnvironments = reasonRequiredEnvironmentsMapValue
+
+	return diags
 }
 
 func hasProductPreferenceChanges(plan *productPreferencesResourceModel, state *productPreferencesResourceModel) bool {
@@ -233,14 +270,8 @@ func hasProductPreferenceChanges(plan *productPreferencesResourceModel, state *p
 		!plan.ShowVariationId.Equal(state.ShowVariationId) ||
 		!plan.MandatorySettingHint.Equal(state.MandatorySettingHint) ||
 		!plan.ReasonRequired.Equal(state.ReasonRequired) ||
-		len(plan.ReasonRequiredEnvironments) != len(state.ReasonRequiredEnvironments) {
+		!plan.ReasonRequiredEnvironments.Equal(state.ReasonRequiredEnvironments) {
 		return true
-	}
-
-	for environmentIndex, environment := range plan.ReasonRequiredEnvironments {
-		if !environment.Equal(state.ReasonRequiredEnvironments[environmentIndex]) {
-			return true
-		}
 	}
 
 	return false
