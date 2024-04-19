@@ -40,10 +40,10 @@ func (client *Client) CreateWebhook(configId string, environmentId string, body 
 	return model, error
 }
 
-func (client *Client) UpdateWebhook(webhookId int32, patchOperation []sw.JsonPatchOperation) (*sw.WebhookModel, error) {
-	model, response, err := client.apiClient.WebhooksApi.UpdateWebhook(
+func (client *Client) UpdateWebhook(webhookId int32, body sw.WebHookRequest) (*sw.WebhookModel, error) {
+	model, response, err := client.apiClient.WebhooksApi.ReplaceWebhook(
 		client.GetAuthContext(),
-		webhookId).JsonPatchOperation(patchOperation).Execute()
+		webhookId).WebHookRequest(body).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
 		defer response.Body.Close()

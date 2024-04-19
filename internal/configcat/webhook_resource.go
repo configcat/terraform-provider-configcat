@@ -165,7 +165,7 @@ func (r *webhookResource) Create(ctx context.Context, req resource.CreateRequest
 	}
 	for webhookHeaderIndex, webhookHeader := range plan.SecureWebhookHeaders {
 		isSecure := true
-		webhookHeaders[webhookHeaderIndex] = sw.WebhookHeaderModel{
+		webhookHeaders[len(plan.WebhookHeaders)+webhookHeaderIndex] = sw.WebhookHeaderModel{
 			Key:      webhookHeader.Key.ValueString(),
 			Value:    webhookHeader.Value.ValueString(),
 			IsSecure: &isSecure,
@@ -173,9 +173,10 @@ func (r *webhookResource) Create(ctx context.Context, req resource.CreateRequest
 	}
 
 	body := sw.CreateWebHookRequest{
-		Url:        plan.Url.ValueString(),
-		HttpMethod: httpMethod,
-		Content:    *sw.NewNullableString(plan.Content.ValueStringPointer()),
+		Url:            plan.Url.ValueString(),
+		HttpMethod:     httpMethod,
+		Content:        *sw.NewNullableString(plan.Content.ValueStringPointer()),
+		WebHookHeaders: webhookHeaders,
 	}
 
 	model, err := r.client.CreateWebhook(plan.ConfigId.ValueString(), plan.EnvironmentId.ValueString(), body)
@@ -228,11 +229,38 @@ func (r *webhookResource) Update(ctx context.Context, req resource.UpdateRequest
 		return
 	}
 
-	operations := []sw.JsonPatchOperation{}
+	httpMethod, err := sw.NewWebHookHttpMethodFromValue(plan.HttpMethod.ValueString())
+	if err != nil {
+		resp.Diagnostics.AddError("Unable to Create Resource", fmt.Sprintf("Invalid "+WebhookHttpMethod+". Error: %s", err))
+		return
+	}
 
-	// TODO
+	webhookHeaders := make([]sw.WebhookHeaderModel, len(plan.WebhookHeaders)+len(plan.SecureWebhookHeaders))
+	for webhookHeaderIndex, webhookHeader := range plan.WebhookHeaders {
+		isSecure := false
+		webhookHeaders[webhookHeaderIndex] = sw.WebhookHeaderModel{
+			Key:      webhookHeader.Key.ValueString(),
+			Value:    webhookHeader.Value.ValueString(),
+			IsSecure: &isSecure,
+		}
+	}
+	for webhookHeaderIndex, webhookHeader := range plan.SecureWebhookHeaders {
+		isSecure := true
+		webhookHeaders[len(plan.WebhookHeaders)+webhookHeaderIndex] = sw.WebhookHeaderModel{
+			Key:      webhookHeader.Key.ValueString(),
+			Value:    webhookHeader.Value.ValueString(),
+			IsSecure: &isSecure,
+		}
+	}
 
-	model, err := r.client.UpdateWebhook(int32(state.ID.ValueInt64()), operations)
+	body := sw.WebHookRequest{
+		Url:            plan.Url.ValueString(),
+		HttpMethod:     httpMethod,
+		Content:        *sw.NewNullableString(plan.Content.ValueStringPointer()),
+		WebHookHeaders: webhookHeaders,
+	}
+
+	model, err := r.client.UpdateWebhook(int32(state.ID.ValueInt64()), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Unable to Update Resource", fmt.Sprintf("Unable to update "+WebhookResourceName+", got error: %s", err))
 		return
