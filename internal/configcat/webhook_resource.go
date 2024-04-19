@@ -172,7 +172,7 @@ func (r *webhookResource) Create(ctx context.Context, req resource.CreateRequest
 		}
 	}
 
-	body := sw.CreateWebHookRequest{
+	body := sw.WebHookRequest{
 		Url:            plan.Url.ValueString(),
 		HttpMethod:     httpMethod,
 		Content:        *sw.NewNullableString(plan.Content.ValueStringPointer()),

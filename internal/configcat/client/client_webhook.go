@@ -29,10 +29,10 @@ func (client *Client) GetWebhookSigningKeys(webhookId int32) (*sw.WebhookSigning
 	return model, error
 }
 
-func (client *Client) CreateWebhook(configId string, environmentId string, body sw.CreateWebHookRequest) (*sw.WebhookModel, error) {
+func (client *Client) CreateWebhook(configId string, environmentId string, body sw.WebHookRequest) (*sw.WebhookModel, error) {
 	model, response, err := client.apiClient.WebhooksApi.CreateWebhook(
 		client.GetAuthContext(),
-		configId, environmentId).CreateWebHookRequest(body).Execute()
+		configId, environmentId).WebHookRequest(body).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
 		defer response.Body.Close()
