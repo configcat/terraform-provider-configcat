@@ -16,6 +16,13 @@ const (
 	Products            = "products"
 	ProductId           = "product_id"
 
+	ProductPreferencesResourceName                  = "Product Preferences"
+	ProductPreferenceReasonRequired                 = "reason_required"
+	ProductPreferenceReasonRequiredEnvironmentments = "reason_required_environment"
+	ProductPreferenceKeyGenerationMode              = "key_generation_mode"
+	ProductPreferenceShowVariationId                = "show_variation_id"
+	ProductPreferenceMandatorySettingHint           = "mandatory_setting_hint"
+
 	ConfigResourceName = "Config"
 	Configs            = "configs"
 	ConfigId           = "config_id"
