@@ -204,7 +204,7 @@ func (r *productPreferencesResource) Delete(ctx context.Context, req resource.De
 }
 
 func (r *productPreferencesResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	resource.ImportStatePassthroughID(ctx, path.Root(ID), req, resp)
+	resource.ImportStatePassthroughID(ctx, path.Root(ProductId), req, resp)
 }
 
 func (resourceModel *productPreferencesResourceModel) UpdateFromApiModel(model sw.PreferencesModel, productId string) {

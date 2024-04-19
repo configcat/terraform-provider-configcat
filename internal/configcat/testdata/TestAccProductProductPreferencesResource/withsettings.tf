@@ -1,3 +1,28 @@
+variable "key_generation_mode" {
+  type    = string
+  default = null
+}
+
+variable "mandatory_setting_hint" {
+  type    = bool
+  default = null
+}
+
+variable "show_variation_id" {
+  type    = bool
+  default = null
+}
+
+variable "reason_required" {
+  type    = bool
+  default = null
+}
+
+variable "reason_required_environments" {
+  type    = list(string)
+  default = null
+}
+
 resource "configcat_product" "product" {
   organization_id = "08d86d63-26dc-4276-86d6-eae122660e51"
   name            = "Product preferences test"
@@ -6,5 +31,10 @@ resource "configcat_product" "product" {
 
 resource "configcat_product_preferences" "preferences" {
   product_id = configcat_product.product.id
-  
+
+  key_generation_mode          = var.key_generation_mode
+  mandatory_setting_hint       = var.mandatory_setting_hint
+  show_variation_id            = var.show_variation_id
+  reason_required              = var.reason_required
+  reason_required_environments = var.reason_required_environments
 }
