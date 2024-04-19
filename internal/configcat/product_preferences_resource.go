@@ -72,21 +72,25 @@ func (r *productPreferencesResource) Schema(ctx context.Context, req resource.Sc
 			ProductPreferenceMandatorySettingHint: schema.BoolAttribute{
 				Description: "Indicates whether Feature flags and Settings must have a hint. Default: false.",
 				Optional:    true,
+				Computed:    true,
 				Default:     booldefault.StaticBool(false),
 			},
 			ProductPreferenceShowVariationId: schema.BoolAttribute{
 				Description: "Indicates whether a variation ID's must be shown on the ConfigCat Dashboard. Default: false.",
 				Optional:    true,
+				Computed:    true,
 				Default:     booldefault.StaticBool(false),
 			},
 			ProductPreferenceKeyGenerationMode: schema.StringAttribute{
 				Description: "Determines the Feature Flag key generation mode. Available values: `camelCase`|`upperCase`|`lowerCase`|`pascalCase`|`kebabCase`. Default: `camelCase`.",
 				Optional:    true,
+				Computed:    true,
 				Default:     stringdefault.StaticString("camelCase"),
 			},
 			ProductPreferenceReasonRequired: schema.BoolAttribute{
 				Description: "Indicates that a mandatory note is required for saving and publishing. Default: false.",
 				Optional:    true,
+				Computed:    true,
 				Default:     booldefault.StaticBool(false),
 			},
 			ProductPreferenceReasonRequiredEnvironmentments: schema.ListAttribute{
@@ -210,11 +214,17 @@ func (resourceModel *productPreferencesResourceModel) UpdateFromApiModel(model s
 	resourceModel.ShowVariationId = types.BoolPointerValue(model.ShowVariationId)
 	resourceModel.KeyGenerationMode = types.StringPointerValue((*string)(model.KeyGenerationMode))
 	resourceModel.ReasonRequired = types.BoolPointerValue(model.ReasonRequired)
-	resourceModel.ReasonRequiredEnvironments = make([]basetypes.StringValue, 0)
+	reasonRequiredEnvironments := make([]basetypes.StringValue, 0)
 	for _, environment := range model.ReasonRequiredEnvironments {
 		if environment.EnvironmentId != nil && environment.ReasonRequired != nil && *environment.ReasonRequired {
 			resourceModel.ReasonRequiredEnvironments = append(resourceModel.ReasonRequiredEnvironments, types.StringValue(*environment.EnvironmentId))
 		}
+	}
+
+	if len(reasonRequiredEnvironments) > 0 {
+		resourceModel.ReasonRequiredEnvironments = reasonRequiredEnvironments
+	} else {
+		resourceModel.ReasonRequiredEnvironments = nil
 	}
 }
 
