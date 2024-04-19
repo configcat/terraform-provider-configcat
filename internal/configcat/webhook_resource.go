@@ -31,6 +31,8 @@ type webhookResource struct {
 }
 
 type webhookHeaderResourceModel struct {
+	Key   types.String `tfsdk:"key"`
+	Value types.String `tfsdk:"value"`
 }
 
 type webhookResourceModel struct {
@@ -47,6 +49,26 @@ type webhookResourceModel struct {
 
 func (r *webhookResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_webhook"
+}
+
+func createWebhookHeaderSchema(isSecure bool, description string) *schema.ListNestedAttribute {
+	return &schema.ListNestedAttribute{
+		Optional:    true,
+		Description: description,
+		NestedObject: schema.NestedAttributeObject{
+			Attributes: map[string]schema.Attribute{
+				WebhookHeaderKey: schema.StringAttribute{
+					Required:    true,
+					Description: "The HTTP header key.",
+				},
+				WebhookHeaderValue: schema.StringAttribute{
+					Required:    true,
+					Description: "The HTTP header value.",
+					Sensitive:   isSecure,
+				},
+			},
+		},
+	}
 }
 
 func (r *webhookResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
@@ -92,6 +114,8 @@ func (r *webhookResource) Schema(ctx context.Context, req resource.SchemaRequest
 				Description: "The HTTP body content.",
 				Optional:    true,
 			},
+			WebhookHeaders:       createWebhookHeaderSchema(false, "List of plain text HTTP headers. The value of a plain text header is always visible for everyone. It also appears in audit logs and on the webhook test UI."),
+			SecureWebhookHeaders: createWebhookHeaderSchema(true, "List of secret HTTP headers. The value of a secret header is write-only, nobody will see it after saving the webhook. It won't appear in audit logs and on the webhook test UI either."),
 		},
 	}
 }
@@ -124,15 +148,37 @@ func (r *webhookResource) Create(ctx context.Context, req resource.CreateRequest
 		return
 	}
 
-	order := int32(plan.Order.ValueInt64())
-	body := sw.CreateWebhookModel{
-		Name:        plan.Name.ValueString(),
-		Description: *sw.NewNullableString(plan.Description.ValueStringPointer()),
-		Color:       *sw.NewNullableString(plan.Color.ValueStringPointer()),
-		Order:       *sw.NewNullableInt32(&order),
+	httpMethod, err := sw.NewWebHookHttpMethodFromValue(plan.HttpMethod.ValueString())
+	if err != nil {
+		resp.Diagnostics.AddError("Unable to Create Resource", fmt.Sprintf("Invalid "+WebhookHttpMethod+". Error: %s", err))
+		return
 	}
 
-	model, err := r.client.CreateWebhook(plan.ProductId.ValueString(), body)
+	webhookHeaders := make([]sw.WebhookHeaderModel, len(plan.WebhookHeaders)+len(plan.SecureWebhookHeaders))
+	for webhookHeaderIndex, webhookHeader := range plan.WebhookHeaders {
+		isSecure := false
+		webhookHeaders[webhookHeaderIndex] = sw.WebhookHeaderModel{
+			Key:      webhookHeader.Key.ValueString(),
+			Value:    webhookHeader.Value.ValueString(),
+			IsSecure: &isSecure,
+		}
+	}
+	for webhookHeaderIndex, webhookHeader := range plan.SecureWebhookHeaders {
+		isSecure := true
+		webhookHeaders[webhookHeaderIndex] = sw.WebhookHeaderModel{
+			Key:      webhookHeader.Key.ValueString(),
+			Value:    webhookHeader.Value.ValueString(),
+			IsSecure: &isSecure,
+		}
+	}
+
+	body := sw.CreateWebHookRequest{
+		Url:        plan.Url.ValueString(),
+		HttpMethod: httpMethod,
+		Content:    *sw.NewNullableString(plan.Content.ValueStringPointer()),
+	}
+
+	model, err := r.client.CreateWebhook(plan.ConfigId.ValueString(), plan.EnvironmentId.ValueString(), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Unable to Create Resource", fmt.Sprintf("Unable to create "+WebhookResourceName+", got error: %s", err))
 		return
@@ -152,7 +198,7 @@ func (r *webhookResource) Read(ctx context.Context, req resource.ReadRequest, re
 		return
 	}
 
-	model, err := r.client.GetWebhook(state.ID.ValueString())
+	model, err := r.client.GetWebhook(int32(state.ID.ValueInt64()))
 	if err != nil {
 		if _, ok := err.(client.NotFoundError); ok {
 			// If the resource is already deleted, we have to remove it from the state.
@@ -178,19 +224,15 @@ func (r *webhookResource) Update(ctx context.Context, req resource.UpdateRequest
 		return
 	}
 
-	if plan.Name.Equal(state.Name) && plan.Description.Equal(state.Description) && plan.Color.Equal(state.Color) && plan.Order.Equal(state.Order) {
+	if !webhookHasChanges(&plan, &state) {
 		return
 	}
 
-	order := int32(plan.Order.ValueInt64())
-	body := sw.UpdateWebhookModel{
-		Name:        *sw.NewNullableString(plan.Name.ValueStringPointer()),
-		Description: *sw.NewNullableString(plan.Description.ValueStringPointer()),
-		Color:       *sw.NewNullableString(plan.Color.ValueStringPointer()),
-		Order:       *sw.NewNullableInt32(&order),
-	}
+	operations := []sw.JsonPatchOperation{}
 
-	model, err := r.client.UpdateWebhook(plan.ID.ValueString(), body)
+	// TODO
+
+	model, err := r.client.UpdateWebhook(int32(state.ID.ValueInt64()), operations)
 	if err != nil {
 		resp.Diagnostics.AddError("Unable to Update Resource", fmt.Sprintf("Unable to update "+WebhookResourceName+", got error: %s", err))
 		return
@@ -209,7 +251,7 @@ func (r *webhookResource) Delete(ctx context.Context, req resource.DeleteRequest
 		return
 	}
 
-	err := r.client.DeleteWebhook(state.ID.ValueString())
+	err := r.client.DeleteWebhook(int32(state.ID.ValueInt64()))
 
 	if err != nil {
 		if _, ok := err.(client.NotFoundError); ok {
@@ -227,11 +269,60 @@ func (r *webhookResource) ImportState(ctx context.Context, req resource.ImportSt
 }
 
 func (resourceModel *webhookResourceModel) UpdateFromApiModel(model sw.WebhookModel) {
-	modelOrder := int64(*model.Order)
-	resourceModel.ID = types.StringPointerValue(model.WebhookId)
-	resourceModel.ProductId = types.StringPointerValue(model.Product.ProductId)
-	resourceModel.Name = types.StringPointerValue(model.Name.Get())
-	resourceModel.Description = types.StringPointerValue(model.Description.Get())
-	resourceModel.Color = types.StringPointerValue(model.Color.Get())
-	resourceModel.Order = types.Int64Value(modelOrder)
+
+	resourceModel.ID = types.Int64Value(int64(*model.WebhookId))
+
+	// TODO
+	resourceModel.ConfigId = types.StringPointerValue(nil)
+	resourceModel.EnvironmentId = types.StringPointerValue(nil)
+	resourceModel.Url = types.StringPointerValue(model.Url.Get())
+	resourceModel.HttpMethod = types.StringPointerValue((*string)(model.HttpMethod))
+	resourceModel.Content = types.StringPointerValue(model.Content.Get())
+
+	resourceModel.WebhookHeaders = make([]webhookHeaderResourceModel, 0)
+	resourceModel.SecureWebhookHeaders = make([]webhookHeaderResourceModel, 0)
+	for _, webhookHeader := range model.WebHookHeaders {
+		webhookHeaderModel := &webhookHeaderResourceModel{
+			Key:   types.StringValue(webhookHeader.Key),
+			Value: types.StringValue(webhookHeader.Value),
+		}
+		if *webhookHeader.IsSecure {
+			resourceModel.SecureWebhookHeaders = append(resourceModel.WebhookHeaders, *webhookHeaderModel)
+		} else {
+			resourceModel.WebhookHeaders = append(resourceModel.WebhookHeaders, *webhookHeaderModel)
+		}
+	}
+}
+
+func webhookHasChanges(plan *webhookResourceModel, state *webhookResourceModel) bool {
+
+	if !plan.Url.Equal(state.Url) ||
+		!plan.HttpMethod.Equal(state.HttpMethod) ||
+		!plan.Content.Equal(state.Content) ||
+		len(plan.WebhookHeaders) != len(state.WebhookHeaders) ||
+		len(plan.SecureWebhookHeaders) != len(state.SecureWebhookHeaders) {
+		return true
+	}
+	for webhookHeaderIndex, planWebhookHeader := range plan.WebhookHeaders {
+		if webhookHeaderHasChanges(&planWebhookHeader, &state.WebhookHeaders[webhookHeaderIndex]) {
+			return true
+		}
+	}
+
+	for webhookHeaderIndex, planWebhookHeader := range plan.SecureWebhookHeaders {
+		if webhookHeaderHasChanges(&planWebhookHeader, &state.SecureWebhookHeaders[webhookHeaderIndex]) {
+			return true
+		}
+	}
+
+	return false
+}
+
+func webhookHeaderHasChanges(plan *webhookHeaderResourceModel, state *webhookHeaderResourceModel) bool {
+	if !plan.Key.Equal(state.Key) ||
+		!plan.Value.Equal(state.Value) {
+		return true
+	}
+
+	return false
 }

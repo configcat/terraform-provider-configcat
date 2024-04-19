@@ -32,6 +32,8 @@ const (
 	WebhookHttpMethod    = "http_method"
 	WebhookHeaders       = "webhook_headers"
 	SecureWebhookHeaders = "secure_webhook_headers"
+	WebhookHeaderKey     = "key"
+	WebhookHeaderValue   = "value"
 
 	WebhookSigningKeysResourceName = "Webhook Signing Keys"
 	WebhookSigningKeyKey1          = "key1"
