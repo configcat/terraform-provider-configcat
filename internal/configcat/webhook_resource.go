@@ -300,9 +300,8 @@ func (resourceModel *webhookResourceModel) UpdateFromApiModel(model sw.WebhookMo
 
 	resourceModel.ID = types.Int64Value(int64(*model.WebhookId))
 
-	// TODO
-	resourceModel.ConfigId = types.StringPointerValue(nil)
-	resourceModel.EnvironmentId = types.StringPointerValue(nil)
+	resourceModel.ConfigId = types.StringPointerValue(model.Config.ConfigId)
+	resourceModel.EnvironmentId = types.StringPointerValue(model.Environment.EnvironmentId)
 	resourceModel.Url = types.StringPointerValue(model.Url.Get())
 	resourceModel.HttpMethod = types.StringPointerValue((*string)(model.HttpMethod))
 	resourceModel.Content = types.StringPointerValue(model.Content.Get())
