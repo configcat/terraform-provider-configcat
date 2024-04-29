@@ -117,8 +117,12 @@ func (r *webhookResource) Schema(ctx context.Context, req resource.SchemaRequest
 				Description: "The HTTP body content.",
 				Optional:    true,
 			},
-			WebhookHeaders:       createWebhookHeaderSchema(false, "List of plain text HTTP headers. The value of a plain text header is always visible for everyone. It also appears in audit logs and on the webhook test UI."),
-			SecureWebhookHeaders: createWebhookHeaderSchema(true, "List of secret HTTP headers. The value of a secret header is write-only, nobody will see it after saving the webhook. It won't appear in audit logs and on the webhook test UI either."),
+			WebhookHeaders: createWebhookHeaderSchema(false, "List of plain text HTTP headers. The value of a plain text header is always visible for everyone. It also appears in audit logs and on the webhook test UI."),
+			SecureWebhookHeaders: createWebhookHeaderSchema(true, "List of secret HTTP headers. "+
+				"The value of a secret header is write-only, nobody will see it after saving the webhook. "+
+				"It won't appear in audit logs and on the webhook test UI either.  "+
+				"It is important to note that webhooks containing secure webhook headers cannot be imported via `terraform import`."+
+				"Secure webhook headers can be managed via Terraform or via the ConfigCat Dashboard, but not both of them. If you manage your webhook with Terraform, and you change a secure webhook header on the ConfigCat Dashboard, Terraform will not be able to detect these changes."),
 		},
 	}
 }
