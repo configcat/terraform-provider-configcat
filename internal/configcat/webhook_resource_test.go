@@ -8,8 +8,10 @@ import (
 )
 
 func TestAccWebhookResource(t *testing.T) {
-	const productId = "08d86d63-2721-4da6-8c06-584521d516bc"
-	const testResourceName = "configcat_tag.test"
+	const config_id = "08dc1bfa-b8b0-45f0-8127-fac0de7a37ac"
+	const environment_id = "08d86d63-2726-47cd-8bfc-59608ecb91e2"
+	const test_url = "https://test.example.com"
+	const testResourceName = "configcat_webhook.test"
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -18,8 +20,9 @@ func TestAccWebhookResource(t *testing.T) {
 			{
 				ConfigFile: config.TestNameFile("main.tf"),
 				ConfigVariables: config.Variables{
-					"product_id": config.StringVariable(productId),
-					"name":       config.StringVariable("Resource name"),
+					"config_id":      config.StringVariable(config_id),
+					"environment_id": config.StringVariable(environment_id),
+					"url":            config.StringVariable(test_url),
 				},
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet(testResourceName, ID),
@@ -30,35 +33,9 @@ func TestAccWebhookResource(t *testing.T) {
 			{
 				ConfigFile: config.TestNameFile("main.tf"),
 				ConfigVariables: config.Variables{
-					"product_id": config.StringVariable(productId),
-					"name":       config.StringVariable("Resource name updated"),
-					"color":      config.StringVariable("panther"),
-				},
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttrSet(testResourceName, ID),
-					resource.TestCheckResourceAttr(testResourceName, Name, "Resource name updated"),
-					resource.TestCheckResourceAttr(testResourceName, Color, "panther"),
-				),
-			},
-			{
-				ConfigFile: config.TestNameFile("main.tf"),
-				ConfigVariables: config.Variables{
-					"product_id": config.StringVariable(productId),
-					"name":       config.StringVariable("Resource name updated"),
-					"color":      config.StringVariable("whale"),
-				},
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttrSet(testResourceName, ID),
-					resource.TestCheckResourceAttr(testResourceName, Name, "Resource name updated"),
-					resource.TestCheckResourceAttr(testResourceName, Color, "whale"),
-				),
-			},
-			{
-				ConfigFile: config.TestNameFile("main.tf"),
-				ConfigVariables: config.Variables{
-					"product_id": config.StringVariable(productId),
-					"name":       config.StringVariable("Resource name updated"),
-					"color":      config.StringVariable("whale"),
+					"config_id":      config.StringVariable(config_id),
+					"environment_id": config.StringVariable(environment_id),
+					"url":            config.StringVariable(test_url),
 				},
 				ResourceName:      testResourceName,
 				ImportState:       true,
