@@ -50,7 +50,7 @@ func (r *productPreferencesResource) Metadata(ctx context.Context, req resource.
 
 func (r *productPreferencesResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "Creates and manages a **" + ProductPreferencesResourceName + "**.",
+		MarkdownDescription: "Manages the **" + ProductPreferencesResourceName + "**.",
 
 		Attributes: map[string]schema.Attribute{
 			ID: schema.StringAttribute{
@@ -75,7 +75,7 @@ func (r *productPreferencesResource) Schema(ctx context.Context, req resource.Sc
 				Default:     booldefault.StaticBool(false),
 			},
 			ProductPreferenceShowVariationId: schema.BoolAttribute{
-				Description: "Indicates whether a variation ID's must be shown on the ConfigCat Dashboard. Default: false.",
+				Description: "Indicates whether variation IDs must be shown on the ConfigCat Dashboard. Default: false.",
 				Optional:    true,
 				Computed:    true,
 				Default:     booldefault.StaticBool(false),

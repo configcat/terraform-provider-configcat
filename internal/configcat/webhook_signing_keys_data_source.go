@@ -38,7 +38,7 @@ func (d *webhookSigningKeysDataSource) Metadata(ctx context.Context, req datasou
 
 func (d *webhookSigningKeysDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "Use this data source to access information about existing **" + ProductResourceName + "s**. [What is a " + ProductResourceName + " in ConfigCat?](https://configcat.com/docs/main-concepts)",
+		MarkdownDescription: "Use this data source to access information about **" + WebhookSigningKeysResourceName + "**. [What is a " + WebhookResourceName + " in ConfigCat?](https://configcat.com/docs/advanced/notifications-webhooks/)",
 
 		Attributes: map[string]schema.Attribute{
 			ID: schema.StringAttribute{

@@ -3,12 +3,12 @@
 page_title: "configcat_webhook_signing_keys Data Source - terraform-provider-configcat"
 subcategory: ""
 description: |-
-  Use this data source to access information about existing Products. What is a Product in ConfigCat? https://configcat.com/docs/main-concepts
+  Use this data source to access information about Webhook Signing Keys. What is a Webhook in ConfigCat? https://configcat.com/docs/advanced/notifications-webhooks/
 ---
 
 # configcat_webhook_signing_keys (Data Source)
 
-Use this data source to access information about existing **Products**. [What is a Product in ConfigCat?](https://configcat.com/docs/main-concepts)
+Use this data source to access information about **Webhook Signing Keys**. [What is a Webhook in ConfigCat?](https://configcat.com/docs/advanced/notifications-webhooks/)
 
 ## Example Usage
 

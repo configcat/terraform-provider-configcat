@@ -3,12 +3,12 @@
 page_title: "configcat_product_preferences Resource - terraform-provider-configcat"
 subcategory: ""
 description: |-
-  Creates and manages a Product Preferences.
+  Manages the Product Preferences.
 ---
 
 # configcat_product_preferences (Resource)
 
-Creates and manages a **Product Preferences**.
+Manages the **Product Preferences**.
 
 ## Example Usage
 
@@ -62,7 +62,7 @@ resource "configcat_product_preferences" "preferences" {
 - `mandatory_setting_hint` (Boolean) Indicates whether Feature flags and Settings must have a hint. Default: false.
 - `reason_required` (Boolean) Indicates that a mandatory note is required for saving and publishing. Default: false.
 - `reason_required_environments` (Map of Boolean) The environment specific mandatory note map block. Keys are the Environment IDs and the values indicate that a mandatory note is required for saving and publishing.
-- `show_variation_id` (Boolean) Indicates whether a variation ID's must be shown on the ConfigCat Dashboard. Default: false.
+- `show_variation_id` (Boolean) Indicates whether variation IDs must be shown on the ConfigCat Dashboard. Default: false.
 
 ### Read-Only
 
