@@ -322,7 +322,7 @@ func (resourceModel *webhookResourceModel) UpdateFromApiModel(model sw.WebhookMo
 			Value: types.StringValue(webhookHeader.Value),
 		}
 		if *webhookHeader.IsSecure {
-			resourceModel.SecureWebhookHeaders = append(resourceModel.WebhookHeaders, *webhookHeaderModel)
+			resourceModel.SecureWebhookHeaders = append(resourceModel.SecureWebhookHeaders, *webhookHeaderModel)
 		} else {
 			resourceModel.WebhookHeaders = append(resourceModel.WebhookHeaders, *webhookHeaderModel)
 		}
