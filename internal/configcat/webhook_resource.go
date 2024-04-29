@@ -3,6 +3,7 @@ package configcat
 import (
 	"context"
 	"fmt"
+	"strconv"
 
 	"github.com/configcat/terraform-provider-configcat/internal/configcat/client"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -293,7 +294,14 @@ func (r *webhookResource) Delete(ctx context.Context, req resource.DeleteRequest
 }
 
 func (r *webhookResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	resource.ImportStatePassthroughID(ctx, path.Root(ID), req, resp)
+	id, err := strconv.ParseInt(req.ID, 10, 64)
+
+	if err != nil {
+		resp.Diagnostics.AddAttributeError(path.Root(ID), "unexpected ID format", err.Error())
+		return
+	}
+
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root(ID), types.Int64Value(id))...)
 }
 
 func (resourceModel *webhookResourceModel) UpdateFromApiModel(model sw.WebhookModel) {
@@ -318,6 +326,12 @@ func (resourceModel *webhookResourceModel) UpdateFromApiModel(model sw.WebhookMo
 		} else {
 			resourceModel.WebhookHeaders = append(resourceModel.WebhookHeaders, *webhookHeaderModel)
 		}
+	}
+	if len(resourceModel.WebhookHeaders) == 0 {
+		resourceModel.WebhookHeaders = nil
+	}
+	if len(resourceModel.SecureWebhookHeaders) == 0 {
+		resourceModel.SecureWebhookHeaders = nil
 	}
 }
 
