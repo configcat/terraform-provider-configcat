@@ -267,6 +267,40 @@ func TestAccWebhookResource(t *testing.T) {
 				ImportState:  true,
 				ExpectError:  regexp.MustCompile("Unable to read secure webhook headers."),
 			},
+			{
+				ConfigFile: config.TestNameFile("main.tf"),
+				ConfigVariables: config.Variables{
+					"config_id":      config.StringVariable(config_id),
+					"environment_id": config.StringVariable(environment_id),
+					"url":            config.StringVariable(test_url2),
+					"http_method":    config.StringVariable("post"),
+					"content":        config.StringVariable("test content"),
+					"webhook_headers": config.ListVariable(
+						config.ObjectVariable(map[string]config.Variable{
+							"key":   config.StringVariable("whkey3"),
+							"value": config.StringVariable("whvalue3"),
+						}),
+					),
+					"secure_webhook_headers": config.ListVariable(
+						config.ObjectVariable(map[string]config.Variable{
+							"key":   config.StringVariable("whsecurekey3"),
+							"value": config.StringVariable("whsecurevalue3"),
+						}),
+					),
+				},
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttrSet(testResourceName, ID),
+					resource.TestCheckResourceAttr(testResourceName, WebhookUrl, test_url2),
+					resource.TestCheckResourceAttr(testResourceName, WebhookHttpMethod, "post"),
+					resource.TestCheckResourceAttr(testResourceName, WebhookContent, "test content"),
+					resource.TestCheckResourceAttr(testResourceName, WebhookHeaders+".#", "1"),
+					resource.TestCheckResourceAttr(testResourceName, WebhookHeaders+".0."+WebhookHeaderKey, "whkey3"),
+					resource.TestCheckResourceAttr(testResourceName, WebhookHeaders+".0."+WebhookHeaderValue, "whvalue3"),
+					resource.TestCheckResourceAttr(testResourceName, SecureWebhookHeaders+".#", "1"),
+					resource.TestCheckResourceAttr(testResourceName, SecureWebhookHeaders+".0."+WebhookHeaderKey, "whsecurekey3"),
+					resource.TestCheckResourceAttr(testResourceName, SecureWebhookHeaders+".0."+WebhookHeaderValue, "whsecurevalue3"),
+				),
+			},
 		},
 	})
 }
