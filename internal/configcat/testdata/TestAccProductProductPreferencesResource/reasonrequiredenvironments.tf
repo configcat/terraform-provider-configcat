@@ -54,7 +54,7 @@ resource "configcat_product_preferences" "preferences" {
   show_variation_id      = var.show_variation_id
   reason_required        = var.reason_required
   reason_required_environments = {
-    "${configcat_environment.test.id}" = var.test_required,
-    "${configcat_environment.prod.id}" = var.prod_required
+    configcat_environment.test.id = var.test_required,
+    configcat_environment.prod.id = var.prod_required
   }
 }

@@ -28,7 +28,7 @@ resource "configcat_product_preferences" "preferences" {
   show_variation_id      = false
   reason_required        = false
   reason_required_environments = {
-    "${configcat_environment.test.id}"       = false,
-    "${configcat_environment.production.id}" = true,
+    configcat_environment.test.id       = false,
+    configcat_environment.production.id = true,
   }
 }
