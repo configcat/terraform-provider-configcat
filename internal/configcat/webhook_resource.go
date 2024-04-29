@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/configcat/terraform-provider-configcat/internal/configcat/client"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -21,6 +22,7 @@ import (
 )
 
 var _ resource.Resource = &webhookResource{}
+var _ resource.ResourceWithConfigure = &webhookResource{}
 var _ resource.ResourceWithImportState = &webhookResource{}
 
 func NewWebhookResource() resource.Resource {
@@ -186,7 +188,10 @@ func (r *webhookResource) Create(ctx context.Context, req resource.CreateRequest
 		return
 	}
 
-	plan.UpdateFromApiModel(*model)
+	plan.UpdateFromApiModel(*model, plan.SecureWebhookHeaders, &resp.Diagnostics)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
@@ -212,7 +217,11 @@ func (r *webhookResource) Read(ctx context.Context, req resource.ReadRequest, re
 		return
 	}
 
-	state.UpdateFromApiModel(*model)
+	state.UpdateFromApiModel(*model, state.SecureWebhookHeaders, &resp.Diagnostics)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -267,7 +276,10 @@ func (r *webhookResource) Update(ctx context.Context, req resource.UpdateRequest
 		return
 	}
 
-	plan.UpdateFromApiModel(*model)
+	plan.UpdateFromApiModel(*model, plan.SecureWebhookHeaders, &resp.Diagnostics)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
 
@@ -304,8 +316,7 @@ func (r *webhookResource) ImportState(ctx context.Context, req resource.ImportSt
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root(ID), types.Int64Value(id))...)
 }
 
-func (resourceModel *webhookResourceModel) UpdateFromApiModel(model sw.WebhookModel) {
-
+func (resourceModel *webhookResourceModel) UpdateFromApiModel(model sw.WebhookModel, secureWebhookHeaders []webhookHeaderResourceModel, diag *diag.Diagnostics) {
 	resourceModel.ID = types.Int64Value(int64(*model.WebhookId))
 
 	resourceModel.ConfigId = types.StringPointerValue(model.Config.ConfigId)
@@ -317,13 +328,28 @@ func (resourceModel *webhookResourceModel) UpdateFromApiModel(model sw.WebhookMo
 	resourceModel.WebhookHeaders = make([]webhookHeaderResourceModel, 0)
 	resourceModel.SecureWebhookHeaders = make([]webhookHeaderResourceModel, 0)
 	for _, webhookHeader := range model.WebHookHeaders {
-		webhookHeaderModel := &webhookHeaderResourceModel{
-			Key:   types.StringValue(webhookHeader.Key),
-			Value: types.StringValue(webhookHeader.Value),
-		}
 		if *webhookHeader.IsSecure {
+
+			var secureWebhookHeaderValue string
+			for _, secureWebhookHeader := range secureWebhookHeaders {
+				if secureWebhookHeader.Key.ValueString() == webhookHeader.Key {
+					secureWebhookHeaderValue = secureWebhookHeader.Value.ValueString()
+					break
+				}
+			}
+			if len(secureWebhookHeaderValue) == 0 {
+				diag.AddError("Unable to read secure webhook headers.", "Secure webhook headers were set outside of Terraform so they cannot be used in Terraform. Please consider managing the resource fully in Terraform or managing the resource on the ConfigCat Dashboard.")
+			}
+			webhookHeaderModel := &webhookHeaderResourceModel{
+				Key:   types.StringValue(webhookHeader.Key),
+				Value: types.StringValue(secureWebhookHeaderValue),
+			}
 			resourceModel.SecureWebhookHeaders = append(resourceModel.SecureWebhookHeaders, *webhookHeaderModel)
 		} else {
+			webhookHeaderModel := &webhookHeaderResourceModel{
+				Key:   types.StringValue(webhookHeader.Key),
+				Value: types.StringValue(webhookHeader.Value),
+			}
 			resourceModel.WebhookHeaders = append(resourceModel.WebhookHeaders, *webhookHeaderModel)
 		}
 	}

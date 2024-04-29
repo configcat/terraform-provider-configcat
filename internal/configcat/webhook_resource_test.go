@@ -6,6 +6,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/config"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/plancheck"
 )
 
 func TestAccWebhookResource(t *testing.T) {
@@ -197,6 +198,74 @@ func TestAccWebhookResource(t *testing.T) {
 					resource.TestCheckResourceAttr(testResourceName, SecureWebhookHeaders+".1."+WebhookHeaderKey, "whsecurekey2"),
 					resource.TestCheckResourceAttr(testResourceName, SecureWebhookHeaders+".1."+WebhookHeaderValue, "whsecurevalue2"),
 				),
+			},
+			{
+				ConfigFile: config.TestNameFile("main.tf"),
+				ConfigVariables: config.Variables{
+					"config_id":      config.StringVariable(config_id),
+					"environment_id": config.StringVariable(environment_id),
+					"url":            config.StringVariable(test_url2),
+					"http_method":    config.StringVariable("post"),
+					"content":        config.StringVariable("test content"),
+					"webhook_headers": config.ListVariable(
+						config.ObjectVariable(map[string]config.Variable{
+							"key":   config.StringVariable("whkey1"),
+							"value": config.StringVariable("whvalue1"),
+						}),
+						config.ObjectVariable(map[string]config.Variable{
+							"key":   config.StringVariable("whkey2"),
+							"value": config.StringVariable("whvalue2"),
+						}),
+					),
+					"secure_webhook_headers": config.ListVariable(
+						config.ObjectVariable(map[string]config.Variable{
+							"key":   config.StringVariable("whsecurekey1"),
+							"value": config.StringVariable("whsecurevalue1"),
+						}),
+						config.ObjectVariable(map[string]config.Variable{
+							"key":   config.StringVariable("whsecurekey2"),
+							"value": config.StringVariable("whsecurevalue2"),
+						}),
+					),
+				},
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{
+						plancheck.ExpectEmptyPlan(),
+					},
+				},
+			},
+			{
+				ConfigFile: config.TestNameFile("main.tf"),
+				ConfigVariables: config.Variables{
+					"config_id":      config.StringVariable(config_id),
+					"environment_id": config.StringVariable(environment_id),
+					"url":            config.StringVariable(test_url2),
+					"http_method":    config.StringVariable("post"),
+					"content":        config.StringVariable("test content"),
+					"webhook_headers": config.ListVariable(
+						config.ObjectVariable(map[string]config.Variable{
+							"key":   config.StringVariable("whkey1"),
+							"value": config.StringVariable("whvalue1"),
+						}),
+						config.ObjectVariable(map[string]config.Variable{
+							"key":   config.StringVariable("whkey2"),
+							"value": config.StringVariable("whvalue2"),
+						}),
+					),
+					"secure_webhook_headers": config.ListVariable(
+						config.ObjectVariable(map[string]config.Variable{
+							"key":   config.StringVariable("whsecurekey1"),
+							"value": config.StringVariable("whsecurevalue1"),
+						}),
+						config.ObjectVariable(map[string]config.Variable{
+							"key":   config.StringVariable("whsecurekey2"),
+							"value": config.StringVariable("whsecurevalue2"),
+						}),
+					),
+				},
+				ResourceName: testResourceName,
+				ImportState:  true,
+				ExpectError:  regexp.MustCompile("Unable to read secure webhook headers."),
 			},
 		},
 	})
