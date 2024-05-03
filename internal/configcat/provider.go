@@ -168,6 +168,7 @@ func (p *configCatProvider) Configure(ctx context.Context, req provider.Configur
 func (p *configCatProvider) Resources(ctx context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		NewProductResource,
+		NewProductPreferencesResource,
 		NewConfigResource,
 		NewEnvironmentResource,
 		NewSettingResource,
@@ -177,6 +178,7 @@ func (p *configCatProvider) Resources(ctx context.Context) []func() resource.Res
 		NewSegmentResource,
 		NewTagResource,
 		NewSettingTagResource,
+		NewWebhookResource,
 	}
 }
 
@@ -191,6 +193,7 @@ func (p *configCatProvider) DataSources(ctx context.Context) []func() datasource
 		NewSettingDataSource,
 		NewTagDataSource,
 		NewPermissionGroupDataSource,
+		NewWebhookSigningKeysDataSource,
 	}
 }
 

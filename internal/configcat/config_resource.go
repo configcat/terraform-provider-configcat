@@ -19,6 +19,7 @@ import (
 )
 
 var _ resource.Resource = &configResource{}
+var _ resource.ResourceWithConfigure = &configResource{}
 var _ resource.ResourceWithImportState = &configResource{}
 
 func NewConfigResource() resource.Resource {

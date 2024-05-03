@@ -16,6 +16,13 @@ const (
 	Products            = "products"
 	ProductId           = "product_id"
 
+	ProductPreferencesResourceName                  = "Product Preferences"
+	ProductPreferenceReasonRequired                 = "reason_required"
+	ProductPreferenceReasonRequiredEnvironmentments = "reason_required_environments"
+	ProductPreferenceKeyGenerationMode              = "key_generation_mode"
+	ProductPreferenceShowVariationId                = "show_variation_id"
+	ProductPreferenceMandatorySettingHint           = "mandatory_setting_hint"
+
 	ConfigResourceName = "Config"
 	Configs            = "configs"
 	ConfigId           = "config_id"
@@ -24,6 +31,20 @@ const (
 	EnvironmentResourceName = "Environment"
 	Environments            = "environments"
 	EnvironmentId           = "environment_id"
+
+	WebhookResourceName  = "Webhook"
+	WebhookId            = "webhook_id"
+	WebhookUrl           = "url"
+	WebhookContent       = "content"
+	WebhookHttpMethod    = "http_method"
+	WebhookHeaders       = "webhook_headers"
+	SecureWebhookHeaders = "secure_webhook_headers"
+	WebhookHeaderKey     = "key"
+	WebhookHeaderValue   = "value"
+
+	WebhookSigningKeysResourceName = "Webhook Signing Keys"
+	WebhookSigningKeyKey1          = "key1"
+	WebhookSigningKeyKey2          = "key2"
 
 	PermissionGroupResourceName                 = "Permission Group"
 	PermissionGroups                            = "permission_groups"
