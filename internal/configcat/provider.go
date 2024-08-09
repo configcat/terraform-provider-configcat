@@ -179,6 +179,7 @@ func (p *configCatProvider) Resources(ctx context.Context) []func() resource.Res
 		NewTagResource,
 		NewSettingTagResource,
 		NewWebhookResource,
+		NewIntegrationResource,
 	}
 }
 

@@ -213,7 +213,7 @@ Required:
 - `prerequisite_setting_id` (String) The prerequisite flag's identifier.
 
 <a id="nestedatt--targeting_rules--conditions--prerequisite_flag_condition--comparison_value"></a>
-### Nested Schema for `targeting_rules.conditions.prerequisite_flag_condition.prerequisite_setting_id`
+### Nested Schema for `targeting_rules.conditions.prerequisite_flag_condition.comparison_value`
 
 Optional:
 

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	configcatpublicapi "github.com/configcat/configcat-publicapi-go-client"
+	configcatpublicapi "github.com/configcat/configcat-publicapi-go-client/v2"
 )
 
 type Client struct {
@@ -25,7 +25,7 @@ func (client *Client) GetAuthContext() context.Context {
 }
 
 func (client *Client) GetMe() (*configcatpublicapi.MeModel, error) {
-	model, response, err := client.apiClient.MeApi.GetMe(client.GetAuthContext()).Execute()
+	model, response, err := client.apiClient.MeAPI.GetMe(client.GetAuthContext()).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
 		defer response.Body.Close()
@@ -34,7 +34,7 @@ func (client *Client) GetMe() (*configcatpublicapi.MeModel, error) {
 }
 
 func (client *Client) GetOrganizations() ([]configcatpublicapi.OrganizationModel, error) {
-	model, response, err := client.apiClient.OrganizationsApi.GetOrganizations(client.GetAuthContext()).Execute()
+	model, response, err := client.apiClient.OrganizationsAPI.GetOrganizations(client.GetAuthContext()).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
 		defer response.Body.Close()
