@@ -58,6 +58,10 @@ func TestAccSettingTagResource(t *testing.T) {
 					},
 				},
 			},
+			{
+				// Removing the resource should work fine.
+				ConfigFile: config.TestNameFile("cleanup.tf"),
+			},
 		},
 	})
 }

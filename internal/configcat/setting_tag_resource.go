@@ -185,7 +185,7 @@ func (r *settingTagResource) Delete(ctx context.Context, req resource.DeleteRequ
 	}
 
 	tagIdString := state.TagId.ValueString()
-	_, tagIdConvErr := strconv.ParseInt(tagIdString, 10, 32)
+	tagID, tagIdConvErr := strconv.ParseInt(tagIdString, 10, 32)
 	if tagIdConvErr != nil {
 		resp.Diagnostics.AddError("Could not parse Tag ID", tagIdConvErr.Error())
 		return
@@ -197,10 +197,32 @@ func (r *settingTagResource) Delete(ctx context.Context, req resource.DeleteRequ
 		return
 	}
 
+	model, getErr := r.client.GetSetting(int32(settingId))
+	if getErr != nil {
+		if _, ok := getErr.(client.NotFoundError); ok {
+			// If the resource is already deleted, we consider the tag to be removed.
+			return
+		}
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read "+SettingResourceName+", got error: %s", getErr))
+		return
+	}
+
+	index := -1
+	for tagIndex, tag := range model.Tags {
+		if *tag.TagId == tagID {
+			index = tagIndex
+			break
+		}
+	}
+
+	if index == -1 {
+		// If the resource is already deleted, we can safely return
+		return
+	}
+
 	operations := []sw.JsonPatchOperation{{
-		Op:    sw.OPERATIONTYPE_REMOVE,
-		Path:  "/tags/-",
-		Value: tagIdString,
+		Op:   sw.OPERATIONTYPE_REMOVE,
+		Path: fmt.Sprintf("/tags/%d", index),
 	}}
 
 	_, err := r.client.UpdateSetting(int32(settingId), operations)
