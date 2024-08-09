@@ -141,6 +141,8 @@ func (r *integrationResource) Create(ctx context.Context, req resource.CreateReq
 		return
 	}
 
+	resp.Diagnostics.Append(validateParameters(*integrationType, parameters)...)
+
 	configs, diags := parseIntegrationConfigs(ctx, plan)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
@@ -170,6 +172,40 @@ func (r *integrationResource) Create(ctx context.Context, req resource.CreateReq
 	plan.UpdateFromApiModel(ctx, *model)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
+}
+
+func validateParameters(integrationType sw.IntegrationType, parameters map[string]string) diag.Diagnostics {
+	var diag diag.Diagnostics
+
+	switch integrationType {
+	case sw.INTEGRATIONTYPE_DATA_DOG:
+		return testParameters(parameters, []string{"apiKey"})
+	case sw.INTEGRATIONTYPE_SLACK:
+		return testParameters(parameters, []string{"incoming_webhook.url"})
+	case sw.INTEGRATIONTYPE_AMPLITUDE:
+		return testParameters(parameters, []string{"apiKey", "secretKey"})
+	case sw.INTEGRATIONTYPE_MIX_PANEL:
+		return testParameters(parameters, []string{"serviceAccountUserName", "serviceAccountSecret", "projectId"})
+	case sw.INTEGRATIONTYPE_SEGMENT:
+		return testParameters(parameters, []string{"writeKey"})
+	case sw.INTEGRATIONTYPE_PUB_NUB:
+		return testParameters(parameters, []string{"pubKey", "subKey", "channel"})
+	}
+
+	return diag
+}
+
+func testParameters(parameters map[string]string, keys []string) diag.Diagnostics {
+	var diag diag.Diagnostics
+	for _, key := range keys {
+		_, ok := parameters[key]
+		if !ok {
+			diag.AddAttributeError(path.Root(IntegrationParameters), key+" parameter is required", key+" parameter is required")
+			return diag
+		}
+	}
+
+	return diag
 }
 
 func (r *integrationResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
