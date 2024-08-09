@@ -579,3 +579,115 @@ func TestAccIntegrationSlackResource(t *testing.T) {
 		},
 	})
 }
+
+func TestAccIntegrationSegmentResource(t *testing.T) {
+	const productId = "08d86d63-2721-4da6-8c06-584521d516bc"
+	const integrationType = "segment"
+	const testResourceName = "configcat_integration.test"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		Steps: []resource.TestStep{
+			{
+				ConfigFile: config.StaticFile(path.Join("testdata", "TestAccIntegrationResource", "main.tf")),
+				ConfigVariables: config.Variables{
+					"product_id":       config.StringVariable(productId),
+					"integration_type": config.StringVariable(integrationType),
+				},
+				ExpectError: regexp.MustCompile("Must set a configuration value for the name attribute"),
+			},
+			{
+				ConfigFile: config.StaticFile(path.Join("testdata", "TestAccIntegrationResource", "main.tf")),
+				ConfigVariables: config.Variables{
+					"product_id":       config.StringVariable(productId),
+					"integration_type": config.StringVariable(integrationType),
+					"name":             config.StringVariable(integrationType + "_integ"),
+				},
+				ExpectError: regexp.MustCompile("writeKey parameter is required"),
+			},
+			{
+				ConfigFile: config.StaticFile(path.Join("testdata", "TestAccIntegrationResource", "main.tf")),
+				ConfigVariables: config.Variables{
+					"product_id":       config.StringVariable(productId),
+					"integration_type": config.StringVariable(integrationType),
+					"name":             config.StringVariable(integrationType + "_integ"),
+					"parameters": config.MapVariable(map[string]config.Variable{
+						"writeKey": config.StringVariable("writeKey"),
+					}),
+				},
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttrSet(testResourceName, ID),
+					resource.TestCheckResourceAttr(testResourceName, Name, integrationType+"_integ"),
+					resource.TestCheckResourceAttr(testResourceName, IntegrationType, integrationType),
+					resource.TestCheckResourceAttr(testResourceName, IntegrationParameters+".writeKey", "writeKey"),
+					resource.TestCheckResourceAttr(testResourceName, IntegrationConfigs+".#", "0"),
+					resource.TestCheckResourceAttr(testResourceName, IntegrationEnvironments+".#", "0"),
+				),
+			},
+			{
+				ConfigFile: config.StaticFile(path.Join("testdata", "TestAccIntegrationResource", "main.tf")),
+				ConfigVariables: config.Variables{
+					"product_id":       config.StringVariable(productId),
+					"integration_type": config.StringVariable(integrationType),
+					"name":             config.StringVariable(integrationType + "_integ"),
+					"parameters": config.MapVariable(map[string]config.Variable{
+						"writeKey": config.StringVariable("writeKey"),
+					}),
+				},
+				ResourceName:      testResourceName,
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+			{
+				ConfigFile: config.StaticFile(path.Join("testdata", "TestAccIntegrationResource", "main.tf")),
+				ConfigVariables: config.Variables{
+					"product_id":       config.StringVariable(productId),
+					"integration_type": config.StringVariable(integrationType),
+					"name":             config.StringVariable(integrationType + "_integ2"),
+					"parameters": config.MapVariable(map[string]config.Variable{
+						"writeKey": config.StringVariable("writeKey2"),
+						"server":   config.StringVariable("Eu"),
+					}),
+				},
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttrSet(testResourceName, ID),
+					resource.TestCheckResourceAttr(testResourceName, Name, integrationType+"_integ2"),
+					resource.TestCheckResourceAttr(testResourceName, IntegrationType, integrationType),
+					resource.TestCheckResourceAttr(testResourceName, IntegrationParameters+".writeKey", "writeKey2"),
+					resource.TestCheckResourceAttr(testResourceName, IntegrationParameters+".server", "Eu"),
+					resource.TestCheckResourceAttr(testResourceName, IntegrationConfigs+".#", "0"),
+					resource.TestCheckResourceAttr(testResourceName, IntegrationEnvironments+".#", "0"),
+				),
+			},
+			{
+				ConfigFile: config.StaticFile(path.Join("testdata", "TestAccIntegrationResource", "main.tf")),
+				ConfigVariables: config.Variables{
+					"product_id":       config.StringVariable(productId),
+					"integration_type": config.StringVariable(integrationType),
+					"name":             config.StringVariable(integrationType + "_integ"),
+					"parameters": config.MapVariable(map[string]config.Variable{
+						"writeKey": config.StringVariable("writeKey2"),
+						"server":   config.StringVariable("Eu"),
+					}),
+				},
+				ResourceName:      testResourceName,
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+			{
+				ConfigFile: config.StaticFile(path.Join("testdata", "TestAccIntegrationResource", "main.tf")),
+				ConfigVariables: config.Variables{
+					"product_id":       config.StringVariable(productId),
+					"integration_type": config.StringVariable(integrationType),
+					"name":             config.StringVariable(integrationType + "_integ2"),
+					"parameters": config.MapVariable(map[string]config.Variable{
+						"writeKey": config.StringVariable("writeKey2"),
+						"server":   config.StringVariable("invalid"),
+					}),
+				},
+				ExpectError: regexp.MustCompile("'server' is invalid"),
+			},
+		},
+	})
+}
