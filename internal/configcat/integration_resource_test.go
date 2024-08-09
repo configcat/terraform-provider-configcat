@@ -318,3 +318,264 @@ func TestAccIntegrationDatadogResource(t *testing.T) {
 		},
 	})
 }
+
+func TestAccIntegrationMixpanelResource(t *testing.T) {
+	const productId = "08d86d63-2721-4da6-8c06-584521d516bc"
+	const integrationType = "mixPanel"
+	const testResourceName = "configcat_integration.test"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		Steps: []resource.TestStep{
+			{
+				ConfigFile: config.StaticFile(path.Join("testdata", "TestAccIntegrationResource", "main.tf")),
+				ConfigVariables: config.Variables{
+					"product_id":       config.StringVariable(productId),
+					"integration_type": config.StringVariable(integrationType),
+				},
+				ExpectError: regexp.MustCompile("Must set a configuration value for the name attribute"),
+			},
+			{
+				ConfigFile: config.StaticFile(path.Join("testdata", "TestAccIntegrationResource", "main.tf")),
+				ConfigVariables: config.Variables{
+					"product_id":       config.StringVariable(productId),
+					"integration_type": config.StringVariable(integrationType),
+					"name":             config.StringVariable(integrationType + "_integ"),
+				},
+				ExpectError: regexp.MustCompile("serviceAccountUserName parameter is required"),
+			},
+			{
+				ConfigFile: config.StaticFile(path.Join("testdata", "TestAccIntegrationResource", "main.tf")),
+				ConfigVariables: config.Variables{
+					"product_id":       config.StringVariable(productId),
+					"integration_type": config.StringVariable(integrationType),
+					"name":             config.StringVariable(integrationType + "_integ"),
+					"parameters": config.MapVariable(map[string]config.Variable{
+						"serviceAccountUserName": config.StringVariable("serviceAccountUserName"),
+					}),
+				},
+				ExpectError: regexp.MustCompile("serviceAccountSecret parameter is required"),
+			},
+			{
+				ConfigFile: config.StaticFile(path.Join("testdata", "TestAccIntegrationResource", "main.tf")),
+				ConfigVariables: config.Variables{
+					"product_id":       config.StringVariable(productId),
+					"integration_type": config.StringVariable(integrationType),
+					"name":             config.StringVariable(integrationType + "_integ"),
+					"parameters": config.MapVariable(map[string]config.Variable{
+						"serviceAccountUserName": config.StringVariable("serviceAccountUserName"),
+						"serviceAccountSecret":   config.StringVariable("serviceAccountSecret"),
+						"projectId":              config.StringVariable("projectId"),
+					}),
+				},
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttrSet(testResourceName, ID),
+					resource.TestCheckResourceAttr(testResourceName, Name, integrationType+"_integ"),
+					resource.TestCheckResourceAttr(testResourceName, IntegrationType, integrationType),
+					resource.TestCheckResourceAttr(testResourceName, IntegrationParameters+".serviceAccountUserName", "serviceAccountUserName"),
+					resource.TestCheckResourceAttr(testResourceName, IntegrationParameters+".serviceAccountSecret", "serviceAccountSecret"),
+					resource.TestCheckResourceAttr(testResourceName, IntegrationParameters+".projectId", "projectId"),
+					resource.TestCheckResourceAttr(testResourceName, IntegrationConfigs+".#", "0"),
+					resource.TestCheckResourceAttr(testResourceName, IntegrationEnvironments+".#", "0"),
+				),
+			},
+			{
+				ConfigFile: config.StaticFile(path.Join("testdata", "TestAccIntegrationResource", "main.tf")),
+				ConfigVariables: config.Variables{
+					"product_id":       config.StringVariable(productId),
+					"integration_type": config.StringVariable(integrationType),
+					"name":             config.StringVariable(integrationType + "_integ"),
+					"parameters": config.MapVariable(map[string]config.Variable{
+						"serviceAccountUserName": config.StringVariable("serviceAccountUserName"),
+						"serviceAccountSecret":   config.StringVariable("serviceAccountSecret"),
+						"projectId":              config.StringVariable("projectId"),
+					}),
+				},
+				ResourceName:      testResourceName,
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+			{
+				ConfigFile: config.StaticFile(path.Join("testdata", "TestAccIntegrationResource", "main.tf")),
+				ConfigVariables: config.Variables{
+					"product_id":       config.StringVariable(productId),
+					"integration_type": config.StringVariable(integrationType),
+					"name":             config.StringVariable(integrationType + "_integ2"),
+					"parameters": config.MapVariable(map[string]config.Variable{
+						"serviceAccountUserName": config.StringVariable("serviceAccountUserName2"),
+						"serviceAccountSecret":   config.StringVariable("serviceAccountSecret2"),
+						"projectId":              config.StringVariable("projectId2"),
+						"server":                 config.StringVariable("EUResidencyServer"),
+					}),
+				},
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttrSet(testResourceName, ID),
+					resource.TestCheckResourceAttr(testResourceName, Name, integrationType+"_integ2"),
+					resource.TestCheckResourceAttr(testResourceName, IntegrationType, integrationType),
+					resource.TestCheckResourceAttr(testResourceName, IntegrationParameters+".serviceAccountUserName", "serviceAccountUserName2"),
+					resource.TestCheckResourceAttr(testResourceName, IntegrationParameters+".serviceAccountSecret", "serviceAccountSecret2"),
+					resource.TestCheckResourceAttr(testResourceName, IntegrationParameters+".projectId", "projectId2"),
+					resource.TestCheckResourceAttr(testResourceName, IntegrationParameters+".server", "EUResidencyServer"),
+					resource.TestCheckResourceAttr(testResourceName, IntegrationConfigs+".#", "0"),
+					resource.TestCheckResourceAttr(testResourceName, IntegrationEnvironments+".#", "0"),
+				),
+			},
+			{
+				ConfigFile: config.StaticFile(path.Join("testdata", "TestAccIntegrationResource", "main.tf")),
+				ConfigVariables: config.Variables{
+					"product_id":       config.StringVariable(productId),
+					"integration_type": config.StringVariable(integrationType),
+					"name":             config.StringVariable(integrationType + "_integ"),
+					"parameters": config.MapVariable(map[string]config.Variable{
+						"serviceAccountUserName": config.StringVariable("serviceAccountUserName2"),
+						"serviceAccountSecret":   config.StringVariable("serviceAccountSecret2"),
+						"projectId":              config.StringVariable("projectId2"),
+						"server":                 config.StringVariable("EUResidencyServer"),
+					}),
+				},
+				ResourceName:      testResourceName,
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+			{
+				ConfigFile: config.StaticFile(path.Join("testdata", "TestAccIntegrationResource", "main.tf")),
+				ConfigVariables: config.Variables{
+					"product_id":       config.StringVariable(productId),
+					"integration_type": config.StringVariable(integrationType),
+					"name":             config.StringVariable(integrationType + "_integ2"),
+					"parameters": config.MapVariable(map[string]config.Variable{
+						"serviceAccountUserName": config.StringVariable("serviceAccountUserName2"),
+						"serviceAccountSecret":   config.StringVariable("serviceAccountSecret2"),
+						"projectId":              config.StringVariable("projectId2"),
+						"server":                 config.StringVariable("invalid"),
+					}),
+				},
+				ExpectError: regexp.MustCompile("'server' is invalid"),
+			},
+		},
+	})
+}
+
+func TestAccIntegrationSlackResource(t *testing.T) {
+	const productId = "08d86d63-2721-4da6-8c06-584521d516bc"
+	const integrationType = "slack"
+	const testResourceName = "configcat_integration.test"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		Steps: []resource.TestStep{
+			{
+				ConfigFile: config.StaticFile(path.Join("testdata", "TestAccIntegrationResource", "main.tf")),
+				ConfigVariables: config.Variables{
+					"product_id":       config.StringVariable(productId),
+					"integration_type": config.StringVariable(integrationType),
+				},
+				ExpectError: regexp.MustCompile("Must set a configuration value for the name attribute"),
+			},
+			{
+				ConfigFile: config.StaticFile(path.Join("testdata", "TestAccIntegrationResource", "main.tf")),
+				ConfigVariables: config.Variables{
+					"product_id":       config.StringVariable(productId),
+					"integration_type": config.StringVariable(integrationType),
+					"name":             config.StringVariable(integrationType + "_integ"),
+				},
+				ExpectError: regexp.MustCompile("incoming_webhook.url parameter is required"),
+			},
+			{
+				ConfigFile: config.StaticFile(path.Join("testdata", "TestAccIntegrationResource", "main.tf")),
+				ConfigVariables: config.Variables{
+					"product_id":       config.StringVariable(productId),
+					"integration_type": config.StringVariable(integrationType),
+					"name":             config.StringVariable(integrationType + "_integ"),
+					"parameters": config.MapVariable(map[string]config.Variable{
+						"incoming_webhook.url": config.StringVariable("invalidurl"),
+					}),
+				},
+				ExpectError: regexp.MustCompile("'incoming_webhook.url' is not a valid URL."),
+			},
+			{
+				ConfigFile: config.StaticFile(path.Join("testdata", "TestAccIntegrationResource", "main.tf")),
+				ConfigVariables: config.Variables{
+					"product_id":       config.StringVariable(productId),
+					"integration_type": config.StringVariable(integrationType),
+					"name":             config.StringVariable(integrationType + "_integ"),
+					"parameters": config.MapVariable(map[string]config.Variable{
+						"incoming_webhook.url": config.StringVariable("https://test.example.com/hook"),
+					}),
+				},
+				ExpectError: regexp.MustCompile("'incoming_webhook.url' is not a valid Slack Incoming Webhook URL."),
+			},
+			{
+				ConfigFile: config.StaticFile(path.Join("testdata", "TestAccIntegrationResource", "main.tf")),
+				ConfigVariables: config.Variables{
+					"product_id":       config.StringVariable(productId),
+					"integration_type": config.StringVariable(integrationType),
+					"name":             config.StringVariable(integrationType + "_integ"),
+					"parameters": config.MapVariable(map[string]config.Variable{
+						"incoming_webhook.url": config.StringVariable("https://test.slack.com/hook"),
+					}),
+				},
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttrSet(testResourceName, ID),
+					resource.TestCheckResourceAttr(testResourceName, Name, integrationType+"_integ"),
+					resource.TestCheckResourceAttr(testResourceName, IntegrationType, integrationType),
+					resource.TestCheckResourceAttr(testResourceName, IntegrationParameters+".incoming_webhook.url", "https://test.slack.com/hook"),
+					resource.TestCheckResourceAttr(testResourceName, IntegrationConfigs+".#", "0"),
+					resource.TestCheckResourceAttr(testResourceName, IntegrationEnvironments+".#", "0"),
+				),
+			},
+			{
+				ConfigFile: config.StaticFile(path.Join("testdata", "TestAccIntegrationResource", "main.tf")),
+				ConfigVariables: config.Variables{
+					"product_id":       config.StringVariable(productId),
+					"integration_type": config.StringVariable(integrationType),
+					"name":             config.StringVariable(integrationType + "_integ"),
+					"parameters": config.MapVariable(map[string]config.Variable{
+						"incoming_webhook.url": config.StringVariable("https://test.slack.com/hook"),
+					}),
+				},
+				ResourceName:      testResourceName,
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+			{
+				ConfigFile: config.StaticFile(path.Join("testdata", "TestAccIntegrationResource", "main.tf")),
+				ConfigVariables: config.Variables{
+					"product_id":       config.StringVariable(productId),
+					"integration_type": config.StringVariable(integrationType),
+					"name":             config.StringVariable(integrationType + "_integ2"),
+					"parameters": config.MapVariable(map[string]config.Variable{
+						"incoming_webhook.url": config.StringVariable("https://test.slack.com/hook2"),
+					}),
+				},
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttrSet(testResourceName, ID),
+					resource.TestCheckResourceAttr(testResourceName, Name, integrationType+"_integ2"),
+					resource.TestCheckResourceAttr(testResourceName, IntegrationType, integrationType),
+					resource.TestCheckResourceAttr(testResourceName, IntegrationParameters+".incoming_webhook.url", "https://test.slack.com/hook2"),
+					resource.TestCheckResourceAttr(testResourceName, IntegrationConfigs+".#", "0"),
+					resource.TestCheckResourceAttr(testResourceName, IntegrationEnvironments+".#", "0"),
+				),
+			},
+			{
+				ConfigFile: config.StaticFile(path.Join("testdata", "TestAccIntegrationResource", "main.tf")),
+				ConfigVariables: config.Variables{
+					"product_id":       config.StringVariable(productId),
+					"integration_type": config.StringVariable(integrationType),
+					"name":             config.StringVariable(integrationType + "_integ"),
+					"parameters": config.MapVariable(map[string]config.Variable{
+						"serviceAccountUserName": config.StringVariable("serviceAccountUserName2"),
+						"serviceAccountSecret":   config.StringVariable("serviceAccountSecret2"),
+						"projectId":              config.StringVariable("projectId2"),
+						"server":                 config.StringVariable("EUResidencyServer"),
+					}),
+				},
+				ResourceName:      testResourceName,
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+		},
+	})
+}
