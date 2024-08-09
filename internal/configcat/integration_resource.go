@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/configcat/terraform-provider-configcat/internal/configcat/client"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -77,10 +78,10 @@ func (r *integrationResource) Schema(ctx context.Context, req resource.SchemaReq
 			},
 
 			IntegrationParameters: schema.MapAttribute{
-				Description: "Parameters of the Integration.",
-				Computed:    true,
-				Optional:    true,
-				ElementType: types.StringType,
+				MarkdownDescription: "Parameters of the integration.",
+				Computed:            true,
+				Optional:            true,
+				ElementType:         types.StringType,
 			},
 
 			IntegrationConfigs: schema.SetAttribute{
@@ -134,9 +135,30 @@ func (r *integrationResource) Create(ctx context.Context, req resource.CreateReq
 		return
 	}
 
+	parameters, diags := parseIntegrationParameters(ctx, plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	configs, diags := parseIntegrationConfigs(ctx, plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	environments, diags := parseIntegrationEnvironments(ctx, plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	body := sw.CreateIntegrationModel{
 		Name:            plan.Name.ValueString(),
 		IntegrationType: *integrationType,
+		Parameters:      parameters,
+		ConfigIds:       configs,
+		EnvironmentIds:  environments,
 	}
 
 	model, err := r.client.CreateIntegration(plan.ProductId.ValueString(), body)
@@ -145,7 +167,7 @@ func (r *integrationResource) Create(ctx context.Context, req resource.CreateReq
 		return
 	}
 
-	plan.UpdateFromApiModel(*model, plan.ProductId.ValueString())
+	plan.UpdateFromApiModel(ctx, *model)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
@@ -171,7 +193,7 @@ func (r *integrationResource) Read(ctx context.Context, req resource.ReadRequest
 		return
 	}
 
-	state.UpdateFromApiModel(*model, state.ProductId.ValueString())
+	state.UpdateFromApiModel(ctx, *model)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -185,12 +207,33 @@ func (r *integrationResource) Update(ctx context.Context, req resource.UpdateReq
 		return
 	}
 
-	if plan.Name.Equal(state.Name) {
+	if plan.Name.Equal(state.Name) && plan.IntegrationType.Equal(state.IntegrationType) && plan.Parameters.Equal(state.Parameters) && plan.Configs.Equal(state.Configs) && plan.Environments.Equal(state.Environments) {
+		return
+	}
+
+	parameters, diags := parseIntegrationParameters(ctx, plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	configs, diags := parseIntegrationConfigs(ctx, plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	environments, diags := parseIntegrationEnvironments(ctx, plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
 		return
 	}
 
 	body := sw.ModifyIntegrationRequest{
-		Name: plan.Name.ValueString(),
+		Name:           plan.Name.ValueString(),
+		Parameters:     parameters,
+		ConfigIds:      configs,
+		EnvironmentIds: environments,
 	}
 
 	model, err := r.client.UpdateIntegration(plan.ID.ValueString(), body)
@@ -199,7 +242,7 @@ func (r *integrationResource) Update(ctx context.Context, req resource.UpdateReq
 		return
 	}
 
-	plan.UpdateFromApiModel(*model, plan.ProductId.ValueString())
+	plan.UpdateFromApiModel(ctx, *model)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
 
@@ -229,9 +272,79 @@ func (r *integrationResource) ImportState(ctx context.Context, req resource.Impo
 	resource.ImportStatePassthroughID(ctx, path.Root(ID), req, resp)
 }
 
-func (resourceModel *integrationResourceModel) UpdateFromApiModel(model sw.IntegrationModel, productId string) {
+func (resourceModel *integrationResourceModel) UpdateFromApiModel(ctx context.Context, model sw.IntegrationModel) diag.Diagnostics {
+	var diags diag.Diagnostics
+
 	resourceModel.ID = types.StringPointerValue(model.IntegrationId)
-	resourceModel.ProductId = types.StringValue(productId)
+	// resourceModel.ProductId = types.StringPointerValue(model.Product.ProductId)
 	resourceModel.Name = types.StringPointerValue(model.Name.Get())
 	resourceModel.IntegrationType = types.StringValue(string(*model.IntegrationType))
+
+	parameterMapValue, diags := types.MapValueFrom(ctx, types.StringType, model.Parameters)
+	if diags.HasError() {
+		return diags
+	}
+	resourceModel.Parameters = parameterMapValue
+
+	configsValue, diags := types.SetValueFrom(ctx, types.StringType, model.ConfigIds)
+	if diags.HasError() {
+		return diags
+	}
+	resourceModel.Configs = configsValue
+
+	environmentsValue, diags := types.SetValueFrom(ctx, types.StringType, model.EnvironmentIds)
+	if diags.HasError() {
+		return diags
+	}
+	resourceModel.Environments = environmentsValue
+
+	return diags
+}
+
+func parseIntegrationParameters(ctx context.Context, plan integrationResourceModel) (map[string]string, diag.Diagnostics) {
+	var result map[string]string
+	var diags diag.Diagnostics
+
+	if plan.Parameters.IsUnknown() || plan.Parameters.IsNull() {
+		result = make(map[string]string, 0)
+	} else {
+		result = make(map[string]string, len(plan.Parameters.Elements()))
+		diags.Append(plan.Parameters.ElementsAs(ctx, &result, false)...)
+		if diags.HasError() {
+			return nil, diags
+		}
+	}
+	return result, diags
+}
+
+func parseIntegrationConfigs(ctx context.Context, plan integrationResourceModel) ([]string, diag.Diagnostics) {
+	var result []string
+	var diags diag.Diagnostics
+
+	if plan.Configs.IsUnknown() || plan.Configs.IsNull() {
+		result = make([]string, 0)
+	} else {
+		result = make([]string, len(plan.Configs.Elements()))
+		diags.Append(plan.Configs.ElementsAs(ctx, &result, false)...)
+		if diags.HasError() {
+			return nil, diags
+		}
+	}
+	return result, diags
+}
+
+func parseIntegrationEnvironments(ctx context.Context, plan integrationResourceModel) ([]string, diag.Diagnostics) {
+	var result []string
+	var diags diag.Diagnostics
+
+	if plan.Environments.IsUnknown() || plan.Environments.IsNull() {
+		result = make([]string, 0)
+	} else {
+		result = make([]string, len(plan.Environments.Elements()))
+		diags.Append(plan.Environments.ElementsAs(ctx, &result, false)...)
+		if diags.HasError() {
+			return nil, diags
+		}
+	}
+	return result, diags
 }
