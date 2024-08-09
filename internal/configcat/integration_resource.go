@@ -174,27 +174,6 @@ func (r *integrationResource) Create(ctx context.Context, req resource.CreateReq
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
 
-func validateParameters(integrationType sw.IntegrationType, parameters map[string]string) diag.Diagnostics {
-	var diag diag.Diagnostics
-
-	switch integrationType {
-	case sw.INTEGRATIONTYPE_DATA_DOG:
-		return testParameters(parameters, []string{"apiKey"})
-	case sw.INTEGRATIONTYPE_SLACK:
-		return testParameters(parameters, []string{"incoming_webhook.url"})
-	case sw.INTEGRATIONTYPE_AMPLITUDE:
-		return testParameters(parameters, []string{"apiKey", "secretKey"})
-	case sw.INTEGRATIONTYPE_MIX_PANEL:
-		return testParameters(parameters, []string{"serviceAccountUserName", "serviceAccountSecret", "projectId"})
-	case sw.INTEGRATIONTYPE_SEGMENT:
-		return testParameters(parameters, []string{"writeKey"})
-	case sw.INTEGRATIONTYPE_PUB_NUB:
-		return testParameters(parameters, []string{"pubKey", "subKey", "channel"})
-	}
-
-	return diag
-}
-
 func testParameters(parameters map[string]string, keys []string) diag.Diagnostics {
 	var diag diag.Diagnostics
 	for _, key := range keys {
@@ -383,4 +362,25 @@ func parseIntegrationEnvironments(ctx context.Context, plan integrationResourceM
 		}
 	}
 	return result, diags
+}
+
+func validateParameters(integrationType sw.IntegrationType, parameters map[string]string) diag.Diagnostics {
+	var diag diag.Diagnostics
+
+	switch integrationType {
+	case sw.INTEGRATIONTYPE_DATA_DOG:
+		return testParameters(parameters, []string{"apikey"})
+	case sw.INTEGRATIONTYPE_SLACK:
+		return testParameters(parameters, []string{"incoming_webhook.url"})
+	case sw.INTEGRATIONTYPE_AMPLITUDE:
+		return testParameters(parameters, []string{"apiKey", "secretKey"})
+	case sw.INTEGRATIONTYPE_MIX_PANEL:
+		return testParameters(parameters, []string{"serviceAccountUserName", "serviceAccountSecret", "projectId"})
+	case sw.INTEGRATIONTYPE_SEGMENT:
+		return testParameters(parameters, []string{"writeKey"})
+	case sw.INTEGRATIONTYPE_PUB_NUB:
+		return testParameters(parameters, []string{"pubKey", "subKey", "channel"})
+	}
+
+	return diag
 }

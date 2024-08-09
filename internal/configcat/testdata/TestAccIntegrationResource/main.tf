@@ -19,12 +19,12 @@ variable "parameters" {
 }
 
 variable "configs" {
-  type    = map(string)
+  type    = list(string)
   default = null
 }
 
 variable "environments" {
-  type    = map(string)
+  type    = list(string)
   default = null
 }
 
