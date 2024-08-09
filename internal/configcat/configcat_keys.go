@@ -161,4 +161,7 @@ const (
 	Integrations            = "integrations"
 	IntegrationId           = "integration_id"
 	IntegrationType         = "integration_type"
+	IntegrationParameters   = "parameters"
+	IntegrationConfigs      = "configs"
+	IntegrationEnvironments = "environments"
 )

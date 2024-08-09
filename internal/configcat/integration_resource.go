@@ -34,6 +34,9 @@ type integrationResourceModel struct {
 	ID              types.String `tfsdk:"id"`
 	Name            types.String `tfsdk:"name"`
 	IntegrationType types.String `tfsdk:"integration_type"`
+	Parameters      types.Map    `tfsdk:"parameters"`
+	Configs         types.Set    `tfsdk:"configs"`
+	Environments    types.Set    `tfsdk:"environments"`
 }
 
 func (r *integrationResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -68,6 +71,30 @@ func (r *integrationResource) Schema(ctx context.Context, req resource.SchemaReq
 			IntegrationType: schema.StringAttribute{
 				Description: "The integration type of the " + IntegrationResourceName + ". Possible values: `dataDog`, `slack`, `amplitude`, `mixPanel`, `segment`, `pubNub`.",
 				Required:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
+			},
+
+			IntegrationParameters: schema.MapAttribute{
+				Description: "Parameters of the Integration.",
+				Computed:    true,
+				Optional:    true,
+				ElementType: types.StringType,
+			},
+
+			IntegrationConfigs: schema.SetAttribute{
+				Description: "List of Config IDs that are connected with this Integration. If the list is empty, all of the Configs are connected.",
+				Computed:    true,
+				Optional:    true,
+				ElementType: types.StringType,
+			},
+
+			IntegrationEnvironments: schema.SetAttribute{
+				Description: "List of Environment IDs that are connected with this Integration. If the list is empty, all of the Environments are connected.",
+				Computed:    true,
+				Optional:    true,
+				ElementType: types.StringType,
 			},
 		},
 	}
@@ -118,7 +145,7 @@ func (r *integrationResource) Create(ctx context.Context, req resource.CreateReq
 		return
 	}
 
-	plan.UpdateFromApiModel(*model)
+	plan.UpdateFromApiModel(*model, plan.ProductId.ValueString())
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
@@ -144,7 +171,7 @@ func (r *integrationResource) Read(ctx context.Context, req resource.ReadRequest
 		return
 	}
 
-	state.UpdateFromApiModel(*model)
+	state.UpdateFromApiModel(*model, state.ProductId.ValueString())
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -162,11 +189,6 @@ func (r *integrationResource) Update(ctx context.Context, req resource.UpdateReq
 		return
 	}
 
-	if !plan.IntegrationType.Equal(state.IntegrationType) {
-		resp.Diagnostics.AddError("Unable to Update Resource", fmt.Sprintf("%s cannot be changed. Please create a new integration resource with the new %s.", IntegrationType, IntegrationType))
-		return
-	}
-
 	body := sw.ModifyIntegrationRequest{
 		Name: plan.Name.ValueString(),
 	}
@@ -177,7 +199,7 @@ func (r *integrationResource) Update(ctx context.Context, req resource.UpdateReq
 		return
 	}
 
-	plan.UpdateFromApiModel(*model)
+	plan.UpdateFromApiModel(*model, plan.ProductId.ValueString())
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
 
@@ -207,11 +229,9 @@ func (r *integrationResource) ImportState(ctx context.Context, req resource.Impo
 	resource.ImportStatePassthroughID(ctx, path.Root(ID), req, resp)
 }
 
-func (resourceModel *integrationResourceModel) UpdateFromApiModel(model sw.IntegrationModel) {
+func (resourceModel *integrationResourceModel) UpdateFromApiModel(model sw.IntegrationModel, productId string) {
 	resourceModel.ID = types.StringPointerValue(model.IntegrationId)
-	resourceModel.ProductId = types.StringPointerValue(model.Product.ProductId)
+	resourceModel.ProductId = types.StringValue(productId)
 	resourceModel.Name = types.StringPointerValue(model.Name.Get())
 	resourceModel.IntegrationType = types.StringValue(string(*model.IntegrationType))
-	resourceModel.Color = types.StringPointerValue(model.Color.Get())
-	resourceModel.Order = types.Int64Value(modelOrder)
 }
