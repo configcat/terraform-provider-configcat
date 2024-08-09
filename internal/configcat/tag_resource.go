@@ -16,7 +16,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
-	sw "github.com/configcat/configcat-publicapi-go-client"
+	sw "github.com/configcat/configcat-publicapi-go-client/v2"
 )
 
 var _ resource.Resource = &tagResource{}

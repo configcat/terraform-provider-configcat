@@ -15,7 +15,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
-	sw "github.com/configcat/configcat-publicapi-go-client"
+	sw "github.com/configcat/configcat-publicapi-go-client/v2"
 )
 
 var _ resource.Resource = &integrationResource{}
@@ -312,7 +312,7 @@ func (resourceModel *integrationResourceModel) UpdateFromApiModel(ctx context.Co
 	var diags diag.Diagnostics
 
 	resourceModel.ID = types.StringPointerValue(model.IntegrationId)
-	// resourceModel.ProductId = types.StringPointerValue(model.Product.ProductId)
+	resourceModel.ProductId = types.StringPointerValue(model.Product.ProductId)
 	resourceModel.Name = types.StringPointerValue(model.Name.Get())
 	resourceModel.IntegrationType = types.StringValue(string(*model.IntegrationType))
 
