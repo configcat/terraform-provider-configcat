@@ -61,8 +61,8 @@ resource "configcat_permission_group" "custom_permission_group" {
   accesstype = "custom"
 
   environment_accesses = {
-    var.test_environment_id          = "full"
-    var.productuction_environment_id = "readOnly"
+    (var.test_environment_id)          = "full"
+    (var.productuction_environment_id) = "readOnly"
   }
 }
 

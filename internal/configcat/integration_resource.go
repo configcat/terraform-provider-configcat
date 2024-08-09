@@ -46,7 +46,7 @@ func (r *integrationResource) Metadata(ctx context.Context, req resource.Metadat
 
 func (r *integrationResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "Creates and manages an **" + IntegrationResourceName + "**. [What is an " + IntegrationResourceName + " in ConfigCat?](https://configcat.com/docs/main-concepts)",
+		MarkdownDescription: "Creates and manages an **" + IntegrationResourceName + "**. [Read more about " + IntegrationResourceName + "s in ConfigCat](https://configcat.com/docs/integrations/overview/)",
 
 		Attributes: map[string]schema.Attribute{
 			ID: schema.StringAttribute{
@@ -78,7 +78,7 @@ func (r *integrationResource) Schema(ctx context.Context, req resource.SchemaReq
 			},
 
 			IntegrationParameters: schema.MapAttribute{
-				MarkdownDescription: "Parameters of the integration.",
+				MarkdownDescription: "Parameters of the integration. The Parameters dictionary differs for each IntegrationType. See available options per integration type at the examples.",
 				Computed:            true,
 				Optional:            true,
 				ElementType:         types.StringType,
