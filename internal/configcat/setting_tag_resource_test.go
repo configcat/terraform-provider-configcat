@@ -65,3 +65,54 @@ func TestAccSettingTagResource(t *testing.T) {
 		},
 	})
 }
+
+func TestAccSettingTagMultipleResource(t *testing.T) {
+	const configId = "08dc1bfa-b8b0-45f0-8127-fac0de7a37ac"
+	const productId = "08d86d63-2721-4da6-8c06-584521d516bc"
+	const testResource1Name = "configcat_setting_tag.settingTag1"
+	const testResource2Name = "configcat_setting_tag.settingTag2"
+	const testResource3Name = "configcat_setting_tag.settingTag3"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		Steps: []resource.TestStep{
+			{
+				ConfigFile: config.TestNameFile("init.tf"),
+				ConfigVariables: config.Variables{
+					"config_id":  config.StringVariable(configId),
+					"product_id": config.StringVariable(productId),
+				},
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttrSet(testResource1Name, ID),
+					resource.TestCheckResourceAttrSet(testResource1Name, SettingId),
+					resource.TestCheckResourceAttrSet(testResource1Name, TagId),
+					resource.TestCheckResourceAttrSet(testResource2Name, ID),
+					resource.TestCheckResourceAttrSet(testResource2Name, SettingId),
+					resource.TestCheckResourceAttrSet(testResource2Name, TagId),
+					resource.TestCheckResourceAttrSet(testResource3Name, ID),
+					resource.TestCheckResourceAttrSet(testResource3Name, SettingId),
+					resource.TestCheckResourceAttrSet(testResource3Name, TagId),
+				),
+			},
+			{
+				ConfigFile: config.TestNameFile("removeonetag.tf"),
+				ConfigVariables: config.Variables{
+					"config_id":  config.StringVariable(configId),
+					"product_id": config.StringVariable(productId),
+				},
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttrSet(testResource1Name, ID),
+					resource.TestCheckResourceAttrSet(testResource1Name, SettingId),
+					resource.TestCheckResourceAttrSet(testResource1Name, TagId),
+					resource.TestCheckResourceAttrSet(testResource3Name, ID),
+					resource.TestCheckResourceAttrSet(testResource3Name, SettingId),
+					resource.TestCheckResourceAttrSet(testResource3Name, TagId),
+				),
+			},
+			{
+				ConfigFile: config.TestNameFile("removeeverything.tf"),
+			},
+		},
+	})
+}
