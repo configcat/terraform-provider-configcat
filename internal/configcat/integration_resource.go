@@ -78,7 +78,7 @@ func (r *integrationResource) Schema(ctx context.Context, req resource.SchemaReq
 			},
 
 			IntegrationParameters: schema.MapAttribute{
-				MarkdownDescription: "Parameters of the integration. The Parameters dictionary differs for each IntegrationType. See available options per integration type at the examples.",
+				MarkdownDescription: "Parameters of the integration. The Parameters dictionary differs for each IntegrationType. See available options per integration type at the [Example usage](#example-usage) section.",
 				Computed:            true,
 				Optional:            true,
 				ElementType:         types.StringType,
