@@ -154,4 +154,14 @@ const (
 	TargetingRulePrerequisiteFlagConditionSettingId       = "prerequisite_setting_id"
 	TargetingRulePrerequisiteFlagConditionComparator      = "comparator"
 	TargetingRulePrerequisiteFlagConditionComparisonValue = "comparison_value"
+
+	// Integration
+
+	IntegrationResourceName = "Integration"
+	Integrations            = "integrations"
+	IntegrationId           = "integration_id"
+	IntegrationType         = "integration_type"
+	IntegrationParameters   = "parameters"
+	IntegrationConfigs      = "configs"
+	IntegrationEnvironments = "environments"
 )

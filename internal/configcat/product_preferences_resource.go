@@ -18,7 +18,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
-	sw "github.com/configcat/configcat-publicapi-go-client"
+	sw "github.com/configcat/configcat-publicapi-go-client/v2"
 )
 
 var _ resource.Resource = &productPreferencesResource{}
