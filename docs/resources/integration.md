@@ -78,7 +78,7 @@ resource "configcat_integration" "mixpanel_integration" {
   parameters = {
     "serviceAccountUserName" = ""               # Mixpanel Service Account Username.
     "serviceAccountSecret"   = ""               # Mixpanel Service Account Secret.
-    "projectId"              = ""               # Mixpanel Service Account Secret.
+    "projectId"              = ""               # Mixpanel Project ID.
     "server"                 = "StandardServer" # Mixpanel Server. Available values: StandardServer, EUResidencyServer. Default: StandardServer. Read more at https://docs.mixpanel.com/docs/privacy/eu-residency.
   }
 }
@@ -112,7 +112,7 @@ output "slack_integration_id" {
 
 - `configs` (Set of String) List of Config IDs that are connected with this Integration. If the list is empty, all of the Configs are connected.
 - `environments` (Set of String) List of Environment IDs that are connected with this Integration. If the list is empty, all of the Environments are connected.
-- `parameters` (Map of String) Parameters of the integration. The Parameters dictionary differs for each IntegrationType. See available options per integration type at the examples.
+- `parameters` (Map of String) Parameters of the integration. The Parameters dictionary differs for each IntegrationType. See available options per integration type at the [Example usage](#example-usage) section.
 
 ### Read-Only
 

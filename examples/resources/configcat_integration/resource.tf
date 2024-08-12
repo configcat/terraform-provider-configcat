@@ -63,7 +63,7 @@ resource "configcat_integration" "mixpanel_integration" {
   parameters = {
     "serviceAccountUserName" = ""               # Mixpanel Service Account Username.
     "serviceAccountSecret"   = ""               # Mixpanel Service Account Secret.
-    "projectId"              = ""               # Mixpanel Service Account Secret.
+    "projectId"              = ""               # Mixpanel Project ID.
     "server"                 = "StandardServer" # Mixpanel Server. Available values: StandardServer, EUResidencyServer. Default: StandardServer. Read more at https://docs.mixpanel.com/docs/privacy/eu-residency.
   }
 }
