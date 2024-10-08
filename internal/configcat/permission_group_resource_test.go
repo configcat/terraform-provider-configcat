@@ -53,6 +53,7 @@ func TestAccPermissionGroupResource(t *testing.T) {
 					resource.TestCheckResourceAttr(testResourceName, PermissionGroupCanDeleteSegment, "false"),
 					resource.TestCheckResourceAttr(testResourceName, PermissionGroupCanViewProductAuditLogs, "false"),
 					resource.TestCheckResourceAttr(testResourceName, PermissionGroupCanViewProductStatistics, "false"),
+					resource.TestCheckResourceAttr(testResourceName, PermissionGroupCanDisable2FA, "false"),
 				),
 			},
 			{
@@ -154,6 +155,7 @@ func TestAccPermissionGroupResource(t *testing.T) {
 					"can_delete_segment":             config.BoolVariable(false),
 					"can_view_product_auditlog":      config.BoolVariable(true),
 					"can_view_product_statistics":    config.BoolVariable(false),
+					"can_disable_2fa":                config.BoolVariable(true),
 				},
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet(testResourceName, ID),
@@ -181,6 +183,7 @@ func TestAccPermissionGroupResource(t *testing.T) {
 					resource.TestCheckResourceAttr(testResourceName, PermissionGroupCanDeleteSegment, "false"),
 					resource.TestCheckResourceAttr(testResourceName, PermissionGroupCanViewProductAuditLogs, "true"),
 					resource.TestCheckResourceAttr(testResourceName, PermissionGroupCanViewProductStatistics, "false"),
+					resource.TestCheckResourceAttr(testResourceName, PermissionGroupCanDisable2FA, "true"),
 				),
 			},
 			{
@@ -208,6 +211,7 @@ func TestAccPermissionGroupResource(t *testing.T) {
 					"can_delete_segment":             config.BoolVariable(false),
 					"can_view_product_auditlog":      config.BoolVariable(true),
 					"can_view_product_statistics":    config.BoolVariable(false),
+					"can_disable_2fa":                config.BoolVariable(true),
 				},
 				ResourceName:      testResourceName,
 				ImportState:       true,
@@ -239,6 +243,7 @@ func TestAccPermissionGroupResource(t *testing.T) {
 					"can_delete_segment":             config.BoolVariable(true),
 					"can_view_product_auditlog":      config.BoolVariable(true),
 					"can_view_product_statistics":    config.BoolVariable(true),
+					"can_disable_2fa":                config.BoolVariable(true),
 				},
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet(testResourceName, ID),
@@ -266,6 +271,7 @@ func TestAccPermissionGroupResource(t *testing.T) {
 					resource.TestCheckResourceAttr(testResourceName, PermissionGroupCanDeleteSegment, "true"),
 					resource.TestCheckResourceAttr(testResourceName, PermissionGroupCanViewProductAuditLogs, "true"),
 					resource.TestCheckResourceAttr(testResourceName, PermissionGroupCanViewProductStatistics, "true"),
+					resource.TestCheckResourceAttr(testResourceName, PermissionGroupCanDisable2FA, "true"),
 				),
 			},
 			{
@@ -294,6 +300,7 @@ func TestAccPermissionGroupResource(t *testing.T) {
 					"can_delete_segment":             config.BoolVariable(true),
 					"can_view_product_auditlog":      config.BoolVariable(true),
 					"can_view_product_statistics":    config.BoolVariable(true),
+					"can_disable_2fa":                config.BoolVariable(true),
 				},
 				ResourceName:      testResourceName,
 				ImportState:       true,
@@ -333,6 +340,7 @@ func TestAccPermissionGroupResource(t *testing.T) {
 					resource.TestCheckResourceAttr(testResourceName, PermissionGroupCanDeleteSegment, "false"),
 					resource.TestCheckResourceAttr(testResourceName, PermissionGroupCanViewProductAuditLogs, "false"),
 					resource.TestCheckResourceAttr(testResourceName, PermissionGroupCanViewProductStatistics, "false"),
+					resource.TestCheckResourceAttr(testResourceName, PermissionGroupCanDisable2FA, "false"),
 				),
 			},
 			{
