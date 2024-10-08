@@ -57,6 +57,7 @@ type permissionGroupResourceModel struct {
 	CanDeleteSegment             types.Bool   `tfsdk:"can_delete_segment"`
 	CanViewProductAuditLogs      types.Bool   `tfsdk:"can_view_product_auditlog"`
 	CanViewProductStatistics     types.Bool   `tfsdk:"can_view_product_statistics"`
+	CanDisable2FA                types.Bool   `tfsdk:"can_disable_2fa"`
 	AccessType                   types.String `tfsdk:"accesstype"`
 	NewEnvironmentAccessType     types.String `tfsdk:"new_environment_accesstype"`
 	EnvironmentAccess            types.Map    `tfsdk:"environment_accesses"`
@@ -212,6 +213,12 @@ func (r *permissionGroupResource) Schema(ctx context.Context, req resource.Schem
 				Optional:    true,
 				Default:     booldefault.StaticBool(false),
 			},
+			PermissionGroupCanDisable2FA: schema.BoolAttribute{
+				Description: "Group members can disable two-factor authentication for other members.",
+				Computed:    true,
+				Optional:    true,
+				Default:     booldefault.StaticBool(false),
+			},
 			PermissionGroupAccessType: schema.StringAttribute{
 				Description: "Represent the Feature Management permission. Possible values: readOnly, full, custom",
 				Computed:    true,
@@ -316,6 +323,7 @@ func (r *permissionGroupResource) Create(ctx context.Context, req resource.Creat
 		CanDeleteSegments:            plan.CanDeleteSegment.ValueBoolPointer(),
 		CanViewProductAuditLog:       plan.CanViewProductAuditLogs.ValueBoolPointer(),
 		CanViewProductStatistics:     plan.CanViewProductStatistics.ValueBoolPointer(),
+		CanDisable2FA:                plan.CanDisable2FA.ValueBoolPointer(),
 		AccessType:                   accessType,
 		NewEnvironmentAccessType:     newEnvironmentAccessType,
 		EnvironmentAccesses:          *environmentAccesses,
@@ -401,6 +409,7 @@ func (r *permissionGroupResource) Update(ctx context.Context, req resource.Updat
 		plan.CanDeleteSegment.Equal(state.CanDeleteSegment) &&
 		plan.CanViewProductAuditLogs.Equal(state.CanViewProductAuditLogs) &&
 		plan.CanViewProductStatistics.Equal(state.CanViewProductStatistics) &&
+		plan.CanDisable2FA.Equal(state.CanDisable2FA) &&
 		plan.AccessType.Equal(state.AccessType) &&
 		plan.NewEnvironmentAccessType.Equal(state.NewEnvironmentAccessType) &&
 		plan.EnvironmentAccess.Equal(state.EnvironmentAccess) {
@@ -479,6 +488,7 @@ func (r *permissionGroupResource) Update(ctx context.Context, req resource.Updat
 		CanDeleteSegments:            *sw.NewNullableBool(plan.CanDeleteSegment.ValueBoolPointer()),
 		CanViewProductAuditLog:       *sw.NewNullableBool(plan.CanViewProductAuditLogs.ValueBoolPointer()),
 		CanViewProductStatistics:     *sw.NewNullableBool(plan.CanViewProductStatistics.ValueBoolPointer()),
+		CanDisable2FA:                *sw.NewNullableBool(plan.CanDisable2FA.ValueBoolPointer()),
 		AccessType:                   accessType,
 		NewEnvironmentAccessType:     newEnvironmentAccessType,
 		EnvironmentAccesses:          *environmentAccesses,
@@ -566,6 +576,7 @@ func (resourceModel *permissionGroupResourceModel) UpdateFromApiModel(ctx contex
 	resourceModel.CanDeleteSegment = types.BoolPointerValue(model.CanDeleteSegments)
 	resourceModel.CanViewProductAuditLogs = types.BoolPointerValue(model.CanViewProductAuditLog)
 	resourceModel.CanViewProductStatistics = types.BoolPointerValue(model.CanViewProductStatistics)
+	resourceModel.CanDisable2FA = types.BoolPointerValue(model.CanDisable2FA)
 	resourceModel.AccessType = types.StringPointerValue((*string)(model.AccessType))
 	resourceModel.NewEnvironmentAccessType = types.StringPointerValue((*string)(model.NewEnvironmentAccessType))
 	resourceModel.EnvironmentAccess = environmentAccessesMapValue

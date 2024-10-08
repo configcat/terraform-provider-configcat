@@ -52,6 +52,7 @@ type permissionGroupDataModel struct {
 	CanDeleteSegment             types.Bool   `tfsdk:"can_delete_segment"`
 	CanViewProductAuditLogs      types.Bool   `tfsdk:"can_view_product_auditlog"`
 	CanViewProductStatistics     types.Bool   `tfsdk:"can_view_product_statistics"`
+	CanDisable2FA                types.Bool   `tfsdk:"can_disable_2fa"`
 	AccessType                   types.String `tfsdk:"accesstype"`
 	NewEnvironmentAccessType     types.String `tfsdk:"new_environment_accesstype"`
 	EnvironmentAccess            types.Map    `tfsdk:"environment_accesses"`
@@ -179,6 +180,10 @@ func (d *permissionGroupDataSource) Schema(ctx context.Context, req datasource.S
 							Description: "Group members has access to product statistics.",
 							Computed:    true,
 						},
+						PermissionGroupCanDisable2FA: schema.BoolAttribute{
+							Description: "Group members can disable two-factor authentication for other members.",
+							Computed:    true,
+						},
 						PermissionGroupAccessType: schema.StringAttribute{
 							Description: "Represent the Feature Management permission. Possible values: readOnly, full, custom",
 							Computed:    true,
@@ -288,6 +293,7 @@ func (d *permissionGroupDataSource) Read(ctx context.Context, req datasource.Rea
 			CanDeleteSegment:             types.BoolPointerValue(resource.CanDeleteSegments),
 			CanViewProductAuditLogs:      types.BoolPointerValue(resource.CanViewProductAuditLog),
 			CanViewProductStatistics:     types.BoolPointerValue(resource.CanViewProductStatistics),
+			CanDisable2FA:                types.BoolPointerValue(resource.CanDisable2FA),
 			AccessType:                   types.StringPointerValue((*string)(resource.AccessType)),
 			NewEnvironmentAccessType:     types.StringPointerValue((*string)(resource.NewEnvironmentAccessType)),
 			EnvironmentAccess:            environmentAccessesMapValue,

@@ -60,6 +60,7 @@ Read-Only:
 - `can_delete_segment` (Boolean) Group members can delete Segments.
 - `can_delete_setting` (Boolean) Group members can delete Feature Flags and Settings.
 - `can_delete_tag` (Boolean) Group members can delete Tags.
+- `can_disable_2fa` (Boolean) Group members can disable two-factor authentication for other members.
 - `can_manage_integrations` (Boolean) Group members can add and configure integrations.
 - `can_manage_members` (Boolean) Group members can manage team members.
 - `can_manage_product_preferences` (Boolean) Group members can update Product preferences.

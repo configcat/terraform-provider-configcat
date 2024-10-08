@@ -69,6 +69,7 @@ const (
 	PermissionGroupCanDeleteSegment             = "can_delete_segment"
 	PermissionGroupCanViewProductAuditLogs      = "can_view_product_auditlog"
 	PermissionGroupCanViewProductStatistics     = "can_view_product_statistics"
+	PermissionGroupCanDisable2FA                = "can_disable_2fa"
 	PermissionGroupAccessType                   = "accesstype"
 	PermissionGroupNewEnvironmentAccessType     = "new_environment_accesstype"
 	PermissionGroupEnvironmentAccess            = "environment_accesses"

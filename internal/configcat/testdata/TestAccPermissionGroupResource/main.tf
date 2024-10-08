@@ -95,7 +95,10 @@ variable "can_view_product_statistics" {
   type    = bool
   default = null
 }
-
+variable "can_disable_2fa" {
+  type    = bool
+  default = null
+}
 variable "environment_accesses" {
   type    = map(string)
   default = null
@@ -127,4 +130,5 @@ resource "configcat_permission_group" "test" {
   can_delete_segment             = var.can_delete_segment
   can_view_product_auditlog      = var.can_view_product_auditlog
   can_view_product_statistics    = var.can_view_product_statistics
+  can_disable_2fa                = var.can_disable_2fa
 }
