@@ -1,7 +1,7 @@
 name: Lint
 on:
   push:
-    branches: [ master ]
+    branches: [ v5 ]
   pull_request:
 
 jobs:
