@@ -1,4 +1,4 @@
-module github.com/configcat/terraform-provider-configcat
+module github.com/configcat/terraform-provider-configcat/v5
 
 go 1.22.7
 

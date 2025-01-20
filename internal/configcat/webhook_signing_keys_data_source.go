@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/configcat/terraform-provider-configcat/internal/configcat/client"
+	"github.com/configcat/terraform-provider-configcat/v5/internal/configcat/client"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
