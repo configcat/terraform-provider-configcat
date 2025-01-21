@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/configcat/terraform-provider-configcat/v5/configcat/client"
+	"github.com/configcat/terraform-provider-configcat/v5/internal/configcat/client"
 	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/float64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
