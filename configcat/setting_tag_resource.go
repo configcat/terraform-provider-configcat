@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/configcat/terraform-provider-configcat/v5/internal/configcat/client"
+	"github.com/configcat/terraform-provider-configcat/v5/configcat/client"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
