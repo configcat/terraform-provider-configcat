@@ -18,7 +18,7 @@ terraform {
   required_providers {
     configcat = {
       source  = "configcat/configcat"
-      version = "~> 4.0"
+      version = "~> 5.0"
     }
   }
 }
