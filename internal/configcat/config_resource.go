@@ -231,11 +231,11 @@ func (r *configResource) ImportState(ctx context.Context, req resource.ImportSta
 }
 
 func (resourceModel *configResourceModel) UpdateFromApiModel(model sw.ConfigModel) {
-	modelOrder := int64(*model.Order)
-	resourceModel.ID = types.StringPointerValue(model.ConfigId)
-	resourceModel.ProductId = types.StringPointerValue(model.Product.ProductId)
-	resourceModel.Name = types.StringPointerValue(model.Name.Get())
+	modelOrder := int64(model.Order)
+	resourceModel.ID = types.StringValue(model.ConfigId)
+	resourceModel.ProductId = types.StringValue(model.Product.ProductId)
+	resourceModel.Name = types.StringValue(model.Name)
 	resourceModel.Description = types.StringPointerValue(model.Description.Get())
 	resourceModel.Order = types.Int64Value(modelOrder)
-	resourceModel.EvaluationVersion = types.StringValue(string(*model.EvaluationVersion))
+	resourceModel.EvaluationVersion = types.StringValue(string(model.EvaluationVersion))
 }

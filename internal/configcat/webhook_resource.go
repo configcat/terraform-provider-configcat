@@ -179,9 +179,9 @@ func (r *webhookResource) Create(ctx context.Context, req resource.CreateRequest
 		}
 	}
 
-	body := sw.WebHookRequest{
+	body := sw.WebHookRequestModel{
 		Url:            plan.Url.ValueString(),
-		HttpMethod:     httpMethod,
+		HttpMethod:     *sw.NewNullableWebHookHttpMethod(httpMethod),
 		Content:        *sw.NewNullableString(plan.Content.ValueStringPointer()),
 		WebHookHeaders: webhookHeaders,
 	}
@@ -267,9 +267,9 @@ func (r *webhookResource) Update(ctx context.Context, req resource.UpdateRequest
 		}
 	}
 
-	body := sw.WebHookRequest{
+	body := sw.WebHookRequestModel{
 		Url:            plan.Url.ValueString(),
-		HttpMethod:     httpMethod,
+		HttpMethod:     *sw.NewNullableWebHookHttpMethod(httpMethod),
 		Content:        *sw.NewNullableString(plan.Content.ValueStringPointer()),
 		WebHookHeaders: webhookHeaders,
 	}
@@ -320,19 +320,19 @@ func (r *webhookResource) ImportState(ctx context.Context, req resource.ImportSt
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root(ID), types.Int64Value(id))...)
 }
 
-func (resourceModel *webhookResourceModel) UpdateFromApiModel(model sw.WebhookModel, secureWebhookHeaders []webhookHeaderResourceModel, diag *diag.Diagnostics) {
-	resourceModel.ID = types.Int64Value(int64(*model.WebhookId))
+func (resourceModel *webhookResourceModel) UpdateFromApiModel(model sw.WebhookResponseModel, secureWebhookHeaders []webhookHeaderResourceModel, diag *diag.Diagnostics) {
+	resourceModel.ID = types.Int64Value(int64(model.WebhookId))
 
-	resourceModel.ConfigId = types.StringPointerValue(model.Config.ConfigId)
-	resourceModel.EnvironmentId = types.StringPointerValue(model.Environment.EnvironmentId)
-	resourceModel.Url = types.StringPointerValue(model.Url.Get())
-	resourceModel.HttpMethod = types.StringPointerValue((*string)(model.HttpMethod))
+	resourceModel.ConfigId = types.StringValue(model.Config.ConfigId)
+	resourceModel.EnvironmentId = types.StringValue(model.Environment.EnvironmentId)
+	resourceModel.Url = types.StringValue(model.Url)
+	resourceModel.HttpMethod = types.StringValue((string)(model.HttpMethod))
 	resourceModel.Content = types.StringPointerValue(model.Content.Get())
 
 	resourceModel.WebhookHeaders = make([]webhookHeaderResourceModel, 0)
 	resourceModel.SecureWebhookHeaders = make([]webhookHeaderResourceModel, 0)
 	for _, webhookHeader := range model.WebHookHeaders {
-		if *webhookHeader.IsSecure {
+		if webhookHeader.IsSecure {
 
 			var secureWebhookHeaderValue string
 			for _, secureWebhookHeader := range secureWebhookHeaders {

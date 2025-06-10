@@ -63,8 +63,8 @@ func NewClient(basePath, basicAuthUsername, basicAuthPassword, version string) (
 	if err != nil {
 		return nil, err
 	}
-	client.authEmail = *meModel.Email.Get()
-	client.authFullName = *meModel.FullName.Get()
+	client.authEmail = meModel.Email
+	client.authFullName = meModel.FullName
 
 	return client, nil
 }

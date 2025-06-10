@@ -2,7 +2,7 @@ package client
 
 import sw "github.com/configcat/configcat-publicapi-go-client/v3"
 
-func (client *Client) GetWebhooks(productID string) ([]sw.WebhookModel, error) {
+func (client *Client) GetWebhooks(productID string) ([]sw.WebhookResponseModel, error) {
 	model, response, err := client.apiClient.WebhooksAPI.GetWebhooks(client.GetAuthContext(), productID).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
@@ -11,7 +11,7 @@ func (client *Client) GetWebhooks(productID string) ([]sw.WebhookModel, error) {
 	return model, error
 }
 
-func (client *Client) GetWebhook(webhookId int32) (*sw.WebhookModel, error) {
+func (client *Client) GetWebhook(webhookId int32) (*sw.WebhookResponseModel, error) {
 	model, response, err := client.apiClient.WebhooksAPI.GetWebhook(client.GetAuthContext(), webhookId).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
@@ -29,10 +29,10 @@ func (client *Client) GetWebhookSigningKeys(webhookId int32) (*sw.WebhookSigning
 	return model, error
 }
 
-func (client *Client) CreateWebhook(configId string, environmentId string, body sw.WebHookRequest) (*sw.WebhookModel, error) {
+func (client *Client) CreateWebhook(configId string, environmentId string, body sw.WebHookRequestModel) (*sw.WebhookResponseModel, error) {
 	model, response, err := client.apiClient.WebhooksAPI.CreateWebhook(
 		client.GetAuthContext(),
-		configId, environmentId).WebHookRequest(body).Execute()
+		configId, environmentId).WebHookRequestModel(body).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
 		defer response.Body.Close()
@@ -40,10 +40,10 @@ func (client *Client) CreateWebhook(configId string, environmentId string, body 
 	return model, error
 }
 
-func (client *Client) UpdateWebhook(webhookId int32, body sw.WebHookRequest) (*sw.WebhookModel, error) {
+func (client *Client) UpdateWebhook(webhookId int32, body sw.WebHookRequestModel) (*sw.WebhookResponseModel, error) {
 	model, response, err := client.apiClient.WebhooksAPI.ReplaceWebhook(
 		client.GetAuthContext(),
-		webhookId).WebHookRequest(body).Execute()
+		webhookId).WebHookRequestModel(body).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
 		defer response.Body.Close()
