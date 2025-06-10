@@ -221,10 +221,10 @@ func (r *environmentResource) ImportState(ctx context.Context, req resource.Impo
 }
 
 func (resourceModel *environmentResourceModel) UpdateFromApiModel(model sw.EnvironmentModel) {
-	modelOrder := int64(*model.Order)
-	resourceModel.ID = types.StringPointerValue(model.EnvironmentId)
-	resourceModel.ProductId = types.StringPointerValue(model.Product.ProductId)
-	resourceModel.Name = types.StringPointerValue(model.Name.Get())
+	modelOrder := int64(model.Order)
+	resourceModel.ID = types.StringValue(model.EnvironmentId)
+	resourceModel.ProductId = types.StringValue(model.Product.ProductId)
+	resourceModel.Name = types.StringValue(model.Name)
 	resourceModel.Description = types.StringPointerValue(model.Description.Get())
 	resourceModel.Color = types.StringPointerValue(model.Color.Get())
 	resourceModel.Order = types.Int64Value(modelOrder)

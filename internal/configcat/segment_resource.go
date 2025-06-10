@@ -193,7 +193,7 @@ func (r *segmentResource) Update(ctx context.Context, req resource.UpdateRequest
 		Name:                *sw.NewNullableString(plan.Name.ValueStringPointer()),
 		Description:         *sw.NewNullableString(plan.Description.ValueStringPointer()),
 		ComparisonAttribute: *sw.NewNullableString(plan.ComparisonAttribute.ValueStringPointer()),
-		Comparator:          comparator,
+		Comparator:          *sw.NewNullableRolloutRuleComparator(comparator),
 		ComparisonValue:     *sw.NewNullableString(plan.ComparisonValue.ValueStringPointer()),
 	}
 
@@ -234,11 +234,11 @@ func (r *segmentResource) ImportState(ctx context.Context, req resource.ImportSt
 }
 
 func (resourceModel *segmentResourceModel) UpdateFromApiModel(model sw.SegmentModel) {
-	resourceModel.ID = types.StringPointerValue(model.SegmentId)
-	resourceModel.ProductId = types.StringPointerValue(model.Product.ProductId)
-	resourceModel.Name = types.StringPointerValue(model.Name.Get())
+	resourceModel.ID = types.StringValue(model.SegmentId)
+	resourceModel.ProductId = types.StringValue(model.Product.ProductId)
+	resourceModel.Name = types.StringValue(model.Name)
 	resourceModel.Description = types.StringPointerValue(model.Description.Get())
-	resourceModel.ComparisonAttribute = types.StringPointerValue(model.ComparisonAttribute.Get())
-	resourceModel.Comparator = types.StringPointerValue((*string)(model.Comparator))
-	resourceModel.ComparisonValue = types.StringPointerValue(model.ComparisonValue.Get())
+	resourceModel.ComparisonAttribute = types.StringValue(model.ComparisonAttribute)
+	resourceModel.Comparator = types.StringValue((string)(model.Comparator))
+	resourceModel.ComparisonValue = types.StringValue(model.ComparisonValue)
 }

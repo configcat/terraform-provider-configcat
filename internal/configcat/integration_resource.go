@@ -290,10 +290,10 @@ func (r *integrationResource) ImportState(ctx context.Context, req resource.Impo
 func (resourceModel *integrationResourceModel) UpdateFromApiModel(ctx context.Context, model sw.IntegrationModel) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	resourceModel.ID = types.StringPointerValue(model.IntegrationId)
-	resourceModel.ProductId = types.StringPointerValue(model.Product.ProductId)
-	resourceModel.Name = types.StringPointerValue(model.Name.Get())
-	resourceModel.IntegrationType = types.StringValue(string(*model.IntegrationType))
+	resourceModel.ID = types.StringValue(model.IntegrationId)
+	resourceModel.ProductId = types.StringValue(model.Product.ProductId)
+	resourceModel.Name = types.StringValue(model.Name)
+	resourceModel.IntegrationType = types.StringValue(string(model.IntegrationType))
 
 	parameterMapValue, diags := types.MapValueFrom(ctx, types.StringType, model.Parameters)
 	if diags.HasError() {

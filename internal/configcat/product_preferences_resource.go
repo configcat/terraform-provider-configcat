@@ -210,7 +210,7 @@ func (r *productPreferencesResource) createOrUpdateProductPreferences(ctx contex
 	}
 
 	body := sw.UpdatePreferencesRequest{
-		KeyGenerationMode:          keyGenerationMode,
+		KeyGenerationMode:          *sw.NewNullableKeyGenerationMode(keyGenerationMode),
 		ShowVariationId:            *sw.NewNullableBool(plan.ShowVariationId.ValueBoolPointer()),
 		MandatorySettingHint:       *sw.NewNullableBool(plan.MandatorySettingHint.ValueBoolPointer()),
 		ReasonRequired:             *sw.NewNullableBool(plan.ReasonRequired.ValueBoolPointer()),
@@ -245,14 +245,14 @@ func (resourceModel *productPreferencesResourceModel) UpdateFromApiModel(ctx con
 
 	resourceModel.ID = types.StringValue(productId)
 	resourceModel.ProductId = types.StringValue(productId)
-	resourceModel.MandatorySettingHint = types.BoolPointerValue(model.MandatorySettingHint)
-	resourceModel.ShowVariationId = types.BoolPointerValue(model.ShowVariationId)
-	resourceModel.KeyGenerationMode = types.StringPointerValue((*string)(model.KeyGenerationMode))
-	resourceModel.ReasonRequired = types.BoolPointerValue(model.ReasonRequired)
+	resourceModel.MandatorySettingHint = types.BoolValue(model.MandatorySettingHint)
+	resourceModel.ShowVariationId = types.BoolValue(model.ShowVariationId)
+	resourceModel.KeyGenerationMode = types.StringValue((string)(model.KeyGenerationMode))
+	resourceModel.ReasonRequired = types.BoolValue(model.ReasonRequired)
 
 	reasonRequiredEnvironments := make(map[string]bool, len(model.ReasonRequiredEnvironments))
 	for _, environment := range model.ReasonRequiredEnvironments {
-		reasonRequiredEnvironments[*environment.EnvironmentId] = *environment.ReasonRequired
+		reasonRequiredEnvironments[environment.EnvironmentId] = environment.ReasonRequired
 	}
 
 	reasonRequiredEnvironmentsMapValue, diags := types.MapValueFrom(ctx, types.BoolType, reasonRequiredEnvironments)

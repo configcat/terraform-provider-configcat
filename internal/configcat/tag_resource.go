@@ -222,8 +222,8 @@ func (r *tagResource) ImportState(ctx context.Context, req resource.ImportStateR
 }
 
 func (resourceModel *tagResourceModel) UpdateFromApiModel(model sw.TagModel) {
-	resourceModel.ID = types.StringValue(strconv.FormatInt(*model.TagId, 10))
-	resourceModel.ProductId = types.StringPointerValue(model.Product.ProductId)
-	resourceModel.Name = types.StringPointerValue(model.Name.Get())
+	resourceModel.ID = types.StringValue(strconv.FormatInt(model.TagId, 10))
+	resourceModel.ProductId = types.StringValue(model.Product.ProductId)
+	resourceModel.Name = types.StringValue(model.Name)
 	resourceModel.Color = types.StringPointerValue(model.Color.Get())
 }

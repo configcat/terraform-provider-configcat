@@ -137,7 +137,7 @@ func (d *environmentDataSource) Read(ctx context.Context, req datasource.ReadReq
 	if !state.NameFilterRegex.IsUnknown() && !state.NameFilterRegex.IsNull() && state.NameFilterRegex.ValueString() != "" {
 		regex := regexp.MustCompile(state.NameFilterRegex.ValueString())
 		for i := range resources {
-			if regex.MatchString(*resources[i].Name.Get()) {
+			if regex.MatchString(resources[i].Name) {
 				filteredResources = append(filteredResources, resources[i])
 			}
 		}
@@ -148,11 +148,11 @@ func (d *environmentDataSource) Read(ctx context.Context, req datasource.ReadReq
 	state.Data = make([]environmentDataModel, len(filteredResources))
 	for i, resource := range filteredResources {
 		dataModel := &environmentDataModel{
-			ID:          types.StringPointerValue(resource.EnvironmentId),
-			Name:        types.StringPointerValue(resource.Name.Get()),
+			ID:          types.StringValue(resource.EnvironmentId),
+			Name:        types.StringValue(resource.Name),
 			Description: types.StringPointerValue(resource.Description.Get()),
 			Color:       types.StringPointerValue(resource.Color.Get()),
-			Order:       types.Int64Value(int64(*resource.Order)),
+			Order:       types.Int64Value(int64(resource.Order)),
 		}
 
 		state.Data[i] = *dataModel

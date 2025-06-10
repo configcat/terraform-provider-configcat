@@ -126,7 +126,7 @@ func (d *productDataSource) Read(ctx context.Context, req datasource.ReadRequest
 	if !state.NameFilterRegex.IsUnknown() && !state.NameFilterRegex.IsNull() && state.NameFilterRegex.ValueString() != "" {
 		regex := regexp.MustCompile(state.NameFilterRegex.ValueString())
 		for i := range resources {
-			if regex.MatchString(*resources[i].Name.Get()) {
+			if regex.MatchString(resources[i].Name) {
 				filteredResources = append(filteredResources, resources[i])
 			}
 		}
@@ -137,10 +137,10 @@ func (d *productDataSource) Read(ctx context.Context, req datasource.ReadRequest
 	state.Data = make([]productDataModel, len(filteredResources))
 	for i, resource := range filteredResources {
 		dataModel := &productDataModel{
-			ID:          types.StringPointerValue(resource.ProductId),
-			Name:        types.StringPointerValue(resource.Name.Get()),
+			ID:          types.StringValue(resource.ProductId),
+			Name:        types.StringValue(resource.Name),
 			Description: types.StringPointerValue(resource.Description.Get()),
-			Order:       types.Int64Value(int64(*resource.Order)),
+			Order:       types.Int64Value(int64(resource.Order)),
 		}
 
 		state.Data[i] = *dataModel

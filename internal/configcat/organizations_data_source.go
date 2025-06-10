@@ -116,7 +116,7 @@ func (d *organizationDataSource) Read(ctx context.Context, req datasource.ReadRe
 	if !state.NameFilterRegex.IsUnknown() && !state.NameFilterRegex.IsNull() && state.NameFilterRegex.ValueString() != "" {
 		regex := regexp.MustCompile(state.NameFilterRegex.ValueString())
 		for i := range resources {
-			if regex.MatchString(*resources[i].Name.Get()) {
+			if regex.MatchString(resources[i].Name) {
 				filteredResources = append(filteredResources, resources[i])
 			}
 		}
@@ -127,8 +127,8 @@ func (d *organizationDataSource) Read(ctx context.Context, req datasource.ReadRe
 	state.Data = make([]organizationDataModel, len(filteredResources))
 	for i, resource := range filteredResources {
 		dataModel := &organizationDataModel{
-			ID:   types.StringPointerValue(resource.OrganizationId),
-			Name: types.StringPointerValue(resource.Name.Get()),
+			ID:   types.StringValue(resource.OrganizationId),
+			Name: types.StringValue(resource.Name),
 		}
 
 		state.Data[i] = *dataModel

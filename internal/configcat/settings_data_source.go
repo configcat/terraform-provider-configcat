@@ -142,7 +142,7 @@ func (d *settingDataSource) Read(ctx context.Context, req datasource.ReadRequest
 	if !state.KeyFilterRegex.IsUnknown() && !state.KeyFilterRegex.IsNull() && state.KeyFilterRegex.ValueString() != "" {
 		regex := regexp.MustCompile(state.KeyFilterRegex.ValueString())
 		for i := range resources {
-			if regex.MatchString(*resources[i].Key.Get()) {
+			if regex.MatchString(resources[i].Key) {
 				filteredResources = append(filteredResources, resources[i])
 			}
 		}
@@ -153,12 +153,12 @@ func (d *settingDataSource) Read(ctx context.Context, req datasource.ReadRequest
 	state.Data = make([]settingDataModel, len(filteredResources))
 	for i, resource := range filteredResources {
 		dataModel := &settingDataModel{
-			ID:          types.StringValue(strconv.FormatInt(int64(*resource.SettingId), 10)),
-			Name:        types.StringPointerValue(resource.Name.Get()),
-			Key:         types.StringPointerValue(resource.Key.Get()),
+			ID:          types.StringValue(strconv.FormatInt(int64(resource.SettingId), 10)),
+			Name:        types.StringValue(resource.Name),
+			Key:         types.StringValue(resource.Key),
 			Hint:        types.StringPointerValue(resource.Hint.Get()),
-			SettingType: types.StringPointerValue((*string)(resource.SettingType)),
-			Order:       types.Int64Value(int64(*resource.Order)),
+			SettingType: types.StringValue((string)(resource.SettingType)),
+			Order:       types.Int64Value(int64(resource.Order)),
 		}
 
 		state.Data[i] = *dataModel

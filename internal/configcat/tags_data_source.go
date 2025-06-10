@@ -127,7 +127,7 @@ func (d *tagDataSource) Read(ctx context.Context, req datasource.ReadRequest, re
 	if !state.NameFilterRegex.IsUnknown() && !state.NameFilterRegex.IsNull() && state.NameFilterRegex.ValueString() != "" {
 		regex := regexp.MustCompile(state.NameFilterRegex.ValueString())
 		for i := range resources {
-			if regex.MatchString(*resources[i].Name.Get()) {
+			if regex.MatchString(resources[i].Name) {
 				filteredResources = append(filteredResources, resources[i])
 			}
 		}
@@ -138,8 +138,8 @@ func (d *tagDataSource) Read(ctx context.Context, req datasource.ReadRequest, re
 	state.Data = make([]tagDataModel, len(filteredResources))
 	for i, resource := range filteredResources {
 		dataModel := &tagDataModel{
-			ID:    types.StringValue(strconv.FormatInt(*resource.TagId, 10)),
-			Name:  types.StringPointerValue(resource.Name.Get()),
+			ID:    types.StringValue(strconv.FormatInt(resource.TagId, 10)),
+			Name:  types.StringValue(resource.Name),
 			Color: types.StringPointerValue(resource.Color.Get()),
 		}
 
