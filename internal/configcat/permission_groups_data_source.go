@@ -244,7 +244,7 @@ func (d *permissionGroupDataSource) Read(ctx context.Context, req datasource.Rea
 	if !state.NameFilterRegex.IsUnknown() && !state.NameFilterRegex.IsNull() && state.NameFilterRegex.ValueString() != "" {
 		regex := regexp.MustCompile(state.NameFilterRegex.ValueString())
 		for i := range resources {
-			if regex.MatchString(*resources[i].Name.Get()) {
+			if regex.MatchString(resources[i].Name) {
 				filteredResources = append(filteredResources, resources[i])
 			}
 		}
@@ -256,11 +256,11 @@ func (d *permissionGroupDataSource) Read(ctx context.Context, req datasource.Rea
 	for i, resource := range filteredResources {
 		environmentAccesses := make(map[string]string, len(resource.EnvironmentAccesses))
 		for _, environmentAccess := range resource.EnvironmentAccesses {
-			if *environmentAccess.EnvironmentAccessType == sw.ENVIRONMENTACCESSTYPE_NONE {
+			if environmentAccess.EnvironmentAccessType == sw.ENVIRONMENTACCESSTYPE_NONE {
 				continue
 			}
 
-			environmentAccesses[*environmentAccess.EnvironmentId] = (string)(*environmentAccess.EnvironmentAccessType)
+			environmentAccesses[environmentAccess.EnvironmentId] = (string)(environmentAccess.EnvironmentAccessType)
 		}
 
 		environmentAccessesMapValue, diags := types.MapValueFrom(ctx, types.StringType, environmentAccesses)
@@ -271,31 +271,31 @@ func (d *permissionGroupDataSource) Read(ctx context.Context, req datasource.Rea
 		}
 
 		dataModel := &permissionGroupDataModel{
-			ID:                           types.Int64PointerValue(resource.PermissionGroupId),
-			Name:                         types.StringPointerValue(resource.Name.Get()),
-			CanManageMembers:             types.BoolPointerValue(resource.CanManageMembers),
-			CanCreateOrUpdateConfig:      types.BoolPointerValue(resource.CanCreateOrUpdateConfig),
-			CanDeleteConfig:              types.BoolPointerValue(resource.CanDeleteConfig),
-			CanCreateOrUpdateEnvironment: types.BoolPointerValue(resource.CanCreateOrUpdateEnvironment),
-			CanDeleteEnvironment:         types.BoolPointerValue(resource.CanDeleteEnvironment),
-			CanCreateOrUpdateSetting:     types.BoolPointerValue(resource.CanCreateOrUpdateSetting),
-			CanTagSetting:                types.BoolPointerValue(resource.CanTagSetting),
-			CanDeleteSetting:             types.BoolPointerValue(resource.CanDeleteSetting),
-			CanCreateOrUpdateTag:         types.BoolPointerValue(resource.CanCreateOrUpdateTag),
-			CanDeleteTag:                 types.BoolPointerValue(resource.CanDeleteTag),
-			CanManageWebhook:             types.BoolPointerValue(resource.CanManageWebhook),
-			CanUseExportImport:           types.BoolPointerValue(resource.CanUseExportImport),
-			CanManageProductPreferences:  types.BoolPointerValue(resource.CanManageProductPreferences),
-			CanManageIntegrations:        types.BoolPointerValue(resource.CanManageIntegrations),
-			CanViewSdkKey:                types.BoolPointerValue(resource.CanViewSdkKey),
-			CanRotateSdkKey:              types.BoolPointerValue(resource.CanRotateSdkKey),
-			CanCreateOrUpdateSegment:     types.BoolPointerValue(resource.CanCreateOrUpdateSegments),
-			CanDeleteSegment:             types.BoolPointerValue(resource.CanDeleteSegments),
-			CanViewProductAuditLogs:      types.BoolPointerValue(resource.CanViewProductAuditLog),
-			CanViewProductStatistics:     types.BoolPointerValue(resource.CanViewProductStatistics),
-			CanDisable2FA:                types.BoolPointerValue(resource.CanDisable2FA),
-			AccessType:                   types.StringPointerValue((*string)(resource.AccessType)),
-			NewEnvironmentAccessType:     types.StringPointerValue((*string)(resource.NewEnvironmentAccessType)),
+			ID:                           types.Int64Value(resource.PermissionGroupId),
+			Name:                         types.StringValue(resource.Name),
+			CanManageMembers:             types.BoolValue(resource.CanManageMembers),
+			CanCreateOrUpdateConfig:      types.BoolValue(resource.CanCreateOrUpdateConfig),
+			CanDeleteConfig:              types.BoolValue(resource.CanDeleteConfig),
+			CanCreateOrUpdateEnvironment: types.BoolValue(resource.CanCreateOrUpdateEnvironment),
+			CanDeleteEnvironment:         types.BoolValue(resource.CanDeleteEnvironment),
+			CanCreateOrUpdateSetting:     types.BoolValue(resource.CanCreateOrUpdateSetting),
+			CanTagSetting:                types.BoolValue(resource.CanTagSetting),
+			CanDeleteSetting:             types.BoolValue(resource.CanDeleteSetting),
+			CanCreateOrUpdateTag:         types.BoolValue(resource.CanCreateOrUpdateTag),
+			CanDeleteTag:                 types.BoolValue(resource.CanDeleteTag),
+			CanManageWebhook:             types.BoolValue(resource.CanManageWebhook),
+			CanUseExportImport:           types.BoolValue(resource.CanUseExportImport),
+			CanManageProductPreferences:  types.BoolValue(resource.CanManageProductPreferences),
+			CanManageIntegrations:        types.BoolValue(resource.CanManageIntegrations),
+			CanViewSdkKey:                types.BoolValue(resource.CanViewSdkKey),
+			CanRotateSdkKey:              types.BoolValue(resource.CanRotateSdkKey),
+			CanCreateOrUpdateSegment:     types.BoolValue(resource.CanCreateOrUpdateSegments),
+			CanDeleteSegment:             types.BoolValue(resource.CanDeleteSegments),
+			CanViewProductAuditLogs:      types.BoolValue(resource.CanViewProductAuditLog),
+			CanViewProductStatistics:     types.BoolValue(resource.CanViewProductStatistics),
+			CanDisable2FA:                types.BoolValue(resource.CanDisable2FA),
+			AccessType:                   types.StringValue((string)(resource.AccessType)),
+			NewEnvironmentAccessType:     types.StringValue((string)(resource.NewEnvironmentAccessType)),
 			EnvironmentAccess:            environmentAccessesMapValue,
 		}
 
