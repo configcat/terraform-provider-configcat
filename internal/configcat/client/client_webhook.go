@@ -1,6 +1,6 @@
 package client
 
-import sw "github.com/configcat/configcat-publicapi-go-client/v2"
+import sw "github.com/configcat/configcat-publicapi-go-client/v3"
 
 func (client *Client) GetWebhooks(productID string) ([]sw.WebhookModel, error) {
 	model, response, err := client.apiClient.WebhooksAPI.GetWebhooks(client.GetAuthContext(), productID).Execute()

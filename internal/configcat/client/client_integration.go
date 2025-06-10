@@ -1,6 +1,6 @@
 package client
 
-import sw "github.com/configcat/configcat-publicapi-go-client/v2"
+import sw "github.com/configcat/configcat-publicapi-go-client/v3"
 
 func (client *Client) GetIntegrations(productID string) (*sw.IntegrationsModel, error) {
 	model, response, err := client.apiClient.IntegrationsAPI.GetIntegrations(client.GetAuthContext(), productID).Execute()

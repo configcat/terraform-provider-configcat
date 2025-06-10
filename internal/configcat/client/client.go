@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	configcatpublicapi "github.com/configcat/configcat-publicapi-go-client/v2"
+	configcatpublicapi "github.com/configcat/configcat-publicapi-go-client/v3"
 )
 
 type Client struct {
