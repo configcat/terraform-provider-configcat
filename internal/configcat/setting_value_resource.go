@@ -332,7 +332,7 @@ func (r *settingValueResource) createOrUpdate(ctx context.Context, requestPlan *
 func (resourceModel *settingValueResourceModel) UpdateFromApiModel(model sw.SettingValueModel) {
 
 	resourceModel.ID = types.StringValue(fmt.Sprintf("%s:%d", model.Environment.EnvironmentId, model.Setting.SettingId))
-	resourceModel.Value = types.StringValue(fmt.Sprintf("%v", model.Value))
+	resourceModel.Value = types.StringValue(getSettingValueModel(&model.Setting.SettingType, model.Value))
 	resourceModel.SettingType = types.StringValue((string)(model.Setting.SettingType))
 
 	resourceModel.RolloutRules = make([]rolloutRuleModel, len(model.RolloutRules))
@@ -344,7 +344,7 @@ func (resourceModel *settingValueResourceModel) UpdateFromApiModel(model sw.Sett
 				ComparisonValue:     types.StringPointerValue(rolloutRule.ComparisonValue.Get()),
 				SegmentId:           types.StringValue(""),
 				SegmentComparator:   types.StringValue(""),
-				Value:               types.StringValue(fmt.Sprintf("%v", rolloutRule.Value)),
+				Value:               types.StringValue(getSettingValueModel(&model.Setting.SettingType, rolloutRule.Value)),
 			}
 			resourceModel.RolloutRules[i] = rolloutRuleModel
 		} else if rolloutRule.SegmentComparator.Get() != nil {
@@ -355,7 +355,7 @@ func (resourceModel *settingValueResourceModel) UpdateFromApiModel(model sw.Sett
 					ComparisonValue:     types.StringValue(""),
 					SegmentId:           types.StringPointerValue(rolloutRule.SegmentId.Get()),
 					SegmentComparator:   types.StringPointerValue((*string)(rolloutRule.SegmentComparator.Get())),
-					Value:               types.StringValue(fmt.Sprintf("%v", rolloutRule.Value)),
+					Value:               types.StringValue(getSettingValueModel(&model.Setting.SettingType, rolloutRule.Value)),
 				}
 				resourceModel.RolloutRules[i] = rolloutRuleModel
 			}
@@ -366,7 +366,7 @@ func (resourceModel *settingValueResourceModel) UpdateFromApiModel(model sw.Sett
 	for i, rolloutPercentageItem := range model.RolloutPercentageItems {
 		rolloutPercentageItemModel := rolloutPercentageItemModel{
 			Percentage: types.StringValue(strconv.FormatInt(rolloutPercentageItem.Percentage, 10)),
-			Value:      types.StringValue(fmt.Sprintf("%v", rolloutPercentageItem.Value)),
+			Value:      types.StringValue(getSettingValueModel(&model.Setting.SettingType, rolloutPercentageItem.Value)),
 		}
 		resourceModel.PercentageItems[i] = rolloutPercentageItemModel
 	}
@@ -406,6 +406,21 @@ func getSettingValue(settingType *sw.SettingType, value string) (*sw.SettingValu
 		}, nil
 	default:
 		return nil, fmt.Errorf("could not parse SettingType and Value: %s, %s", *settingType, value)
+	}
+}
+
+func getSettingValueModel(settingType *sw.SettingType, value sw.SettingValueType) string {
+
+	switch *settingType {
+	case sw.SETTINGTYPE_BOOLEAN:
+		return fmt.Sprintf("%v", *value.Bool)
+	case sw.SETTINGTYPE_INT:
+		intValue := int64(*value.Float64)
+		return fmt.Sprintf("%v", intValue)
+	case sw.SETTINGTYPE_DOUBLE:
+		return fmt.Sprintf("%v", *value.Float64)
+	default:
+		return *value.String
 	}
 }
 
