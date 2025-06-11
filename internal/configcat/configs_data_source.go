@@ -13,7 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
-	sw "github.com/configcat/configcat-publicapi-go-client/v2"
+	sw "github.com/configcat/configcat-publicapi-go-client/v3"
 )
 
 var (
@@ -137,7 +137,7 @@ func (d *configDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 	if !state.NameFilterRegex.IsUnknown() && !state.NameFilterRegex.IsNull() && state.NameFilterRegex.ValueString() != "" {
 		regex := regexp.MustCompile(state.NameFilterRegex.ValueString())
 		for i := range resources {
-			if regex.MatchString(*resources[i].Name.Get()) {
+			if regex.MatchString(resources[i].Name) {
 				filteredResources = append(filteredResources, resources[i])
 			}
 		}
@@ -148,11 +148,11 @@ func (d *configDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 	state.Data = make([]configDataModel, len(filteredResources))
 	for i, resource := range filteredResources {
 		dataModel := &configDataModel{
-			ID:                types.StringPointerValue(resource.ConfigId),
-			Name:              types.StringPointerValue(resource.Name.Get()),
+			ID:                types.StringValue(resource.ConfigId),
+			Name:              types.StringValue(resource.Name),
 			Description:       types.StringPointerValue(resource.Description.Get()),
-			Order:             types.Int64Value(int64(*resource.Order)),
-			EvaluationVersion: types.StringPointerValue((*string)(resource.EvaluationVersion)),
+			Order:             types.Int64Value(int64(resource.Order)),
+			EvaluationVersion: types.StringValue((string)(resource.EvaluationVersion)),
 		}
 
 		state.Data[i] = *dataModel

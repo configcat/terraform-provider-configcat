@@ -15,7 +15,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
-	sw "github.com/configcat/configcat-publicapi-go-client/v2"
+	sw "github.com/configcat/configcat-publicapi-go-client/v3"
 )
 
 var _ resource.Resource = &settingTagResource{}
@@ -155,7 +155,7 @@ func (r *settingTagResource) Read(ctx context.Context, req resource.ReadRequest,
 
 	found := false
 	for _, tag := range model.Tags {
-		if *tag.TagId == tagID {
+		if tag.TagId == tagID {
 			found = true
 			break
 		}
@@ -209,7 +209,7 @@ func (r *settingTagResource) Delete(ctx context.Context, req resource.DeleteRequ
 
 	index := -1
 	for tagIndex, tag := range model.Tags {
-		if *tag.TagId == tagID {
+		if tag.TagId == tagID {
 			index = tagIndex
 			break
 		}

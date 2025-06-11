@@ -25,7 +25,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
-	sw "github.com/configcat/configcat-publicapi-go-client/v2"
+	sw "github.com/configcat/configcat-publicapi-go-client/v3"
 )
 
 var _ resource.Resource = &settingValueResource{}
@@ -489,7 +489,7 @@ func (r *settingValueV2Resource) createOrUpdate(ctx context.Context, requestPlan
 			return
 		}
 
-		settingTypeString = fmt.Sprintf("%v", *setting.SettingType)
+		settingTypeString = fmt.Sprintf("%v", setting.SettingType)
 	}
 
 	settingType, settingTypeConvertErr := sw.NewSettingTypeFromValue(settingTypeString)
@@ -531,17 +531,17 @@ func (r *settingValueV2Resource) createOrUpdate(ctx context.Context, requestPlan
 	diag.Append(responseState.Set(ctx, &plan)...)
 }
 
-func getTargetingRulesData(targetingRules []targetingRuleModel, settingType sw.SettingType) ([]sw.TargetingRuleModel, error) {
+func getTargetingRulesData(targetingRules []targetingRuleModel, settingType sw.SettingType) ([]sw.UpdateTargetingRuleModel, error) {
 	if len(targetingRules) == 0 {
 		return nil, nil
 	}
-	result := make([]sw.TargetingRuleModel, len(targetingRules))
+	result := make([]sw.UpdateTargetingRuleModel, len(targetingRules))
 
 	for targetingRuleIndex, targetingRule := range targetingRules {
-		targetingRuleModel := &sw.TargetingRuleModel{}
+		targetingRuleModel := &sw.UpdateTargetingRuleModel{}
 
 		if len(targetingRule.Conditions) > 0 {
-			conditions := make([]sw.ConditionModel, len(targetingRule.Conditions))
+			conditions := make([]sw.UpdateConditionModel, len(targetingRule.Conditions))
 
 			for conditionIndex, condition := range targetingRule.Conditions {
 
@@ -554,23 +554,25 @@ func getTargetingRulesData(targetingRules []targetingRuleModel, settingType sw.S
 					if comparisonValueErr != nil {
 						return nil, comparisonValueErr
 					}
-					conditions[conditionIndex] = sw.ConditionModel{
-						UserCondition: &sw.UserConditionModel{
-							ComparisonAttribute: condition.UserCondition.ComparisonAttribute.ValueString(),
-							Comparator:          *comparator,
-							ComparisonValue:     *comparisonValue,
-						},
+					userConditionModel := &sw.UpdateUserConditionModel{
+						ComparisonAttribute: condition.UserCondition.ComparisonAttribute.ValueString(),
+						Comparator:          *comparator,
+						ComparisonValue:     *comparisonValue,
+					}
+					conditions[conditionIndex] = sw.UpdateConditionModel{
+						UserCondition: *sw.NewNullableUpdateUserConditionModel(userConditionModel),
 					}
 				} else if condition.SegmentCondition != nil {
 					comparator, comparatorErr := sw.NewSegmentComparatorFromValue(condition.SegmentCondition.Comparator.ValueString())
 					if comparatorErr != nil {
 						return nil, comparatorErr
 					}
-					conditions[conditionIndex] = sw.ConditionModel{
-						SegmentCondition: &sw.SegmentConditionModel{
-							SegmentId:  condition.SegmentCondition.SegmentId.ValueString(),
-							Comparator: *comparator,
-						},
+					segmentConditionModel := &sw.UpdateSegmentConditionModel{
+						SegmentId:  condition.SegmentCondition.SegmentId.ValueString(),
+						Comparator: *comparator,
+					}
+					conditions[conditionIndex] = sw.UpdateConditionModel{
+						SegmentCondition: *sw.NewNullableUpdateSegmentConditionModel(segmentConditionModel),
 					}
 				} else if condition.PrerequisiteFlagCondition != nil {
 					comparator, comparatorErr := sw.NewPrerequisiteComparatorFromValue(condition.PrerequisiteFlagCondition.Comparator.ValueString())
@@ -585,12 +587,13 @@ func getTargetingRulesData(targetingRules []targetingRuleModel, settingType sw.S
 					if prerequisiteComparisonValueErr != nil {
 						return nil, prerequisiteComparisonValueErr
 					}
-					conditions[conditionIndex] = sw.ConditionModel{
-						PrerequisiteFlagCondition: &sw.PrerequisiteFlagConditionModel{
-							PrerequisiteSettingId:       int32(settingID),
-							Comparator:                  *comparator,
-							PrerequisiteComparisonValue: *prerequisiteComparisonValue,
-						},
+					prerequisiteFlagConditionModel := &sw.UpdatePrerequisiteFlagConditionModel{
+						PrerequisiteSettingId:       int32(settingID),
+						Comparator:                  *comparator,
+						PrerequisiteComparisonValue: *prerequisiteComparisonValue,
+					}
+					conditions[conditionIndex] = sw.UpdateConditionModel{
+						PrerequisiteFlagCondition: *sw.NewNullableUpdatePrerequisiteFlagConditionModel(prerequisiteFlagConditionModel),
 					}
 				} else {
 					return nil, fmt.Errorf("exactly one of the %s, %s or %s attributes is required", TargetingRuleUserCondition, TargetingRuleSegmentCondition, TargetingRulePrerequisiteFlagCondition)
@@ -605,14 +608,14 @@ func getTargetingRulesData(targetingRules []targetingRuleModel, settingType sw.S
 		}
 
 		if len(targetingRule.PercentageOptions) > 0 {
-			percentageOptions := make([]sw.PercentageOptionModel, len(targetingRule.PercentageOptions))
+			percentageOptions := make([]sw.UpdatePercentageOptionModel, len(targetingRule.PercentageOptions))
 			for percentageOptionIndex, percentageOption := range targetingRule.PercentageOptions {
 				percentageOptionValue, percentageOptionValueErr := getSettingValueV2(&settingType, percentageOption.Value)
 				if percentageOptionValueErr != nil {
 					return nil, percentageOptionValueErr
 				}
 
-				percentageOptions[percentageOptionIndex] = sw.PercentageOptionModel{
+				percentageOptions[percentageOptionIndex] = sw.UpdatePercentageOptionModel{
 					Percentage: int32(percentageOption.Percentage.ValueInt64()),
 					Value:      *percentageOptionValue,
 				}
@@ -626,7 +629,7 @@ func getTargetingRulesData(targetingRules []targetingRuleModel, settingType sw.S
 			if targetingRuleValueErr != nil {
 				return nil, targetingRuleValueErr
 			}
-			targetingRuleModel.Value = targetingRuleValue
+			targetingRuleModel.Value = *sw.NewNullableUpdateValueModel(targetingRuleValue)
 		}
 
 		result[targetingRuleIndex] = *targetingRuleModel
@@ -635,26 +638,26 @@ func getTargetingRulesData(targetingRules []targetingRuleModel, settingType sw.S
 	return result, nil
 }
 
-func getUserConditionComparisonValueData(comparisonValue *comparisonValueModel) (*sw.ComparisonValueModel, error) {
+func getUserConditionComparisonValueData(comparisonValue *comparisonValueModel) (*sw.UpdateComparisonValueModel, error) {
 	if !comparisonValue.StringValue.IsUnknown() && !comparisonValue.StringValue.IsNull() {
-		return &sw.ComparisonValueModel{
+		return &sw.UpdateComparisonValueModel{
 			StringValue: *sw.NewNullableString(comparisonValue.StringValue.ValueStringPointer()),
 		}, nil
 	} else if !comparisonValue.DoubleValue.IsUnknown() && !comparisonValue.DoubleValue.IsNull() {
-		return &sw.ComparisonValueModel{
+		return &sw.UpdateComparisonValueModel{
 			DoubleValue: *sw.NewNullableFloat64(comparisonValue.DoubleValue.ValueFloat64Pointer()),
 		}, nil
 	} else if len(comparisonValue.ListValue) > 0 {
-		listValueItems := make([]sw.ComparisonValueListModel, len(comparisonValue.ListValue))
+		listValueItems := make([]sw.UpdateComparisonValueListModel, len(comparisonValue.ListValue))
 
 		for listValueItemIndex, listValueItem := range comparisonValue.ListValue {
-			listValueItems[listValueItemIndex] = sw.ComparisonValueListModel{
+			listValueItems[listValueItemIndex] = sw.UpdateComparisonValueListModel{
 				Value: listValueItem.Value.ValueString(),
 				Hint:  *sw.NewNullableString(listValueItem.Hint.ValueStringPointer()),
 			}
 		}
 
-		return &sw.ComparisonValueModel{
+		return &sw.UpdateComparisonValueModel{
 			ListValue: listValueItems,
 		}, nil
 	} else {
@@ -664,14 +667,14 @@ func getUserConditionComparisonValueData(comparisonValue *comparisonValueModel) 
 
 func (resourceModel *settingValueV2ResourceModel) UpdateFromApiModel(model sw.SettingFormulaModel) error {
 
-	resourceModel.ID = types.StringValue(fmt.Sprintf("%s:%d", *model.Environment.EnvironmentId, *model.Setting.SettingId))
-	defaultValue, defaultValueErr := getSettingValueModelV2(model.Setting.SettingType, *model.DefaultValue)
+	resourceModel.ID = types.StringValue(fmt.Sprintf("%s:%d", model.Environment.EnvironmentId, model.Setting.SettingId))
+	defaultValue, defaultValueErr := getSettingValueModelV2(model.Setting.SettingType, model.DefaultValue)
 	if defaultValueErr != nil {
 		return defaultValueErr
 	}
 
 	resourceModel.DefaultValue = defaultValue
-	resourceModel.SettingType = types.StringPointerValue((*string)(model.Setting.SettingType))
+	resourceModel.SettingType = types.StringValue((string)(model.Setting.SettingType))
 	resourceModel.PercentageEvaluationAttribute = types.StringPointerValue(model.PercentageEvaluationAttribute.Get())
 
 	if len(model.TargetingRules) > 0 {
@@ -684,16 +687,19 @@ func (resourceModel *settingValueV2ResourceModel) UpdateFromApiModel(model sw.Se
 				conditions := make([]conditionModel, len(targetingRule.Conditions))
 
 				for conditionIndex, condition := range targetingRule.Conditions {
-					if condition.UserCondition != nil {
+					userCondition := condition.UserCondition.Get()
+					segmentCondition := condition.SegmentCondition.Get()
+					prerequisiteFlagCondition := condition.PrerequisiteFlagCondition.Get()
+					if userCondition != nil {
 
 						comparisonValue := comparisonValueModel{}
-						if condition.UserCondition.ComparisonValue.StringValue.IsSet() && condition.UserCondition.ComparisonValue.StringValue.Get() != nil {
-							comparisonValue.StringValue = types.StringPointerValue(condition.UserCondition.ComparisonValue.StringValue.Get())
-						} else if condition.UserCondition.ComparisonValue.DoubleValue.IsSet() && condition.UserCondition.ComparisonValue.DoubleValue.Get() != nil {
-							comparisonValue.DoubleValue = types.Float64PointerValue(condition.UserCondition.ComparisonValue.DoubleValue.Get())
-						} else if len(condition.UserCondition.ComparisonValue.ListValue) > 0 {
-							listValues := make([]comparisonValueListItemModel, len(condition.UserCondition.ComparisonValue.ListValue))
-							for listValueIndex, listValue := range condition.UserCondition.ComparisonValue.ListValue {
+						if userCondition.ComparisonValue.StringValue.IsSet() && userCondition.ComparisonValue.StringValue.Get() != nil {
+							comparisonValue.StringValue = types.StringPointerValue(userCondition.ComparisonValue.StringValue.Get())
+						} else if userCondition.ComparisonValue.DoubleValue.IsSet() && userCondition.ComparisonValue.DoubleValue.Get() != nil {
+							comparisonValue.DoubleValue = types.Float64PointerValue(userCondition.ComparisonValue.DoubleValue.Get())
+						} else if len(userCondition.ComparisonValue.ListValue) > 0 {
+							listValues := make([]comparisonValueListItemModel, len(userCondition.ComparisonValue.ListValue))
+							for listValueIndex, listValue := range userCondition.ComparisonValue.ListValue {
 								listValues[listValueIndex] = comparisonValueListItemModel{
 									Value: types.StringValue(listValue.Value),
 									Hint:  types.StringPointerValue(listValue.Hint.Get()),
@@ -706,27 +712,27 @@ func (resourceModel *settingValueV2ResourceModel) UpdateFromApiModel(model sw.Se
 
 						conditions[conditionIndex] = conditionModel{
 							UserCondition: &userConditionModel{
-								ComparisonAttribute: types.StringValue(condition.UserCondition.ComparisonAttribute),
-								Comparator:          types.StringValue(string(condition.UserCondition.Comparator)),
+								ComparisonAttribute: types.StringValue(userCondition.ComparisonAttribute),
+								Comparator:          types.StringValue(string(userCondition.Comparator)),
 								ComparisonValue:     &comparisonValue,
 							},
 						}
-					} else if condition.SegmentCondition != nil {
+					} else if segmentCondition != nil {
 						conditions[conditionIndex] = conditionModel{
 							SegmentCondition: &segmentConditionModel{
-								SegmentId:  types.StringValue(condition.SegmentCondition.SegmentId),
-								Comparator: types.StringValue(string(condition.SegmentCondition.Comparator)),
+								SegmentId:  types.StringValue(segmentCondition.SegmentId),
+								Comparator: types.StringValue(string(segmentCondition.Comparator)),
 							},
 						}
-					} else if condition.PrerequisiteFlagCondition != nil {
-						prerequisiteFlagSettingValueModel, prerequisiteFlagSettingValueModelErr := getSettingValueModelV2WithoutSettingType(condition.PrerequisiteFlagCondition.PrerequisiteComparisonValue)
+					} else if prerequisiteFlagCondition != nil {
+						prerequisiteFlagSettingValueModel, prerequisiteFlagSettingValueModelErr := getSettingValueModelV2WithoutSettingType(prerequisiteFlagCondition.PrerequisiteComparisonValue)
 						if prerequisiteFlagSettingValueModelErr != nil {
 							return prerequisiteFlagSettingValueModelErr
 						}
 						conditions[conditionIndex] = conditionModel{
 							PrerequisiteFlagCondition: &prerequisiteFlagConditionModel{
-								PrerequisiteSettingId: types.StringValue(strconv.FormatInt(int64(condition.PrerequisiteFlagCondition.PrerequisiteSettingId), 10)),
-								Comparator:            types.StringValue(string(condition.PrerequisiteFlagCondition.Comparator)),
+								PrerequisiteSettingId: types.StringValue(strconv.FormatInt(int64(prerequisiteFlagCondition.PrerequisiteSettingId), 10)),
+								Comparator:            types.StringValue(string(prerequisiteFlagCondition.Comparator)),
 								ComparisonValue:       prerequisiteFlagSettingValueModel,
 							},
 						}
@@ -738,7 +744,9 @@ func (resourceModel *settingValueV2ResourceModel) UpdateFromApiModel(model sw.Se
 				targetingRuleModel.Conditions = conditions
 			}
 
-			if len(targetingRule.PercentageOptions) == 0 && targetingRule.Value == nil {
+			targetingRuleValue := targetingRule.Value.Get()
+
+			if len(targetingRule.PercentageOptions) == 0 && targetingRuleValue == nil {
 				return fmt.Errorf("invalid model. At least PercentageOptions or Value must be provided")
 			}
 
@@ -760,8 +768,8 @@ func (resourceModel *settingValueV2ResourceModel) UpdateFromApiModel(model sw.Se
 				targetingRuleModel.PercentageOptions = percentageOptions
 			}
 
-			if targetingRule.Value != nil {
-				targetingRuleValue, targetingRuleValueErr := getSettingValueModelV2(model.Setting.SettingType, *targetingRule.Value)
+			if targetingRuleValue != nil {
+				targetingRuleValue, targetingRuleValueErr := getSettingValueModelV2(model.Setting.SettingType, *targetingRuleValue)
 				if targetingRuleValueErr != nil {
 					return targetingRuleValueErr
 				}
@@ -777,10 +785,10 @@ func (resourceModel *settingValueV2ResourceModel) UpdateFromApiModel(model sw.Se
 	return nil
 }
 
-func getSettingValueModelV2(settingType *sw.SettingType, value sw.ValueModel) (*settingValueModel, error) {
+func getSettingValueModelV2(settingType sw.SettingType, value sw.ValueModel) (*settingValueModel, error) {
 
 	result := settingValueModel{}
-	switch *settingType {
+	switch settingType {
 	case sw.SETTINGTYPE_BOOLEAN:
 		result.BoolValue = types.BoolPointerValue(value.BoolValue.Get())
 		return &result, nil
@@ -795,7 +803,7 @@ func getSettingValueModelV2(settingType *sw.SettingType, value sw.ValueModel) (*
 		result.DoubleValue = types.Float64PointerValue(value.DoubleValue.Get())
 		return &result, nil
 	default:
-		return nil, fmt.Errorf("could not parse SettingType: %s", *settingType)
+		return nil, fmt.Errorf("could not parse SettingType: %s", settingType)
 	}
 }
 
@@ -815,26 +823,26 @@ func getSettingValueModelV2WithoutSettingType(value sw.ValueModel) (*settingValu
 	}
 }
 
-func getSettingValueV2WithoutSettingType(value settingValueModel) (*sw.ValueModel, error) {
+func getSettingValueV2WithoutSettingType(value settingValueModel) (*sw.UpdateValueModel, error) {
 
 	if !value.BoolValue.IsUnknown() && !value.BoolValue.IsNull() {
-		return &sw.ValueModel{BoolValue: *sw.NewNullableBool(value.BoolValue.ValueBoolPointer())}, nil
+		return &sw.UpdateValueModel{BoolValue: *sw.NewNullableBool(value.BoolValue.ValueBoolPointer())}, nil
 	} else if !value.StringValue.IsUnknown() && !value.StringValue.IsNull() {
-		return &sw.ValueModel{StringValue: *sw.NewNullableString(value.StringValue.ValueStringPointer())}, nil
+		return &sw.UpdateValueModel{StringValue: *sw.NewNullableString(value.StringValue.ValueStringPointer())}, nil
 	} else if !value.IntValue.IsUnknown() && !value.IntValue.IsNull() {
 		int64Value := value.IntValue.ValueInt64()
 		int32Value := int32(int64Value)
-		return &sw.ValueModel{IntValue: *sw.NewNullableInt32(&int32Value)}, nil
+		return &sw.UpdateValueModel{IntValue: *sw.NewNullableInt32(&int32Value)}, nil
 	} else if !value.DoubleValue.IsUnknown() && !value.DoubleValue.IsNull() {
-		return &sw.ValueModel{DoubleValue: *sw.NewNullableFloat64(value.DoubleValue.ValueFloat64Pointer())}, nil
+		return &sw.UpdateValueModel{DoubleValue: *sw.NewNullableFloat64(value.DoubleValue.ValueFloat64Pointer())}, nil
 	} else {
 		return nil, fmt.Errorf("exactly one of the %s, %s, %s or %s attributes is required", BoolValue, StringValue, IntValue, DoubleValue)
 	}
 }
 
-func getSettingValueV2(settingType *sw.SettingType, value *settingValueModel) (*sw.ValueModel, error) {
+func getSettingValueV2(settingType *sw.SettingType, value *settingValueModel) (*sw.UpdateValueModel, error) {
 
-	result := sw.ValueModel{}
+	result := sw.UpdateValueModel{}
 	switch *settingType {
 	case sw.SETTINGTYPE_BOOLEAN:
 		result.BoolValue = *sw.NewNullableBool(value.BoolValue.ValueBoolPointer())

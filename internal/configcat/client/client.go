@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	configcatpublicapi "github.com/configcat/configcat-publicapi-go-client/v2"
+	configcatpublicapi "github.com/configcat/configcat-publicapi-go-client/v3"
 )
 
 type Client struct {
@@ -63,8 +63,8 @@ func NewClient(basePath, basicAuthUsername, basicAuthPassword, version string) (
 	if err != nil {
 		return nil, err
 	}
-	client.authEmail = *meModel.Email.Get()
-	client.authFullName = *meModel.FullName.Get()
+	client.authEmail = meModel.Email
+	client.authFullName = meModel.FullName
 
 	return client, nil
 }

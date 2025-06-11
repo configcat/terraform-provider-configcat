@@ -1,7 +1,7 @@
 package client
 
 import (
-	sw "github.com/configcat/configcat-publicapi-go-client/v2"
+	sw "github.com/configcat/configcat-publicapi-go-client/v3"
 )
 
 func (client *Client) GetProducts() ([]sw.ProductModel, error) {

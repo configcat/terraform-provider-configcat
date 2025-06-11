@@ -1,6 +1,6 @@
 package client
 
-import sw "github.com/configcat/configcat-publicapi-go-client/v2"
+import sw "github.com/configcat/configcat-publicapi-go-client/v3"
 
 func (client *Client) GetTags(productID string) ([]sw.TagModel, error) {
 	model, response, err := client.apiClient.TagsAPI.GetTags(client.GetAuthContext(), productID).Execute()

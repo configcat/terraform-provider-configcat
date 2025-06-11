@@ -16,7 +16,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
-	sw "github.com/configcat/configcat-publicapi-go-client/v2"
+	sw "github.com/configcat/configcat-publicapi-go-client/v3"
 )
 
 var _ resource.Resource = &tagResource{}
@@ -222,8 +222,8 @@ func (r *tagResource) ImportState(ctx context.Context, req resource.ImportStateR
 }
 
 func (resourceModel *tagResourceModel) UpdateFromApiModel(model sw.TagModel) {
-	resourceModel.ID = types.StringValue(strconv.FormatInt(*model.TagId, 10))
-	resourceModel.ProductId = types.StringPointerValue(model.Product.ProductId)
-	resourceModel.Name = types.StringPointerValue(model.Name.Get())
+	resourceModel.ID = types.StringValue(strconv.FormatInt(model.TagId, 10))
+	resourceModel.ProductId = types.StringValue(model.Product.ProductId)
+	resourceModel.Name = types.StringValue(model.Name)
 	resourceModel.Color = types.StringPointerValue(model.Color.Get())
 }

@@ -104,7 +104,7 @@ func (d *sdkKeyDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 
 	state.ID = types.StringValue(strconv.FormatInt(time.Now().Unix(), 10))
 
-	state.PrimarySdkKey = types.StringPointerValue(sdkKeys.Primary.Get())
+	state.PrimarySdkKey = types.StringValue(sdkKeys.Primary)
 	state.SecondarySdkKey = types.StringPointerValue(sdkKeys.Secondary.Get())
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)

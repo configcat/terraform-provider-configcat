@@ -1,6 +1,6 @@
 package client
 
-import sw "github.com/configcat/configcat-publicapi-go-client/v2"
+import sw "github.com/configcat/configcat-publicapi-go-client/v3"
 
 func (client *Client) GetPermissionGroups(productID string) ([]sw.PermissionGroupModel, error) {
 	model, response, err := client.apiClient.PermissionGroupsAPI.GetPermissionGroups(client.GetAuthContext(), productID).Execute()

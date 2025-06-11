@@ -18,7 +18,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
-	sw "github.com/configcat/configcat-publicapi-go-client/v2"
+	sw "github.com/configcat/configcat-publicapi-go-client/v3"
 )
 
 var _ resource.Resource = &permissionGroupResource{}
@@ -489,8 +489,8 @@ func (r *permissionGroupResource) Update(ctx context.Context, req resource.Updat
 		CanViewProductAuditLog:       *sw.NewNullableBool(plan.CanViewProductAuditLogs.ValueBoolPointer()),
 		CanViewProductStatistics:     *sw.NewNullableBool(plan.CanViewProductStatistics.ValueBoolPointer()),
 		CanDisable2FA:                *sw.NewNullableBool(plan.CanDisable2FA.ValueBoolPointer()),
-		AccessType:                   accessType,
-		NewEnvironmentAccessType:     newEnvironmentAccessType,
+		AccessType:                   *sw.NewNullableAccessType(accessType),
+		NewEnvironmentAccessType:     *sw.NewNullableEnvironmentAccessType(newEnvironmentAccessType),
 		EnvironmentAccesses:          *environmentAccesses,
 	}
 
@@ -541,11 +541,11 @@ func (resourceModel *permissionGroupResourceModel) UpdateFromApiModel(ctx contex
 
 	environmentAccesses := make(map[string]string, len(model.EnvironmentAccesses))
 	for _, environmentAccess := range model.EnvironmentAccesses {
-		if *environmentAccess.EnvironmentAccessType == sw.ENVIRONMENTACCESSTYPE_NONE {
+		if environmentAccess.EnvironmentAccessType == sw.ENVIRONMENTACCESSTYPE_NONE {
 			continue
 		}
 
-		environmentAccesses[*environmentAccess.EnvironmentId] = (string)(*environmentAccess.EnvironmentAccessType)
+		environmentAccesses[environmentAccess.EnvironmentId] = (string)(environmentAccess.EnvironmentAccessType)
 	}
 
 	environmentAccessesMapValue, diags := types.MapValueFrom(ctx, types.StringType, environmentAccesses)
@@ -553,32 +553,32 @@ func (resourceModel *permissionGroupResourceModel) UpdateFromApiModel(ctx contex
 		return diags
 	}
 
-	resourceModel.ID = types.StringValue(strconv.FormatInt(*model.PermissionGroupId, 10))
-	resourceModel.ProductId = types.StringPointerValue(model.Product.ProductId)
-	resourceModel.Name = types.StringPointerValue(model.Name.Get())
-	resourceModel.CanManageMembers = types.BoolPointerValue(model.CanManageMembers)
-	resourceModel.CanCreateOrUpdateConfig = types.BoolPointerValue(model.CanCreateOrUpdateConfig)
-	resourceModel.CanDeleteConfig = types.BoolPointerValue(model.CanDeleteConfig)
-	resourceModel.CanCreateOrUpdateEnvironment = types.BoolPointerValue(model.CanCreateOrUpdateEnvironment)
-	resourceModel.CanDeleteEnvironment = types.BoolPointerValue(model.CanDeleteEnvironment)
-	resourceModel.CanCreateOrUpdateSetting = types.BoolPointerValue(model.CanCreateOrUpdateSetting)
-	resourceModel.CanTagSetting = types.BoolPointerValue(model.CanTagSetting)
-	resourceModel.CanDeleteSetting = types.BoolPointerValue(model.CanDeleteSetting)
-	resourceModel.CanCreateOrUpdateTag = types.BoolPointerValue(model.CanCreateOrUpdateTag)
-	resourceModel.CanDeleteTag = types.BoolPointerValue(model.CanDeleteTag)
-	resourceModel.CanManageWebhook = types.BoolPointerValue(model.CanManageWebhook)
-	resourceModel.CanUseExportImport = types.BoolPointerValue(model.CanUseExportImport)
-	resourceModel.CanManageProductPreferences = types.BoolPointerValue(model.CanManageProductPreferences)
-	resourceModel.CanManageIntegrations = types.BoolPointerValue(model.CanManageIntegrations)
-	resourceModel.CanViewSdkKey = types.BoolPointerValue(model.CanViewSdkKey)
-	resourceModel.CanRotateSdkKey = types.BoolPointerValue(model.CanRotateSdkKey)
-	resourceModel.CanCreateOrUpdateSegment = types.BoolPointerValue(model.CanCreateOrUpdateSegments)
-	resourceModel.CanDeleteSegment = types.BoolPointerValue(model.CanDeleteSegments)
-	resourceModel.CanViewProductAuditLogs = types.BoolPointerValue(model.CanViewProductAuditLog)
-	resourceModel.CanViewProductStatistics = types.BoolPointerValue(model.CanViewProductStatistics)
-	resourceModel.CanDisable2FA = types.BoolPointerValue(model.CanDisable2FA)
-	resourceModel.AccessType = types.StringPointerValue((*string)(model.AccessType))
-	resourceModel.NewEnvironmentAccessType = types.StringPointerValue((*string)(model.NewEnvironmentAccessType))
+	resourceModel.ID = types.StringValue(strconv.FormatInt(model.PermissionGroupId, 10))
+	resourceModel.ProductId = types.StringValue(model.Product.ProductId)
+	resourceModel.Name = types.StringValue(model.Name)
+	resourceModel.CanManageMembers = types.BoolValue(model.CanManageMembers)
+	resourceModel.CanCreateOrUpdateConfig = types.BoolValue(model.CanCreateOrUpdateConfig)
+	resourceModel.CanDeleteConfig = types.BoolValue(model.CanDeleteConfig)
+	resourceModel.CanCreateOrUpdateEnvironment = types.BoolValue(model.CanCreateOrUpdateEnvironment)
+	resourceModel.CanDeleteEnvironment = types.BoolValue(model.CanDeleteEnvironment)
+	resourceModel.CanCreateOrUpdateSetting = types.BoolValue(model.CanCreateOrUpdateSetting)
+	resourceModel.CanTagSetting = types.BoolValue(model.CanTagSetting)
+	resourceModel.CanDeleteSetting = types.BoolValue(model.CanDeleteSetting)
+	resourceModel.CanCreateOrUpdateTag = types.BoolValue(model.CanCreateOrUpdateTag)
+	resourceModel.CanDeleteTag = types.BoolValue(model.CanDeleteTag)
+	resourceModel.CanManageWebhook = types.BoolValue(model.CanManageWebhook)
+	resourceModel.CanUseExportImport = types.BoolValue(model.CanUseExportImport)
+	resourceModel.CanManageProductPreferences = types.BoolValue(model.CanManageProductPreferences)
+	resourceModel.CanManageIntegrations = types.BoolValue(model.CanManageIntegrations)
+	resourceModel.CanViewSdkKey = types.BoolValue(model.CanViewSdkKey)
+	resourceModel.CanRotateSdkKey = types.BoolValue(model.CanRotateSdkKey)
+	resourceModel.CanCreateOrUpdateSegment = types.BoolValue(model.CanCreateOrUpdateSegments)
+	resourceModel.CanDeleteSegment = types.BoolValue(model.CanDeleteSegments)
+	resourceModel.CanViewProductAuditLogs = types.BoolValue(model.CanViewProductAuditLog)
+	resourceModel.CanViewProductStatistics = types.BoolValue(model.CanViewProductStatistics)
+	resourceModel.CanDisable2FA = types.BoolValue(model.CanDisable2FA)
+	resourceModel.AccessType = types.StringValue((string)(model.AccessType))
+	resourceModel.NewEnvironmentAccessType = types.StringValue((string)(model.NewEnvironmentAccessType))
 	resourceModel.EnvironmentAccess = environmentAccessesMapValue
 
 	return diags

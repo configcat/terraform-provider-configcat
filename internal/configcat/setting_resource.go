@@ -16,7 +16,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
-	sw "github.com/configcat/configcat-publicapi-go-client/v2"
+	sw "github.com/configcat/configcat-publicapi-go-client/v3"
 )
 
 var _ resource.Resource = &settingResource{}
@@ -275,12 +275,12 @@ func (r *settingResource) ImportState(ctx context.Context, req resource.ImportSt
 }
 
 func (resourceModel *settingResourceModel) UpdateFromApiModel(model sw.SettingModel) {
-	modelOrder := int64(*model.Order)
-	resourceModel.ID = types.StringValue(strconv.FormatInt(int64(*model.SettingId), 10))
-	resourceModel.ConfigId = types.StringPointerValue(model.ConfigId)
-	resourceModel.Key = types.StringPointerValue(model.Key.Get())
-	resourceModel.Name = types.StringPointerValue(model.Name.Get())
+	modelOrder := int64(model.Order)
+	resourceModel.ID = types.StringValue(strconv.FormatInt(int64(model.SettingId), 10))
+	resourceModel.ConfigId = types.StringValue(model.ConfigId)
+	resourceModel.Key = types.StringValue(model.Key)
+	resourceModel.Name = types.StringValue(model.Name)
 	resourceModel.Hint = types.StringPointerValue(model.Hint.Get())
-	resourceModel.SettingType = types.StringPointerValue((*string)(model.SettingType))
+	resourceModel.SettingType = types.StringValue((string)(model.SettingType))
 	resourceModel.Order = types.Int64Value(modelOrder)
 }

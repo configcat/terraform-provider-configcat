@@ -19,7 +19,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
-	sw "github.com/configcat/configcat-publicapi-go-client/v2"
+	sw "github.com/configcat/configcat-publicapi-go-client/v3"
 )
 
 var _ resource.Resource = &settingValueResource{}
@@ -285,7 +285,7 @@ func (r *settingValueResource) createOrUpdate(ctx context.Context, requestPlan *
 			return
 		}
 
-		settingTypeString = fmt.Sprintf("%v", *setting.SettingType)
+		settingTypeString = fmt.Sprintf("%v", setting.SettingType)
 	}
 
 	settingType, settingTypeConvertErr := sw.NewSettingTypeFromValue(settingTypeString)
@@ -313,7 +313,7 @@ func (r *settingValueResource) createOrUpdate(ctx context.Context, requestPlan *
 	}
 
 	body := sw.UpdateSettingValueModel{
-		Value:                  settingValue,
+		Value:                  *settingValue,
 		RolloutRules:           *rolloutRules,
 		RolloutPercentageItems: *rolloutPercentageItems,
 	}
@@ -331,31 +331,31 @@ func (r *settingValueResource) createOrUpdate(ctx context.Context, requestPlan *
 
 func (resourceModel *settingValueResourceModel) UpdateFromApiModel(model sw.SettingValueModel) {
 
-	resourceModel.ID = types.StringValue(fmt.Sprintf("%s:%d", *model.Environment.EnvironmentId, *model.Setting.SettingId))
-	resourceModel.Value = types.StringValue(fmt.Sprintf("%v", model.Value))
-	resourceModel.SettingType = types.StringPointerValue((*string)(model.Setting.SettingType))
+	resourceModel.ID = types.StringValue(fmt.Sprintf("%s:%d", model.Environment.EnvironmentId, model.Setting.SettingId))
+	resourceModel.Value = types.StringValue(getSettingValueModel(&model.Setting.SettingType, model.Value))
+	resourceModel.SettingType = types.StringValue((string)(model.Setting.SettingType))
 
 	resourceModel.RolloutRules = make([]rolloutRuleModel, len(model.RolloutRules))
 	for i, rolloutRule := range model.RolloutRules {
-		if rolloutRule.Comparator != nil {
+		if rolloutRule.Comparator.Get() != nil {
 			rolloutRuleModel := rolloutRuleModel{
 				ComparisonAttribute: types.StringPointerValue(rolloutRule.ComparisonAttribute.Get()),
-				Comparator:          types.StringPointerValue((*string)(rolloutRule.Comparator)),
+				Comparator:          types.StringPointerValue((*string)(rolloutRule.Comparator.Get())),
 				ComparisonValue:     types.StringPointerValue(rolloutRule.ComparisonValue.Get()),
 				SegmentId:           types.StringValue(""),
 				SegmentComparator:   types.StringValue(""),
-				Value:               types.StringValue(fmt.Sprintf("%v", rolloutRule.Value)),
+				Value:               types.StringValue(getSettingValueModel(&model.Setting.SettingType, rolloutRule.Value)),
 			}
 			resourceModel.RolloutRules[i] = rolloutRuleModel
-		} else if rolloutRule.SegmentComparator != nil {
+		} else if rolloutRule.SegmentComparator.Get() != nil {
 			{
 				rolloutRuleModel := rolloutRuleModel{
 					ComparisonAttribute: types.StringValue(""),
 					Comparator:          types.StringValue(""),
 					ComparisonValue:     types.StringValue(""),
 					SegmentId:           types.StringPointerValue(rolloutRule.SegmentId.Get()),
-					SegmentComparator:   types.StringPointerValue((*string)(rolloutRule.SegmentComparator)),
-					Value:               types.StringValue(fmt.Sprintf("%v", rolloutRule.Value)),
+					SegmentComparator:   types.StringPointerValue((*string)(rolloutRule.SegmentComparator.Get())),
+					Value:               types.StringValue(getSettingValueModel(&model.Setting.SettingType, rolloutRule.Value)),
 				}
 				resourceModel.RolloutRules[i] = rolloutRuleModel
 			}
@@ -366,31 +366,61 @@ func (resourceModel *settingValueResourceModel) UpdateFromApiModel(model sw.Sett
 	for i, rolloutPercentageItem := range model.RolloutPercentageItems {
 		rolloutPercentageItemModel := rolloutPercentageItemModel{
 			Percentage: types.StringValue(strconv.FormatInt(rolloutPercentageItem.Percentage, 10)),
-			Value:      types.StringValue(fmt.Sprintf("%v", rolloutPercentageItem.Value)),
+			Value:      types.StringValue(getSettingValueModel(&model.Setting.SettingType, rolloutPercentageItem.Value)),
 		}
 		resourceModel.PercentageItems[i] = rolloutPercentageItemModel
 	}
 }
 
-func getSettingValue(settingType *sw.SettingType, value string) (interface{}, error) {
+func getSettingValue(settingType *sw.SettingType, value string) (*sw.SettingValueType, error) {
 
 	switch *settingType {
 	case sw.SETTINGTYPE_BOOLEAN:
 		b, err := strconv.ParseBool(value)
-		return b, err
+		if err != nil {
+			return nil, err
+		}
+
+		return &sw.SettingValueType{
+			Bool: &b,
+		}, nil
 	case sw.SETTINGTYPE_STRING:
-		return value, nil
+		return &sw.SettingValueType{String: &value}, nil
 	case sw.SETTINGTYPE_INT:
 		i, err := strconv.ParseInt(value, 10, 32)
-		if err == nil {
-			return int32(i), nil
+		if err != nil {
+			return nil, err
+
 		}
-		return nil, err
+		floatValue := float64(i)
+		return &sw.SettingValueType{
+			Float64: &floatValue,
+		}, nil
 	case sw.SETTINGTYPE_DOUBLE:
 		f, err := strconv.ParseFloat(value, 64)
-		return f, err
+		if err != nil {
+			return nil, err
+		}
+		return &sw.SettingValueType{
+			Float64: &f,
+		}, nil
 	default:
 		return nil, fmt.Errorf("could not parse SettingType and Value: %s, %s", *settingType, value)
+	}
+}
+
+func getSettingValueModel(settingType *sw.SettingType, value sw.SettingValueType) string {
+
+	switch *settingType {
+	case sw.SETTINGTYPE_BOOLEAN:
+		return fmt.Sprintf("%v", *value.Bool)
+	case sw.SETTINGTYPE_INT:
+		intValue := int64(*value.Float64)
+		return fmt.Sprintf("%v", intValue)
+	case sw.SETTINGTYPE_DOUBLE:
+		return fmt.Sprintf("%v", *value.Float64)
+	default:
+		return *value.String
 	}
 }
 
@@ -409,13 +439,13 @@ func resourceConfigCatSettingValueParseID(id string) (string, string, error) {
 	return parts[0], parts[1], nil
 }
 
-func getRolloutRulesData(rolloutRules *[]rolloutRuleModel, settingType sw.SettingType) (*[]sw.RolloutRuleModel, error) {
+func getRolloutRulesData(rolloutRules *[]rolloutRuleModel, settingType sw.SettingType) (*[]sw.UpdateRolloutRuleModel, error) {
 	if rolloutRules == nil {
-		empty := make([]sw.RolloutRuleModel, 0)
+		empty := make([]sw.UpdateRolloutRuleModel, 0)
 		return &empty, nil
 	}
 
-	elements := make([]sw.RolloutRuleModel, len(*rolloutRules))
+	elements := make([]sw.UpdateRolloutRuleModel, len(*rolloutRules))
 	for i, rolloutRule := range *rolloutRules {
 		value, err := getSettingValue(&settingType, rolloutRule.Value.ValueString())
 		if err != nil {
@@ -435,11 +465,11 @@ func getRolloutRulesData(rolloutRules *[]rolloutRuleModel, settingType sw.Settin
 				return nil, compErr
 			}
 
-			element := sw.RolloutRuleModel{
+			element := sw.UpdateRolloutRuleModel{
 				ComparisonAttribute: *sw.NewNullableString(rolloutRule.ComparisonAttribute.ValueStringPointer()),
-				Comparator:          comparator,
+				Comparator:          *sw.NewNullableRolloutRuleComparator(comparator),
 				ComparisonValue:     *sw.NewNullableString(rolloutRule.ComparisonValue.ValueStringPointer()),
-				Value:               &value,
+				Value:               *value,
 			}
 
 			elements[i] = element
@@ -453,10 +483,10 @@ func getRolloutRulesData(rolloutRules *[]rolloutRuleModel, settingType sw.Settin
 				return nil, compErr
 			}
 
-			element := sw.RolloutRuleModel{
-				SegmentComparator: segmentComparator,
+			element := sw.UpdateRolloutRuleModel{
+				SegmentComparator: *sw.NewNullableSegmentComparator(segmentComparator),
 				SegmentId:         *sw.NewNullableString(rolloutRule.SegmentId.ValueStringPointer()),
-				Value:             &value,
+				Value:             *value,
 			}
 
 			elements[i] = element
@@ -467,13 +497,13 @@ func getRolloutRulesData(rolloutRules *[]rolloutRuleModel, settingType sw.Settin
 	return &elements, nil
 }
 
-func getRolloutPercentageItemsData(rolloutPercentageItems *[]rolloutPercentageItemModel, settingType sw.SettingType) (*[]sw.RolloutPercentageItemModel, error) {
+func getRolloutPercentageItemsData(rolloutPercentageItems *[]rolloutPercentageItemModel, settingType sw.SettingType) (*[]sw.UpdateRolloutPercentageItemModel, error) {
 	if rolloutPercentageItems == nil {
-		empty := make([]sw.RolloutPercentageItemModel, 0)
+		empty := make([]sw.UpdateRolloutPercentageItemModel, 0)
 		return &empty, nil
 	}
 
-	elements := make([]sw.RolloutPercentageItemModel, len(*rolloutPercentageItems))
+	elements := make([]sw.UpdateRolloutPercentageItemModel, len(*rolloutPercentageItems))
 	for i, rolloutPercentageItem := range *rolloutPercentageItems {
 		value, err := getSettingValue(&settingType, rolloutPercentageItem.Value.ValueString())
 		if err != nil {
@@ -485,9 +515,9 @@ func getRolloutPercentageItemsData(rolloutPercentageItems *[]rolloutPercentageIt
 			return nil, percErr
 		}
 
-		element := sw.RolloutPercentageItemModel{
+		element := sw.UpdateRolloutPercentageItemModel{
 			Percentage: percentage,
-			Value:      &value,
+			Value:      *value,
 		}
 		elements[i] = element
 	}

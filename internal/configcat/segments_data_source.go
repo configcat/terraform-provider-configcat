@@ -13,7 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
-	sw "github.com/configcat/configcat-publicapi-go-client/v2"
+	sw "github.com/configcat/configcat-publicapi-go-client/v3"
 )
 
 var (
@@ -127,7 +127,7 @@ func (d *segmentDataSource) Read(ctx context.Context, req datasource.ReadRequest
 	if !state.NameFilterRegex.IsUnknown() && !state.NameFilterRegex.IsNull() && state.NameFilterRegex.ValueString() != "" {
 		regex := regexp.MustCompile(state.NameFilterRegex.ValueString())
 		for i := range resources {
-			if regex.MatchString(*resources[i].Name.Get()) {
+			if regex.MatchString(resources[i].Name) {
 				filteredResources = append(filteredResources, resources[i])
 			}
 		}
@@ -138,8 +138,8 @@ func (d *segmentDataSource) Read(ctx context.Context, req datasource.ReadRequest
 	state.Data = make([]segmentDataModel, len(filteredResources))
 	for i, resource := range filteredResources {
 		dataModel := &segmentDataModel{
-			ID:          types.StringPointerValue(resource.SegmentId),
-			Name:        types.StringPointerValue(resource.Name.Get()),
+			ID:          types.StringValue(resource.SegmentId),
+			Name:        types.StringValue(resource.Name),
 			Description: types.StringPointerValue(resource.Description.Get()),
 		}
 

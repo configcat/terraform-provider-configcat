@@ -1,6 +1,6 @@
 package client
 
-import sw "github.com/configcat/configcat-publicapi-go-client/v2"
+import sw "github.com/configcat/configcat-publicapi-go-client/v3"
 
 func (client *Client) GetConfigs(productID string) ([]sw.ConfigModel, error) {
 	model, response, err := client.apiClient.ConfigsAPI.GetConfigs(client.GetAuthContext(), productID).Execute()
