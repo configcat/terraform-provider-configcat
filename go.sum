@@ -29,8 +29,8 @@ github.com/bufbuild/protocompile v0.4.0 h1:LbFKd2XowZvQ/kajzguUp2DC9UEIQhIq77fZZ
 github.com/bufbuild/protocompile v0.4.0/go.mod h1:3v93+mbWn/v3xzN+31nwkJfrEpAUwp+BagBSZWx+TP8=
 github.com/cloudflare/circl v1.6.0 h1:cr5JKic4HI+LkINy2lg3W2jF8sHCVTBncJr5gIIq7qk=
 github.com/cloudflare/circl v1.6.0/go.mod h1:uddAzsPgqdMAYatqJ0lsjX1oECcQLIlRpzZh3pJrofs=
-github.com/configcat/configcat-publicapi-go-client/v3 v3.0.0 h1:LOpxstErYF8aL05Yjrui/x1MLuL1DWh3ko3rnDtUxHQ=
-github.com/configcat/configcat-publicapi-go-client/v3 v3.0.0/go.mod h1:UCVuc+fKmH8fHQFvWJg1pndUBDmPkprqR+vR7UXc6EU=
+github.com/configcat/configcat-publicapi-go-client/v3 v3.1.0 h1:pV+Ufg82VJCwI9iKG8tbn8eMaoC1h+W49ccabygtxkg=
+github.com/configcat/configcat-publicapi-go-client/v3 v3.1.0/go.mod h1:BHwkenk/W4ki/OkonQYgKugho8vr28yfJTHP5U8yk/M=
 github.com/cyphar/filepath-securejoin v0.4.1 h1:JyxxyPEaktOD+GAnqIqTf9A8tHyAG22rowi7HkoSU1s=
 github.com/cyphar/filepath-securejoin v0.4.1/go.mod h1:Sdj7gXlvMcPZsbhwhQ33GguGLDGQL7h7bg04C/+u9jI=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
