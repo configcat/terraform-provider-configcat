@@ -355,7 +355,6 @@ func (resourceModel *settingResourceModel) UpdateFromApiModel(model sw.SettingMo
 	for index, predefinedVariation := range model.PredefinedVariations {
 		value, valueErr := getPredefinedVariationValueModel(model.SettingType, predefinedVariation.Value)
 		if valueErr != nil {
-			diag.AddError("Invalid model."))
 			return valueErr
 		}
 		resourceModel.PredefinedVariations[index] = predefinedVariationModel{
