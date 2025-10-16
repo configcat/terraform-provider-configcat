@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/configcat/terraform-provider-configcat/v5/internal/configcat/client"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -181,7 +182,11 @@ func (r *settingResource) Create(ctx context.Context, req resource.CreateRequest
 		return
 	}
 
-	plan.UpdateFromApiModel(*model)
+	createError := plan.UpdateFromApiModel(*model)
+	if createError != nil {
+		resp.Diagnostics.AddError("Unable to parse API response", fmt.Sprintf("Unable to parse API response for "+SettingResourceName+", got error: %s", createError))
+		return
+	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
@@ -212,7 +217,12 @@ func (r *settingResource) Read(ctx context.Context, req resource.ReadRequest, re
 		return
 	}
 
-	state.UpdateFromApiModel(*model)
+	readError := state.UpdateFromApiModel(*model)
+	if readError != nil {
+		resp.Diagnostics.AddError("Unable to parse API response", fmt.Sprintf("Unable to parse API response for "+SettingResourceName+", got error: %s", readError))
+		return
+	}
+
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -268,7 +278,12 @@ func (r *settingResource) Update(ctx context.Context, req resource.UpdateRequest
 		return
 	}
 
-	plan.UpdateFromApiModel(*model)
+	updateError := plan.UpdateFromApiModel(*model)
+	if updateError != nil {
+		diag.AddError("Unable to parse API response", fmt.Sprintf("Unable to parse API response for "+SettingResourceName+", got error: %s", updateError))
+		return
+	}
+
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
 
@@ -304,7 +319,29 @@ func (r *settingResource) ImportState(ctx context.Context, req resource.ImportSt
 	resource.ImportStatePassthroughID(ctx, path.Root(ID), req, resp)
 }
 
-func (resourceModel *settingResourceModel) UpdateFromApiModel(model sw.SettingModel) {
+func getPredefinedVariationValueModel(settingType sw.SettingType, value sw.PredefinedVariationValueModel) (*settingValueModel, error) {
+
+	result := settingValueModel{}
+	switch settingType {
+	case sw.SETTINGTYPE_BOOLEAN:
+		result.BoolValue = types.BoolPointerValue(value.BoolValue.Get())
+		return &result, nil
+	case sw.SETTINGTYPE_STRING:
+		result.StringValue = types.StringPointerValue(value.StringValue.Get())
+		return &result, nil
+	case sw.SETTINGTYPE_INT:
+		int64Value := int64(*value.IntValue.Get())
+		result.IntValue = types.Int64PointerValue(&int64Value)
+		return &result, nil
+	case sw.SETTINGTYPE_DOUBLE:
+		result.DoubleValue = types.Float64PointerValue(value.DoubleValue.Get())
+		return &result, nil
+	default:
+		return nil, fmt.Errorf("could not parse SettingType: %s", settingType)
+	}
+}
+
+func (resourceModel *settingResourceModel) UpdateFromApiModel(model sw.SettingModel) error {
 	modelOrder := int64(model.Order)
 	resourceModel.ID = types.StringValue(strconv.FormatInt(int64(model.SettingId), 10))
 	resourceModel.ConfigId = types.StringValue(model.ConfigId)
@@ -313,4 +350,21 @@ func (resourceModel *settingResourceModel) UpdateFromApiModel(model sw.SettingMo
 	resourceModel.Hint = types.StringPointerValue(model.Hint.Get())
 	resourceModel.SettingType = types.StringValue((string)(model.SettingType))
 	resourceModel.Order = types.Int64Value(modelOrder)
+
+	resourceModel.PredefinedVariations = make([]predefinedVariationModel, len(model.PredefinedVariations))
+	for index, predefinedVariation := range model.PredefinedVariations {
+		value, valueErr := getPredefinedVariationValueModel(model.SettingType, predefinedVariation.Value)
+		if valueErr != nil {
+			diag.AddError("Invalid model."))
+			return valueErr
+		}
+		resourceModel.PredefinedVariations[index] = predefinedVariationModel{
+			PredefinedVariationId: types.StringValue(predefinedVariation.PredefinedVariationId),
+			Name:                  types.StringPointerValue(predefinedVariation.Name.Get()),
+			Hint:                  types.StringPointerValue(predefinedVariation.Hint.Get()),
+			Value:                 value,
+		}
+	}
+
+	return nil
 }
