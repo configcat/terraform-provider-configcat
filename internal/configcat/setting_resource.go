@@ -6,7 +6,6 @@ import (
 	"strconv"
 
 	"github.com/configcat/terraform-provider-configcat/v5/internal/configcat/client"
-	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -280,7 +279,7 @@ func (r *settingResource) Update(ctx context.Context, req resource.UpdateRequest
 
 	updateError := plan.UpdateFromApiModel(*model)
 	if updateError != nil {
-		diag.AddError("Unable to parse API response", fmt.Sprintf("Unable to parse API response for "+SettingResourceName+", got error: %s", updateError))
+		resp.Diagnostics.AddError("Unable to parse API response", fmt.Sprintf("Unable to parse API response for "+SettingResourceName+", got error: %s", updateError))
 		return
 	}
 
