@@ -30,15 +30,23 @@ type settingResource struct {
 	client *client.Client
 }
 
+type predefinedVariationModel struct {
+	PredefinedVariationId types.String       `tfsdk:"predefined_variation_id"`
+	Value                 *settingValueModel `tfsdk:"value"`
+	Name                  types.String       `tfsdk:"name"`
+	Hint                  types.String       `tfsdk:"hint"`
+}
+
 type settingResourceModel struct {
 	ConfigId types.String `tfsdk:"config_id"`
 
-	ID          types.String `tfsdk:"id"`
-	Key         types.String `tfsdk:"key"`
-	Name        types.String `tfsdk:"name"`
-	Hint        types.String `tfsdk:"hint"`
-	SettingType types.String `tfsdk:"setting_type"`
-	Order       types.Int64  `tfsdk:"order"`
+	ID                   types.String               `tfsdk:"id"`
+	Key                  types.String               `tfsdk:"key"`
+	Name                 types.String               `tfsdk:"name"`
+	Hint                 types.String               `tfsdk:"hint"`
+	SettingType          types.String               `tfsdk:"setting_type"`
+	Order                types.Int64                `tfsdk:"order"`
+	PredefinedVariations []predefinedVariationModel `tfsdk:"predefined_variations"`
 }
 
 func (r *settingResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -96,6 +104,28 @@ func (r *settingResource) Schema(ctx context.Context, req resource.SchemaRequest
 			Order: schema.Int64Attribute{
 				Description: "The order of the " + SettingResourceName + " within a " + ProductResourceName + " (zero-based). If multiple " + SettingsResourceName + " has the same order, they are displayed in alphabetical order.",
 				Required:    true,
+			},
+
+			PredefinedVariations: schema.ListNestedAttribute{
+				Optional:    true,
+				Description: "The predefined variations of the " + SettingResourceName,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						PredefinedVariationId: schema.StringAttribute{
+							Description: "The unique ID of the " + PredefinedVariationResourceName + ".",
+							Computed:    true,
+						},
+						PredefinedVariationValue: createSettingValueSchema(true, nil),
+						PredefinedVariationName: schema.StringAttribute{
+							Description: "The name of the " + PredefinedVariationResourceName + ".",
+							Optional:    true,
+						},
+						PredefinedVariationHint: schema.StringAttribute{
+							Description: "The hint of the " + PredefinedVariationResourceName + ".",
+							Optional:    true,
+						},
+					},
+				},
 			},
 		},
 	}
