@@ -6,6 +6,10 @@ import (
 	"strconv"
 
 	"github.com/configcat/terraform-provider-configcat/v5/internal/configcat/client"
+	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/float64validator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -30,11 +34,18 @@ type settingResource struct {
 	client *client.Client
 }
 
+type predefinedVariationValueModel struct {
+	BoolValue   types.Bool    `tfsdk:"bool_value"`
+	StringValue types.String  `tfsdk:"string_value"`
+	IntValue    types.Int64   `tfsdk:"int_value"`
+	DoubleValue types.Float64 `tfsdk:"double_value"`
+}
+
 type predefinedVariationModel struct {
-	PredefinedVariationId types.String       `tfsdk:"predefined_variation_id"`
-	Value                 *settingValueModel `tfsdk:"value"`
-	Name                  types.String       `tfsdk:"name"`
-	Hint                  types.String       `tfsdk:"hint"`
+	PredefinedVariationId types.String                   `tfsdk:"predefined_variation_id"`
+	Value                 *predefinedVariationValueModel `tfsdk:"value"`
+	Name                  types.String                   `tfsdk:"name"`
+	Hint                  types.String                   `tfsdk:"hint"`
 }
 
 type settingResourceModel struct {
@@ -47,6 +58,59 @@ type settingResourceModel struct {
 	SettingType          types.String               `tfsdk:"setting_type"`
 	Order                types.Int64                `tfsdk:"order"`
 	PredefinedVariations []predefinedVariationModel `tfsdk:"predefined_variations"`
+}
+
+func createPredefinedVariationValueSchema() *schema.SingleNestedAttribute {
+	return &schema.SingleNestedAttribute{
+		Required:    true,
+		Description: "Represents the value of a " + PredefinedVariationResourceName + ".",
+		Attributes: map[string]schema.Attribute{
+			BoolValue: schema.BoolAttribute{
+				Optional:    true,
+				Description: "The boolean representation of the value.",
+				Validators: []validator.Bool{
+					boolvalidator.ExactlyOneOf(
+						path.MatchRelative().AtParent().AtName(StringValue),
+						path.MatchRelative().AtParent().AtName(IntValue),
+						path.MatchRelative().AtParent().AtName(DoubleValue),
+					),
+				},
+			},
+			StringValue: schema.StringAttribute{
+				Optional:    true,
+				Description: "The string representation of the value.",
+				Validators: []validator.String{
+					stringvalidator.ExactlyOneOf(
+						path.MatchRelative().AtParent().AtName(BoolValue),
+						path.MatchRelative().AtParent().AtName(IntValue),
+						path.MatchRelative().AtParent().AtName(DoubleValue),
+					),
+				},
+			},
+			IntValue: schema.Int64Attribute{
+				Optional:    true,
+				Description: "The whole number representation of the value.",
+				Validators: []validator.Int64{
+					int64validator.ExactlyOneOf(
+						path.MatchRelative().AtParent().AtName(BoolValue),
+						path.MatchRelative().AtParent().AtName(StringValue),
+						path.MatchRelative().AtParent().AtName(DoubleValue),
+					),
+				},
+			},
+			DoubleValue: schema.Float64Attribute{
+				Optional:    true,
+				Description: "The decimal number representation of the value.",
+				Validators: []validator.Float64{
+					float64validator.ExactlyOneOf(
+						path.MatchRelative().AtParent().AtName(BoolValue),
+						path.MatchRelative().AtParent().AtName(StringValue),
+						path.MatchRelative().AtParent().AtName(IntValue),
+					),
+				},
+			},
+		},
+	}
 }
 
 func (r *settingResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -115,7 +179,7 @@ func (r *settingResource) Schema(ctx context.Context, req resource.SchemaRequest
 							Description: "The unique ID of the " + PredefinedVariationResourceName + ".",
 							Computed:    true,
 						},
-						PredefinedVariationValue: createSettingValueSchema(true, nil),
+						PredefinedVariationValue: createPredefinedVariationValueSchema(),
 						PredefinedVariationName: schema.StringAttribute{
 							Description: "The name of the " + PredefinedVariationResourceName + ".",
 							Optional:    true,
@@ -318,9 +382,9 @@ func (r *settingResource) ImportState(ctx context.Context, req resource.ImportSt
 	resource.ImportStatePassthroughID(ctx, path.Root(ID), req, resp)
 }
 
-func getPredefinedVariationValueModel(settingType sw.SettingType, value sw.PredefinedVariationValueModel) (*settingValueModel, error) {
+func getPredefinedVariationValueModel(settingType sw.SettingType, value sw.PredefinedVariationValueModel) (*predefinedVariationValueModel, error) {
 
-	result := settingValueModel{}
+	result := predefinedVariationValueModel{}
 	switch settingType {
 	case sw.SETTINGTYPE_BOOLEAN:
 		result.BoolValue = types.BoolPointerValue(value.BoolValue.Get())
