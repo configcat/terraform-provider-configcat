@@ -51,13 +51,13 @@ type predefinedVariationModel struct {
 type settingResourceModel struct {
 	ConfigId types.String `tfsdk:"config_id"`
 
-	ID                   types.String               `tfsdk:"id"`
-	Key                  types.String               `tfsdk:"key"`
-	Name                 types.String               `tfsdk:"name"`
-	Hint                 types.String               `tfsdk:"hint"`
-	SettingType          types.String               `tfsdk:"setting_type"`
-	Order                types.Int64                `tfsdk:"order"`
-	PredefinedVariations []predefinedVariationModel `tfsdk:"predefined_variations"`
+	ID                   types.String                `tfsdk:"id"`
+	Key                  types.String                `tfsdk:"key"`
+	Name                 types.String                `tfsdk:"name"`
+	Hint                 types.String                `tfsdk:"hint"`
+	SettingType          types.String                `tfsdk:"setting_type"`
+	Order                types.Int64                 `tfsdk:"order"`
+	PredefinedVariations *[]predefinedVariationModel `tfsdk:"predefined_variations"`
 }
 
 func createPredefinedVariationValueSchema() *schema.SingleNestedAttribute {
@@ -232,7 +232,7 @@ func (r *settingResource) Create(ctx context.Context, req resource.CreateRequest
 
 	order := int32(plan.Order.ValueInt64())
 
-	predefinedVariations, predefinedVariationsErr := getPredefinedVariationsForCreate(&plan.PredefinedVariations)
+	predefinedVariations, predefinedVariationsErr := getPredefinedVariationsForCreate(plan.PredefinedVariations)
 	if predefinedVariationsErr != nil {
 		resp.Diagnostics.AddAttributeError(path.Root(PredefinedVariations), "invalid predefined variations", predefinedVariationsErr.Error())
 		return
@@ -355,87 +355,89 @@ func (r *settingResource) Update(ctx context.Context, req resource.UpdateRequest
 		return
 	}
 
-	predefinedVariationsChanged := len(plan.PredefinedVariations) != len(state.PredefinedVariations)
-	if !predefinedVariationsChanged {
-		for index, planPredefinedVariation := range plan.PredefinedVariations {
-			statePredefinedVariation := state.PredefinedVariations[index]
-			predefinedVariationsChanged = !planPredefinedVariation.Name.Equal(statePredefinedVariation.Name) || !planPredefinedVariation.Hint.Equal(statePredefinedVariation.Hint)
-			if predefinedVariationsChanged {
-				break
-			}
-			switch updateSettingModel.SettingType {
-			case sw.SETTINGTYPE_BOOLEAN:
-				predefinedVariationsChanged = planPredefinedVariation.Value.BoolValue.Equal(statePredefinedVariation.Value.BoolValue)
-				break
-			case sw.SETTINGTYPE_STRING:
-				predefinedVariationsChanged = planPredefinedVariation.Value.StringValue.Equal(statePredefinedVariation.Value.StringValue)
-				break
-			case sw.SETTINGTYPE_INT:
-				predefinedVariationsChanged = planPredefinedVariation.Value.IntValue.Equal(statePredefinedVariation.Value.IntValue)
-				break
-			case sw.SETTINGTYPE_DOUBLE:
-				predefinedVariationsChanged = planPredefinedVariation.Value.DoubleValue.Equal(statePredefinedVariation.Value.DoubleValue)
-				break
-			default:
-				break
-			}
-			if predefinedVariationsChanged {
-				break
-			}
-		}
-	}
-
-	if predefinedVariationsChanged {
-		updatePredefinedVariations := make([]sw.UpdatePredefinedVariationModel, len(plan.PredefinedVariations))
-
-		settingTypeString := plan.SettingType.ValueString()
-		settingType, err := sw.NewSettingTypeFromValue(settingTypeString)
-		if err != nil {
-			resp.Diagnostics.AddAttributeError(path.Root(SettingType), "invalid setting_type", err.Error())
-			return
-		}
-
-		for planIndex, planPredefinedVariation := range plan.PredefinedVariations {
-			var predefinedVariationId *string
-
-			for _, statePredefinedVariation := range state.PredefinedVariations {
-				if (settingType == sw.SETTINGTYPE_BOOLEAN.Ptr() && statePredefinedVariation.Value.BoolValue.Equal(planPredefinedVariation.Value.BoolValue)) ||
-					(settingType == sw.SETTINGTYPE_STRING.Ptr() && statePredefinedVariation.Value.StringValue.Equal(planPredefinedVariation.Value.StringValue)) ||
-					(settingType == sw.SETTINGTYPE_INT.Ptr() && statePredefinedVariation.Value.IntValue.Equal(planPredefinedVariation.Value.IntValue)) ||
-					(settingType == sw.SETTINGTYPE_DOUBLE.Ptr() && statePredefinedVariation.Value.DoubleValue.Equal(planPredefinedVariation.Value.DoubleValue)) {
-					predefinedVariationId = statePredefinedVariation.PredefinedVariationId.ValueStringPointer()
+	if plan.PredefinedVariations != nil && state.PredefinedVariations != nil {
+		predefinedVariationsChanged := len(*plan.PredefinedVariations) != len(*state.PredefinedVariations)
+		if !predefinedVariationsChanged {
+			for index, planPredefinedVariation := range *plan.PredefinedVariations {
+				statePredefinedVariation := (*state.PredefinedVariations)[index]
+				predefinedVariationsChanged = !planPredefinedVariation.Name.Equal(statePredefinedVariation.Name) || !planPredefinedVariation.Hint.Equal(statePredefinedVariation.Hint)
+				if predefinedVariationsChanged {
+					break
+				}
+				switch updateSettingModel.SettingType {
+				case sw.SETTINGTYPE_BOOLEAN:
+					predefinedVariationsChanged = planPredefinedVariation.Value.BoolValue.Equal(statePredefinedVariation.Value.BoolValue)
+					break
+				case sw.SETTINGTYPE_STRING:
+					predefinedVariationsChanged = planPredefinedVariation.Value.StringValue.Equal(statePredefinedVariation.Value.StringValue)
+					break
+				case sw.SETTINGTYPE_INT:
+					predefinedVariationsChanged = planPredefinedVariation.Value.IntValue.Equal(statePredefinedVariation.Value.IntValue)
+					break
+				case sw.SETTINGTYPE_DOUBLE:
+					predefinedVariationsChanged = planPredefinedVariation.Value.DoubleValue.Equal(statePredefinedVariation.Value.DoubleValue)
+					break
+				default:
+					break
+				}
+				if predefinedVariationsChanged {
 					break
 				}
 			}
+		}
 
-			updatePredefinedVariation := sw.UpdatePredefinedVariationModel{
-				PredefinedVariationId: *sw.NewNullableString(predefinedVariationId),
-				Value: sw.UpdatePredefinedVariationValueModel{
-					BoolValue:   *sw.NewNullableBool(planPredefinedVariation.Value.BoolValue.ValueBoolPointer()),
-					StringValue: *sw.NewNullableString(planPredefinedVariation.Value.StringValue.ValueStringPointer()),
-					IntValue:    *sw.NewNullableInt32(planPredefinedVariation.Value.IntValue.ValueInt32Pointer()),
-					DoubleValue: *sw.NewNullableFloat64(planPredefinedVariation.Value.DoubleValue.ValueFloat64Pointer()),
-				},
-				Name: *sw.NewNullableString(planPredefinedVariation.Name.ValueStringPointer()),
-				Hint: *sw.NewNullableString(planPredefinedVariation.Hint.ValueStringPointer()),
+		if predefinedVariationsChanged {
+			updatePredefinedVariations := make([]sw.UpdatePredefinedVariationModel, len(*plan.PredefinedVariations))
+
+			settingTypeString := plan.SettingType.ValueString()
+			settingType, err := sw.NewSettingTypeFromValue(settingTypeString)
+			if err != nil {
+				resp.Diagnostics.AddAttributeError(path.Root(SettingType), "invalid setting_type", err.Error())
+				return
 			}
-			updatePredefinedVariations[planIndex] = updatePredefinedVariation
-		}
 
-		updatePredefinedVariationsRequest := sw.UpdatePredefinedVariationsRequest{
-			PredefinedVariations: updatePredefinedVariations,
-		}
+			for planIndex, planPredefinedVariation := range *plan.PredefinedVariations {
+				var predefinedVariationId *string
 
-		updateVariationsModel, updateVariationsErr := r.client.UpdatePredefinedVariations(int32(settingID), updatePredefinedVariationsRequest)
-		if updateVariationsErr != nil {
-			resp.Diagnostics.AddError("Unable to Update Resource", fmt.Sprintf("Unable to update "+PredefinedVariations+", got error: %s", updateVariationsErr))
-			return
-		}
+				for _, statePredefinedVariation := range *state.PredefinedVariations {
+					if (settingType == sw.SETTINGTYPE_BOOLEAN.Ptr() && statePredefinedVariation.Value.BoolValue.Equal(planPredefinedVariation.Value.BoolValue)) ||
+						(settingType == sw.SETTINGTYPE_STRING.Ptr() && statePredefinedVariation.Value.StringValue.Equal(planPredefinedVariation.Value.StringValue)) ||
+						(settingType == sw.SETTINGTYPE_INT.Ptr() && statePredefinedVariation.Value.IntValue.Equal(planPredefinedVariation.Value.IntValue)) ||
+						(settingType == sw.SETTINGTYPE_DOUBLE.Ptr() && statePredefinedVariation.Value.DoubleValue.Equal(planPredefinedVariation.Value.DoubleValue)) {
+						predefinedVariationId = statePredefinedVariation.PredefinedVariationId.ValueStringPointer()
+						break
+					}
+				}
 
-		updatePredefinedVariationsModelErr := plan.UpdatePredefinedVariationsFromApiModel(updateVariationsModel.SettingType, updateVariationsModel.PredefinedVariations)
-		if updatePredefinedVariationsModelErr != nil {
-			resp.Diagnostics.AddError("Unable to parse API response", fmt.Sprintf("Unable to parse API response for "+PredefinedVariations+", got error: %s", updatePredefinedVariationsModelErr))
-			return
+				updatePredefinedVariation := sw.UpdatePredefinedVariationModel{
+					PredefinedVariationId: *sw.NewNullableString(predefinedVariationId),
+					Value: sw.UpdatePredefinedVariationValueModel{
+						BoolValue:   *sw.NewNullableBool(planPredefinedVariation.Value.BoolValue.ValueBoolPointer()),
+						StringValue: *sw.NewNullableString(planPredefinedVariation.Value.StringValue.ValueStringPointer()),
+						IntValue:    *sw.NewNullableInt32(planPredefinedVariation.Value.IntValue.ValueInt32Pointer()),
+						DoubleValue: *sw.NewNullableFloat64(planPredefinedVariation.Value.DoubleValue.ValueFloat64Pointer()),
+					},
+					Name: *sw.NewNullableString(planPredefinedVariation.Name.ValueStringPointer()),
+					Hint: *sw.NewNullableString(planPredefinedVariation.Hint.ValueStringPointer()),
+				}
+				updatePredefinedVariations[planIndex] = updatePredefinedVariation
+			}
+
+			updatePredefinedVariationsRequest := sw.UpdatePredefinedVariationsRequest{
+				PredefinedVariations: updatePredefinedVariations,
+			}
+
+			updateVariationsModel, updateVariationsErr := r.client.UpdatePredefinedVariations(int32(settingID), updatePredefinedVariationsRequest)
+			if updateVariationsErr != nil {
+				resp.Diagnostics.AddError("Unable to Update Resource", fmt.Sprintf("Unable to update "+PredefinedVariations+", got error: %s", updateVariationsErr))
+				return
+			}
+
+			updatePredefinedVariationsModelErr := plan.UpdatePredefinedVariationsFromApiModel(updateVariationsModel.SettingType, updateVariationsModel.PredefinedVariations)
+			if updatePredefinedVariationsModelErr != nil {
+				resp.Diagnostics.AddError("Unable to parse API response", fmt.Sprintf("Unable to parse API response for "+PredefinedVariations+", got error: %s", updatePredefinedVariationsModelErr))
+				return
+			}
 		}
 	}
 
@@ -514,13 +516,18 @@ func (resourceModel *settingResourceModel) UpdateFromApiModel(model sw.SettingMo
 }
 
 func (resourceModel *settingResourceModel) UpdatePredefinedVariationsFromApiModel(settingType sw.SettingType, predefinedVariations []sw.PredefinedVariationModel) error {
-	resourceModel.PredefinedVariations = make([]predefinedVariationModel, len(predefinedVariations))
+	if len(predefinedVariations) == 0 {
+		resourceModel.PredefinedVariations = nil
+		return nil
+	}
+
+	predefinedVariationModels := make([]predefinedVariationModel, len(predefinedVariations))
 	for index, predefinedVariation := range predefinedVariations {
 		value, valueErr := getPredefinedVariationValueModel(settingType, predefinedVariation.Value)
 		if valueErr != nil {
 			return valueErr
 		}
-		resourceModel.PredefinedVariations[index] = predefinedVariationModel{
+		predefinedVariationModels[index] = predefinedVariationModel{
 			PredefinedVariationId: types.StringValue(predefinedVariation.PredefinedVariationId),
 			Name:                  types.StringPointerValue(predefinedVariation.Name.Get()),
 			Hint:                  types.StringPointerValue(predefinedVariation.Hint.Get()),
@@ -528,6 +535,7 @@ func (resourceModel *settingResourceModel) UpdatePredefinedVariationsFromApiMode
 		}
 	}
 
+	resourceModel.PredefinedVariations = &predefinedVariationModels
 	return nil
 }
 
