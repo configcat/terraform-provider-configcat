@@ -432,7 +432,7 @@ func (r *settingResource) Update(ctx context.Context, req resource.UpdateRequest
 				return
 			}
 
-			updatePredefinedVariationsModelErr := plan.UpdatePredefinedVariationsFromApiModel(updateVariationsModel.SettingType, updateVariationsModel.PredefinedVariations)
+			updatePredefinedVariationsModelErr := plan.UpdatePredefinedVariationsFromApiModel(*settingType, updateVariationsModel.PredefinedVariations)
 			if updatePredefinedVariationsModelErr != nil {
 				resp.Diagnostics.AddError("Unable to parse API response", fmt.Sprintf("Unable to parse API response for "+PredefinedVariations+", got error: %s", updatePredefinedVariationsModelErr))
 				return
