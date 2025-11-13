@@ -101,3 +101,31 @@ resource "configcat_setting" "double_setting" {
   ]
   order = 1
 }
+
+resource "configcat_setting_value_v2" "bool_setting_value" {
+  environment_id = var.environment_id
+  setting_id     = configcat_setting.bool_setting.id
+  init_only      = false
+  value          = { predefined_variation_id = configcat_setting.bool_setting.predefined_variations[1].predefined_variation_id }
+}
+
+resource "configcat_setting_value_v2" "string_setting_value" {
+  environment_id = var.environment_id
+  setting_id     = configcat_setting.string_setting.id
+  init_only      = false
+  value          = { predefined_variation_id = configcat_setting.string_setting.predefined_variations[0].predefined_variation_id }
+}
+
+resource "configcat_setting_value_v2" "int_setting_value" {
+  environment_id = var.environment_id
+  setting_id     = configcat_setting.int_setting.id
+  init_only      = false
+  value          = { predefined_variation_id = configcat_setting.int_setting.predefined_variations[0].predefined_variation_id }
+}
+
+resource "configcat_setting_value_v2" "double_setting_value" {
+  environment_id = var.environment_id
+  setting_id     = configcat_setting.double_setting.id
+  init_only      = false
+  value          = { predefined_variation_id = configcat_setting.double_setting.predefined_variations[0].predefined_variation_id }
+}

@@ -68,6 +68,22 @@ func TestAccSettingValueV2PredefinedVariationResource(t *testing.T) {
 					resource.TestCheckResourceAttr(doubleSettingResourceName, PredefinedVariations+".1."+PredefinedVariationHint, "20.2 hint"),
 				),
 			},
+			{
+				ConfigFile: config.TestNameFile("step_2.tf"),
+				ConfigVariables: config.Variables{
+					"product_id":     config.StringVariable(productId),
+					"environment_id": config.StringVariable(environmentId),
+				},
+				Check: resource.ComposeAggregateTestCheckFunc(),
+			},
+			{
+				ConfigFile: config.TestNameFile("step_3.tf"),
+				ConfigVariables: config.Variables{
+					"product_id":     config.StringVariable(productId),
+					"environment_id": config.StringVariable(environmentId),
+				},
+				Check: resource.ComposeAggregateTestCheckFunc(),
+			},
 		},
 	})
 }
