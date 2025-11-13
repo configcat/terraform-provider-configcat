@@ -8,7 +8,7 @@ import (
 	"github.com/configcat/terraform-provider-configcat/v5/internal/configcat/client"
 	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/float64validator"
-	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/int32validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -87,11 +87,11 @@ func createPredefinedVariationValueSchema() *schema.SingleNestedAttribute {
 					),
 				},
 			},
-			IntValue: schema.Int64Attribute{
+			IntValue: schema.Int32Attribute{
 				Optional:    true,
 				Description: "The whole number representation of the value.",
-				Validators: []validator.Int64{
-					int64validator.ExactlyOneOf(
+				Validators: []validator.Int32{
+					int32validator.ExactlyOneOf(
 						path.MatchRelative().AtParent().AtName(BoolValue),
 						path.MatchRelative().AtParent().AtName(StringValue),
 						path.MatchRelative().AtParent().AtName(DoubleValue),
@@ -307,55 +307,61 @@ func (r *settingResource) Update(ctx context.Context, req resource.UpdateRequest
 		return
 	}
 
-	if plan.Name.Equal(state.Name) && plan.Hint.Equal(state.Hint) && plan.Order.Equal(state.Order) {
-		return
-	}
-
 	settingID, convErr := strconv.ParseInt(state.ID.ValueString(), 10, 64)
 	if convErr != nil {
 		resp.Diagnostics.AddError("Could not parse Setting ID", convErr.Error())
 		return
 	}
 
-	operations := []sw.JsonPatchOperation{}
-	if !plan.Name.Equal(state.Name) {
-		operations = append(operations, sw.JsonPatchOperation{
-			Op:    sw.OPERATIONTYPE_REPLACE,
-			Path:  "/name",
-			Value: plan.Name.ValueString(),
-		})
-	}
+	if !plan.Name.Equal(state.Name) || !plan.Hint.Equal(state.Hint) || !plan.Order.Equal(state.Order) {
+		operations := []sw.JsonPatchOperation{}
+		if !plan.Name.Equal(state.Name) {
+			operations = append(operations, sw.JsonPatchOperation{
+				Op:    sw.OPERATIONTYPE_REPLACE,
+				Path:  "/name",
+				Value: plan.Name.ValueString(),
+			})
+		}
 
-	if !plan.Hint.Equal(state.Hint) {
-		operations = append(operations, sw.JsonPatchOperation{
-			Op:    sw.OPERATIONTYPE_REPLACE,
-			Path:  "/hint",
-			Value: plan.Hint.ValueString(),
-		})
-	}
+		if !plan.Hint.Equal(state.Hint) {
+			operations = append(operations, sw.JsonPatchOperation{
+				Op:    sw.OPERATIONTYPE_REPLACE,
+				Path:  "/hint",
+				Value: plan.Hint.ValueString(),
+			})
+		}
 
-	if !plan.Order.Equal(state.Order) {
-		order := int32(plan.Order.ValueInt64())
-		operations = append(operations, sw.JsonPatchOperation{
-			Op:    sw.OPERATIONTYPE_REPLACE,
-			Path:  "/order",
-			Value: order,
-		})
-	}
+		if !plan.Order.Equal(state.Order) {
+			order := int32(plan.Order.ValueInt64())
+			operations = append(operations, sw.JsonPatchOperation{
+				Op:    sw.OPERATIONTYPE_REPLACE,
+				Path:  "/order",
+				Value: order,
+			})
+		}
 
-	updateSettingModel, updateSettingErr := r.client.UpdateSetting(int32(settingID), operations)
-	if updateSettingErr != nil {
-		resp.Diagnostics.AddError("Unable to Update Resource", fmt.Sprintf("Unable to update "+SettingResourceName+", got error: %s", updateSettingErr))
-		return
-	}
+		updateSettingModel, updateSettingErr := r.client.UpdateSetting(int32(settingID), operations)
+		if updateSettingErr != nil {
+			resp.Diagnostics.AddError("Unable to Update Resource", fmt.Sprintf("Unable to update "+SettingResourceName+", got error: %s", updateSettingErr))
+			return
+		}
 
-	updateSettingModelError := plan.UpdateFromApiModel(*updateSettingModel)
-	if updateSettingModelError != nil {
-		resp.Diagnostics.AddError("Unable to parse API response", fmt.Sprintf("Unable to parse API response for "+SettingResourceName+", got error: %s", updateSettingModelError))
-		return
+		updateSettingModelError := plan.UpdateFromApiModel(*updateSettingModel)
+		if updateSettingModelError != nil {
+			resp.Diagnostics.AddError("Unable to parse API response", fmt.Sprintf("Unable to parse API response for "+SettingResourceName+", got error: %s", updateSettingModelError))
+			return
+		}
 	}
 
 	if plan.PredefinedVariations != nil && state.PredefinedVariations != nil {
+
+		settingTypeString := plan.SettingType.ValueString()
+		settingType, err := sw.NewSettingTypeFromValue(settingTypeString)
+		if err != nil {
+			resp.Diagnostics.AddAttributeError(path.Root(SettingType), "invalid setting_type", err.Error())
+			return
+		}
+
 		predefinedVariationsChanged := len(*plan.PredefinedVariations) != len(*state.PredefinedVariations)
 		if !predefinedVariationsChanged {
 			for index, planPredefinedVariation := range *plan.PredefinedVariations {
@@ -364,7 +370,7 @@ func (r *settingResource) Update(ctx context.Context, req resource.UpdateRequest
 				if predefinedVariationsChanged {
 					break
 				}
-				switch updateSettingModel.SettingType {
+				switch *settingType {
 				case sw.SETTINGTYPE_BOOLEAN:
 					predefinedVariationsChanged = planPredefinedVariation.Value.BoolValue.Equal(statePredefinedVariation.Value.BoolValue)
 					break
@@ -389,21 +395,14 @@ func (r *settingResource) Update(ctx context.Context, req resource.UpdateRequest
 		if predefinedVariationsChanged {
 			updatePredefinedVariations := make([]sw.UpdatePredefinedVariationModel, len(*plan.PredefinedVariations))
 
-			settingTypeString := plan.SettingType.ValueString()
-			settingType, err := sw.NewSettingTypeFromValue(settingTypeString)
-			if err != nil {
-				resp.Diagnostics.AddAttributeError(path.Root(SettingType), "invalid setting_type", err.Error())
-				return
-			}
-
 			for planIndex, planPredefinedVariation := range *plan.PredefinedVariations {
 				var predefinedVariationId *string
 
 				for _, statePredefinedVariation := range *state.PredefinedVariations {
-					if (settingType == sw.SETTINGTYPE_BOOLEAN.Ptr() && statePredefinedVariation.Value.BoolValue.Equal(planPredefinedVariation.Value.BoolValue)) ||
-						(settingType == sw.SETTINGTYPE_STRING.Ptr() && statePredefinedVariation.Value.StringValue.Equal(planPredefinedVariation.Value.StringValue)) ||
-						(settingType == sw.SETTINGTYPE_INT.Ptr() && statePredefinedVariation.Value.IntValue.Equal(planPredefinedVariation.Value.IntValue)) ||
-						(settingType == sw.SETTINGTYPE_DOUBLE.Ptr() && statePredefinedVariation.Value.DoubleValue.Equal(planPredefinedVariation.Value.DoubleValue)) {
+					if (*settingType == sw.SETTINGTYPE_BOOLEAN && statePredefinedVariation.Value.BoolValue.Equal(planPredefinedVariation.Value.BoolValue)) ||
+						(*settingType == sw.SETTINGTYPE_STRING && statePredefinedVariation.Value.StringValue.Equal(planPredefinedVariation.Value.StringValue)) ||
+						(*settingType == sw.SETTINGTYPE_INT && statePredefinedVariation.Value.IntValue.Equal(planPredefinedVariation.Value.IntValue)) ||
+						(*settingType == sw.SETTINGTYPE_DOUBLE && statePredefinedVariation.Value.DoubleValue.Equal(planPredefinedVariation.Value.DoubleValue)) {
 						predefinedVariationId = statePredefinedVariation.PredefinedVariationId.ValueStringPointer()
 						break
 					}

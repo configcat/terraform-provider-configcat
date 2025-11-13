@@ -89,6 +89,106 @@ func testAccSettingResource(t *testing.T, settingType string) {
 	})
 }
 
+func TestAccSettingWithPredefinedVariationsOnlyV2Resource(t *testing.T) {
+	const productId = "08d86d63-2721-4da6-8c06-584521d516bc"
+	const testResourceName = "configcat_setting.test"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		Steps: []resource.TestStep{
+			{
+				// v1 cannot have variations
+				ConfigFile: config.StaticFile(path.Join("testdata", "TestAccSettingResource", "predefined_variation.tf")),
+				ConfigVariables: config.Variables{
+					"product_id":         config.StringVariable("08d86d63-2721-4da6-8c06-584521d516bc"),
+					"evaluation_version": config.StringVariable("v1"),
+					"setting_type":       config.StringVariable("boolean"),
+					"predefined_variations": config.ListVariable(
+						config.ObjectVariable(map[string]config.Variable{
+							"value": config.ObjectVariable(map[string]config.Variable{
+								"bool_value": config.BoolVariable(false),
+							}),
+						}),
+						config.ObjectVariable(map[string]config.Variable{
+							"value": config.ObjectVariable(map[string]config.Variable{
+								"bool_value": config.BoolVariable(true),
+							}),
+						}),
+					),
+				},
+				ExpectError: regexp.MustCompile("Only V2 Configs"),
+			},
+		},
+	})
+}
+
+func TestAccBoolSettingWithPredefinedVariationsResource(t *testing.T) {
+	const productId = "08d86d63-2721-4da6-8c06-584521d516bc"
+	const testResourceName = "configcat_setting.test"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		Steps: []resource.TestStep{
+			{
+				ConfigFile: config.StaticFile(path.Join("testdata", "TestAccSettingResource", "predefined_variation.tf")),
+				ConfigVariables: config.Variables{
+					"product_id":   config.StringVariable("08d86d63-2721-4da6-8c06-584521d516bc"),
+					"setting_type": config.StringVariable("boolean"),
+					"predefined_variations": config.ListVariable(
+						config.ObjectVariable(map[string]config.Variable{
+							"value": config.ObjectVariable(map[string]config.Variable{
+								"bool_value": config.BoolVariable(false),
+							}),
+						}),
+						config.ObjectVariable(map[string]config.Variable{
+							"value": config.ObjectVariable(map[string]config.Variable{
+								"bool_value": config.BoolVariable(true),
+							}),
+						}),
+					),
+				},
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttrSet(testResourceName, ID),
+					resource.TestCheckResourceAttr(testResourceName, PredefinedVariations+".#", "2"),
+					resource.TestCheckResourceAttr(testResourceName, PredefinedVariations+".0."+PredefinedVariationValue+"."+BoolValue, "false"),
+					resource.TestCheckResourceAttr(testResourceName, PredefinedVariations+".1."+PredefinedVariationValue+"."+BoolValue, "true"),
+				),
+			},
+			{
+				ConfigFile: config.StaticFile(path.Join("testdata", "TestAccSettingResource", "predefined_variation.tf")),
+				ConfigVariables: config.Variables{
+					"product_id":   config.StringVariable("08d86d63-2721-4da6-8c06-584521d516bc"),
+					"setting_type": config.StringVariable("boolean"),
+					"predefined_variations": config.ListVariable(
+						config.ObjectVariable(map[string]config.Variable{
+							"value": config.ObjectVariable(map[string]config.Variable{
+								"bool_value": config.BoolVariable(false),
+							}),
+							"name": config.StringVariable("Off name"),
+						}),
+						config.ObjectVariable(map[string]config.Variable{
+							"value": config.ObjectVariable(map[string]config.Variable{
+								"bool_value": config.BoolVariable(true),
+							}),
+							"hint": config.StringVariable("On hint"),
+						}),
+					),
+				},
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttrSet(testResourceName, ID),
+					resource.TestCheckResourceAttr(testResourceName, PredefinedVariations+".#", "2"),
+					resource.TestCheckResourceAttr(testResourceName, PredefinedVariations+".0."+PredefinedVariationValue+"."+BoolValue, "false"),
+					resource.TestCheckResourceAttr(testResourceName, PredefinedVariations+".0."+PredefinedVariationName, "Off name"),
+					resource.TestCheckResourceAttr(testResourceName, PredefinedVariations+".1."+PredefinedVariationValue+"."+BoolValue, "true"),
+					resource.TestCheckResourceAttr(testResourceName, PredefinedVariations+".1."+PredefinedVariationHint, "On hint"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccSettingResourceInvalidSettingType(t *testing.T) {
 	const configId = "08d86d63-2731-4b8b-823a-56ddda9da038"
 
