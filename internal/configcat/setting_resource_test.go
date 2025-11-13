@@ -153,7 +153,11 @@ func TestAccBoolSettingWithPredefinedVariationsResource(t *testing.T) {
 					resource.TestCheckResourceAttrSet(testResourceName, ID),
 					resource.TestCheckResourceAttr(testResourceName, PredefinedVariations+".#", "2"),
 					resource.TestCheckResourceAttr(testResourceName, PredefinedVariations+".0."+PredefinedVariationValue+"."+BoolValue, "false"),
+					resource.TestCheckNoResourceAttr(testResourceName, PredefinedVariations+".0."+PredefinedVariationName),
+					resource.TestCheckNoResourceAttr(testResourceName, PredefinedVariations+".0."+PredefinedVariationHint),
 					resource.TestCheckResourceAttr(testResourceName, PredefinedVariations+".1."+PredefinedVariationValue+"."+BoolValue, "true"),
+					resource.TestCheckNoResourceAttr(testResourceName, PredefinedVariations+".1."+PredefinedVariationName),
+					resource.TestCheckNoResourceAttr(testResourceName, PredefinedVariations+".1."+PredefinedVariationHint),
 				),
 			},
 			{
@@ -181,9 +185,66 @@ func TestAccBoolSettingWithPredefinedVariationsResource(t *testing.T) {
 					resource.TestCheckResourceAttr(testResourceName, PredefinedVariations+".#", "2"),
 					resource.TestCheckResourceAttr(testResourceName, PredefinedVariations+".0."+PredefinedVariationValue+"."+BoolValue, "false"),
 					resource.TestCheckResourceAttr(testResourceName, PredefinedVariations+".0."+PredefinedVariationName, "Off name"),
+					resource.TestCheckNoResourceAttr(testResourceName, PredefinedVariations+".0."+PredefinedVariationHint),
 					resource.TestCheckResourceAttr(testResourceName, PredefinedVariations+".1."+PredefinedVariationValue+"."+BoolValue, "true"),
+					resource.TestCheckNoResourceAttr(testResourceName, PredefinedVariations+".1."+PredefinedVariationName),
 					resource.TestCheckResourceAttr(testResourceName, PredefinedVariations+".1."+PredefinedVariationHint, "On hint"),
 				),
+			},
+			{
+				ConfigFile: config.StaticFile(path.Join("testdata", "TestAccSettingResource", "predefined_variation.tf")),
+				ConfigVariables: config.Variables{
+					"product_id":   config.StringVariable("08d86d63-2721-4da6-8c06-584521d516bc"),
+					"setting_type": config.StringVariable("boolean"),
+					"predefined_variations": config.ListVariable(
+						config.ObjectVariable(map[string]config.Variable{
+							"value": config.ObjectVariable(map[string]config.Variable{
+								"bool_value": config.BoolVariable(false),
+							}),
+							"hint": config.StringVariable("Off hint"),
+						}),
+						config.ObjectVariable(map[string]config.Variable{
+							"value": config.ObjectVariable(map[string]config.Variable{
+								"bool_value": config.BoolVariable(true),
+							}),
+							"name": config.StringVariable("On name"),
+						}),
+					),
+				},
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttrSet(testResourceName, ID),
+					resource.TestCheckResourceAttr(testResourceName, PredefinedVariations+".#", "2"),
+					resource.TestCheckResourceAttr(testResourceName, PredefinedVariations+".0."+PredefinedVariationValue+"."+BoolValue, "false"),
+					resource.TestCheckResourceAttr(testResourceName, PredefinedVariations+".0."+PredefinedVariationHint, "Off hint"),
+					resource.TestCheckNoResourceAttr(testResourceName, PredefinedVariations+".0."+PredefinedVariationName),
+					resource.TestCheckResourceAttr(testResourceName, PredefinedVariations+".1."+PredefinedVariationValue+"."+BoolValue, "true"),
+					resource.TestCheckResourceAttr(testResourceName, PredefinedVariations+".1."+PredefinedVariationName, "On name"),
+					resource.TestCheckNoResourceAttr(testResourceName, PredefinedVariations+".1."+PredefinedVariationHint),
+				),
+			},
+			{
+				ConfigFile: config.StaticFile(path.Join("testdata", "TestAccSettingResource", "predefined_variation.tf")),
+				ConfigVariables: config.Variables{
+					"product_id":   config.StringVariable("08d86d63-2721-4da6-8c06-584521d516bc"),
+					"setting_type": config.StringVariable("boolean"),
+					"predefined_variations": config.ListVariable(
+						config.ObjectVariable(map[string]config.Variable{
+							"value": config.ObjectVariable(map[string]config.Variable{
+								"bool_value": config.BoolVariable(false),
+							}),
+							"hint": config.StringVariable("Off hint"),
+						}),
+						config.ObjectVariable(map[string]config.Variable{
+							"value": config.ObjectVariable(map[string]config.Variable{
+								"bool_value": config.BoolVariable(true),
+							}),
+							"name": config.StringVariable("On name"),
+						}),
+					),
+				},
+				ResourceName:      testResourceName,
+				ImportState:       true,
+				ImportStateVerify: true,
 			},
 		},
 	})
