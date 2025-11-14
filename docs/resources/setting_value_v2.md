@@ -182,6 +182,7 @@ Optional:
 - `bool_value` (Boolean) The boolean representation of the value.
 - `double_value` (Number) The decimal number representation of the value.
 - `int_value` (Number) The whole number representation of the value.
+- `predefined_variation_id` (String) The predefined variation's ID representation of the value in case of the setting has predefined variations.
 - `string_value` (String) The string representation of the value.
 
 
@@ -220,6 +221,7 @@ Optional:
 - `bool_value` (Boolean) The boolean representation of the value.
 - `double_value` (Number) The decimal number representation of the value.
 - `int_value` (Number) The whole number representation of the value.
+- `predefined_variation_id` (String) The predefined variation's ID representation of the value in case of the setting has predefined variations.
 - `string_value` (String) The string representation of the value.
 
 
@@ -282,6 +284,7 @@ Optional:
 - `bool_value` (Boolean) The boolean representation of the value.
 - `double_value` (Number) The decimal number representation of the value.
 - `int_value` (Number) The whole number representation of the value.
+- `predefined_variation_id` (String) The predefined variation's ID representation of the value in case of the setting has predefined variations.
 - `string_value` (String) The string representation of the value.
 
 
@@ -294,11 +297,14 @@ Optional:
 - `bool_value` (Boolean) The boolean representation of the value.
 - `double_value` (Number) The decimal number representation of the value.
 - `int_value` (Number) The whole number representation of the value.
+- `predefined_variation_id` (String) The predefined variation's ID representation of the value in case of the setting has predefined variations.
 - `string_value` (String) The string representation of the value.
 
 ## Import
 
 Import is supported using the following syntax:
+
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
 # Feature Flag/Setting values (V2) can be imported using a combined EnvironmentID:SettingId ID.  
