@@ -169,7 +169,7 @@ func createSettingValueSchema(required bool, validators []validator.Object) *sch
 			},
 			PredefinedVariationId: schema.StringAttribute{
 				Optional:    true,
-				Description: "The predefined variation's ID representation of the value in case of the setting has predefined variations.",
+				Description: "The predefined variation's ID representation of the value in case of the setting has predefined variations. The feature is currently in closed beta state and cannot be used.",
 				Validators: []validator.String{
 					stringvalidator.ExactlyOneOf(
 						path.MatchRelative().AtParent().AtName(BoolValue),

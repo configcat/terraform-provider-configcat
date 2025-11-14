@@ -45,7 +45,7 @@ output "setting_id" {
 ### Optional
 
 - `hint` (String) The hint of the Feature Flag or Setting.
-- `predefined_variations` (Attributes List) The predefined variations of the Feature Flag or Setting. The feature is (see [below for nested schema](#nestedatt--predefined_variations))
+- `predefined_variations` (Attributes List) The predefined variations of the Feature Flag or Setting. The feature is currently in closed beta state and cannot be used. (see [below for nested schema](#nestedatt--predefined_variations))
 - `setting_type` (String) The type of the Feature Flag or Setting. Available values: `boolean`|`string`|`int`|`double`. Default: `boolean`.
 
 ### Read-Only

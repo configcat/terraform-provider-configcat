@@ -182,7 +182,7 @@ Optional:
 - `bool_value` (Boolean) The boolean representation of the value.
 - `double_value` (Number) The decimal number representation of the value.
 - `int_value` (Number) The whole number representation of the value.
-- `predefined_variation_id` (String) The predefined variation's ID representation of the value in case of the setting has predefined variations.
+- `predefined_variation_id` (String) The predefined variation's ID representation of the value in case of the setting has predefined variations. The feature is currently in closed beta state and cannot be used.
 - `string_value` (String) The string representation of the value.
 
 
@@ -221,7 +221,7 @@ Optional:
 - `bool_value` (Boolean) The boolean representation of the value.
 - `double_value` (Number) The decimal number representation of the value.
 - `int_value` (Number) The whole number representation of the value.
-- `predefined_variation_id` (String) The predefined variation's ID representation of the value in case of the setting has predefined variations.
+- `predefined_variation_id` (String) The predefined variation's ID representation of the value in case of the setting has predefined variations. The feature is currently in closed beta state and cannot be used.
 - `string_value` (String) The string representation of the value.
 
 
@@ -284,7 +284,7 @@ Optional:
 - `bool_value` (Boolean) The boolean representation of the value.
 - `double_value` (Number) The decimal number representation of the value.
 - `int_value` (Number) The whole number representation of the value.
-- `predefined_variation_id` (String) The predefined variation's ID representation of the value in case of the setting has predefined variations.
+- `predefined_variation_id` (String) The predefined variation's ID representation of the value in case of the setting has predefined variations. The feature is currently in closed beta state and cannot be used.
 - `string_value` (String) The string representation of the value.
 
 
@@ -297,7 +297,7 @@ Optional:
 - `bool_value` (Boolean) The boolean representation of the value.
 - `double_value` (Number) The decimal number representation of the value.
 - `int_value` (Number) The whole number representation of the value.
-- `predefined_variation_id` (String) The predefined variation's ID representation of the value in case of the setting has predefined variations.
+- `predefined_variation_id` (String) The predefined variation's ID representation of the value in case of the setting has predefined variations. The feature is currently in closed beta state and cannot be used.
 - `string_value` (String) The string representation of the value.
 
 ## Import
