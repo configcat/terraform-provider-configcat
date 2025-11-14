@@ -14,7 +14,10 @@ func TestAccSettingValueV2PredefinedVariationResource(t *testing.T) {
 	const stringSettingResourceName = "configcat_setting.string_setting"
 	const intSettingResourceName = "configcat_setting.int_setting"
 	const doubleSettingResourceName = "configcat_setting.double_setting"
-	const testResourceName = "configcat_setting_value_v2.test"
+	const boolSettingValueResourceName = "configcat_setting_value_v2.bool_setting_value"
+	const stringSettingValueResourceName = "configcat_setting_value_v2.string_setting_value"
+	const intSettingValueResourceName = "configcat_setting_value_v2.int_setting_value"
+	const doubleSettingValueResourceName = "configcat_setting_value_v2.double_setting_value"
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -83,6 +86,50 @@ func TestAccSettingValueV2PredefinedVariationResource(t *testing.T) {
 					"environment_id": config.StringVariable(environmentId),
 				},
 				Check: resource.ComposeAggregateTestCheckFunc(),
+			},
+			{
+				ConfigFile: config.TestNameFile("step_3.tf"),
+				ConfigVariables: config.Variables{
+					"product_id":     config.StringVariable(productId),
+					"environment_id": config.StringVariable(environmentId),
+				},
+				ResourceName:            boolSettingValueResourceName,
+				ImportState:             true,
+				ImportStateVerify:       true,
+				ImportStateVerifyIgnore: []string{InitOnly},
+			},
+			{
+				ConfigFile: config.TestNameFile("step_3.tf"),
+				ConfigVariables: config.Variables{
+					"product_id":     config.StringVariable(productId),
+					"environment_id": config.StringVariable(environmentId),
+				},
+				ResourceName:            stringSettingValueResourceName,
+				ImportState:             true,
+				ImportStateVerify:       true,
+				ImportStateVerifyIgnore: []string{InitOnly},
+			},
+			{
+				ConfigFile: config.TestNameFile("step_3.tf"),
+				ConfigVariables: config.Variables{
+					"product_id":     config.StringVariable(productId),
+					"environment_id": config.StringVariable(environmentId),
+				},
+				ResourceName:            intSettingValueResourceName,
+				ImportState:             true,
+				ImportStateVerify:       true,
+				ImportStateVerifyIgnore: []string{InitOnly},
+			},
+			{
+				ConfigFile: config.TestNameFile("step_3.tf"),
+				ConfigVariables: config.Variables{
+					"product_id":     config.StringVariable(productId),
+					"environment_id": config.StringVariable(environmentId),
+				},
+				ResourceName:            doubleSettingValueResourceName,
+				ImportState:             true,
+				ImportStateVerify:       true,
+				ImportStateVerifyIgnore: []string{InitOnly},
 			},
 		},
 	})
