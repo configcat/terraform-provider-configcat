@@ -45,6 +45,7 @@ resource "configcat_integration" "slack_integration" {
   name             = "Slack integration"
   parameters = {
     "incoming_webhook.url" = "https://mycompany.slack.com/services/B0000000000" # The incoming webhook URL where the integration should post messages. Read more at https://api.slack.com/messaging/webhooks.
+    "includeSensitiveData" = "true"                                             # Set to "true" to include sensitive (hashed) comparison values. By default, the integration will mask these values in the posted messages. We recommend hiding sensitive comparison values for shared or public Slack channels. Read more at https://configcat.com/docs/targeting/targeting-rule/user-condition/#confidential-text-comparators.
   }
 }
 
