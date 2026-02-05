@@ -524,6 +524,7 @@ func TestAccIntegrationSlackResource(t *testing.T) {
 					resource.TestCheckResourceAttr(testResourceName, IntegrationParameters+".incoming_webhook.url", "https://test.slack.com/hook"),
 					resource.TestCheckResourceAttr(testResourceName, IntegrationConfigs+".#", "0"),
 					resource.TestCheckResourceAttr(testResourceName, IntegrationEnvironments+".#", "0"),
+					resource.TestCheckNoResourceAttr(testResourceName, IntegrationParameters+".includeSensitiveData"),
 				),
 			},
 			{
@@ -548,6 +549,7 @@ func TestAccIntegrationSlackResource(t *testing.T) {
 					"name":             config.StringVariable(integrationType + "_integ2"),
 					"parameters": config.MapVariable(map[string]config.Variable{
 						"incoming_webhook.url": config.StringVariable("https://test.slack.com/hook2"),
+						"includeSensitiveData": config.StringVariable("true"),
 					}),
 				},
 				Check: resource.ComposeAggregateTestCheckFunc(
@@ -555,6 +557,7 @@ func TestAccIntegrationSlackResource(t *testing.T) {
 					resource.TestCheckResourceAttr(testResourceName, Name, integrationType+"_integ2"),
 					resource.TestCheckResourceAttr(testResourceName, IntegrationType, integrationType),
 					resource.TestCheckResourceAttr(testResourceName, IntegrationParameters+".incoming_webhook.url", "https://test.slack.com/hook2"),
+					resource.TestCheckResourceAttr(testResourceName, IntegrationParameters+".includeSensitiveData", "true"),
 					resource.TestCheckResourceAttr(testResourceName, IntegrationConfigs+".#", "0"),
 					resource.TestCheckResourceAttr(testResourceName, IntegrationEnvironments+".#", "0"),
 				),
@@ -566,10 +569,8 @@ func TestAccIntegrationSlackResource(t *testing.T) {
 					"integration_type": config.StringVariable(integrationType),
 					"name":             config.StringVariable(integrationType + "_integ"),
 					"parameters": config.MapVariable(map[string]config.Variable{
-						"serviceAccountUserName": config.StringVariable("serviceAccountUserName2"),
-						"serviceAccountSecret":   config.StringVariable("serviceAccountSecret2"),
-						"projectId":              config.StringVariable("projectId2"),
-						"server":                 config.StringVariable("EUResidencyServer"),
+						"incoming_webhook.url": config.StringVariable("https://test.slack.com/hook2"),
+						"includeSensitiveData": config.StringVariable("true"),
 					}),
 				},
 				ResourceName:      testResourceName,
