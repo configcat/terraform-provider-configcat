@@ -45,15 +45,44 @@ output "setting_id" {
 ### Optional
 
 - `hint` (String) The hint of the Feature Flag or Setting.
+- `predefined_variations` (Attributes List) The predefined variations of the Feature Flag or Setting. The feature is currently in closed beta state and cannot be used. (see [below for nested schema](#nestedatt--predefined_variations))
 - `setting_type` (String) The type of the Feature Flag or Setting. Available values: `boolean`|`string`|`int`|`double`. Default: `boolean`.
 
 ### Read-Only
 
 - `id` (String) The unique ID of the Feature Flag or Setting.
 
+<a id="nestedatt--predefined_variations"></a>
+### Nested Schema for `predefined_variations`
+
+Required:
+
+- `value` (Attributes) Represents the value of a Predefined variation. (see [below for nested schema](#nestedatt--predefined_variations--value))
+
+Optional:
+
+- `hint` (String) The hint of the Predefined variation.
+- `name` (String) The name of the Predefined variation.
+
+Read-Only:
+
+- `predefined_variation_id` (String) The unique ID of the Predefined variation.
+
+<a id="nestedatt--predefined_variations--value"></a>
+### Nested Schema for `predefined_variations.value`
+
+Optional:
+
+- `bool_value` (Boolean) The boolean representation of the value.
+- `double_value` (Number) The decimal number representation of the value.
+- `int_value` (Number) The whole number representation of the value.
+- `string_value` (String) The string representation of the value.
+
 ## Import
 
 Import is supported using the following syntax:
+
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
 # Feature Flags/Settings can be imported using the SettingId. Get the SettingId using e.g. the [List Flags API](https://api.configcat.com/docs/#tag/Feature-Flags-and-Settings/operation/get-settings).

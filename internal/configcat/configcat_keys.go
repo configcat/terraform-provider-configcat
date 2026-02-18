@@ -94,6 +94,13 @@ const (
 	SettingHint           = "hint"
 	SettingType           = "setting_type"
 
+	PredefinedVariationResourceName = "Predefined variation"
+	PredefinedVariations            = "predefined_variations"
+	PredefinedVariationId           = "predefined_variation_id"
+	PredefinedVariationValue        = "value"
+	PredefinedVariationName         = "name"
+	PredefinedVariationHint         = "hint"
+
 	// V1
 	SettingValueResourceName = "Feature Flag or Setting value"
 

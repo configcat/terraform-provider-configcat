@@ -38,6 +38,15 @@ func (client *Client) UpdateSetting(settingID int32, patchOperation []sw.JsonPat
 	return model, error
 }
 
+func (client *Client) UpdatePredefinedVariations(settingID int32, body sw.UpdatePredefinedVariationsRequest) (*sw.PredefinedVariationsModel, error) {
+	model, response, err := client.apiClient.FeatureFlagsSettingsAPI.UpdatePredefinedVariations(client.GetAuthContext(), settingID).UpdatePredefinedVariationsRequest(body).Execute()
+	error := handleAPIError(err)
+	if response != nil && response.Body != nil {
+		defer response.Body.Close()
+	}
+	return model, error
+}
+
 func (client *Client) DeleteSetting(settingID int32) error {
 	response, err := client.apiClient.FeatureFlagsSettingsAPI.DeleteSetting(client.GetAuthContext(), settingID).Execute()
 	error := handleAPIError(err)

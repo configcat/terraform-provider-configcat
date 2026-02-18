@@ -51,10 +51,11 @@ type comparisonValueModel struct {
 }
 
 type settingValueModel struct {
-	BoolValue   types.Bool    `tfsdk:"bool_value"`
-	StringValue types.String  `tfsdk:"string_value"`
-	IntValue    types.Int64   `tfsdk:"int_value"`
-	DoubleValue types.Float64 `tfsdk:"double_value"`
+	BoolValue             types.Bool    `tfsdk:"bool_value"`
+	StringValue           types.String  `tfsdk:"string_value"`
+	IntValue              types.Int64   `tfsdk:"int_value"`
+	DoubleValue           types.Float64 `tfsdk:"double_value"`
+	PredefinedVariationId types.String  `tfsdk:"predefined_variation_id"`
 }
 
 type userConditionModel struct {
@@ -126,6 +127,7 @@ func createSettingValueSchema(required bool, validators []validator.Object) *sch
 						path.MatchRelative().AtParent().AtName(StringValue),
 						path.MatchRelative().AtParent().AtName(IntValue),
 						path.MatchRelative().AtParent().AtName(DoubleValue),
+						path.MatchRelative().AtParent().AtName(PredefinedVariationId),
 					),
 				},
 			},
@@ -137,6 +139,7 @@ func createSettingValueSchema(required bool, validators []validator.Object) *sch
 						path.MatchRelative().AtParent().AtName(BoolValue),
 						path.MatchRelative().AtParent().AtName(IntValue),
 						path.MatchRelative().AtParent().AtName(DoubleValue),
+						path.MatchRelative().AtParent().AtName(PredefinedVariationId),
 					),
 				},
 			},
@@ -148,6 +151,7 @@ func createSettingValueSchema(required bool, validators []validator.Object) *sch
 						path.MatchRelative().AtParent().AtName(BoolValue),
 						path.MatchRelative().AtParent().AtName(StringValue),
 						path.MatchRelative().AtParent().AtName(DoubleValue),
+						path.MatchRelative().AtParent().AtName(PredefinedVariationId),
 					),
 				},
 			},
@@ -159,7 +163,21 @@ func createSettingValueSchema(required bool, validators []validator.Object) *sch
 						path.MatchRelative().AtParent().AtName(BoolValue),
 						path.MatchRelative().AtParent().AtName(StringValue),
 						path.MatchRelative().AtParent().AtName(IntValue),
+						path.MatchRelative().AtParent().AtName(PredefinedVariationId),
 					),
+				},
+			},
+			PredefinedVariationId: schema.StringAttribute{
+				Optional:    true,
+				Description: "The predefined variation's ID representation of the value in case of the setting has predefined variations. The feature is currently in closed beta state and cannot be used.",
+				Validators: []validator.String{
+					stringvalidator.ExactlyOneOf(
+						path.MatchRelative().AtParent().AtName(BoolValue),
+						path.MatchRelative().AtParent().AtName(StringValue),
+						path.MatchRelative().AtParent().AtName(IntValue),
+						path.MatchRelative().AtParent().AtName(DoubleValue),
+					),
+					IsGuid(),
 				},
 			},
 		},
@@ -786,6 +804,9 @@ func (resourceModel *settingValueV2ResourceModel) UpdateFromApiModel(model sw.Se
 }
 
 func getSettingValueModelV2(settingType sw.SettingType, value sw.ValueModel) (*settingValueModel, error) {
+	if value.PredefinedVariationId.IsSet() && value.PredefinedVariationId.Get() != nil {
+		return &settingValueModel{PredefinedVariationId: types.StringPointerValue(value.PredefinedVariationId.Get())}, nil
+	}
 
 	result := settingValueModel{}
 	switch settingType {
@@ -809,7 +830,9 @@ func getSettingValueModelV2(settingType sw.SettingType, value sw.ValueModel) (*s
 
 func getSettingValueModelV2WithoutSettingType(value sw.ValueModel) (*settingValueModel, error) {
 
-	if value.BoolValue.IsSet() && value.BoolValue.Get() != nil {
+	if value.PredefinedVariationId.IsSet() && value.PredefinedVariationId.Get() != nil {
+		return &settingValueModel{PredefinedVariationId: types.StringPointerValue(value.PredefinedVariationId.Get())}, nil
+	} else if value.BoolValue.IsSet() && value.BoolValue.Get() != nil {
 		return &settingValueModel{BoolValue: types.BoolPointerValue(value.BoolValue.Get())}, nil
 	} else if value.StringValue.IsSet() && value.StringValue.Get() != nil {
 		return &settingValueModel{StringValue: types.StringPointerValue(value.StringValue.Get())}, nil
@@ -825,7 +848,9 @@ func getSettingValueModelV2WithoutSettingType(value sw.ValueModel) (*settingValu
 
 func getSettingValueV2WithoutSettingType(value settingValueModel) (*sw.UpdateValueModel, error) {
 
-	if !value.BoolValue.IsUnknown() && !value.BoolValue.IsNull() {
+	if !value.PredefinedVariationId.IsUnknown() && !value.PredefinedVariationId.IsNull() {
+		return &sw.UpdateValueModel{PredefinedVariationId: *sw.NewNullableString(value.PredefinedVariationId.ValueStringPointer())}, nil
+	} else if !value.BoolValue.IsUnknown() && !value.BoolValue.IsNull() {
 		return &sw.UpdateValueModel{BoolValue: *sw.NewNullableBool(value.BoolValue.ValueBoolPointer())}, nil
 	} else if !value.StringValue.IsUnknown() && !value.StringValue.IsNull() {
 		return &sw.UpdateValueModel{StringValue: *sw.NewNullableString(value.StringValue.ValueStringPointer())}, nil
@@ -841,7 +866,9 @@ func getSettingValueV2WithoutSettingType(value settingValueModel) (*sw.UpdateVal
 }
 
 func getSettingValueV2(settingType *sw.SettingType, value *settingValueModel) (*sw.UpdateValueModel, error) {
-
+	if !value.PredefinedVariationId.IsUnknown() && !value.PredefinedVariationId.IsNull() {
+		return &sw.UpdateValueModel{PredefinedVariationId: *sw.NewNullableString(value.PredefinedVariationId.ValueStringPointer())}, nil
+	}
 	result := sw.UpdateValueModel{}
 	switch *settingType {
 	case sw.SETTINGTYPE_BOOLEAN:
@@ -963,5 +990,6 @@ func hasSettingValueChanges(plan *settingValueModel, state *settingValueModel) b
 	return !plan.BoolValue.Equal(state.BoolValue) ||
 		!plan.StringValue.Equal(state.StringValue) ||
 		!plan.IntValue.Equal(state.IntValue) ||
-		!plan.DoubleValue.Equal(state.DoubleValue)
+		!plan.DoubleValue.Equal(state.DoubleValue) ||
+		!plan.PredefinedVariationId.Equal(state.PredefinedVariationId)
 }

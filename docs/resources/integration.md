@@ -123,6 +123,8 @@ output "slack_integration_id" {
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 # Integrations can be imported using the IntegrationId. Get the IntegrationId using the [List Integrations API](https://api.configcat.com/docs/index.html#tag/Integrations/operation/get-integrations) for example.
 
