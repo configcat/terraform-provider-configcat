@@ -8,6 +8,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -31,11 +33,12 @@ type environmentResource struct {
 type environmentResourceModel struct {
 	ProductId types.String `tfsdk:"product_id"`
 
-	ID          types.String `tfsdk:"id"`
-	Name        types.String `tfsdk:"name"`
-	Description types.String `tfsdk:"description"`
-	Color       types.String `tfsdk:"color"`
-	Order       types.Int64  `tfsdk:"order"`
+	ID                        types.String `tfsdk:"id"`
+	Name                      types.String `tfsdk:"name"`
+	Description               types.String `tfsdk:"description"`
+	Color                     types.String `tfsdk:"color"`
+	Order                     types.Int64  `tfsdk:"order"`
+	CleanupAuditLogsOnDestroy types.Bool   `tfsdk:"cleanup_auditlogs_on_destroy"`
 }
 
 func (r *environmentResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -86,6 +89,15 @@ func (r *environmentResource) Schema(ctx context.Context, req resource.SchemaReq
 				Description: "The order of the " + EnvironmentResourceName + " within a " + ProductResourceName + " (zero-based). If multiple " + EnvironmentResourceName + "s has the same order, they are displayed in alphabetical order.",
 				Required:    true,
 			},
+			CleanupAuditLogsOnDestroy: schema.BoolAttribute{
+				Description: "An optional flag which indicates whether the audit log records related to the environment should be deleted upon destroying the resource. It can be useful to turn on for temporary, ephemeral environments, when you don't want to keep the audit log entries for the environment after it is destroyed.",
+				Computed:    true,
+				Optional:    true,
+				Default:     booldefault.StaticBool(false),
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
 		},
 	}
 }
@@ -132,7 +144,7 @@ func (r *environmentResource) Create(ctx context.Context, req resource.CreateReq
 		return
 	}
 
-	plan.UpdateFromApiModel(*model)
+	plan.UpdateFromApiModel(*model, plan.CleanupAuditLogsOnDestroy.ValueBool())
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
@@ -158,7 +170,7 @@ func (r *environmentResource) Read(ctx context.Context, req resource.ReadRequest
 		return
 	}
 
-	state.UpdateFromApiModel(*model)
+	state.UpdateFromApiModel(*model, state.CleanupAuditLogsOnDestroy.ValueBool())
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -190,7 +202,7 @@ func (r *environmentResource) Update(ctx context.Context, req resource.UpdateReq
 		return
 	}
 
-	plan.UpdateFromApiModel(*model)
+	plan.UpdateFromApiModel(*model, plan.CleanupAuditLogsOnDestroy.ValueBool())
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
 
@@ -203,7 +215,7 @@ func (r *environmentResource) Delete(ctx context.Context, req resource.DeleteReq
 		return
 	}
 
-	err := r.client.DeleteEnvironment(state.ID.ValueString())
+	err := r.client.DeleteEnvironment(state.ID.ValueString(), state.CleanupAuditLogsOnDestroy.ValueBool())
 
 	if err != nil {
 		if _, ok := err.(client.NotFoundError); ok {
@@ -220,7 +232,7 @@ func (r *environmentResource) ImportState(ctx context.Context, req resource.Impo
 	resource.ImportStatePassthroughID(ctx, path.Root(ID), req, resp)
 }
 
-func (resourceModel *environmentResourceModel) UpdateFromApiModel(model sw.EnvironmentModel) {
+func (resourceModel *environmentResourceModel) UpdateFromApiModel(model sw.EnvironmentModel, cleanupAuditLogsOnDestroy bool) {
 	modelOrder := int64(model.Order)
 	resourceModel.ID = types.StringValue(model.EnvironmentId)
 	resourceModel.ProductId = types.StringValue(model.Product.ProductId)
@@ -228,4 +240,5 @@ func (resourceModel *environmentResourceModel) UpdateFromApiModel(model sw.Envir
 	resourceModel.Description = types.StringPointerValue(model.Description.Get())
 	resourceModel.Color = types.StringPointerValue(model.Color.Get())
 	resourceModel.Order = types.Int64Value(modelOrder)
+	resourceModel.CleanupAuditLogsOnDestroy = types.BoolValue(cleanupAuditLogsOnDestroy)
 }
