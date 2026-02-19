@@ -43,8 +43,6 @@ resource "configcat_setting_tag" "my_setting_tag" {
 
 Import is supported using the following syntax:
 
-The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
-
 ```shell
 # Setting Tags can be imported using a combined SettingId:TagId ID.  
 # Get the SettingId using e.g. the [List Flags API](https://api.configcat.com/docs/#tag/Feature-Flags-and-Settings/operation/get-settings).  
