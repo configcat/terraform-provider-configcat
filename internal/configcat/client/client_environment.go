@@ -42,10 +42,10 @@ func (client *Client) UpdateEnvironment(environmentID string, body sw.UpdateEnvi
 	return model, error
 }
 
-func (client *Client) DeleteEnvironment(environmentID string) error {
+func (client *Client) DeleteEnvironment(environmentID string, cleanupAuditLogs bool) error {
 	response, err := client.apiClient.EnvironmentsAPI.DeleteEnvironment(
 		client.GetAuthContext(),
-		environmentID).Execute()
+		environmentID).CleanupAuditLogs(cleanupAuditLogs).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
 		defer response.Body.Close()

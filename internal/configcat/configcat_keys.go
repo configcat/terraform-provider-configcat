@@ -28,9 +28,10 @@ const (
 	ConfigId           = "config_id"
 	EvaluationVersion  = "evaluation_version"
 
-	EnvironmentResourceName = "Environment"
-	Environments            = "environments"
-	EnvironmentId           = "environment_id"
+	EnvironmentResourceName   = "Environment"
+	Environments              = "environments"
+	EnvironmentId             = "environment_id"
+	CleanupAuditLogsOnDestroy = "cleanup_auditlogs_on_destroy"
 
 	WebhookResourceName  = "Webhook"
 	WebhookId            = "webhook_id"

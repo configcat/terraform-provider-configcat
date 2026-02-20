@@ -42,6 +42,7 @@ output "environment_id" {
 
 ### Optional
 
+- `cleanup_auditlogs_on_destroy` (Boolean) An optional flag which indicates whether the audit log records related to the environment should be deleted upon destroying the resource. It can be useful to turn on for temporary, ephemeral environments, when you don't want to keep the audit log entries for the environment after it is destroyed.
 - `color` (String) The color of the Environment.
 - `description` (String) The description of the Environment.
 
@@ -52,8 +53,6 @@ output "environment_id" {
 ## Import
 
 Import is supported using the following syntax:
-
-The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
 # Environments can be imported using the EnvironmentId. Get the EnvironmentId using the [List Environments API](https://api.configcat.com/docs/#tag/Environments/operation/get-environments) for example.

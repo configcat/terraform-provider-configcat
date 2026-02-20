@@ -63,3 +63,52 @@ func TestAccEnvironmentResource(t *testing.T) {
 		},
 	})
 }
+
+func TestAccCleanupAuditLogsOnDestroyEnvironmentResource(t *testing.T) {
+	const productId = "08d86d63-2721-4da6-8c06-584521d516bc"
+	const testResourceName = "configcat_environment.test"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		Steps: []resource.TestStep{
+			{
+				ConfigFile: config.TestNameFile("cleanup_step_1.tf"),
+				ConfigVariables: config.Variables{
+					"product_id": config.StringVariable(productId),
+					"name":       config.StringVariable("Resource name"),
+					"order":      config.IntegerVariable(1),
+				},
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttrSet(testResourceName, ID),
+					resource.TestCheckResourceAttr(testResourceName, Name, "Resource name"),
+					resource.TestCheckResourceAttr(testResourceName, Order, "1"),
+					resource.TestCheckResourceAttr(testResourceName, Description, ""),
+					resource.TestCheckResourceAttr(testResourceName, Color, ""),
+				),
+			},
+			{
+				ConfigFile: config.TestNameFile("cleanup_step_2.tf"),
+			},
+			{
+				ConfigFile: config.TestNameFile("cleanup_step_1.tf"),
+				ConfigVariables: config.Variables{
+					"product_id":                   config.StringVariable(productId),
+					"name":                         config.StringVariable("Resource name"),
+					"order":                        config.IntegerVariable(1),
+					"cleanup_auditlogs_on_destroy": config.BoolVariable(true),
+				},
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttrSet(testResourceName, ID),
+					resource.TestCheckResourceAttr(testResourceName, Name, "Resource name"),
+					resource.TestCheckResourceAttr(testResourceName, Order, "1"),
+					resource.TestCheckResourceAttr(testResourceName, Description, ""),
+					resource.TestCheckResourceAttr(testResourceName, Color, ""),
+				),
+			},
+			{
+				ConfigFile: config.TestNameFile("cleanup_step_2.tf"),
+			},
+		},
+	})
+}
