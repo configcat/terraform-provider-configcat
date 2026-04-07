@@ -27,7 +27,7 @@ func TestAccPermissionGroupsDataSource(t *testing.T) {
 				},
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet(testResourceName, "id"),
-					resource.TestCheckResourceAttr(testResourceName, listAttribute+".#", "2"),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+".#", "3"),
 				),
 			},
 			{
@@ -76,7 +76,7 @@ func TestAccPermissionGroupsDataSource(t *testing.T) {
 					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+PermissionGroupCanDisable2FA, "true"),
 					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+PermissionGroupAccessType, "full"),
 					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+PermissionGroupNewEnvironmentAccessType, "full"),
-					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+PermissionGroupEnvironmentAccess+".%", "0"),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+PermissionGroupEnvironmentAccess+".%", "3"),
 				),
 			},
 			{
