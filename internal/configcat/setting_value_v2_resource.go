@@ -942,7 +942,7 @@ func hasChangesV2(plan *settingValueV2ResourceModel, state *settingValueV2Resour
 				}
 
 				for listValueIndex, planListValue := range planCondition.UserCondition.ComparisonValue.ListValue {
-					stateListValue := planCondition.UserCondition.ComparisonValue.ListValue[listValueIndex]
+					stateListValue := stateCondition.UserCondition.ComparisonValue.ListValue[listValueIndex]
 					if !planListValue.Value.Equal(stateListValue.Value) ||
 						!planListValue.Hint.Equal(stateListValue.Hint) {
 						return true
