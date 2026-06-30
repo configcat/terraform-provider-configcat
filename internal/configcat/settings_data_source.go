@@ -35,6 +35,7 @@ type settingDataModel struct {
 	Name        types.String `tfsdk:"name"`
 	Hint        types.String `tfsdk:"hint"`
 	SettingType types.String `tfsdk:"setting_type"`
+	IsJson      types.Bool   `tfsdk:"is_json"`
 	Order       types.Int64  `tfsdk:"order"`
 }
 
@@ -89,6 +90,10 @@ func (d *settingDataSource) Schema(ctx context.Context, req datasource.SchemaReq
 						},
 						SettingType: schema.StringAttribute{
 							Description: "The " + SettingResourceName + "'s type. Available values: `boolean`|`string`|`int`|`double`.",
+							Computed:    true,
+						},
+						SettingIsJson: schema.BoolAttribute{
+							Description: "Whether this " + SettingResourceName + " should validate string values as JSON values.",
 							Computed:    true,
 						},
 						Order: schema.Int64Attribute{
@@ -158,6 +163,7 @@ func (d *settingDataSource) Read(ctx context.Context, req datasource.ReadRequest
 			Key:         types.StringValue(resource.Key),
 			Hint:        types.StringPointerValue(resource.Hint.Get()),
 			SettingType: types.StringValue((string)(resource.SettingType)),
+			IsJson:      types.BoolValue(resource.IsJson),
 			Order:       types.Int64Value(int64(resource.Order)),
 		}
 

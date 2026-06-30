@@ -13,6 +13,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
@@ -56,6 +58,7 @@ type settingResourceModel struct {
 	Name                 types.String                `tfsdk:"name"`
 	Hint                 types.String                `tfsdk:"hint"`
 	SettingType          types.String                `tfsdk:"setting_type"`
+	IsJson               types.Bool                  `tfsdk:"is_json"`
 	Order                types.Int64                 `tfsdk:"order"`
 	PredefinedVariations *[]predefinedVariationModel `tfsdk:"predefined_variations"`
 }
@@ -165,6 +168,15 @@ func (r *settingResource) Schema(ctx context.Context, req resource.SchemaRequest
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
+			SettingIsJson: schema.BoolAttribute{
+				Description: "Whether this " + SettingResourceName + " should validate string values as JSON values.",
+				Optional:    true,
+				Computed:    true,
+				Default:     booldefault.StaticBool(false),
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
 			Order: schema.Int64Attribute{
 				Description: "The order of the " + SettingResourceName + " within a " + ProductResourceName + " (zero-based). If multiple " + SettingsResourceName + " has the same order, they are displayed in alphabetical order.",
 				Required:    true,
@@ -243,6 +255,7 @@ func (r *settingResource) Create(ctx context.Context, req resource.CreateRequest
 		Name:                 plan.Name.ValueString(),
 		Hint:                 *sw.NewNullableString(plan.Hint.ValueStringPointer()),
 		SettingType:          *settingType,
+		IsJson:               *sw.NewNullableBool(plan.IsJson.ValueBoolPointer()),
 		Order:                *sw.NewNullableInt32(&order),
 		PredefinedVariations: predefinedVariations,
 	}
@@ -313,7 +326,7 @@ func (r *settingResource) Update(ctx context.Context, req resource.UpdateRequest
 		return
 	}
 
-	if !plan.Name.Equal(state.Name) || !plan.Hint.Equal(state.Hint) || !plan.Order.Equal(state.Order) {
+	if !plan.Name.Equal(state.Name) || !plan.Hint.Equal(state.Hint) || !plan.IsJson.Equal(state.IsJson) || !plan.Order.Equal(state.Order) {
 		operations := []sw.JsonPatchOperation{}
 		if !plan.Name.Equal(state.Name) {
 			operations = append(operations, sw.JsonPatchOperation{
@@ -328,6 +341,14 @@ func (r *settingResource) Update(ctx context.Context, req resource.UpdateRequest
 				Op:    sw.OPERATIONTYPE_REPLACE,
 				Path:  "/hint",
 				Value: plan.Hint.ValueString(),
+			})
+		}
+
+		if !plan.IsJson.Equal(state.IsJson) {
+			operations = append(operations, sw.JsonPatchOperation{
+				Op:    sw.OPERATIONTYPE_REPLACE,
+				Path:  "/isJson",
+				Value: plan.IsJson.ValueBool(),
 			})
 		}
 
@@ -504,6 +525,7 @@ func (resourceModel *settingResourceModel) UpdateFromApiModel(model sw.SettingMo
 	resourceModel.Name = types.StringValue(model.Name)
 	resourceModel.Hint = types.StringPointerValue(model.Hint.Get())
 	resourceModel.SettingType = types.StringValue((string)(model.SettingType))
+	resourceModel.IsJson = types.BoolValue(model.IsJson)
 	resourceModel.Order = types.Int64Value(modelOrder)
 
 	predefinedVariationsErr := resourceModel.UpdatePredefinedVariationsFromApiModel(model.SettingType, model.PredefinedVariations)
