@@ -1,4 +1,4 @@
-variable "config_id" {
+variable "product_id" {
   type = string
 }
 variable "key" {
@@ -6,10 +6,6 @@ variable "key" {
 }
 variable "name" {
   type = string
-}
-variable "hint" {
-  type    = string
-  default = null
 }
 variable "setting_type" {
   type = string
@@ -23,11 +19,17 @@ variable "is_json" {
   default = null
 }
 
+resource "configcat_config" "config" {
+  product_id         = var.product_id
+  name               = "Test config for setting is_json"
+  evaluation_version = "v2"
+  order              = 0
+}
+
 resource "configcat_setting" "test" {
-  config_id    = var.config_id
+  config_id    = configcat_config.config.id
   key          = var.key
   name         = var.name
-  hint         = var.hint
   setting_type = var.setting_type
   order        = var.order
   is_json      = var.is_json
