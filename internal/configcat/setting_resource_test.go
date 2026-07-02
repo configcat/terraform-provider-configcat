@@ -91,7 +91,7 @@ func testAccSettingResource(t *testing.T, settingType string) {
 	})
 }
 
-func TestAccStringSettingResourceIsJsonUpdate(t *testing.T) {
+func TestAccStringSettingResourceInvalidJson(t *testing.T) {
 	const productId = "08d86d63-2721-4da6-8c06-584521d516bc"
 	const testResourceName = "configcat_setting.test"
 
@@ -124,10 +124,106 @@ func TestAccStringSettingResourceIsJsonUpdate(t *testing.T) {
 					"order":        config.IntegerVariable(1),
 					"is_json":      config.BoolVariable(true),
 				},
+				ExpectError: regexp.MustCompile("Cannot enable JSON validation"),
+			},
+		},
+	})
+}
+
+func TestAccStringSettingResourceIsJsonUpdate(t *testing.T) {
+	const productId = "08d86d63-2721-4da6-8c06-584521d516bc"
+	const testResourceName = "configcat_setting.test"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		Steps: []resource.TestStep{
+			{
+				ConfigFile: config.StaticFile(path.Join("testdata", "TestAccSettingResource", "is_json_v2.tf")),
+				ConfigVariables: config.Variables{
+					"product_id":   config.StringVariable(productId),
+					"key":          config.StringVariable("SettingKeyStringIsJson"),
+					"name":         config.StringVariable("Resource name"),
+					"setting_type": config.StringVariable("string"),
+					"order":        config.IntegerVariable(1),
+					"is_json":      config.BoolVariable(true),
+				},
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet(testResourceName, ID),
 					resource.TestCheckResourceAttr(testResourceName, SettingIsJson, "true"),
 				),
+			},
+			{
+				ConfigFile: config.StaticFile(path.Join("testdata", "TestAccSettingResource", "is_json_v2.tf")),
+				ConfigVariables: config.Variables{
+					"product_id":   config.StringVariable(productId),
+					"key":          config.StringVariable("SettingKeyStringIsJson"),
+					"name":         config.StringVariable("Resource name"),
+					"setting_type": config.StringVariable("string"),
+					"order":        config.IntegerVariable(1),
+					"is_json":      config.BoolVariable(true),
+				},
+				ResourceName:      testResourceName,
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+			{
+				ConfigFile: config.StaticFile(path.Join("testdata", "TestAccSettingResource", "is_json_v2.tf")),
+				ConfigVariables: config.Variables{
+					"product_id":   config.StringVariable(productId),
+					"key":          config.StringVariable("SettingKeyStringIsJson"),
+					"name":         config.StringVariable("Resource name"),
+					"setting_type": config.StringVariable("string"),
+					"order":        config.IntegerVariable(1),
+					"is_json":      config.BoolVariable(false),
+				},
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttrSet(testResourceName, ID),
+					resource.TestCheckResourceAttr(testResourceName, SettingIsJson, "false"),
+				),
+			},
+			{
+				ConfigFile: config.StaticFile(path.Join("testdata", "TestAccSettingResource", "is_json_v2.tf")),
+				ConfigVariables: config.Variables{
+					"product_id":   config.StringVariable(productId),
+					"key":          config.StringVariable("SettingKeyStringIsJson"),
+					"name":         config.StringVariable("Resource name"),
+					"setting_type": config.StringVariable("string"),
+					"order":        config.IntegerVariable(1),
+					"is_json":      config.BoolVariable(false),
+				},
+				ResourceName:      testResourceName,
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+			{
+				ConfigFile: config.StaticFile(path.Join("testdata", "TestAccSettingResource", "is_json_v2.tf")),
+				ConfigVariables: config.Variables{
+					"product_id":   config.StringVariable(productId),
+					"key":          config.StringVariable("SettingKeyStringIsJson"),
+					"name":         config.StringVariable("Resource name"),
+					"setting_type": config.StringVariable("string"),
+					"order":        config.IntegerVariable(1),
+					"is_json":      config.BoolVariable(true),
+				},
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttrSet(testResourceName, ID),
+					resource.TestCheckResourceAttr(testResourceName, SettingIsJson, "true"),
+				),
+			},
+			{
+				ConfigFile: config.StaticFile(path.Join("testdata", "TestAccSettingResource", "is_json_v2.tf")),
+				ConfigVariables: config.Variables{
+					"product_id":   config.StringVariable(productId),
+					"key":          config.StringVariable("SettingKeyStringIsJson"),
+					"name":         config.StringVariable("Resource name"),
+					"setting_type": config.StringVariable("string"),
+					"order":        config.IntegerVariable(1),
+					"is_json":      config.BoolVariable(true),
+				},
+				ResourceName:      testResourceName,
+				ImportState:       true,
+				ImportStateVerify: true,
 			},
 		},
 	})
