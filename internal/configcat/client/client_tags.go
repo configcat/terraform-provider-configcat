@@ -6,7 +6,7 @@ func (client *Client) GetTags(productID string) ([]sw.TagModel, error) {
 	model, response, err := client.apiClient.TagsAPI.GetTags(client.GetAuthContext(), productID).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return model, error
 }
@@ -15,7 +15,7 @@ func (client *Client) GetTag(tagID int64) (*sw.TagModel, error) {
 	model, response, err := client.apiClient.TagsAPI.GetTag(client.GetAuthContext(), tagID).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return model, error
 }
@@ -26,7 +26,7 @@ func (client *Client) CreateTag(productID string, body sw.CreateTagModel) (*sw.T
 		productID).CreateTagModel(body).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return model, error
 }
@@ -37,7 +37,7 @@ func (client *Client) UpdateTag(tagID int64, body sw.UpdateTagModel) (*sw.TagMod
 		tagID).UpdateTagModel(body).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return model, error
 }
@@ -48,7 +48,7 @@ func (client *Client) DeleteTag(tagID int64) error {
 		tagID).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return error
 }

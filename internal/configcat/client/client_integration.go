@@ -6,7 +6,7 @@ func (client *Client) GetIntegrations(productID string) (*sw.IntegrationsModel, 
 	model, response, err := client.apiClient.IntegrationsAPI.GetIntegrations(client.GetAuthContext(), productID).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return model, error
 }
@@ -15,7 +15,7 @@ func (client *Client) GetIntegration(integrationID string) (*sw.IntegrationModel
 	model, response, err := client.apiClient.IntegrationsAPI.GetIntegration(client.GetAuthContext(), integrationID).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return model, error
 }
@@ -26,7 +26,7 @@ func (client *Client) CreateIntegration(productID string, body sw.CreateIntegrat
 		productID).CreateIntegrationModel(body).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return model, error
 }
@@ -37,7 +37,7 @@ func (client *Client) UpdateIntegration(integrationID string, body sw.ModifyInte
 		integrationID).ModifyIntegrationRequest(body).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return model, error
 }
@@ -48,7 +48,7 @@ func (client *Client) DeleteIntegration(integrationID string) error {
 		integrationID).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return error
 }

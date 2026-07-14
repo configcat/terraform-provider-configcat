@@ -6,7 +6,7 @@ func (client *Client) GetSettings(configID string) ([]sw.SettingModel, error) {
 	model, response, err := client.apiClient.FeatureFlagsSettingsAPI.GetSettings(client.GetAuthContext(), configID).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return model, error
 }
@@ -15,7 +15,7 @@ func (client *Client) GetSetting(settingID int32) (*sw.SettingModel, error) {
 	model, response, err := client.apiClient.FeatureFlagsSettingsAPI.GetSetting(client.GetAuthContext(), settingID).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return model, error
 }
@@ -24,7 +24,7 @@ func (client *Client) CreateSetting(configID string, body sw.CreateSettingInitia
 	model, response, err := client.apiClient.FeatureFlagsSettingsAPI.CreateSetting(client.GetAuthContext(), configID).CreateSettingInitialValues(body).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return model, error
 }
@@ -33,7 +33,7 @@ func (client *Client) UpdateSetting(settingID int32, patchOperation []sw.JsonPat
 	model, response, err := client.apiClient.FeatureFlagsSettingsAPI.UpdateSetting(client.GetAuthContext(), settingID).JsonPatchOperation(patchOperation).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return model, error
 }
@@ -42,7 +42,7 @@ func (client *Client) UpdatePredefinedVariations(settingID int32, body sw.Update
 	model, response, err := client.apiClient.FeatureFlagsSettingsAPI.UpdatePredefinedVariations(client.GetAuthContext(), settingID).UpdatePredefinedVariationsRequest(body).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return model, error
 }
@@ -51,7 +51,7 @@ func (client *Client) DeleteSetting(settingID int32) error {
 	response, err := client.apiClient.FeatureFlagsSettingsAPI.DeleteSetting(client.GetAuthContext(), settingID).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return error
 }

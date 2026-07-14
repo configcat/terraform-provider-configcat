@@ -6,7 +6,7 @@ func (client *Client) GetPermissionGroups(productID string) ([]sw.PermissionGrou
 	model, response, err := client.apiClient.PermissionGroupsAPI.GetPermissionGroups(client.GetAuthContext(), productID).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return model, error
 }
@@ -15,7 +15,7 @@ func (client *Client) GetPermissionGroup(permissionGroupID int64) (*sw.Permissio
 	model, response, err := client.apiClient.PermissionGroupsAPI.GetPermissionGroup(client.GetAuthContext(), permissionGroupID).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return model, error
 }
@@ -26,7 +26,7 @@ func (client *Client) CreatePermissionGroup(productID string, body sw.CreatePerm
 		productID).CreatePermissionGroupRequest(body).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return model, error
 }
@@ -37,7 +37,7 @@ func (client *Client) UpdatePermissionGroup(permissionGroupID int64, body sw.Upd
 		permissionGroupID).UpdatePermissionGroupRequest(body).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return model, error
 }
@@ -48,7 +48,7 @@ func (client *Client) DeletePermissionGroup(permissionGroupID int64) error {
 		permissionGroupID).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return error
 }

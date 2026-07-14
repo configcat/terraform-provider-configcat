@@ -8,7 +8,7 @@ func (client *Client) GetSdkKeys(configId string, environmentId string) (*sw.Sdk
 	model, response, err := client.apiClient.SDKKeysAPI.GetSdkKeys(client.GetAuthContext(), configId, environmentId).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return model, error
 }
