@@ -2,7 +2,6 @@
 `terraform-provider-configcat`
 
 ![Build status](https://github.com/configcat/terraform-provider-configcat/workflows/BuildAndTest/badge.svg)
-[![Go Report Card](https://goreportcard.com/badge/github.com/configcat/terraform-provider-configcat/v5)](https://goreportcard.com/report/github.com/configcat/terraform-provider-configcat/v5)
 [![Sonar Coverage](https://img.shields.io/sonar/coverage/configcat_terraform-provider-configcat/v5?logo=SonarCloud&server=https%3A%2F%2Fsonarcloud.io)](https://sonarcloud.io/project/overview?id=configcat_terraform-provider-configcat)
 [![Sonar Quality Gate](https://img.shields.io/sonar/quality_gate/configcat_terraform-provider-configcat/v5?logo=sonarcloud&server=https%3A%2F%2Fsonarcloud.io)](https://sonarcloud.io/project/overview?id=configcat_terraform-provider-configcat)
 
