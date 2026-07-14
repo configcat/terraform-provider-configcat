@@ -6,7 +6,7 @@ func (client *Client) GetConfigs(productID string) ([]sw.ConfigModel, error) {
 	model, response, err := client.apiClient.ConfigsAPI.GetConfigs(client.GetAuthContext(), productID).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return model, error
 }
@@ -15,7 +15,7 @@ func (client *Client) GetConfig(configID string) (*sw.ConfigModel, error) {
 	model, response, err := client.apiClient.ConfigsAPI.GetConfig(client.GetAuthContext(), configID).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return model, error
 }
@@ -26,7 +26,7 @@ func (client *Client) CreateConfig(productID string, body sw.CreateConfigRequest
 		productID).CreateConfigRequest(body).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return model, error
 }
@@ -37,7 +37,7 @@ func (client *Client) UpdateConfig(configID string, body sw.UpdateConfigRequest)
 		configID).UpdateConfigRequest(body).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return model, error
 }
@@ -48,7 +48,7 @@ func (client *Client) DeleteConfig(configID string) error {
 		configID).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return error
 }

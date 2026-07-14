@@ -6,7 +6,7 @@ func (client *Client) GetWebhooks(productID string) ([]sw.WebhookResponseModel, 
 	model, response, err := client.apiClient.WebhooksAPI.GetWebhooks(client.GetAuthContext(), productID).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return model, error
 }
@@ -15,7 +15,7 @@ func (client *Client) GetWebhook(webhookId int32) (*sw.WebhookResponseModel, err
 	model, response, err := client.apiClient.WebhooksAPI.GetWebhook(client.GetAuthContext(), webhookId).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return model, error
 }
@@ -24,7 +24,7 @@ func (client *Client) GetWebhookSigningKeys(webhookId int32) (*sw.WebhookSigning
 	model, response, err := client.apiClient.WebhooksAPI.GetWebhookSigningKeys(client.GetAuthContext(), webhookId).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return model, error
 }
@@ -35,7 +35,7 @@ func (client *Client) CreateWebhook(configId string, environmentId string, body 
 		configId, environmentId).WebHookRequestModel(body).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return model, error
 }
@@ -46,7 +46,7 @@ func (client *Client) UpdateWebhook(webhookId int32, body sw.WebHookRequestModel
 		webhookId).WebHookRequestModel(body).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return model, error
 }
@@ -57,7 +57,7 @@ func (client *Client) DeleteWebhook(webhookId int32) error {
 		webhookId).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return error
 }

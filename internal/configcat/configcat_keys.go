@@ -94,6 +94,7 @@ const (
 	SettingKeyFilterRegex = "key_filter_regex"
 	SettingHint           = "hint"
 	SettingType           = "setting_type"
+	SettingIsJson         = "is_json"
 
 	PredefinedVariationResourceName = "Predefined variation"
 	PredefinedVariations            = "predefined_variations"

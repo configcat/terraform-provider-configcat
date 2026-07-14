@@ -6,7 +6,7 @@ func (client *Client) GetEnvironments(productID string) ([]sw.EnvironmentModel, 
 	model, response, err := client.apiClient.EnvironmentsAPI.GetEnvironments(client.GetAuthContext(), productID).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return model, error
 }
@@ -15,7 +15,7 @@ func (client *Client) GetEnvironment(environmentID string) (*sw.EnvironmentModel
 	model, response, err := client.apiClient.EnvironmentsAPI.GetEnvironment(client.GetAuthContext(), environmentID).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return model, error
 }
@@ -26,7 +26,7 @@ func (client *Client) CreateEnvironment(productID string, body sw.CreateEnvironm
 		productID).CreateEnvironmentModel(body).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return model, error
 }
@@ -37,7 +37,7 @@ func (client *Client) UpdateEnvironment(environmentID string, body sw.UpdateEnvi
 		environmentID).UpdateEnvironmentModel(body).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return model, error
 }
@@ -48,7 +48,7 @@ func (client *Client) DeleteEnvironment(environmentID string, cleanupAuditLogs b
 		environmentID).CleanupAuditLogs(cleanupAuditLogs).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return error
 }

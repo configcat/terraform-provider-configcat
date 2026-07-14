@@ -6,7 +6,7 @@ func (client *Client) GetSegments(productID string) ([]sw.SegmentListModel, erro
 	model, response, err := client.apiClient.SegmentsAPI.GetSegments(client.GetAuthContext(), productID).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return model, error
 }
@@ -15,7 +15,7 @@ func (client *Client) GetSegment(segmentID string) (*sw.SegmentModel, error) {
 	model, response, err := client.apiClient.SegmentsAPI.GetSegment(client.GetAuthContext(), segmentID).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return model, error
 }
@@ -26,7 +26,7 @@ func (client *Client) CreateSegment(productID string, body sw.CreateSegmentModel
 		productID).CreateSegmentModel(body).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return model, error
 }
@@ -37,7 +37,7 @@ func (client *Client) UpdateSegment(segmentId string, body sw.UpdateSegmentModel
 		segmentId).UpdateSegmentModel(body).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return model, error
 }
@@ -48,7 +48,7 @@ func (client *Client) DeleteSegment(segmentId string) error {
 		segmentId).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return error
 }

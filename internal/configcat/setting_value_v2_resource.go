@@ -446,7 +446,12 @@ func (r *settingValueV2Resource) Read(ctx context.Context, req resource.ReadRequ
 		return
 	}
 
-	state.UpdateFromApiModel(*model)
+	err = state.UpdateFromApiModel(*model)
+	if err != nil {
+		resp.Diagnostics.AddError("Model Error", fmt.Sprintf("Unable to update state from API model for "+SettingValueResourceName+", got error: %s", err))
+		return
+	}
+
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 

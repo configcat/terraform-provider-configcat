@@ -17,6 +17,12 @@ type Client struct {
 	authFullName      string
 }
 
+func closeResponseBody(response *http.Response) {
+	if response != nil && response.Body != nil {
+		_ = response.Body.Close()
+	}
+}
+
 func (client *Client) GetAuthContext() context.Context {
 	return context.WithValue(context.Background(), configcatpublicapi.ContextBasicAuth, configcatpublicapi.BasicAuth{
 		UserName: client.basicAuthUsername,
@@ -28,7 +34,7 @@ func (client *Client) GetMe() (*configcatpublicapi.MeModel, error) {
 	model, response, err := client.apiClient.MeAPI.GetMe(client.GetAuthContext()).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return model, error
 }
@@ -37,7 +43,7 @@ func (client *Client) GetOrganizations() ([]configcatpublicapi.OrganizationModel
 	model, response, err := client.apiClient.OrganizationsAPI.GetOrganizations(client.GetAuthContext()).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
-		defer response.Body.Close()
+		defer closeResponseBody(response)
 	}
 	return model, error
 }
