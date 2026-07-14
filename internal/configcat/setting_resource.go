@@ -394,18 +394,12 @@ func (r *settingResource) Update(ctx context.Context, req resource.UpdateRequest
 				switch *settingType {
 				case sw.SETTINGTYPE_BOOLEAN:
 					predefinedVariationsChanged = planPredefinedVariation.Value.BoolValue.Equal(statePredefinedVariation.Value.BoolValue)
-					break
 				case sw.SETTINGTYPE_STRING:
 					predefinedVariationsChanged = planPredefinedVariation.Value.StringValue.Equal(statePredefinedVariation.Value.StringValue)
-					break
 				case sw.SETTINGTYPE_INT:
 					predefinedVariationsChanged = planPredefinedVariation.Value.IntValue.Equal(statePredefinedVariation.Value.IntValue)
-					break
 				case sw.SETTINGTYPE_DOUBLE:
 					predefinedVariationsChanged = planPredefinedVariation.Value.DoubleValue.Equal(statePredefinedVariation.Value.DoubleValue)
-					break
-				default:
-					break
 				}
 				if predefinedVariationsChanged {
 					break

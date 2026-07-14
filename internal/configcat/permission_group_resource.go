@@ -603,7 +603,7 @@ func getEnvironmentAccesses(newEnvironmentAccesses *map[string]types.String, old
 		environmentId := environmentIdKey
 		environmentAccessTypeParsed, environmentAccessTypeParseError := sw.NewEnvironmentAccessTypeFromValue(environmentAccessType.ValueString())
 		if environmentAccessTypeParseError != nil || *environmentAccessTypeParsed == sw.ENVIRONMENTACCESSTYPE_NONE {
-			return nil, fmt.Errorf("Error: invalid value '%s' for EnvironmentAccessType: valid values are [full readOnly]", environmentAccessType.ValueString())
+			return nil, fmt.Errorf("invalid value '%s' for EnvironmentAccessType: valid values are [full readOnly]", environmentAccessType.ValueString())
 		}
 		element := sw.CreateOrUpdateEnvironmentAccessModel{
 			EnvironmentId:         &environmentId,

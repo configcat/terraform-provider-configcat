@@ -230,9 +230,6 @@ func TestAccStringSettingResourceIsJsonUpdate(t *testing.T) {
 }
 
 func TestAccSettingWithPredefinedVariationsOnlyV2Resource(t *testing.T) {
-	const productId = "08d86d63-2721-4da6-8c06-584521d516bc"
-	const testResourceName = "configcat_setting.test"
-
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
