@@ -50,6 +50,7 @@ output "setting_id" {
 Read-Only:
 
 - `hint` (String) The hint of the Feature Flag or Setting.
+- `is_json` (Boolean) Whether this Feature Flag or Setting should validate string values as JSON values.
 - `key` (String) The key of the Feature Flag or Setting.
 - `name` (String) The name of the Feature Flag or Setting.
 - `order` (Number) The order of the Feature Flag or Setting within a Config (zero-based).
