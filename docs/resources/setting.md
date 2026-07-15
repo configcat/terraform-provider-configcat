@@ -23,6 +23,7 @@ resource "configcat_setting" "my_setting" {
   name         = "My awesome feature flag"
   hint         = "This is the hint for my awesome feature flag"
   setting_type = "boolean"
+  is_json      = 0
   order        = 0
 }
 
@@ -45,6 +46,7 @@ output "setting_id" {
 ### Optional
 
 - `hint` (String) The hint of the Feature Flag or Setting.
+- `is_json` (Boolean) Whether this Feature Flag or Setting should validate string values as JSON values.
 - `predefined_variations` (Attributes List) The predefined variations of the Feature Flag or Setting. The feature is currently in closed beta state and cannot be used. (see [below for nested schema](#nestedatt--predefined_variations))
 - `setting_type` (String) The type of the Feature Flag or Setting. Available values: `boolean`|`string`|`int`|`double`. Default: `boolean`.
 
