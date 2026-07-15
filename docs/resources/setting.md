@@ -23,7 +23,6 @@ resource "configcat_setting" "my_setting" {
   name         = "My awesome feature flag"
   hint         = "This is the hint for my awesome feature flag"
   setting_type = "boolean"
-  is_json      = 0
   order        = 0
 }
 
