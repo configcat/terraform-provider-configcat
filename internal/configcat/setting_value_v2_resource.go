@@ -542,7 +542,6 @@ func (r *settingValueV2Resource) createOrUpdate(ctx context.Context, requestPlan
 		DefaultValue:                  *settingValue,
 		TargetingRules:                targetingRules,
 		PercentageEvaluationAttribute: *sw.NewNullableString(plan.PercentageEvaluationAttribute.ValueStringPointer()),
-		BypassApproval:                *sw.NewNullableBool(plan.BypassApproval.ValueBoolPointer()),
 	}
 
 	model, err := r.client.ReplaceSettingValueV2(plan.EnvironmentId.ValueString(), int32(settingID), body, plan.MandatoryNotes.ValueString(), plan.BypassApproval.ValueBool())
@@ -705,7 +704,6 @@ func (resourceModel *settingValueV2ResourceModel) UpdateFromApiModel(model sw.Se
 	resourceModel.DefaultValue = defaultValue
 	resourceModel.SettingType = types.StringValue((string)(model.Setting.SettingType))
 	resourceModel.PercentageEvaluationAttribute = types.StringPointerValue(model.PercentageEvaluationAttribute.Get())
-	resourceModel.BypassApproval = types.BoolPointerValue(model.BypassApproval.Get())
 
 	if len(model.TargetingRules) > 0 {
 		targetingRules := make([]targetingRuleModel, len(model.TargetingRules))
