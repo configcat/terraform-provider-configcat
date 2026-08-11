@@ -13,8 +13,8 @@ func (client *Client) GetSettingValueV2(environmentID string, settingID int32) (
 	return model, error
 }
 
-func (client *Client) ReplaceSettingValueV2(environmentID string, settingID int32, body sw.UpdateEvaluationFormulaModel, reason string) (*sw.SettingFormulaModel, error) {
-	model, response, err := client.apiClient.FeatureFlagSettingValuesV2API.ReplaceSettingValueV2(client.GetAuthContext(), environmentID, settingID).UpdateEvaluationFormulaModel(body).Reason(reason).Execute()
+func (client *Client) ReplaceSettingValueV2(environmentID string, settingID int32, body sw.UpdateEvaluationFormulaModel, reason string, bypassApproval bool) (*sw.SettingFormulaModel, error) {
+	model, response, err := client.apiClient.FeatureFlagSettingValuesV2API.ReplaceSettingValueV2(client.GetAuthContext(), environmentID, settingID).UpdateEvaluationFormulaModel(body).Reason(reason).BypassApproval(bypassApproval).Execute()
 	error := handleAPIError(err)
 	if response != nil && response.Body != nil {
 		defer closeResponseBody(response)

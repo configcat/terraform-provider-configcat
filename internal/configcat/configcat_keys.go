@@ -114,6 +114,7 @@ const (
 	SettingValue   = "value"
 	InitOnly       = "init_only"
 	MandatoryNotes = "mandatory_notes"
+	BypassApproval = "bypass_approval"
 
 	RolloutRules                   = "rollout_rules"
 	RolloutRuleComparisonAttribute = "comparison_attribute"
