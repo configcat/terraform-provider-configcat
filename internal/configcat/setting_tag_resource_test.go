@@ -10,7 +10,7 @@ import (
 
 func TestAccSettingTagResource(t *testing.T) {
 	const setting1Id = "67639"
-	const setting2Id = "167364"
+	const setting2Id = "380718"
 	const tagId = "46"
 	const testResourceName = "configcat_setting_tag.test"
 
