@@ -288,10 +288,6 @@ func (d *permissionGroupDataSource) Read(ctx context.Context, req datasource.Rea
 
 		environmentApprovals := make(map[string]string, len(resource.EnvironmentApprovalPermissions))
 		for _, environmentApproval := range resource.EnvironmentApprovalPermissions {
-			if environmentApproval.EnvironmentApprovalPermissionType == sw.ENVIRONMENTAPPROVALPERMISSIONTYPE_CAN_BYPASS_APPROVAL {
-				continue
-			}
-
 			environmentApprovals[environmentApproval.EnvironmentId] = (string)(environmentApproval.EnvironmentApprovalPermissionType)
 		}
 

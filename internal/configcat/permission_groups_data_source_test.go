@@ -119,9 +119,11 @@ func TestAccPermissionGroupsDataSource(t *testing.T) {
 					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+PermissionGroupEnvironmentAccess+".%", "1"),
 					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+PermissionGroupApprovalPermissionType, "custom"),
 					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+PermissionGroupNewEnvironmentApprovalType, "canApproveOthers"),
-					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+PermissionGroupEnvironmentApprovals+".%", "1"),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+PermissionGroupEnvironmentApprovals+".%", "3"),
 					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+PermissionGroupEnvironmentAccess+".08d86d63-2726-47cd-8bfc-59608ecb91e2", "full"),
-					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+PermissionGroupEnvironmentApprovals+".08d86d63-2726-47cd-8bfc-59608ecb91e2", "cannotApprove"),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+PermissionGroupEnvironmentApprovals+".08d8becf-d4d9-4c66-8b48-6ac74cd95fba", "cannotApprove"),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+PermissionGroupEnvironmentApprovals+".08d86d63-272c-4355-8027-4b52787bc1bd", "cannotApprove"),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+".0."+PermissionGroupEnvironmentApprovals+".08d86d63-2726-47cd-8bfc-59608ecb91e2", "canBypassApproval"),
 				),
 			},
 			{

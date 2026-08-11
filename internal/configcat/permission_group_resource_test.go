@@ -412,7 +412,7 @@ func TestAccPermissionGroupResource(t *testing.T) {
 						environment1Id: config.StringVariable("cannotApprove"),
 					}),
 				},
-				ExpectError: regexp.MustCompile(`environment_approval_permissions can only be set if the approval_permission_type is custom`),
+				ExpectError: regexp.MustCompile(`invalid environment_approval_permissions`),
 			},
 			{
 				ConfigFile: config.TestNameFile("main.tf"),

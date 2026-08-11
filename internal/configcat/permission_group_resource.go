@@ -658,10 +658,6 @@ func (resourceModel *permissionGroupResourceModel) UpdateFromApiModel(ctx contex
 
 	environmentApprovals := make(map[string]string, len(model.EnvironmentApprovalPermissions))
 	for _, environmentApproval := range model.EnvironmentApprovalPermissions {
-		if environmentApproval.EnvironmentApprovalPermissionType == sw.ENVIRONMENTAPPROVALPERMISSIONTYPE_CAN_BYPASS_APPROVAL {
-			continue
-		}
-
 		environmentApprovals[environmentApproval.EnvironmentId] = (string)(environmentApproval.EnvironmentApprovalPermissionType)
 	}
 
