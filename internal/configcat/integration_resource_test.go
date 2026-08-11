@@ -12,7 +12,7 @@ import (
 func TestAccIntegrationAmplitudeResource(t *testing.T) {
 	const productId = "08d86d63-2721-4da6-8c06-584521d516bc"
 	const config1Id = "08d86d63-2731-4b8b-823a-56ddda9da038"
-	const config2Id = "08dc1bfa-b8b0-45f0-8127-fac0de7a37ac"
+	const config2Id = "08def79a-d5a2-4054-85bb-0cb18c33824c"
 	const integrationType = "amplitude"
 	const environmentId = "08d8becf-d4d9-4c66-8b48-6ac74cd95fba"
 	const testResourceName = "configcat_integration.test"

@@ -27,7 +27,7 @@ func TestAccPermissionGroupsDataSource(t *testing.T) {
 				},
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet(testResourceName, "id"),
-					resource.TestCheckResourceAttr(testResourceName, listAttribute+".#", "3"),
+					resource.TestCheckResourceAttr(testResourceName, listAttribute+".#", "2"),
 				),
 			},
 			{

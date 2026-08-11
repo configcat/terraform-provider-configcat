@@ -13,7 +13,7 @@ func TestAccConfigsDataSource(t *testing.T) {
 	const testResourceName = "data.configcat_configs.test"
 
 	const configID = "08d86d63-2731-4b8b-823a-56ddda9da038"
-	const configV2ID = "08dc1bfa-b8b0-45f0-8127-fac0de7a37ac"
+	const configV2ID = "08def79a-d5a2-4054-85bb-0cb18c33824c"
 	const listAttribute = Configs
 
 	resource.Test(t, resource.TestCase{

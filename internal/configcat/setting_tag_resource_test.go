@@ -10,7 +10,7 @@ import (
 
 func TestAccSettingTagResource(t *testing.T) {
 	const setting1Id = "67639"
-	const setting2Id = "167364"
+	const setting2Id = "380718"
 	const tagId = "46"
 	const testResourceName = "configcat_setting_tag.test"
 
@@ -67,7 +67,7 @@ func TestAccSettingTagResource(t *testing.T) {
 }
 
 func TestAccSettingTagMultipleResource(t *testing.T) {
-	const configId = "08dc1bfa-b8b0-45f0-8127-fac0de7a37ac"
+	const configId = "08def79a-d5a2-4054-85bb-0cb18c33824c"
 	const productId = "08d86d63-2721-4da6-8c06-584521d516bc"
 	const testResource1Name = "configcat_setting_tag.settingTag1"
 	const testResource2Name = "configcat_setting_tag.settingTag2"

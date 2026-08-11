@@ -10,7 +10,7 @@ import (
 )
 
 func TestAccWebhookResource(t *testing.T) {
-	const config_id = "08dc1bfa-b8b0-45f0-8127-fac0de7a37ac"
+	const config_id = "08def79a-d5a2-4054-85bb-0cb18c33824c"
 	const environment_id = "08d86d63-2726-47cd-8bfc-59608ecb91e2"
 	const test_url = "https://test.example.com"
 	const test_url2 = "https://test2.example.com"

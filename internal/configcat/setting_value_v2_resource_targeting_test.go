@@ -9,7 +9,7 @@ import (
 )
 
 func TestAccSettingValueV2TargetingResource(t *testing.T) {
-	const configId = "08dc1bfa-b8b0-45f0-8127-fac0de7a37ac"
+	const configId = "08def79a-d5a2-4054-85bb-0cb18c33824c"
 	const environmentId = "08d86d63-2726-47cd-8bfc-59608ecb91e2"
 	const testResourceName = "configcat_setting_value_v2.test"
 

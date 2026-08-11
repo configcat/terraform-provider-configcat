@@ -11,8 +11,8 @@ import (
 func TestAccWebhookSigningKeysDataSource(t *testing.T) {
 	const testResourceName = "data.configcat_webhook_signing_keys.test"
 
-	const webhook1Id = 627
-	const webhook2Id = 632
+	const webhook1Id = 6813
+	const webhook2Id = 6814
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -25,7 +25,7 @@ func TestAccWebhookSigningKeysDataSource(t *testing.T) {
 				},
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet(testResourceName, "id"),
-					resource.TestCheckResourceAttr(testResourceName, WebhookSigningKeyKey1, "configcat_whsk_g+cdMQSCS9yS9bFWSQtKBTGMzICcfOmbzYoNZJxYr6E="),
+					resource.TestCheckResourceAttr(testResourceName, WebhookSigningKeyKey1, "configcat_whsk_Tfw6XjKPN4eE5aPAl6cTcg0fDvZyMp91cIsMFTyCFZA="),
 					resource.TestCheckNoResourceAttr(testResourceName, WebhookSigningKeyKey2),
 				),
 			},
@@ -36,8 +36,8 @@ func TestAccWebhookSigningKeysDataSource(t *testing.T) {
 				},
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet(testResourceName, "id"),
-					resource.TestCheckResourceAttr(testResourceName, WebhookSigningKeyKey1, "configcat_whsk_K6W9wnJ7LAnuOvfm9fXZP5XHoM0EsOey6hyZAmT3k9Q="),
-					resource.TestCheckResourceAttr(testResourceName, WebhookSigningKeyKey2, "configcat_whsk_aJsqdCgiVAHySBtQxJlgUauQ3P+2ffZIGJOkf9iCvNE="),
+					resource.TestCheckResourceAttr(testResourceName, WebhookSigningKeyKey1, "configcat_whsk_03svAq73DMZmYAHH5wErhNdOTXkKMnu5w6HQdqRetUU="),
+					resource.TestCheckResourceAttr(testResourceName, WebhookSigningKeyKey2, "configcat_whsk_Pfhcf/IiTTG8CraCDw7RmyxdUiZXyvKfvFQmh69Pe/4="),
 				),
 			},
 			{
