@@ -13,6 +13,14 @@ variable "new_environment_accesstype" {
   type    = string
   default = null
 }
+variable "approval_permission_type" {
+  type    = string
+  default = null
+}
+variable "new_environment_approval_permission_type" {
+  type    = string
+  default = null
+}
 
 
 variable "can_manage_members" {
@@ -103,6 +111,10 @@ variable "environment_accesses" {
   type    = map(string)
   default = null
 }
+variable "environment_approval_permissions" {
+  type    = map(string)
+  default = null
+}
 
 resource "configcat_permission_group" "test" {
   product_id                     = var.product_id
@@ -110,6 +122,9 @@ resource "configcat_permission_group" "test" {
   accesstype                     = var.accesstype
   new_environment_accesstype     = var.new_environment_accesstype
   environment_accesses           = var.environment_accesses
+  approval_permission_type         = var.approval_permission_type
+  new_environment_approval_permission_type = var.new_environment_approval_permission_type
+  environment_approval_permissions = var.environment_approval_permissions
   can_manage_members             = var.can_manage_members
   can_createorupdate_config      = var.can_createorupdate_config
   can_delete_config              = var.can_delete_config

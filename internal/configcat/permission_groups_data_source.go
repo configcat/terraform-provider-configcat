@@ -56,6 +56,9 @@ type permissionGroupDataModel struct {
 	AccessType                   types.String `tfsdk:"accesstype"`
 	NewEnvironmentAccessType     types.String `tfsdk:"new_environment_accesstype"`
 	EnvironmentAccess            types.Map    `tfsdk:"environment_accesses"`
+	ApprovalPermissionType       types.String `tfsdk:"approval_permission_type"`
+	NewEnvironmentApprovalType   types.String `tfsdk:"new_environment_approval_permission_type"`
+	EnvironmentApprovals         types.Map    `tfsdk:"environment_approval_permissions"`
 }
 
 type permissionGroupDataSourceModel struct {
@@ -197,6 +200,19 @@ func (d *permissionGroupDataSource) Schema(ctx context.Context, req datasource.S
 							Computed:    true,
 							ElementType: types.StringType,
 						},
+						PermissionGroupApprovalPermissionType: schema.StringAttribute{
+							Description: "Represents the permission group level change request approval permission.. Possible values: cannotApprove, canApproveOthers, canBypassApproval, custom",
+							Computed:    true,
+						},
+						PermissionGroupNewEnvironmentApprovalType: schema.StringAttribute{
+							Description: "Represents the environment specific change request approval permission for new Environments. Possible values: cannotApprove, canApproveOthers, canBypassApproval",
+							Computed:    true,
+						},
+						PermissionGroupEnvironmentApprovals: schema.MapAttribute{
+							Description: "The environment specific approval permissions map block. Keys are the Environment IDs and the values represent the environment specific change request approval permission. Possible values: cannotApprove, canApproveOthers, canBypassApproval",
+							Computed:    true,
+							ElementType: types.StringType,
+						},
 					},
 				},
 				Computed: true,
@@ -270,6 +286,22 @@ func (d *permissionGroupDataSource) Read(ctx context.Context, req datasource.Rea
 			return
 		}
 
+		environmentApprovals := make(map[string]string, len(resource.EnvironmentApprovalPermissions))
+		for _, environmentApproval := range resource.EnvironmentApprovalPermissions {
+			if environmentApproval.EnvironmentApprovalPermissionType == sw.ENVIRONMENTAPPROVALPERMISSIONTYPE_CAN_BYPASS_APPROVAL {
+				continue
+			}
+
+			environmentApprovals[environmentApproval.EnvironmentId] = (string)(environmentApproval.EnvironmentApprovalPermissionType)
+		}
+
+		environmentApprovalsMapValue, diags := types.MapValueFrom(ctx, types.StringType, environmentApprovals)
+		resp.Diagnostics.Append(diags...)
+
+		if resp.Diagnostics.HasError() {
+			return
+		}
+
 		dataModel := &permissionGroupDataModel{
 			ID:                           types.Int64Value(resource.PermissionGroupId),
 			Name:                         types.StringValue(resource.Name),
@@ -297,6 +329,9 @@ func (d *permissionGroupDataSource) Read(ctx context.Context, req datasource.Rea
 			AccessType:                   types.StringValue((string)(resource.AccessType)),
 			NewEnvironmentAccessType:     types.StringValue((string)(resource.NewEnvironmentAccessType)),
 			EnvironmentAccess:            environmentAccessesMapValue,
+			ApprovalPermissionType:       types.StringValue((string)(resource.ApprovalPermissionType)),
+			NewEnvironmentApprovalType:   types.StringValue((string)(resource.NewEnvironmentApprovalPermissionType)),
+			EnvironmentApprovals:         environmentApprovalsMapValue,
 		}
 
 		state.Data[i] = *dataModel

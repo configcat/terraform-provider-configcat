@@ -18,12 +18,27 @@ variable "reason_required" {
   default = null
 }
 
+variable "approve_required" {
+  type    = bool
+  default = null
+}
+
 variable "test_required" {
   type    = bool
   default = false
 }
 
 variable "prod_required" {
+  type    = bool
+  default = false
+}
+
+variable "test_approve_required" {
+  type    = bool
+  default = false
+}
+
+variable "prod_approve_required" {
   type    = bool
   default = false
 }
@@ -53,8 +68,13 @@ resource "configcat_product_preferences" "preferences" {
   mandatory_setting_hint = var.mandatory_setting_hint
   show_variation_id      = var.show_variation_id
   reason_required        = var.reason_required
+  approve_required       = var.approve_required
   reason_required_environments = {
     (configcat_environment.test.id) = var.test_required,
     (configcat_environment.prod.id) = var.prod_required
+  }
+  approve_required_environments = {
+    (configcat_environment.test.id) = var.test_approve_required,
+    (configcat_environment.prod.id) = var.prod_approve_required
   }
 }

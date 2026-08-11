@@ -19,6 +19,8 @@ const (
 	ProductPreferencesResourceName                  = "Product Preferences"
 	ProductPreferenceReasonRequired                 = "reason_required"
 	ProductPreferenceReasonRequiredEnvironmentments = "reason_required_environments"
+	ProductPreferenceApproveRequired                = "approve_required"
+	ProductPreferenceApproveRequiredEnvironments    = "approve_required_environments"
 	ProductPreferenceKeyGenerationMode              = "key_generation_mode"
 	ProductPreferenceShowVariationId                = "show_variation_id"
 	ProductPreferenceMandatorySettingHint           = "mandatory_setting_hint"
@@ -74,6 +76,9 @@ const (
 	PermissionGroupAccessType                   = "accesstype"
 	PermissionGroupNewEnvironmentAccessType     = "new_environment_accesstype"
 	PermissionGroupEnvironmentAccess            = "environment_accesses"
+	PermissionGroupApprovalPermissionType       = "approval_permission_type"
+	PermissionGroupNewEnvironmentApprovalType   = "new_environment_approval_permission_type"
+	PermissionGroupEnvironmentApprovals         = "environment_approval_permissions"
 
 	SegmentResourceName        = "Segment"
 	Segments                   = "segments"

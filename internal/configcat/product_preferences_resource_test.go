@@ -28,6 +28,8 @@ func TestAccProductProductPreferencesResource(t *testing.T) {
 					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceMandatorySettingHint, "false"),
 					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceReasonRequired, "false"),
 					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceReasonRequiredEnvironmentments+".%", "0"),
+					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceApproveRequired, "false"),
+					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceApproveRequiredEnvironments+".%", "0"),
 				),
 			},
 			{
@@ -45,6 +47,8 @@ func TestAccProductProductPreferencesResource(t *testing.T) {
 					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceMandatorySettingHint, "false"),
 					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceReasonRequired, "false"),
 					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceReasonRequiredEnvironmentments+".%", "0"),
+					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceApproveRequired, "false"),
+					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceApproveRequiredEnvironments+".%", "0"),
 				),
 			},
 			{
@@ -60,6 +64,7 @@ func TestAccProductProductPreferencesResource(t *testing.T) {
 					ProductPreferenceShowVariationId:      config.BoolVariable(false),
 					ProductPreferenceMandatorySettingHint: config.BoolVariable(false),
 					ProductPreferenceReasonRequired:       config.BoolVariable(false),
+					ProductPreferenceApproveRequired:      config.BoolVariable(false),
 				},
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet(testResourceName, ID),
@@ -68,6 +73,8 @@ func TestAccProductProductPreferencesResource(t *testing.T) {
 					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceMandatorySettingHint, "false"),
 					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceReasonRequired, "false"),
 					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceReasonRequiredEnvironmentments+".%", "0"),
+					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceApproveRequired, "false"),
+					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceApproveRequiredEnvironments+".%", "0"),
 				),
 			},
 			{
@@ -78,6 +85,7 @@ func TestAccProductProductPreferencesResource(t *testing.T) {
 					ProductPreferenceShowVariationId:      config.BoolVariable(false),
 					ProductPreferenceMandatorySettingHint: config.BoolVariable(false),
 					ProductPreferenceReasonRequired:       config.BoolVariable(false),
+					ProductPreferenceApproveRequired:      config.BoolVariable(false),
 				},
 				ImportState:       true,
 				ImportStateVerify: true,
@@ -89,6 +97,7 @@ func TestAccProductProductPreferencesResource(t *testing.T) {
 					ProductPreferenceShowVariationId:      config.BoolVariable(false),
 					ProductPreferenceMandatorySettingHint: config.BoolVariable(true),
 					ProductPreferenceReasonRequired:       config.BoolVariable(false),
+					ProductPreferenceApproveRequired:      config.BoolVariable(false),
 				},
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet(testResourceName, ID),
@@ -97,6 +106,8 @@ func TestAccProductProductPreferencesResource(t *testing.T) {
 					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceMandatorySettingHint, "true"),
 					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceReasonRequired, "false"),
 					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceReasonRequiredEnvironmentments+".%", "0"),
+					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceApproveRequired, "false"),
+					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceApproveRequiredEnvironments+".%", "0"),
 				),
 			},
 			{
@@ -107,6 +118,7 @@ func TestAccProductProductPreferencesResource(t *testing.T) {
 					ProductPreferenceShowVariationId:      config.BoolVariable(false),
 					ProductPreferenceMandatorySettingHint: config.BoolVariable(true),
 					ProductPreferenceReasonRequired:       config.BoolVariable(false),
+					ProductPreferenceApproveRequired:      config.BoolVariable(false),
 				},
 				ImportState:       true,
 				ImportStateVerify: true,
@@ -118,6 +130,7 @@ func TestAccProductProductPreferencesResource(t *testing.T) {
 					ProductPreferenceShowVariationId:      config.BoolVariable(true),
 					ProductPreferenceMandatorySettingHint: config.BoolVariable(false),
 					ProductPreferenceReasonRequired:       config.BoolVariable(true),
+					ProductPreferenceApproveRequired:      config.BoolVariable(true),
 				},
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet(testResourceName, ID),
@@ -126,6 +139,8 @@ func TestAccProductProductPreferencesResource(t *testing.T) {
 					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceMandatorySettingHint, "false"),
 					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceReasonRequired, "true"),
 					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceReasonRequiredEnvironmentments+".%", "0"),
+					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceApproveRequired, "true"),
+					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceApproveRequiredEnvironments+".%", "0"),
 				),
 			},
 			{
@@ -136,6 +151,7 @@ func TestAccProductProductPreferencesResource(t *testing.T) {
 					ProductPreferenceShowVariationId:      config.BoolVariable(true),
 					ProductPreferenceMandatorySettingHint: config.BoolVariable(false),
 					ProductPreferenceReasonRequired:       config.BoolVariable(true),
+					ProductPreferenceApproveRequired:      config.BoolVariable(true),
 				},
 				ImportState:       true,
 				ImportStateVerify: true,
@@ -147,8 +163,11 @@ func TestAccProductProductPreferencesResource(t *testing.T) {
 					ProductPreferenceShowVariationId:      config.BoolVariable(false),
 					ProductPreferenceMandatorySettingHint: config.BoolVariable(false),
 					ProductPreferenceReasonRequired:       config.BoolVariable(false),
+					ProductPreferenceApproveRequired:      config.BoolVariable(false),
 					"test_required":                       config.BoolVariable(false),
 					"prod_required":                       config.BoolVariable(false),
+					"test_approve_required":               config.BoolVariable(false),
+					"prod_approve_required":               config.BoolVariable(false),
 				},
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet(testResourceName, ID),
@@ -157,8 +176,12 @@ func TestAccProductProductPreferencesResource(t *testing.T) {
 					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceMandatorySettingHint, "false"),
 					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceReasonRequired, "false"),
 					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceReasonRequiredEnvironmentments+".%", "2"),
+					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceApproveRequired, "false"),
+					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceApproveRequiredEnvironments+".%", "2"),
 					testAccCheckEnvironmentReasonRequired(testEnvironmentIdResourceName, testResourceName, "false"),
 					testAccCheckEnvironmentReasonRequired(prodEnvironmentIdResourceName, testResourceName, "false"),
+					testAccCheckEnvironmentApproveRequired(testEnvironmentIdResourceName, testResourceName, "false"),
+					testAccCheckEnvironmentApproveRequired(prodEnvironmentIdResourceName, testResourceName, "false"),
 				),
 			},
 			{
@@ -169,8 +192,11 @@ func TestAccProductProductPreferencesResource(t *testing.T) {
 					ProductPreferenceShowVariationId:      config.BoolVariable(false),
 					ProductPreferenceMandatorySettingHint: config.BoolVariable(false),
 					ProductPreferenceReasonRequired:       config.BoolVariable(false),
+					ProductPreferenceApproveRequired:      config.BoolVariable(false),
 					"test_required":                       config.BoolVariable(false),
 					"prod_required":                       config.BoolVariable(false),
+					"test_approve_required":               config.BoolVariable(false),
+					"prod_approve_required":               config.BoolVariable(false),
 				},
 				ImportState:       true,
 				ImportStateVerify: true,
@@ -182,8 +208,11 @@ func TestAccProductProductPreferencesResource(t *testing.T) {
 					ProductPreferenceShowVariationId:      config.BoolVariable(false),
 					ProductPreferenceMandatorySettingHint: config.BoolVariable(false),
 					ProductPreferenceReasonRequired:       config.BoolVariable(false),
+					ProductPreferenceApproveRequired:      config.BoolVariable(false),
 					"test_required":                       config.BoolVariable(true),
 					"prod_required":                       config.BoolVariable(false),
+					"test_approve_required":               config.BoolVariable(true),
+					"prod_approve_required":               config.BoolVariable(false),
 				},
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet(testResourceName, ID),
@@ -192,8 +221,12 @@ func TestAccProductProductPreferencesResource(t *testing.T) {
 					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceMandatorySettingHint, "false"),
 					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceReasonRequired, "false"),
 					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceReasonRequiredEnvironmentments+".%", "2"),
+					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceApproveRequired, "false"),
+					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceApproveRequiredEnvironments+".%", "2"),
 					testAccCheckEnvironmentReasonRequired(testEnvironmentIdResourceName, testResourceName, "true"),
 					testAccCheckEnvironmentReasonRequired(prodEnvironmentIdResourceName, testResourceName, "false"),
+					testAccCheckEnvironmentApproveRequired(testEnvironmentIdResourceName, testResourceName, "true"),
+					testAccCheckEnvironmentApproveRequired(prodEnvironmentIdResourceName, testResourceName, "false"),
 				),
 			},
 			{
@@ -204,8 +237,11 @@ func TestAccProductProductPreferencesResource(t *testing.T) {
 					ProductPreferenceShowVariationId:      config.BoolVariable(false),
 					ProductPreferenceMandatorySettingHint: config.BoolVariable(false),
 					ProductPreferenceReasonRequired:       config.BoolVariable(false),
+					ProductPreferenceApproveRequired:      config.BoolVariable(false),
 					"test_required":                       config.BoolVariable(true),
 					"prod_required":                       config.BoolVariable(false),
+					"test_approve_required":               config.BoolVariable(true),
+					"prod_approve_required":               config.BoolVariable(false),
 				},
 				ImportState:       true,
 				ImportStateVerify: true,
@@ -217,8 +253,11 @@ func TestAccProductProductPreferencesResource(t *testing.T) {
 					ProductPreferenceShowVariationId:      config.BoolVariable(false),
 					ProductPreferenceMandatorySettingHint: config.BoolVariable(false),
 					ProductPreferenceReasonRequired:       config.BoolVariable(false),
+					ProductPreferenceApproveRequired:      config.BoolVariable(false),
 					"test_required":                       config.BoolVariable(true),
 					"prod_required":                       config.BoolVariable(true),
+					"test_approve_required":               config.BoolVariable(false),
+					"prod_approve_required":               config.BoolVariable(true),
 				},
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet(testResourceName, ID),
@@ -227,8 +266,12 @@ func TestAccProductProductPreferencesResource(t *testing.T) {
 					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceMandatorySettingHint, "false"),
 					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceReasonRequired, "false"),
 					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceReasonRequiredEnvironmentments+".%", "2"),
+					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceApproveRequired, "false"),
+					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceApproveRequiredEnvironments+".%", "2"),
 					testAccCheckEnvironmentReasonRequired(testEnvironmentIdResourceName, testResourceName, "true"),
 					testAccCheckEnvironmentReasonRequired(prodEnvironmentIdResourceName, testResourceName, "true"),
+					testAccCheckEnvironmentApproveRequired(testEnvironmentIdResourceName, testResourceName, "false"),
+					testAccCheckEnvironmentApproveRequired(prodEnvironmentIdResourceName, testResourceName, "true"),
 				),
 			},
 			{
@@ -239,8 +282,11 @@ func TestAccProductProductPreferencesResource(t *testing.T) {
 					ProductPreferenceShowVariationId:      config.BoolVariable(false),
 					ProductPreferenceMandatorySettingHint: config.BoolVariable(false),
 					ProductPreferenceReasonRequired:       config.BoolVariable(false),
+					ProductPreferenceApproveRequired:      config.BoolVariable(false),
 					"test_required":                       config.BoolVariable(true),
 					"prod_required":                       config.BoolVariable(true),
+					"test_approve_required":               config.BoolVariable(false),
+					"prod_approve_required":               config.BoolVariable(true),
 				},
 				ImportState:       true,
 				ImportStateVerify: true,
@@ -252,8 +298,11 @@ func TestAccProductProductPreferencesResource(t *testing.T) {
 					ProductPreferenceShowVariationId:      config.BoolVariable(false),
 					ProductPreferenceMandatorySettingHint: config.BoolVariable(false),
 					ProductPreferenceReasonRequired:       config.BoolVariable(false),
+					ProductPreferenceApproveRequired:      config.BoolVariable(false),
 					"test_required":                       config.BoolVariable(false),
 					"prod_required":                       config.BoolVariable(true),
+					"test_approve_required":               config.BoolVariable(true),
+					"prod_approve_required":               config.BoolVariable(true),
 				},
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet(testResourceName, ID),
@@ -262,8 +311,12 @@ func TestAccProductProductPreferencesResource(t *testing.T) {
 					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceMandatorySettingHint, "false"),
 					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceReasonRequired, "false"),
 					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceReasonRequiredEnvironmentments+".%", "2"),
+					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceApproveRequired, "false"),
+					resource.TestCheckResourceAttr(testResourceName, ProductPreferenceApproveRequiredEnvironments+".%", "2"),
 					testAccCheckEnvironmentReasonRequired(testEnvironmentIdResourceName, testResourceName, "false"),
 					testAccCheckEnvironmentReasonRequired(prodEnvironmentIdResourceName, testResourceName, "true"),
+					testAccCheckEnvironmentApproveRequired(testEnvironmentIdResourceName, testResourceName, "true"),
+					testAccCheckEnvironmentApproveRequired(prodEnvironmentIdResourceName, testResourceName, "true"),
 				),
 			},
 			{
@@ -274,8 +327,11 @@ func TestAccProductProductPreferencesResource(t *testing.T) {
 					ProductPreferenceShowVariationId:      config.BoolVariable(false),
 					ProductPreferenceMandatorySettingHint: config.BoolVariable(false),
 					ProductPreferenceReasonRequired:       config.BoolVariable(false),
+					ProductPreferenceApproveRequired:      config.BoolVariable(false),
 					"test_required":                       config.BoolVariable(false),
 					"prod_required":                       config.BoolVariable(true),
+					"test_approve_required":               config.BoolVariable(true),
+					"prod_approve_required":               config.BoolVariable(true),
 				},
 				ImportState:       true,
 				ImportStateVerify: true,
@@ -287,10 +343,28 @@ func TestAccProductProductPreferencesResource(t *testing.T) {
 					ProductPreferenceShowVariationId:      config.BoolVariable(false),
 					ProductPreferenceMandatorySettingHint: config.BoolVariable(false),
 					ProductPreferenceReasonRequired:       config.BoolVariable(true),
+					ProductPreferenceApproveRequired:      config.BoolVariable(true),
 					"test_required":                       config.BoolVariable(true),
 					"prod_required":                       config.BoolVariable(true),
+					"test_approve_required":               config.BoolVariable(true),
+					"prod_approve_required":               config.BoolVariable(true),
 				},
 				ExpectError: regexp.MustCompile("Please set reason_required to true to require mandatory notes globally"),
+			},
+			{
+				ConfigFile: config.TestNameFile("reasonrequiredenvironments.tf"),
+				ConfigVariables: config.Variables{
+					ProductPreferenceKeyGenerationMode:    config.StringVariable("lowerCase"),
+					ProductPreferenceShowVariationId:      config.BoolVariable(false),
+					ProductPreferenceMandatorySettingHint: config.BoolVariable(false),
+					ProductPreferenceReasonRequired:       config.BoolVariable(false),
+					ProductPreferenceApproveRequired:      config.BoolVariable(true),
+					"test_required":                       config.BoolVariable(false),
+					"prod_required":                       config.BoolVariable(false),
+					"test_approve_required":               config.BoolVariable(true),
+					"prod_approve_required":               config.BoolVariable(true),
+				},
+				ExpectError: regexp.MustCompile("Please set approve_required to true to require approvals globally"),
 			},
 		},
 	})
@@ -312,6 +386,27 @@ func testAccCheckEnvironmentReasonRequired(environmentResourceName string, produ
 		reasonRequired := productPreferenceResource.Primary.Attributes[ProductPreferenceReasonRequiredEnvironmentments+"."+environmentResource.Primary.ID]
 		if reasonRequired != expectedReasonRequired {
 			return fmt.Errorf("Invalid ReasonRequired for %s. Expected %s, got %s", environmentResourceName, expectedReasonRequired, reasonRequired)
+		}
+
+		return nil
+	}
+}
+
+func testAccCheckEnvironmentApproveRequired(environmentResourceName string, productPreferenceResourceName string, expectedApproveRequired string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		environmentResource, ok := s.RootModule().Resources[environmentResourceName]
+		if !ok {
+			return fmt.Errorf("Not found: %s", environmentResourceName)
+		}
+
+		productPreferenceResource, ok := s.RootModule().Resources[productPreferenceResourceName]
+		if !ok {
+			return fmt.Errorf("Not found: %s", productPreferenceResourceName)
+		}
+
+		approveRequired := productPreferenceResource.Primary.Attributes[ProductPreferenceApproveRequiredEnvironments+"."+environmentResource.Primary.ID]
+		if approveRequired != expectedApproveRequired {
+			return fmt.Errorf("Invalid ApproveRequired for %s. Expected %s, got %s", environmentResourceName, expectedApproveRequired, approveRequired)
 		}
 
 		return nil
