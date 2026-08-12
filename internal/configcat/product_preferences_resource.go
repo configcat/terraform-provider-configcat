@@ -104,13 +104,13 @@ func (r *productPreferencesResource) Schema(ctx context.Context, req resource.Sc
 				},
 			},
 			ProductPreferenceApproveRequired: schema.BoolAttribute{
-				Description: "Indicates that a mandatory approval is required before changes are applied. Default: false.",
+				Description: "Indicates that a mandatory approval is required before changes are applied. Approval Flow and Scheduled Changes are in closed beta. Default: false.",
 				Optional:    true,
 				Computed:    true,
 				Default:     booldefault.StaticBool(false),
 			},
 			ProductPreferenceApproveRequiredEnvironments: schema.MapAttribute{
-				Description: "The environment specific mandatory approval map block. Keys are the Environment IDs and the values indicate that mandatory approval is required before changes are applied.",
+				Description: "The environment specific mandatory approval map block. Keys are the Environment IDs and the values indicate that mandatory approval is required before changes are applied. Approval Flow and Scheduled Changes are in closed beta.",
 				Computed:    true,
 				Optional:    true,
 				ElementType: types.BoolType,

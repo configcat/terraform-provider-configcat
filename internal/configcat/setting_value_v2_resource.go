@@ -351,7 +351,7 @@ func (r *settingValueV2Resource) Schema(ctx context.Context, req resource.Schema
 				Optional:    true,
 			},
 			BypassApproval: schema.BoolAttribute{
-				Description: "Indicates whether the change should bypass the approval workflow.",
+				Description: "Indicates whether the change should bypass the approval workflow. Approval Flow and Scheduled Changes are in closed beta.",
 				Optional:    true,
 			},
 			DefaultValue: createSettingValueSchema(true, nil),
