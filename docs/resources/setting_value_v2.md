@@ -160,6 +160,7 @@ resource "configcat_setting_value_v2" "string_setting_value" {
 
 ### Optional
 
+- `bypass_approval` (Boolean) Indicates whether the change should bypass the approval workflow. Approval Flow and Scheduled Changes are in closed beta.
 - `init_only` (Boolean) The main purpose of this resource to provide an initial value for the Feature Flag/Setting.  
 
 The `init_only` argument's default value is `true`. Meaning that the Feature Flag or Setting's **value will be only be applied once** during resource creation. If someone modifies the value on the [ConfigCat Dashboard](https://app.configcat.com) those modifications will **not be overwritten** by the Terraform script.

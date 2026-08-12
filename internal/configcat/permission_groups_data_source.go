@@ -201,7 +201,7 @@ func (d *permissionGroupDataSource) Schema(ctx context.Context, req datasource.S
 							ElementType: types.StringType,
 						},
 						PermissionGroupApprovalPermissionType: schema.StringAttribute{
-							Description: "Represents the permission group level change request approval permission.. Possible values: cannotApprove, canApproveOthers, canBypassApproval, custom",
+							Description: "Represents the permission group level change request approval permission. Possible values: cannotApprove, canApproveOthers, canBypassApproval, custom",
 							Computed:    true,
 						},
 						PermissionGroupNewEnvironmentApprovalType: schema.StringAttribute{
