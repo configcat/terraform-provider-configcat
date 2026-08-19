@@ -103,6 +103,7 @@ type settingValueV2ResourceModel struct {
 	InitOnly                      types.Bool   `tfsdk:"init_only"`
 	MandatoryNotes                types.String `tfsdk:"mandatory_notes"`
 	PercentageEvaluationAttribute types.String `tfsdk:"percentage_evaluation_attribute"`
+	BypassApproval                types.Bool   `tfsdk:"bypass_approval"`
 
 	DefaultValue   *settingValueModel   `tfsdk:"value"`
 	TargetingRules []targetingRuleModel `tfsdk:"targeting_rules"`
@@ -349,6 +350,10 @@ func (r *settingValueV2Resource) Schema(ctx context.Context, req resource.Schema
 				Description: "The user attribute used for percentage evaluation. If not set, it defaults to the Identifier user object attribute.",
 				Optional:    true,
 			},
+			BypassApproval: schema.BoolAttribute{
+				Description: "Indicates whether the change should bypass the approval workflow. Approval Flow and Scheduled Changes are in closed beta.",
+				Optional:    true,
+			},
 			DefaultValue: createSettingValueSchema(true, nil),
 
 			TargetingRules: schema.ListNestedAttribute{
@@ -539,7 +544,7 @@ func (r *settingValueV2Resource) createOrUpdate(ctx context.Context, requestPlan
 		PercentageEvaluationAttribute: *sw.NewNullableString(plan.PercentageEvaluationAttribute.ValueStringPointer()),
 	}
 
-	model, err := r.client.ReplaceSettingValueV2(plan.EnvironmentId.ValueString(), int32(settingID), body, plan.MandatoryNotes.ValueString())
+	model, err := r.client.ReplaceSettingValueV2(plan.EnvironmentId.ValueString(), int32(settingID), body, plan.MandatoryNotes.ValueString(), plan.BypassApproval.ValueBool())
 	if err != nil {
 		diag.AddError("Unable to Create Resource", fmt.Sprintf("Unable to create "+SettingValueResourceName+", got error: %s", err))
 		return

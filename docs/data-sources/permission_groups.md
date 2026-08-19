@@ -50,6 +50,7 @@ output "permission_group_id" {
 Read-Only:
 
 - `accesstype` (String) Represent the Feature Management permission. Possible values: readOnly, full, custom
+- `approval_permission_type` (String) Represents the permission group level change request approval permission. Possible values: cannotApprove, canApproveOthers, canBypassApproval, custom
 - `can_createorupdate_config` (Boolean) Group members can create/update Configs.
 - `can_createorupdate_environment` (Boolean) Group members can create/update Environments.
 - `can_createorupdate_segment` (Boolean) Group members can create/update Segments.
@@ -72,6 +73,8 @@ Read-Only:
 - `can_view_product_statistics` (Boolean) Group members has access to product statistics.
 - `can_view_sdkkey` (Boolean) Group members has access to SDK keys.
 - `environment_accesses` (Map of String) The environment specific permissions map block. Keys are the Environment IDs and the values represent the environment specific Feature Management permission. Possible values: full, readOnly
+- `environment_approval_permissions` (Map of String) The environment specific approval permissions map block. Keys are the Environment IDs and the values represent the environment specific change request approval permission. Possible values: cannotApprove, canApproveOthers, canBypassApproval
 - `name` (String) The name of the Permission Group.
 - `new_environment_accesstype` (String) Represent the environment specific Feature Management permission for new Environments. Possible values: full, readOnly, none
+- `new_environment_approval_permission_type` (String) Represents the environment specific change request approval permission for new Environments. Possible values: cannotApprove, canApproveOthers, canBypassApproval
 - `permission_group_id` (Number) The unique Permission Group ID.

@@ -61,6 +61,9 @@ type permissionGroupResourceModel struct {
 	AccessType                   types.String `tfsdk:"accesstype"`
 	NewEnvironmentAccessType     types.String `tfsdk:"new_environment_accesstype"`
 	EnvironmentAccess            types.Map    `tfsdk:"environment_accesses"`
+	ApprovalPermissionType       types.String `tfsdk:"approval_permission_type"`
+	NewEnvironmentApprovalType   types.String `tfsdk:"new_environment_approval_permission_type"`
+	EnvironmentApprovals         types.Map    `tfsdk:"environment_approval_permissions"`
 }
 
 func (r *permissionGroupResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -237,6 +240,24 @@ func (r *permissionGroupResource) Schema(ctx context.Context, req resource.Schem
 				Optional:    true,
 				ElementType: types.StringType,
 			},
+			PermissionGroupApprovalPermissionType: schema.StringAttribute{
+				Description: "Represents the permission group level change request approval permission. Approval Flow and Scheduled Changes are in closed beta. Possible values: cannotApprove, canApproveOthers, canBypassApproval, custom",
+				Computed:    true,
+				Optional:    true,
+				Default:     stringdefault.StaticString(string(sw.APPROVALPERMISSIONTYPE_CAN_BYPASS_APPROVAL)),
+			},
+			PermissionGroupNewEnvironmentApprovalType: schema.StringAttribute{
+				Description: "Represents the environment specific change request approval permission for new Environments. Approval Flow and Scheduled Changes are in closed beta. Possible values: cannotApprove, canApproveOthers, canBypassApproval",
+				Computed:    true,
+				Optional:    true,
+				Default:     stringdefault.StaticString(string(sw.ENVIRONMENTAPPROVALPERMISSIONTYPE_CAN_BYPASS_APPROVAL)),
+			},
+			PermissionGroupEnvironmentApprovals: schema.MapAttribute{
+				Description: "The environment specific approval permissions map block. Keys are the Environment IDs and the values represent the environment specific change request approval permission. Approval Flow and Scheduled Changes are in closed beta. Possible values: cannotApprove, canApproveOthers, canBypassApproval",
+				Computed:    true,
+				Optional:    true,
+				ElementType: types.StringType,
+			},
 		},
 	}
 }
@@ -283,6 +304,20 @@ func (r *permissionGroupResource) Create(ctx context.Context, req resource.Creat
 		return
 	}
 
+	approvalPermissionTypeString := plan.ApprovalPermissionType.ValueString()
+	approvalPermissionType, approvalPermissionTypeParseErr := sw.NewApprovalPermissionTypeFromValue(approvalPermissionTypeString)
+	if approvalPermissionTypeParseErr != nil {
+		resp.Diagnostics.AddAttributeError(path.Root(PermissionGroupApprovalPermissionType), "invalid approval_permission_type", approvalPermissionTypeParseErr.Error())
+		return
+	}
+
+	newEnvironmentApprovalTypeString := plan.NewEnvironmentApprovalType.ValueString()
+	newEnvironmentApprovalType, newEnvironmentApprovalTypeParseErr := sw.NewEnvironmentApprovalPermissionTypeFromValue(newEnvironmentApprovalTypeString)
+	if newEnvironmentApprovalTypeParseErr != nil {
+		resp.Diagnostics.AddAttributeError(path.Root(PermissionGroupNewEnvironmentApprovalType), "invalid new_environment_approval_permission_type", newEnvironmentApprovalTypeParseErr.Error())
+		return
+	}
+
 	var environmentAccessesMap map[string]types.String
 
 	if plan.EnvironmentAccess.IsUnknown() || plan.EnvironmentAccess.IsNull() {
@@ -301,32 +336,52 @@ func (r *permissionGroupResource) Create(ctx context.Context, req resource.Creat
 		return
 	}
 
+	var environmentApprovalsMap map[string]types.String
+	if plan.EnvironmentApprovals.IsUnknown() || plan.EnvironmentApprovals.IsNull() {
+		environmentApprovalsMap = make(map[string]types.String, 0)
+	} else {
+		environmentApprovalsMap = make(map[string]types.String, len(plan.EnvironmentApprovals.Elements()))
+		resp.Diagnostics.Append(plan.EnvironmentApprovals.ElementsAs(ctx, &environmentApprovalsMap, false)...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+	}
+
+	environmentApprovals, environmentApprovalParseError := getEnvironmentApprovalPermissions(&environmentApprovalsMap, nil, *approvalPermissionType)
+	if environmentApprovalParseError != nil {
+		resp.Diagnostics.AddAttributeError(path.Root(PermissionGroupEnvironmentApprovals), "invalid environment_approval_permissions", environmentApprovalParseError.Error())
+		return
+	}
+
 	body := sw.CreatePermissionGroupRequest{
-		Name:                         plan.Name.ValueString(),
-		CanManageMembers:             plan.CanManageMembers.ValueBoolPointer(),
-		CanCreateOrUpdateConfig:      plan.CanCreateOrUpdateConfig.ValueBoolPointer(),
-		CanDeleteConfig:              plan.CanDeleteConfig.ValueBoolPointer(),
-		CanCreateOrUpdateEnvironment: plan.CanCreateOrUpdateEnvironment.ValueBoolPointer(),
-		CanDeleteEnvironment:         plan.CanDeleteEnvironment.ValueBoolPointer(),
-		CanCreateOrUpdateSetting:     plan.CanCreateOrUpdateSetting.ValueBoolPointer(),
-		CanTagSetting:                plan.CanTagSetting.ValueBoolPointer(),
-		CanDeleteSetting:             plan.CanDeleteSetting.ValueBoolPointer(),
-		CanCreateOrUpdateTag:         plan.CanCreateOrUpdateTag.ValueBoolPointer(),
-		CanDeleteTag:                 plan.CanDeleteTag.ValueBoolPointer(),
-		CanManageWebhook:             plan.CanManageWebhook.ValueBoolPointer(),
-		CanUseExportImport:           plan.CanUseExportImport.ValueBoolPointer(),
-		CanManageProductPreferences:  plan.CanManageProductPreferences.ValueBoolPointer(),
-		CanManageIntegrations:        plan.CanManageIntegrations.ValueBoolPointer(),
-		CanViewSdkKey:                plan.CanViewSdkKey.ValueBoolPointer(),
-		CanRotateSdkKey:              plan.CanRotateSdkKey.ValueBoolPointer(),
-		CanCreateOrUpdateSegments:    plan.CanCreateOrUpdateSegment.ValueBoolPointer(),
-		CanDeleteSegments:            plan.CanDeleteSegment.ValueBoolPointer(),
-		CanViewProductAuditLog:       plan.CanViewProductAuditLogs.ValueBoolPointer(),
-		CanViewProductStatistics:     plan.CanViewProductStatistics.ValueBoolPointer(),
-		CanDisable2FA:                plan.CanDisable2FA.ValueBoolPointer(),
-		AccessType:                   accessType,
-		NewEnvironmentAccessType:     newEnvironmentAccessType,
-		EnvironmentAccesses:          *environmentAccesses,
+		Name:                                 plan.Name.ValueString(),
+		CanManageMembers:                     plan.CanManageMembers.ValueBoolPointer(),
+		CanCreateOrUpdateConfig:              plan.CanCreateOrUpdateConfig.ValueBoolPointer(),
+		CanDeleteConfig:                      plan.CanDeleteConfig.ValueBoolPointer(),
+		CanCreateOrUpdateEnvironment:         plan.CanCreateOrUpdateEnvironment.ValueBoolPointer(),
+		CanDeleteEnvironment:                 plan.CanDeleteEnvironment.ValueBoolPointer(),
+		CanCreateOrUpdateSetting:             plan.CanCreateOrUpdateSetting.ValueBoolPointer(),
+		CanTagSetting:                        plan.CanTagSetting.ValueBoolPointer(),
+		CanDeleteSetting:                     plan.CanDeleteSetting.ValueBoolPointer(),
+		CanCreateOrUpdateTag:                 plan.CanCreateOrUpdateTag.ValueBoolPointer(),
+		CanDeleteTag:                         plan.CanDeleteTag.ValueBoolPointer(),
+		CanManageWebhook:                     plan.CanManageWebhook.ValueBoolPointer(),
+		CanUseExportImport:                   plan.CanUseExportImport.ValueBoolPointer(),
+		CanManageProductPreferences:          plan.CanManageProductPreferences.ValueBoolPointer(),
+		CanManageIntegrations:                plan.CanManageIntegrations.ValueBoolPointer(),
+		CanViewSdkKey:                        plan.CanViewSdkKey.ValueBoolPointer(),
+		CanRotateSdkKey:                      plan.CanRotateSdkKey.ValueBoolPointer(),
+		CanCreateOrUpdateSegments:            plan.CanCreateOrUpdateSegment.ValueBoolPointer(),
+		CanDeleteSegments:                    plan.CanDeleteSegment.ValueBoolPointer(),
+		CanViewProductAuditLog:               plan.CanViewProductAuditLogs.ValueBoolPointer(),
+		CanViewProductStatistics:             plan.CanViewProductStatistics.ValueBoolPointer(),
+		CanDisable2FA:                        plan.CanDisable2FA.ValueBoolPointer(),
+		AccessType:                           accessType,
+		NewEnvironmentAccessType:             newEnvironmentAccessType,
+		EnvironmentAccesses:                  *environmentAccesses,
+		ApprovalPermissionType:               approvalPermissionType,
+		NewEnvironmentApprovalPermissionType: newEnvironmentApprovalType,
+		EnvironmentApprovalPermissions:       *environmentApprovals,
 	}
 
 	model, err := r.client.CreatePermissionGroup(plan.ProductId.ValueString(), body)
@@ -412,7 +467,10 @@ func (r *permissionGroupResource) Update(ctx context.Context, req resource.Updat
 		plan.CanDisable2FA.Equal(state.CanDisable2FA) &&
 		plan.AccessType.Equal(state.AccessType) &&
 		plan.NewEnvironmentAccessType.Equal(state.NewEnvironmentAccessType) &&
-		plan.EnvironmentAccess.Equal(state.EnvironmentAccess) {
+		plan.EnvironmentAccess.Equal(state.EnvironmentAccess) &&
+		plan.ApprovalPermissionType.Equal(state.ApprovalPermissionType) &&
+		plan.NewEnvironmentApprovalType.Equal(state.NewEnvironmentApprovalType) &&
+		plan.EnvironmentApprovals.Equal(state.EnvironmentApprovals) {
 		return
 	}
 
@@ -433,6 +491,20 @@ func (r *permissionGroupResource) Update(ctx context.Context, req resource.Updat
 	newEnvironmentAccessType, newEnvironmentAccessTypeParseErr := sw.NewEnvironmentAccessTypeFromValue(newEnvironmentAccessTypeString)
 	if newEnvironmentAccessTypeParseErr != nil {
 		resp.Diagnostics.AddAttributeError(path.Root(PermissionGroupNewEnvironmentAccessType), "invalid new_environment_accesstype", newEnvironmentAccessTypeParseErr.Error())
+		return
+	}
+
+	approvalPermissionTypeString := plan.ApprovalPermissionType.ValueString()
+	approvalPermissionType, approvalPermissionTypeParseErr := sw.NewApprovalPermissionTypeFromValue(approvalPermissionTypeString)
+	if approvalPermissionTypeParseErr != nil {
+		resp.Diagnostics.AddAttributeError(path.Root(PermissionGroupApprovalPermissionType), "invalid approval_permission_type", approvalPermissionTypeParseErr.Error())
+		return
+	}
+
+	newEnvironmentApprovalTypeString := plan.NewEnvironmentApprovalType.ValueString()
+	newEnvironmentApprovalType, newEnvironmentApprovalTypeParseErr := sw.NewEnvironmentApprovalPermissionTypeFromValue(newEnvironmentApprovalTypeString)
+	if newEnvironmentApprovalTypeParseErr != nil {
+		resp.Diagnostics.AddAttributeError(path.Root(PermissionGroupNewEnvironmentApprovalType), "invalid new_environment_approval_permission_type", newEnvironmentApprovalTypeParseErr.Error())
 		return
 	}
 
@@ -466,32 +538,63 @@ func (r *permissionGroupResource) Update(ctx context.Context, req resource.Updat
 		return
 	}
 
+	var planEnvironmentApprovalsMap map[string]types.String
+	if plan.EnvironmentApprovals.IsUnknown() || plan.EnvironmentApprovals.IsNull() {
+		planEnvironmentApprovalsMap = make(map[string]types.String, 0)
+	} else {
+		planEnvironmentApprovalsMap = make(map[string]types.String, len(plan.EnvironmentApprovals.Elements()))
+		resp.Diagnostics.Append(plan.EnvironmentApprovals.ElementsAs(ctx, &planEnvironmentApprovalsMap, false)...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+	}
+
+	var stateEnvironmentApprovalsMap map[string]types.String
+	if plan.EnvironmentApprovals.IsUnknown() || state.EnvironmentApprovals.IsNull() {
+		stateEnvironmentApprovalsMap = make(map[string]types.String, 0)
+	} else {
+		stateEnvironmentApprovalsMap = make(map[string]types.String, len(state.EnvironmentApprovals.Elements()))
+		resp.Diagnostics.Append(state.EnvironmentApprovals.ElementsAs(ctx, &stateEnvironmentApprovalsMap, false)...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+	}
+
+	environmentApprovals, environmentApprovalParseError := getEnvironmentApprovalPermissions(&planEnvironmentApprovalsMap, &stateEnvironmentApprovalsMap, *approvalPermissionType)
+	if environmentApprovalParseError != nil {
+		resp.Diagnostics.AddAttributeError(path.Root(PermissionGroupEnvironmentApprovals), "invalid environment_approval_permissions", environmentApprovalParseError.Error())
+		return
+	}
+
 	body := sw.UpdatePermissionGroupRequest{
-		Name:                         *sw.NewNullableString(plan.Name.ValueStringPointer()),
-		CanManageMembers:             *sw.NewNullableBool(plan.CanManageMembers.ValueBoolPointer()),
-		CanCreateOrUpdateConfig:      *sw.NewNullableBool(plan.CanCreateOrUpdateConfig.ValueBoolPointer()),
-		CanDeleteConfig:              *sw.NewNullableBool(plan.CanDeleteConfig.ValueBoolPointer()),
-		CanCreateOrUpdateEnvironment: *sw.NewNullableBool(plan.CanCreateOrUpdateEnvironment.ValueBoolPointer()),
-		CanDeleteEnvironment:         *sw.NewNullableBool(plan.CanDeleteEnvironment.ValueBoolPointer()),
-		CanCreateOrUpdateSetting:     *sw.NewNullableBool(plan.CanCreateOrUpdateSetting.ValueBoolPointer()),
-		CanTagSetting:                *sw.NewNullableBool(plan.CanTagSetting.ValueBoolPointer()),
-		CanDeleteSetting:             *sw.NewNullableBool(plan.CanDeleteSetting.ValueBoolPointer()),
-		CanCreateOrUpdateTag:         *sw.NewNullableBool(plan.CanCreateOrUpdateTag.ValueBoolPointer()),
-		CanDeleteTag:                 *sw.NewNullableBool(plan.CanDeleteTag.ValueBoolPointer()),
-		CanManageWebhook:             *sw.NewNullableBool(plan.CanManageWebhook.ValueBoolPointer()),
-		CanUseExportImport:           *sw.NewNullableBool(plan.CanUseExportImport.ValueBoolPointer()),
-		CanManageProductPreferences:  *sw.NewNullableBool(plan.CanManageProductPreferences.ValueBoolPointer()),
-		CanManageIntegrations:        *sw.NewNullableBool(plan.CanManageIntegrations.ValueBoolPointer()),
-		CanViewSdkKey:                *sw.NewNullableBool(plan.CanViewSdkKey.ValueBoolPointer()),
-		CanRotateSdkKey:              *sw.NewNullableBool(plan.CanRotateSdkKey.ValueBoolPointer()),
-		CanCreateOrUpdateSegments:    *sw.NewNullableBool(plan.CanCreateOrUpdateSegment.ValueBoolPointer()),
-		CanDeleteSegments:            *sw.NewNullableBool(plan.CanDeleteSegment.ValueBoolPointer()),
-		CanViewProductAuditLog:       *sw.NewNullableBool(plan.CanViewProductAuditLogs.ValueBoolPointer()),
-		CanViewProductStatistics:     *sw.NewNullableBool(plan.CanViewProductStatistics.ValueBoolPointer()),
-		CanDisable2FA:                *sw.NewNullableBool(plan.CanDisable2FA.ValueBoolPointer()),
-		AccessType:                   *sw.NewNullableAccessType(accessType),
-		NewEnvironmentAccessType:     *sw.NewNullableEnvironmentAccessType(newEnvironmentAccessType),
-		EnvironmentAccesses:          *environmentAccesses,
+		Name:                                 *sw.NewNullableString(plan.Name.ValueStringPointer()),
+		CanManageMembers:                     *sw.NewNullableBool(plan.CanManageMembers.ValueBoolPointer()),
+		CanCreateOrUpdateConfig:              *sw.NewNullableBool(plan.CanCreateOrUpdateConfig.ValueBoolPointer()),
+		CanDeleteConfig:                      *sw.NewNullableBool(plan.CanDeleteConfig.ValueBoolPointer()),
+		CanCreateOrUpdateEnvironment:         *sw.NewNullableBool(plan.CanCreateOrUpdateEnvironment.ValueBoolPointer()),
+		CanDeleteEnvironment:                 *sw.NewNullableBool(plan.CanDeleteEnvironment.ValueBoolPointer()),
+		CanCreateOrUpdateSetting:             *sw.NewNullableBool(plan.CanCreateOrUpdateSetting.ValueBoolPointer()),
+		CanTagSetting:                        *sw.NewNullableBool(plan.CanTagSetting.ValueBoolPointer()),
+		CanDeleteSetting:                     *sw.NewNullableBool(plan.CanDeleteSetting.ValueBoolPointer()),
+		CanCreateOrUpdateTag:                 *sw.NewNullableBool(plan.CanCreateOrUpdateTag.ValueBoolPointer()),
+		CanDeleteTag:                         *sw.NewNullableBool(plan.CanDeleteTag.ValueBoolPointer()),
+		CanManageWebhook:                     *sw.NewNullableBool(plan.CanManageWebhook.ValueBoolPointer()),
+		CanUseExportImport:                   *sw.NewNullableBool(plan.CanUseExportImport.ValueBoolPointer()),
+		CanManageProductPreferences:          *sw.NewNullableBool(plan.CanManageProductPreferences.ValueBoolPointer()),
+		CanManageIntegrations:                *sw.NewNullableBool(plan.CanManageIntegrations.ValueBoolPointer()),
+		CanViewSdkKey:                        *sw.NewNullableBool(plan.CanViewSdkKey.ValueBoolPointer()),
+		CanRotateSdkKey:                      *sw.NewNullableBool(plan.CanRotateSdkKey.ValueBoolPointer()),
+		CanCreateOrUpdateSegments:            *sw.NewNullableBool(plan.CanCreateOrUpdateSegment.ValueBoolPointer()),
+		CanDeleteSegments:                    *sw.NewNullableBool(plan.CanDeleteSegment.ValueBoolPointer()),
+		CanViewProductAuditLog:               *sw.NewNullableBool(plan.CanViewProductAuditLogs.ValueBoolPointer()),
+		CanViewProductStatistics:             *sw.NewNullableBool(plan.CanViewProductStatistics.ValueBoolPointer()),
+		CanDisable2FA:                        *sw.NewNullableBool(plan.CanDisable2FA.ValueBoolPointer()),
+		AccessType:                           *sw.NewNullableAccessType(accessType),
+		NewEnvironmentAccessType:             *sw.NewNullableEnvironmentAccessType(newEnvironmentAccessType),
+		EnvironmentAccesses:                  *environmentAccesses,
+		ApprovalPermissionType:               *sw.NewNullableApprovalPermissionType(approvalPermissionType),
+		NewEnvironmentApprovalPermissionType: *sw.NewNullableEnvironmentApprovalPermissionType(newEnvironmentApprovalType),
+		EnvironmentApprovalPermissions:       *environmentApprovals,
 	}
 
 	model, err := r.client.UpdatePermissionGroup(permissionGroupId, body)
@@ -553,6 +656,16 @@ func (resourceModel *permissionGroupResourceModel) UpdateFromApiModel(ctx contex
 		return diags
 	}
 
+	environmentApprovals := make(map[string]string, len(model.EnvironmentApprovalPermissions))
+	for _, environmentApproval := range model.EnvironmentApprovalPermissions {
+		environmentApprovals[environmentApproval.EnvironmentId] = (string)(environmentApproval.EnvironmentApprovalPermissionType)
+	}
+
+	environmentApprovalsMapValue, diags := types.MapValueFrom(ctx, types.StringType, environmentApprovals)
+	if diags.HasError() {
+		return diags
+	}
+
 	resourceModel.ID = types.StringValue(strconv.FormatInt(model.PermissionGroupId, 10))
 	resourceModel.ProductId = types.StringValue(model.Product.ProductId)
 	resourceModel.Name = types.StringValue(model.Name)
@@ -580,6 +693,9 @@ func (resourceModel *permissionGroupResourceModel) UpdateFromApiModel(ctx contex
 	resourceModel.AccessType = types.StringValue((string)(model.AccessType))
 	resourceModel.NewEnvironmentAccessType = types.StringValue((string)(model.NewEnvironmentAccessType))
 	resourceModel.EnvironmentAccess = environmentAccessesMapValue
+	resourceModel.ApprovalPermissionType = types.StringValue((string)(model.ApprovalPermissionType))
+	resourceModel.NewEnvironmentApprovalType = types.StringValue((string)(model.NewEnvironmentApprovalPermissionType))
+	resourceModel.EnvironmentApprovals = environmentApprovalsMapValue
 
 	return diags
 }
@@ -622,6 +738,53 @@ func getEnvironmentAccesses(newEnvironmentAccesses *map[string]types.String, old
 				element := sw.CreateOrUpdateEnvironmentAccessModel{
 					EnvironmentId:         &environmentId,
 					EnvironmentAccessType: sw.ENVIRONMENTACCESSTYPE_NONE.Ptr(),
+				}
+				elements = append(elements, element)
+			}
+		}
+	}
+
+	return &elements, nil
+}
+
+func getEnvironmentApprovalPermissions(newEnvironmentApprovals *map[string]types.String, oldEnvironmentApprovals *map[string]types.String, approvalPermissionType sw.ApprovalPermissionType) (*[]sw.CreateOrUpdateEnvironmentApprovalPermissionModel, error) {
+	elements := make([]sw.CreateOrUpdateEnvironmentApprovalPermissionModel, 0)
+
+	if newEnvironmentApprovals == nil {
+		return &elements, nil
+	}
+
+	if approvalPermissionType != sw.APPROVALPERMISSIONTYPE_CUSTOM && len(*newEnvironmentApprovals) > 0 {
+		return nil, fmt.Errorf("environment_approval_permissions can only be set if the approval_permission_type is custom")
+	}
+
+	if approvalPermissionType != sw.APPROVALPERMISSIONTYPE_CUSTOM {
+		return &elements, nil
+	}
+
+	for environmentIdKey, environmentApprovalType := range *newEnvironmentApprovals {
+		environmentId := environmentIdKey
+		environmentApprovalTypeParsed, environmentApprovalTypeParseError := sw.NewEnvironmentApprovalPermissionTypeFromValue(environmentApprovalType.ValueString())
+		if environmentApprovalTypeParseError != nil {
+			return nil, environmentApprovalTypeParseError
+		}
+
+		element := sw.CreateOrUpdateEnvironmentApprovalPermissionModel{
+			EnvironmentId:                     &environmentId,
+			EnvironmentApprovalPermissionType: environmentApprovalTypeParsed,
+		}
+
+		elements = append(elements, element)
+	}
+
+	if oldEnvironmentApprovals != nil {
+		for environmentIdKey := range *oldEnvironmentApprovals {
+			environmentId := environmentIdKey
+			_, ok := (*newEnvironmentApprovals)[environmentId]
+			if !ok {
+				element := sw.CreateOrUpdateEnvironmentApprovalPermissionModel{
+					EnvironmentId:                     &environmentId,
+					EnvironmentApprovalPermissionType: sw.ENVIRONMENTAPPROVALPERMISSIONTYPE_CAN_BYPASS_APPROVAL.Ptr(),
 				}
 				elements = append(elements, element)
 			}

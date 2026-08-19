@@ -37,11 +37,13 @@ type productPreferencesResourceModel struct {
 
 	ID types.String `tfsdk:"id"`
 
-	KeyGenerationMode          types.String `tfsdk:"key_generation_mode"`
-	MandatorySettingHint       types.Bool   `tfsdk:"mandatory_setting_hint"`
-	ShowVariationId            types.Bool   `tfsdk:"show_variation_id"`
-	ReasonRequired             types.Bool   `tfsdk:"reason_required"`
-	ReasonRequiredEnvironments types.Map    `tfsdk:"reason_required_environments"`
+	KeyGenerationMode           types.String `tfsdk:"key_generation_mode"`
+	MandatorySettingHint        types.Bool   `tfsdk:"mandatory_setting_hint"`
+	ShowVariationId             types.Bool   `tfsdk:"show_variation_id"`
+	ReasonRequired              types.Bool   `tfsdk:"reason_required"`
+	ReasonRequiredEnvironments  types.Map    `tfsdk:"reason_required_environments"`
+	ApproveRequired             types.Bool   `tfsdk:"approve_required"`
+	ApproveRequiredEnvironments types.Map    `tfsdk:"approve_required_environments"`
 }
 
 func (r *productPreferencesResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -94,6 +96,21 @@ func (r *productPreferencesResource) Schema(ctx context.Context, req resource.Sc
 			},
 			ProductPreferenceReasonRequiredEnvironmentments: schema.MapAttribute{
 				Description: "The environment specific mandatory note map block. Keys are the Environment IDs and the values indicate that a mandatory note is required for saving and publishing.",
+				Computed:    true,
+				Optional:    true,
+				ElementType: types.BoolType,
+				Validators: []validator.Map{
+					mapvalidator.KeysAre(IsGuid()),
+				},
+			},
+			ProductPreferenceApproveRequired: schema.BoolAttribute{
+				Description: "Indicates that a mandatory approval is required before changes are applied. Approval Flow and Scheduled Changes are in closed beta. Default: false.",
+				Optional:    true,
+				Computed:    true,
+				Default:     booldefault.StaticBool(false),
+			},
+			ProductPreferenceApproveRequiredEnvironments: schema.MapAttribute{
+				Description: "The environment specific mandatory approval map block. Keys are the Environment IDs and the values indicate that mandatory approval is required before changes are applied. Approval Flow and Scheduled Changes are in closed beta.",
 				Computed:    true,
 				Optional:    true,
 				ElementType: types.BoolType,
@@ -188,6 +205,10 @@ func (r *productPreferencesResource) createOrUpdateProductPreferences(ctx contex
 		diag.AddError("Unable to update Product Preferences", "Please set "+ProductPreferenceReasonRequired+" to true to require mandatory notes globally or specify "+ProductPreferenceReasonRequiredEnvironmentments+" to require mandatory notes for specific environments but don't specify both of them together.")
 	}
 
+	if plan.ApproveRequired.ValueBool() && !plan.ApproveRequiredEnvironments.IsUnknown() && !plan.ApproveRequiredEnvironments.IsNull() {
+		diag.AddError("Unable to update Product Preferences", "Please set "+ProductPreferenceApproveRequired+" to true to require approvals globally or specify "+ProductPreferenceApproveRequiredEnvironments+" to require approvals for specific environments but don't specify both of them together.")
+	}
+
 	var reasonRequiredEnvironmentsMap map[string]types.Bool
 	if plan.ReasonRequiredEnvironments.IsUnknown() || plan.ReasonRequiredEnvironments.IsNull() {
 		reasonRequiredEnvironmentsMap = make(map[string]types.Bool, 0)
@@ -209,12 +230,35 @@ func (r *productPreferencesResource) createOrUpdateProductPreferences(ctx contex
 		})
 	}
 
+	var approveRequiredEnvironmentsMap map[string]types.Bool
+	if plan.ApproveRequiredEnvironments.IsUnknown() || plan.ApproveRequiredEnvironments.IsNull() {
+		approveRequiredEnvironmentsMap = make(map[string]types.Bool, 0)
+	} else {
+		approveRequiredEnvironmentsMap = make(map[string]types.Bool, len(plan.ApproveRequiredEnvironments.Elements()))
+		diag.Append(plan.ApproveRequiredEnvironments.ElementsAs(ctx, &approveRequiredEnvironmentsMap, false)...)
+		if diag.HasError() {
+			return
+		}
+	}
+
+	approveRequiredEnvironments := make([]sw.UpdateApproveRequiredEnvironmentModel, 0)
+	for environmentIdKey, approveRequiredValue := range approveRequiredEnvironmentsMap {
+		environmentId := environmentIdKey
+		approveRequired := approveRequiredValue
+		approveRequiredEnvironments = append(approveRequiredEnvironments, sw.UpdateApproveRequiredEnvironmentModel{
+			EnvironmentId:   &environmentId,
+			ApproveRequired: approveRequired.ValueBoolPointer(),
+		})
+	}
+
 	body := sw.UpdatePreferencesRequest{
-		KeyGenerationMode:          *sw.NewNullableKeyGenerationMode(keyGenerationMode),
-		ShowVariationId:            *sw.NewNullableBool(plan.ShowVariationId.ValueBoolPointer()),
-		MandatorySettingHint:       *sw.NewNullableBool(plan.MandatorySettingHint.ValueBoolPointer()),
-		ReasonRequired:             *sw.NewNullableBool(plan.ReasonRequired.ValueBoolPointer()),
-		ReasonRequiredEnvironments: reasonRequiredEnvironments,
+		KeyGenerationMode:           *sw.NewNullableKeyGenerationMode(keyGenerationMode),
+		ShowVariationId:             *sw.NewNullableBool(plan.ShowVariationId.ValueBoolPointer()),
+		MandatorySettingHint:        *sw.NewNullableBool(plan.MandatorySettingHint.ValueBoolPointer()),
+		ReasonRequired:              *sw.NewNullableBool(plan.ReasonRequired.ValueBoolPointer()),
+		ReasonRequiredEnvironments:  reasonRequiredEnvironments,
+		ApproveRequired:             *sw.NewNullableBool(plan.ApproveRequired.ValueBoolPointer()),
+		ApproveRequiredEnvironments: approveRequiredEnvironments,
 	}
 
 	model, err := r.client.UpdateProductPreferences(plan.ProductId.ValueString(), body)
@@ -249,6 +293,7 @@ func (resourceModel *productPreferencesResourceModel) UpdateFromApiModel(ctx con
 	resourceModel.ShowVariationId = types.BoolValue(model.ShowVariationId)
 	resourceModel.KeyGenerationMode = types.StringValue((string)(model.KeyGenerationMode))
 	resourceModel.ReasonRequired = types.BoolValue(model.ReasonRequired)
+	resourceModel.ApproveRequired = types.BoolValue(model.ApproveRequired)
 
 	reasonRequiredEnvironments := make(map[string]bool, len(model.ReasonRequiredEnvironments))
 	for _, environment := range model.ReasonRequiredEnvironments {
@@ -262,6 +307,18 @@ func (resourceModel *productPreferencesResourceModel) UpdateFromApiModel(ctx con
 
 	resourceModel.ReasonRequiredEnvironments = reasonRequiredEnvironmentsMapValue
 
+	approveRequiredEnvironments := make(map[string]bool, len(model.ApproveRequiredEnvironments))
+	for _, environment := range model.ApproveRequiredEnvironments {
+		approveRequiredEnvironments[environment.EnvironmentId] = environment.ApproveRequired
+	}
+
+	approveRequiredEnvironmentsMapValue, diags := types.MapValueFrom(ctx, types.BoolType, approveRequiredEnvironments)
+	if diags.HasError() {
+		return diags
+	}
+
+	resourceModel.ApproveRequiredEnvironments = approveRequiredEnvironmentsMapValue
+
 	return diags
 }
 
@@ -270,7 +327,9 @@ func hasProductPreferenceChanges(plan *productPreferencesResourceModel, state *p
 		!plan.ShowVariationId.Equal(state.ShowVariationId) ||
 		!plan.MandatorySettingHint.Equal(state.MandatorySettingHint) ||
 		!plan.ReasonRequired.Equal(state.ReasonRequired) ||
-		!plan.ReasonRequiredEnvironments.Equal(state.ReasonRequiredEnvironments) {
+		!plan.ReasonRequiredEnvironments.Equal(state.ReasonRequiredEnvironments) ||
+		!plan.ApproveRequired.Equal(state.ApproveRequired) ||
+		!plan.ApproveRequiredEnvironments.Equal(state.ApproveRequiredEnvironments) {
 		return true
 	}
 

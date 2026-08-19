@@ -18,6 +18,11 @@ variable "reason_required" {
   default = null
 }
 
+variable "approve_required" {
+  type    = bool
+  default = null
+}
+
 resource "configcat_product" "product" {
   organization_id = "08d86d63-26dc-4276-86d6-eae122660e51"
   name            = "Product preferences test"
@@ -31,4 +36,5 @@ resource "configcat_product_preferences" "preferences" {
   mandatory_setting_hint = var.mandatory_setting_hint
   show_variation_id      = var.show_variation_id
   reason_required        = var.reason_required
+  approve_required       = var.approve_required
 }
