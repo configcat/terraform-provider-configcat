@@ -160,7 +160,7 @@ resource "configcat_setting_value_v2" "string_setting_value" {
 
 ### Optional
 
-- `bypass_approval` (Boolean) Indicates whether the change should bypass the approval workflow. Approval Flow and Scheduled Changes are in closed beta.
+- `bypass_approval` (Boolean) Indicates whether the change should bypass the approval workflow.
 - `init_only` (Boolean) The main purpose of this resource to provide an initial value for the Feature Flag/Setting.  
 
 The `init_only` argument's default value is `true`. Meaning that the Feature Flag or Setting's **value will be only be applied once** during resource creation. If someone modifies the value on the [ConfigCat Dashboard](https://app.configcat.com) those modifications will **not be overwritten** by the Terraform script.
@@ -183,7 +183,7 @@ Optional:
 - `bool_value` (Boolean) The boolean representation of the value.
 - `double_value` (Number) The decimal number representation of the value.
 - `int_value` (Number) The whole number representation of the value.
-- `predefined_variation_id` (String) The predefined variation's ID representation of the value in case of the setting has predefined variations. The feature is currently in closed beta state and cannot be used.
+- `predefined_variation_id` (String) The predefined variation's ID representation of the value in case of the setting has predefined variations.
 - `string_value` (String) The string representation of the value.
 
 
@@ -222,7 +222,7 @@ Optional:
 - `bool_value` (Boolean) The boolean representation of the value.
 - `double_value` (Number) The decimal number representation of the value.
 - `int_value` (Number) The whole number representation of the value.
-- `predefined_variation_id` (String) The predefined variation's ID representation of the value in case of the setting has predefined variations. The feature is currently in closed beta state and cannot be used.
+- `predefined_variation_id` (String) The predefined variation's ID representation of the value in case of the setting has predefined variations.
 - `string_value` (String) The string representation of the value.
 
 
@@ -285,7 +285,7 @@ Optional:
 - `bool_value` (Boolean) The boolean representation of the value.
 - `double_value` (Number) The decimal number representation of the value.
 - `int_value` (Number) The whole number representation of the value.
-- `predefined_variation_id` (String) The predefined variation's ID representation of the value in case of the setting has predefined variations. The feature is currently in closed beta state and cannot be used.
+- `predefined_variation_id` (String) The predefined variation's ID representation of the value in case of the setting has predefined variations.
 - `string_value` (String) The string representation of the value.
 
 
@@ -298,7 +298,7 @@ Optional:
 - `bool_value` (Boolean) The boolean representation of the value.
 - `double_value` (Number) The decimal number representation of the value.
 - `int_value` (Number) The whole number representation of the value.
-- `predefined_variation_id` (String) The predefined variation's ID representation of the value in case of the setting has predefined variations. The feature is currently in closed beta state and cannot be used.
+- `predefined_variation_id` (String) The predefined variation's ID representation of the value in case of the setting has predefined variations.
 - `string_value` (String) The string representation of the value.
 
 ## Import

@@ -58,8 +58,8 @@ resource "configcat_product_preferences" "preferences" {
 
 ### Optional
 
-- `approve_required` (Boolean) Indicates that a mandatory approval is required before changes are applied. Approval Flow and Scheduled Changes are in closed beta. Default: false.
-- `approve_required_environments` (Map of Boolean) The environment specific mandatory approval map block. Keys are the Environment IDs and the values indicate that mandatory approval is required before changes are applied. Approval Flow and Scheduled Changes are in closed beta.
+- `approve_required` (Boolean) Indicates that a mandatory approval is required before changes are applied. Default: false.
+- `approve_required_environments` (Map of Boolean) The environment specific mandatory approval map block. Keys are the Environment IDs and the values indicate that mandatory approval is required before changes are applied.
 - `key_generation_mode` (String) Determines the Feature Flag key generation mode. Available values: `camelCase`|`upperCase`|`lowerCase`|`pascalCase`|`kebabCase`. Default: `camelCase`.
 - `mandatory_setting_hint` (Boolean) Indicates whether Feature flags and Settings must have a hint. Default: false.
 - `reason_required` (Boolean) Indicates that a mandatory note is required for saving and publishing. Default: false.

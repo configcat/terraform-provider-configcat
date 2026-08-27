@@ -4,8 +4,6 @@ page_title: "Feature flag or setting with predefined variations"
 
 # Feature flag or setting with predefined variations
 
-The feature is currently in closed beta state and cannot be used.
-
 ## Prerequisites
 
 [Get your Public Management API credentials](https://app.configcat.com/my-account/public-api-credentials) and set the following environment variables:

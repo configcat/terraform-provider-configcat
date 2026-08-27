@@ -184,7 +184,7 @@ func (r *settingResource) Schema(ctx context.Context, req resource.SchemaRequest
 
 			PredefinedVariations: schema.ListNestedAttribute{
 				Optional:    true,
-				Description: "The predefined variations of the " + SettingResourceName + ". The feature is currently in closed beta state and cannot be used. ",
+				Description: "The predefined variations of the " + SettingResourceName + ".",
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						PredefinedVariationId: schema.StringAttribute{

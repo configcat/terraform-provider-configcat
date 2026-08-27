@@ -170,7 +170,7 @@ func createSettingValueSchema(required bool, validators []validator.Object) *sch
 			},
 			PredefinedVariationId: schema.StringAttribute{
 				Optional:    true,
-				Description: "The predefined variation's ID representation of the value in case of the setting has predefined variations. The feature is currently in closed beta state and cannot be used.",
+				Description: "The predefined variation's ID representation of the value in case of the setting has predefined variations.",
 				Validators: []validator.String{
 					stringvalidator.ExactlyOneOf(
 						path.MatchRelative().AtParent().AtName(BoolValue),
@@ -351,7 +351,7 @@ func (r *settingValueV2Resource) Schema(ctx context.Context, req resource.Schema
 				Optional:    true,
 			},
 			BypassApproval: schema.BoolAttribute{
-				Description: "Indicates whether the change should bypass the approval workflow. Approval Flow and Scheduled Changes are in closed beta.",
+				Description: "Indicates whether the change should bypass the approval workflow.",
 				Optional:    true,
 			},
 			DefaultValue: createSettingValueSchema(true, nil),

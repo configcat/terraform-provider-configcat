@@ -241,19 +241,19 @@ func (r *permissionGroupResource) Schema(ctx context.Context, req resource.Schem
 				ElementType: types.StringType,
 			},
 			PermissionGroupApprovalPermissionType: schema.StringAttribute{
-				Description: "Represents the permission group level change request approval permission. Approval Flow and Scheduled Changes are in closed beta. Possible values: cannotApprove, canApproveOthers, canBypassApproval, custom",
+				Description: "Represents the permission group level change request approval permission. Possible values: cannotApprove, canApproveOthers, canBypassApproval, custom",
 				Computed:    true,
 				Optional:    true,
 				Default:     stringdefault.StaticString(string(sw.APPROVALPERMISSIONTYPE_CAN_BYPASS_APPROVAL)),
 			},
 			PermissionGroupNewEnvironmentApprovalType: schema.StringAttribute{
-				Description: "Represents the environment specific change request approval permission for new Environments. Approval Flow and Scheduled Changes are in closed beta. Possible values: cannotApprove, canApproveOthers, canBypassApproval",
+				Description: "Represents the environment specific change request approval permission for new Environments. Possible values: cannotApprove, canApproveOthers, canBypassApproval",
 				Computed:    true,
 				Optional:    true,
 				Default:     stringdefault.StaticString(string(sw.ENVIRONMENTAPPROVALPERMISSIONTYPE_CAN_BYPASS_APPROVAL)),
 			},
 			PermissionGroupEnvironmentApprovals: schema.MapAttribute{
-				Description: "The environment specific approval permissions map block. Keys are the Environment IDs and the values represent the environment specific change request approval permission. Approval Flow and Scheduled Changes are in closed beta. Possible values: cannotApprove, canApproveOthers, canBypassApproval",
+				Description: "The environment specific approval permissions map block. Keys are the Environment IDs and the values represent the environment specific change request approval permission. Possible values: cannotApprove, canApproveOthers, canBypassApproval",
 				Computed:    true,
 				Optional:    true,
 				ElementType: types.StringType,
