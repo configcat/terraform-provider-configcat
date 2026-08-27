@@ -111,6 +111,9 @@ func TestAccSettingTagMultipleResource(t *testing.T) {
 				),
 			},
 			{
+				ConfigFile: config.TestNameFile("removealltags.tf"),
+			},
+			{
 				ConfigFile: config.TestNameFile("removeeverything.tf"),
 			},
 		},
