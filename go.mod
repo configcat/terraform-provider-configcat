@@ -1,6 +1,6 @@
 module github.com/configcat/terraform-provider-configcat/v5
 
-go 1.25.8
+go 1.27.0
 
 require (
 	github.com/configcat/configcat-publicapi-go-client/v3 v3.3.0
